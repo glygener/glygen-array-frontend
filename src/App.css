@@ -1,0 +1,366 @@
+:root {
+  --legacy-blue: #2f78b4;
+  --dark-blue-1: #215b9e;
+  --dark-blue-2: #175385;
+  --gg-blue: #2f78b7 !important;
+  --gg-dark-blue: #1c4e78 !important;
+  --gg-light-blue: #afd9fd !important;
+  --gg-dark-hover: #57affa !important;
+  --gg-green: #1d9901 !important;
+}
+
+.app {
+  text-align: center;
+}
+
+/* ========================================
+               Bootstrap Card
+  ==========================================*/
+
+:not(.MuiCard-root) .brand-link,
+.brand-link:hover {
+  color: white;
+  text-decoration: none;
+}
+
+/* ========================================
+                Fields
+  ==========================================*/
+
+.custom-text-fields {
+  border: 1px solid #dddfe2;
+  font-size: 15px !important;
+  padding: 24px 16px !important;
+  border-radius: 6px !important;
+  /* background: #f5f6f7 !important; */
+}
+
+.label {
+  font-size: 18px;
+  margin-top: -40px;
+  margin-left: 15px;
+  color: grey;
+  position: absolute;
+}
+
+input[type]:focus + label,
+input[type]:not(:placeholder-shown) + label {
+  opacity: 100;
+  color: #215b9e;
+  background-color: #fff;
+  padding: 0 5px 0 5px;
+  transform: scale(0.75) translateY(-120%) translateX(-30px);
+}
+
+/* For IE Browsers*/
+input[type]:focus + label,
+input[type]:not(:-ms-input-placeholder) + label {
+  opacity: 1;
+  transform: scale(0.75) translateY(-100%) translateX(-30px);
+}
+
+.password-visibility {
+  margin-right: 10px;
+  margin-top: -30px;
+  float: right;
+  cursor: pointer;
+}
+
+.required-asterik:after {
+  content: "\00a0*";
+  color: red;
+}
+
+.line-break-1 {
+  margin-bottom: 2em;
+  margin-top: 2em;
+}
+
+.line-break-2 {
+  margin-bottom: 1em;
+}
+
+.hide-content {
+  display: none !important;
+}
+
+.get-btn {
+  height: 38px !important;
+  text-transform: none !important;
+  background-color: var(--legacy-blue) !important;
+  color: white !important;
+}
+
+.form-control:valid {
+  background-image: none !important;
+  border-color: none !important;
+}
+
+/* ========================================
+               Cards
+  ==========================================*/
+
+/* custom class for pages completely on bootstrap card */
+.card-page {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  margin-right: -50% !important;
+  transform: translate(-50%, -50%) !important;
+  padding: 50px;
+}
+
+.card {
+  width: 100%;
+  -webkit-transition: -webkit-box-shadow 0.25s;
+  transition: -webkit-box-shadow 0.25s;
+  transition: box-shadow 0.25s;
+  transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+  border-radius: 8px !important;
+  /* padding: 16px; */
+}
+.card:hover {
+  -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+  -webkit-transition: -webkit-box-shadow 0.25s;
+  transition: -webkit-box-shadow 0.25s;
+  transition: box-shadow 0.25s;
+  transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+}
+
+/* .card-body {
+  font-weight: 200;
+  font-size: 25px;
+  font-family: fangsong;
+  padding: 0px !important;
+  // padding-bottom: 15px; 
+} */
+
+/* Cards */
+hr {
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+  width: 70%;
+}
+.devider {
+  height: 1px !important;
+  background-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.card-padding-zero.card-body {
+  padding: 0 !important;
+}
+.card-padding-zero.card-body td {
+  padding: 20px 25px;
+}
+.card-padding-zero table {
+  margin-bottom: 0 !important;
+}
+
+.error-form-invalid {
+  display: block;
+  text-align: left;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+}
+
+.accordion > .card:first-of-type {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.list-group-item.active {
+  background-color: var(--gg-blue) !important;
+  border-color: var(--gg-blue) !important;
+}
+.list-group-item.active span {
+  background-color: var(--gg-blue) !important;
+  color: var(--gg-light-blue) !important;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th,
+.table-body > .table-row:hover,
+.table-body > .table-row:nth-child(2n):hover {
+  background-color: #e2e8ef;
+}
+.table {
+  background-color: white;
+}
+.table-body > .table-row {
+  background-color: #fff;
+}
+.table-body > .table-row:nth-child(2n) {
+  background: #f3f3f3;
+}
+.results-table-top {
+  width: 50% !important;
+  margin: 0 auto;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+.table td,
+.table th {
+  border: 1px solid #dee2e6;
+}
+
+.table-header {
+  color: white;
+  font-size: large;
+  font-weight: 500;
+  background-color: cadetblue;
+}
+
+.MuiCard-root {
+  border-radius: 8px !important;
+  overflow: unset !important;
+  /* margin: 260px; */
+  background-color: white !important;
+}
+
+.view-password {
+  margin-left: -55px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+/* =========================================
+          Buttons
+  ============================================ */
+.goToTop {
+  float: right;
+  padding-right: 5%;
+  padding-left: 5%;
+  color: #2e78b7;
+}
+
+.gg-btn-blue {
+  color: #ffffff;
+  background-color: var(--gg-blue) !important;
+  border-color: var(--gg-blue) !important;
+  -webkit-transition: all 0.5s !important;
+  transition: ease-in-out 0.5s !important;
+}
+
+.gg-btn-blue:hover {
+  background-color: var(--gg-dark-blue) !important;
+  border-color: var(--gg-dark-blue) !important;
+}
+
+.gg-btn-outline {
+  color: var(--gg-blue) !important;
+  background-color: #fff !important;
+  border-color: var(--gg-blue) !important;
+  -webkit-transition: all 0.5s !important;
+  transition: ease-in-out 0.5s !important;
+}
+.gg-btn-outline:hover {
+  color: #fff !important;
+  background-color: var(--gg-blue) !important;
+  border-color: var(--gg-blue) !important;
+}
+.gg-btn-outline-white {
+  text-decoration: none !important;
+  color: #fff !important;
+  text-transform: uppercase;
+  font-weight: 700 !important;
+  background-color: transparent !important;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px 10px !important;
+  display: block !important;
+  white-space: nowrap;
+  -webkit-transition: all 0.3s !important;
+  transition: ease-in-out 0.3s !important;
+}
+.gg-btn-outline-white:hover {
+  color: #fff !important;
+  background-color: var(--gg-dark-hover) !important;
+}
+.gg-btn-outline-blue {
+  text-decoration: none !important;
+  font-size: 1rem;
+  color: #fff !important;
+  background-color: var(--gg-blue) !important;
+  /* background-color: transparent !important; */
+  text-transform: uppercase;
+  font-weight: 700 !important;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px 10px !important;
+  display: block !important;
+  white-space: nowrap;
+  -webkit-transition: all 0.3s !important;
+  transition: ease-in-out 0.3s !important;
+}
+.gg-btn-outline-blue:hover {
+  color: #fff !important;
+  background-color: var(--gg-dark-hover) !important;
+}
+.btn-outline-white-col {
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
+  /* text-align: right; */
+}
+
+/* =========================================
+                Card Loader
+  ============================================ */
+.card-loader-image {
+  height: 75px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
+.card-loader-row {
+  justify-content: center;
+}
+.card-loader-overlay {
+  z-index: 2000 !important;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================
+                Page Loader
+  ============================================ */
+.page-loader-backdrop {
+  z-index: 2000 !important;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.page-loader-image {
+  width: 75px;
+  height: 75px;
+}
+
+@media (min-width: 600px) {
+  .MuiContainer-root {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+body {
+  background-color: #f5f5f5 !important;
+  font-size: 18px !important;
+}
+
+body > :not(.page-container),
+body > :not(.card) {
+  padding-top: 70px !important;
+}
+
+.MuiPaper-root {
+  background-color: #f5f5f5 !important;
+}
+
+.download-btn {
+  color: var(--legacy-blue);
+}

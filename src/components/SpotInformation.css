@@ -1,0 +1,88 @@
+.popover-custom {
+  position: relative !important;
+  text-align: center !important;
+  margin-left: inherit !important;
+  max-width: 400px;
+  width: 80%;
+  /* width: 80% !important; */
+}
+
+.popover-body-custom {
+  overflow-y: scroll !important;
+  max-height: 150px !important;
+  min-height: 150px !important;
+}
+
+.popover-header-custom {
+  background-color: dimgray !important;
+  color: snow !important;
+}
+
+.arrow {
+  display: none !important;
+}
+
+.card-header-custom {
+  background-color: darkslategrey !important;
+  color: lightgoldenrodyellow !important;
+}
+
+.accordion-collapse-custom {
+  background-color: floralwhite !important;
+  /* background-color: brown !important; */
+  color: black !important;
+  font-size: larger !important;
+  font-family: auto !important;
+}
+
+.accodion-header {
+  padding: 0.7rem 0.75rem;
+  border-radius: 0px;
+  border-top-left-radius: 0.2rem !important;
+  border-top-right-radius: 0.2rem !important;
+  margin-bottom: 0;
+  font-size: 1rem;
+  background-color: cadetblue !important;
+
+  color: white;
+  font: bolder;
+}
+.accodion-header-row {
+  padding-left: 30% !important;
+}
+.accordion-custom {
+  max-height: 400px !important;
+}
+
+.spot-information-accordions {
+  max-height: 200px;
+  overflow-y: scroll;
+  border-bottom-right-radius: 0.3rem !important;
+  border-bottom-left-radius: 0.3rem !important;
+}
+
+::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5em;
+}
+::-webkit-scrollbar-button {
+  background: #ccc;
+}
+::-webkit-scrollbar-track-piece {
+  background: #eee;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.custom_link {
+  color: aliceblue;
+  border-bottom: 1px solid currentColor;
+  display: inline-block;
+  line-height: 0.85;
+}
+
+/* mouse over link */
+a:hover {
+  color: blue;
+}

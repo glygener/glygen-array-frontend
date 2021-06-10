@@ -1,0 +1,133 @@
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import { Routes } from "./Routes";
+import { useHistory, useLocation } from "react-router-dom";
+import { TopNavBar } from "./components/TopNavBar";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { getLoginStatus, getPageName } from "./utils/commonUtils";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faEdit, faTrashAlt, faClone, faEyeSlash, faEye } from "@fortawesome/free-regular-svg-icons";
+import {
+  faUsers,
+  faComments,
+  faBookOpen,
+  faAngleDown,
+  faAngleUp,
+  faCog,
+  faPlus,
+  faMinus,
+  faRedoAlt,
+  faExclamationTriangle,
+  faDownload,
+  faArrowCircleUp,
+  faCaretRight,
+  faCaretDown,
+  faCopy,
+  faSignInAlt,
+  faUserPlus,
+  faTable,
+  faCaretUp,
+  faVial
+} from "@fortawesome/free-solid-svg-icons";
+import { CssBaseline } from "@material-ui/core";
+
+const App = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const loginUpdater = flag => setLoggedIn(flag);
+  const logoutHandler = e => logout(e);
+  const history = useHistory();
+  const location = useLocation();
+
+  useEffect(checkAuthorization, [loggedIn]);
+
+  const setRouting = () => {
+    library.add(
+      faTrashAlt,
+      faEdit,
+      faClone,
+      faUsers,
+      faComments,
+      faBookOpen,
+      faAngleDown,
+      faAngleUp,
+      faCog,
+      faPlus,
+      faMinus,
+      faRedoAlt,
+      faExclamationTriangle,
+      faDownload,
+      faArrowCircleUp,
+      faCaretRight,
+      faCaretDown,
+      faCopy,
+      faEyeSlash,
+      faEye,
+      faSignInAlt,
+      faUserPlus,
+      faTable,
+      faCaretUp,
+      faVial
+    );
+
+    return (
+      <div className="app">
+        <TopNavBar loggedInFlag={loggedIn} logoutHandler={logoutHandler} />
+        <CssBaseline />
+
+        {location && location.pathname && (location.pathname === "/data" || location.pathname === "/") ? (
+          <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
+        ) : (
+          <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
+        )}
+      </div>
+    );
+  };
+
+  return setRouting();
+
+  function checkAuthorization() {
+    var authorized = getLoginStatus();
+    setLoggedIn(authorized); //async
+    var loginNotRequiredPages = [
+      "",
+      "login",
+      "forgotUsername",
+      "forgotPassword",
+      "signup",
+      "emailConfirmation",
+      "data",
+      "verifyToken"
+    ];
+    var pagename = getPageName(history);
+
+    var redirectFrom = "";
+    if (history.location.state && history.location.state.redirectFrom) {
+      redirectFrom = history.location.state.redirectFrom;
+    } else {
+      if (authorized && history.location.pathname === "/login") {
+        redirectFrom = "/";
+        history.push({
+          pathname: "/",
+          state: { redirectedFrom: redirectFrom }
+        });
+      } else {
+        redirectFrom = history.location.pathname;
+      }
+    }
+
+    if (!authorized && !loginNotRequiredPages.includes(pagename)) {
+      history.push({
+        pathname: "/login",
+        state: { redirectedFrom: redirectFrom }
+      });
+    }
+  }
+  function logout(e) {
+    e.preventDefault();
+    window.localStorage.clear();
+    setLoggedIn(false);
+    history.push("/");
+  }
+};
+
+export { App };

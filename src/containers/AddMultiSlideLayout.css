@@ -1,0 +1,11 @@
+.read-more-link {
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-align: center !important;
+}
+
+.list-error-message {
+  text-align: left;
+  list-style: square;
+  /* display: list-item; */
+}

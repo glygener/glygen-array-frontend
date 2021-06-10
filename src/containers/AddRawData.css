@@ -1,0 +1,12 @@
+.range-slider {
+  width: 450px !important;
+  color: red !important;
+}
+
+.range-slider-errorMessage {
+  display: none;
+}
+
+input[type="range"] {
+  color: red !important;
+}

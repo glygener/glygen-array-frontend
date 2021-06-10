@@ -1,0 +1,32 @@
+.table-btn {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  font-size: large !important;
+}
+
+.table-btn:hover {
+  opacity: 0.6;
+  border: 1px solid black;
+}
+
+.ReactTable .-pagination .-btn {
+  background-color: var(--legacy-blue) !important;
+  color: white !important;
+}
+
+.ReactTable .-pagination .-btn:enabled:hover {
+  opacity: 0.8;
+}
+
+.image-icon {
+  margin-bottom: 10px;
+}
+
+.caution-color {
+  color: red;
+}
+
+.edit-icon {
+  color: var(--legacy-blue);
+}

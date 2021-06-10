@@ -1,0 +1,23 @@
+.grid-row {
+  border-top: 1px solid #000000 !important;
+  border-bottom: 1px solid #000000 !important;
+  border-left: 1px solid #000000 !important;
+  flex-wrap: initial !important;
+  width: fit-content !important;
+}
+
+.grid-col {
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000 !important;
+  width: auto;
+}
+
+.grid-vertical-index {
+  border-right: 1px solid #000000 !important;
+  position: sticky;
+}
+
+.grid-horizonatal-index {
+  border-bottom: 1px solid #000000 !important;
+  position: sticky;
+}

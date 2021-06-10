@@ -1,0 +1,16 @@
+/* .-next {
+  margin-right: -430px !important;
+}
+
+.ReactTable .-pagination .-btn {
+  width: 100px !important;
+  background-color: #6482a0 !important;
+} */
+
+.metadata-link {
+  color: dodgerblue;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-bottom: 1px;
+  display: inline-block;
+}

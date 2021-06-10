@@ -1,0 +1,25 @@
+.plus-button-icon {
+  color: var(--legacy-blue) !important;
+  margin-top: 8px !important;
+}
+
+.add-subGroup-button {
+  color: var(--legacy-blue) !important;
+  font-size: 27px !important;
+  width: 40px !important;
+  margin-top: 7px !important;
+}
+
+.alert-heading {
+  font-weight: 400;
+  font-size: 1.3rem;
+}
+
+.rdtPicker {
+  position: relative !important;
+}
+
+.addon-setting {
+  position: fixed;
+  margin-top: 150px;
+}

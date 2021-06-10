@@ -1,0 +1,41 @@
+.percentage-symbol {
+  margin-left: -0.8rem;
+  font-size: x-large;
+}
+
+.feature-div-border {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  border-color: green;
+  padding-left: 20%;
+  padding-top: 5%;
+}
+
+.feature-ratio-div {
+  padding-top: 5%;
+  padding-left: 300px;
+}
+
+.spots-selected-featurepage {
+  margin-left: 70%;
+  width: 25%;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  margin-bottom: -18%;
+  margin-top: 6%;
+}
+
+.glygen-table {
+  width: 1050px;
+}
+
+.pop-over-custom {
+  padding: 0.5rem 0.75rem;
+  color: #212529;
+  border: 1px solid darkgrey;
+  border-radius: 0.25rem;
+  width: 265px;
+  overflow-y: scroll;
+  max-height: 250px;
+  min-height: 125px;
+}

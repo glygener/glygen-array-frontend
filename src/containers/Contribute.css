@@ -1,0 +1,46 @@
+.sidenav {
+  height: 100%;
+  width: 14%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #e6e6e6;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 10px;
+  margin-top: 62px;
+  text-align: center;
+  min-width: 225px !important;
+}
+
+.sidenav a {
+  color: #4a4a4a;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.MuiList-padding {
+  padding-bottom: 80px !important;
+}
+
+/* .page-container {
+  padding: 2% 0%;
+} */
+
+@media screen and (min-width: 1200px) {
+  .page-container {
+    padding-left: 20% !important;
+    width: 90%;
+  }
+}
+
+.page-description {
+  width: 80%;
+  padding-left: 20%;
+  text-align: justify;
+}

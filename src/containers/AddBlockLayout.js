@@ -1,0 +1,808 @@
+import React, { useReducer, useState, useEffect } from "react";
+import Helmet from "react-helmet";
+import { head, getMeta } from "../utils/head";
+import { Form, Row, Col, Button } from "react-bootstrap";
+import { Title } from "../components/FormControls";
+import "../containers/AddGlycan.css";
+import { GlygenGrid } from "../components/GlygenGrid";
+import { AddFeatureToBlock } from "../components/AddFeatureToBlock";
+import { SpotInformation, SelectedSpotsBlock } from "../components/SpotInformation";
+import { wsCall } from "../utils/wsUtils";
+import "../containers/AddBlockLayout.css";
+import { ErrorSummary } from "../components/ErrorSummary";
+import { useHistory, Prompt, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Loading } from "../components/Loading";
+import { ConfirmationModal } from "../components/ConfirmationModal";
+import { ColorNotation } from "../components/ColorNotation";
+import { GridForm } from "../components/GridForm";
+import MetadataKeyPairs from "../public/MetadataKeyPairs";
+// import { scrollToTop } from "../utils/commonUtils";
+
+const AddBlockLayout = props => {
+  let { blockLayoutId } = useParams();
+  // var count = 0;
+
+  useEffect(() => {
+    if (props.authCheckAgent && !props.publicView) {
+      props.authCheckAgent();
+    }
+
+    if (blockLayoutId && blockLayoutId !== "") {
+      // count = 1;
+      setShowLoading(true);
+      wsCall(
+        "getblocklayout",
+        "GET",
+        { qsParams: { loadAll: true }, urlParams: [blockLayoutId] },
+        true,
+        null,
+        getBlockLayoutSuccess,
+        getBlockLayoutFailure
+      );
+      setTitle("Update Block Layout");
+    } else if (props.publicView) {
+      setShowLoading(true);
+      wsCall(
+        "getpublicblocklayout",
+        "GET",
+        { qsParams: { loadAll: true }, urlParams: [props.publicView] },
+        true,
+        null,
+        getBlockLayoutSuccess,
+        getBlockLayoutFailure
+      );
+    }
+
+    wsCall(
+      "listspotmetadata",
+      "GET",
+      { offset: 0 },
+      true,
+      null,
+      response =>
+        response.json().then(responseJson => {
+          setListSpots(responseJson.rows);
+        }),
+      getBlockLayoutFailure
+    );
+    if (!arraySelected.length > 0) {
+      setArraySelected(spotsSelected);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blockLayoutId]);
+
+  const gridSize = {
+    cols: "",
+    rows: "",
+    name: "",
+    description: " "
+  };
+
+  const gridSizeUpdated = {
+    cols: "",
+    rows: "",
+    name: "",
+    description: " "
+  };
+
+  const [gridParams, setGridParams] = useReducer((state, newState) => ({ ...state, ...newState }), gridSize);
+  const [updatedGridParams, setUpdatedGridParams] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    gridSizeUpdated
+  );
+
+  const [arraySelected, setArraySelected] = useState([]);
+  const [spotsSelected, setSpotsSelected] = useState([]);
+
+  const [title, setTitle] = useState("Add Block Layout");
+  const [spotFeatureCard, setSpotFeatureCard] = useState();
+  const [loadGrid, setLoadGrid] = useState(false);
+  const [addFeatures, setAddFeatures] = useState(false);
+  const [validated, setValidated] = useState(false);
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [pageErrorMessage, setPageErrorMessage] = useState("");
+  const [groupCounter, setGroupCounter] = useState(0);
+  const [isUpdateBlock, setIsUpdateBlock] = useState(false); //flag to enable update block code
+  const [enableUpdateButton, setEnableUpdateButton] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
+  const [showAddFeatureModal, setShowAddFeatureModal] = useState(false);
+  const [enablePrompt, setEnablePrompt] = useState(false);
+  const [duplicateName, setDuplicateName] = useState(false);
+  const [characterCounter, setCharacterCounter] = useState();
+  const [accordionDrop, setAccordionDrop] = useState(false);
+  const [selectedSpotMetadata, setSelectedSpotMetadata] = useState("");
+  const [listSpots, setListSpots] = useState([]);
+
+  const history = useHistory();
+
+  const handleChange = e => {
+    const name = e.target.name;
+    const newValue = e.target.value;
+    setGridParams({ [name]: newValue });
+
+    if (isUpdateBlock) {
+      if (newValue !== updatedGridParams[name]) {
+        setDuplicateName(false);
+        setEnableUpdateButton(true);
+      } else {
+        setEnableUpdateButton(false);
+      }
+    }
+    if (name === "description") {
+      setCharacterCounter(newValue.length);
+    }
+
+    setEnablePrompt(true);
+  };
+
+  const validateForm = () => {
+    if (gridParams.name === "" || gridParams.rows === "" || gridParams.cols === "") {
+      setValidated(true);
+    } else {
+      setUpdatedGridParams(gridParams);
+      setLoadGrid(true);
+    }
+  };
+
+  const createGrid = () => {
+    return (
+      <>
+        <GlygenGrid
+          gridParams={updatedGridParams}
+          selectedArray={updateSelectedArray}
+          setBackGroundColor={setBackGroundColor}
+          selectedColor={selectedColor}
+        />
+      </>
+    );
+  };
+
+  const changeRowsandColumns = () => {
+    setUpdatedGridParams(gridParams);
+
+    var spotsSelected = [...arraySelected];
+    var changedGridSpots = [...arraySelected];
+
+    spotsSelected.map(spot => {
+      if (spot.selectedRow > gridParams.rows || spot.selectedCol > gridParams.cols) {
+        changedGridSpots.splice(changedGridSpots.indexOf(spot), 1);
+      }
+      return "";
+    });
+
+    setSpotsSelected(changedGridSpots);
+    setArraySelected(changedGridSpots);
+  };
+
+  const updateSelectedArray = (row, col) => {
+    var spots = [...arraySelected];
+
+    var selectedSpot = spots.find(i => i.selectedRow === row && i.selectedCol === col);
+    var selectedSpotIndex;
+
+    if (isUpdateBlock && selectedSpot) {
+      gridUpdateforUpdateBlock(spots, selectedSpot);
+      return;
+    } else if (isUpdateBlock && !selectedSpot) {
+      return;
+    }
+
+    if (selectedSpot) {
+      if (selectedSpot.selectedFeatures.length > 0) {
+        if (!spotFeatureCard && selectedSpot.selectedFeatures.length < 1) {
+          spots = updateGroupColor(selectedSpot, spots);
+          setSpotFeatureCard(selectedSpot);
+          createSpot(spots, row, col);
+        } else {
+          var selectedSpotLastIndex;
+
+          spots.forEach(element => {
+            if (
+              selectedSpot.selectedRow === element.selectedRow &&
+              selectedSpot.selectedCol === element.selectedCol &&
+              element.selectedFeatures.length < 1
+            ) {
+              selectedSpotLastIndex = spots.indexOf(element);
+            }
+          });
+
+          selectedSpotIndex = spots.indexOf(selectedSpot);
+
+          if (selectedSpotLastIndex && selectedSpotLastIndex !== selectedSpotIndex) {
+            setSpotFeatureCard();
+
+            spots.splice(selectedSpotLastIndex, 1);
+
+            spots.map(element => {
+              if (
+                element.selectedRow === selectedSpot.selectedRow &&
+                element.selectedCol === selectedSpot.selectedCol &&
+                element.selectedFeatures.length > 0
+              ) {
+                element.color = "";
+                spots.map(spotObject => {
+                  if (spotObject.groupAssigned === element.groupAssigned) {
+                    spotObject.color = "";
+                  }
+                  return "";
+                });
+              } else if (
+                element.selectedRow !== selectedSpot.selectedRow &&
+                element.selectedCol !== selectedSpot.selectedCol &&
+                element.selectedFeatures.length > 0 &&
+                element.color === "orange"
+              ) {
+                spots.map(spotObject => {
+                  if (spotObject.groupAssigned === element.groupAssigned) {
+                    spotObject.color = "";
+                  }
+                  return "";
+                });
+              }
+              return "";
+            });
+          } else {
+            spots = updateGroupColor(selectedSpot, spots);
+            setSpotFeatureCard(selectedSpot);
+            setShowErrorSummary(false);
+            createSpot(spots, row, col);
+          }
+        }
+      } else {
+        setSpotFeatureCard();
+        selectedSpotIndex = spots.indexOf(selectedSpot);
+        spots.splice(selectedSpotIndex, 1);
+        spots = updateGroupColor(selectedSpot, spots);
+      }
+    } else {
+      setSpotFeatureCard();
+      createSpot(spots, row, col);
+      spots = updateGroupColor(selectedSpot, spots);
+    }
+
+    setArraySelected(spots);
+    setSpotsSelected(spots);
+  };
+
+  const createSpot = (spots, row, col) => {
+    spots.push({
+      selectedRow: row,
+      selectedCol: col,
+      selectedFeatures: [],
+      selectedConcentration: {},
+      groupAssigned: 0,
+      color: "" //background color of a spot is updated using this property
+    });
+    return spots;
+  };
+
+  const updateGroupColor = (selectedSpot, spots) => {
+    spots.forEach(element => {
+      element.color =
+        selectedSpot &&
+        selectedSpot.groupAssigned > 0 &&
+        element.groupAssigned &&
+        element.groupAssigned === selectedSpot.groupAssigned
+          ? "orange"
+          : "";
+    });
+
+    return spots;
+  };
+
+  const setBackGroundColor = (row, col) => {
+    var spots = [...arraySelected];
+
+    var selectedSpot = spots.find(i => i.selectedRow === row && i.selectedCol === col);
+
+    if (selectedSpot) {
+      if (selectedSpot.selectedFeatures.length > 0) {
+        if (selectedSpot.color) {
+          return "orange";
+        } else {
+          return "darkgreen";
+        }
+      } else {
+        return "#B1B4B2";
+      }
+    }
+    return "";
+  };
+
+  const selectedColor = (row, col) => {
+    if (isUpdateBlock) {
+      var xMarkColor = selectedColorForUpdateBlock(row, col);
+      return xMarkColor;
+    }
+
+    // var markXColor = "white";
+    var markXColor = "#f5f5f5"; // as we changed the bg color of the body for the app so we swtiched from white to this color to hide x
+    var spots = [...arraySelected];
+    const selectedSpot = spots.filter(spot => spot.selectedRow === row && spot.selectedCol === col);
+
+    if (selectedSpot.length > 0) {
+      if (selectedSpot.length > 1) {
+        markXColor = "#f5f5f5";
+      } else if (selectedSpot[0].color === "orange") {
+        markXColor = "orange";
+      } else if (selectedSpot[0].selectedFeatures.length > 0 && !selectedSpot[0].color) {
+        markXColor = "darkgreen";
+      } else if (!selectedSpot.featureSelected) {
+        if (selectedSpot[0].color) {
+          markXColor = "#f5f5f5";
+        }
+      }
+    }
+    return markXColor;
+  };
+
+  const selectedColorForUpdateBlock = (row, col) => {
+    var xMarkColor = "#f5f5f5";
+    var spots = [...arraySelected];
+    var selectedSpot = spots.find(i => i.selectedRow === row && i.selectedCol === col);
+
+    if (selectedSpot) {
+      if (spotFeatureCard && spotFeatureCard.selectedRow === row && spotFeatureCard.selectedCol === col) {
+        if (selectedSpot.color && selectedSpot.color === "orange") {
+          xMarkColor = "#f5f5f5";
+        }
+      } else {
+        if (!selectedSpot.color) {
+          xMarkColor = "darkgreen";
+        } else {
+          xMarkColor = "orange";
+        }
+      }
+    }
+    return xMarkColor;
+  };
+
+  const setBackGroundColorForUpdateBlock = () => {
+    arraySelected.forEach(spot => {
+      setBackGroundColor(spot.selectedRow, spot.selectedCol);
+      updateSelectedArray(spot.selectedRow, spot.selectedCol);
+    });
+  };
+
+  const gridUpdateforUpdateBlock = (spots, selectedSpot) => {
+    if (
+      spotFeatureCard &&
+      spotFeatureCard.selectedRow === selectedSpot.selectedRow &&
+      spotFeatureCard.selectedCol === selectedSpot.selectedCol
+    ) {
+      spots.map(element => {
+        if (element.color) {
+          element.color = "";
+        }
+        return "";
+      });
+      setSpotFeatureCard();
+    } else if (blockLayoutId || props.publicView) {
+      spots = updateGroupColor(selectedSpot, spots);
+      setSpotFeatureCard(selectedSpot);
+    }
+
+    setSpotsSelected(spots);
+    setArraySelected(spots);
+  };
+
+  const removeDuplicateSpots = () => {
+    var spots = [...spotsSelected];
+    var countForConfirm = 0;
+
+    spots.forEach(element => {
+      if (element.selectedFeatures.length < 1) {
+        spots.forEach(spot => {
+          if (
+            spot.selectedRow === element.selectedRow &&
+            spot.selectedCol === element.selectedCol &&
+            spot.selectedFeatures.length > 0
+          ) {
+            countForConfirm = 1;
+          }
+        });
+      }
+    });
+
+    if (countForConfirm > 0) {
+      setShowAddFeatureModal(true);
+    } else {
+      confirmModal();
+    }
+  };
+
+  const cancelModal = () => setShowAddFeatureModal(false);
+
+  const confirmModal = () => {
+    setShowAddFeatureModal(false);
+
+    var emptySpotCount = 0;
+    var updatedSpots = [...spotsSelected];
+
+    spotsSelected.forEach(element => {
+      if (element.selectedFeatures.length < 1) {
+        spotsSelected.forEach(value => {
+          if (
+            value.selectedRow === element.selectedRow &&
+            value.selectedCol === element.selectedCol &&
+            value.selectedFeatures.length > 0
+          ) {
+            updatedSpots.splice(updatedSpots.indexOf(value), 1);
+          }
+        });
+        emptySpotCount = emptySpotCount + 1;
+      }
+    });
+
+    updatedSpots.forEach(element => {
+      element.color = "";
+    });
+
+    setSpotsSelected(updatedSpots);
+    setArraySelected(updatedSpots);
+
+    if (emptySpotCount > 0) {
+      setSpotFeatureCard();
+      setAddFeatures(true);
+      setShowErrorSummary(false);
+    } else {
+      setPageErrorMessage("Please select spots to add features");
+      setShowErrorSummary(true);
+    }
+  };
+
+  const getButtons = () => {
+    return (
+      <div className="line-break-1">
+        <Button onClick={() => removeDuplicateSpots()} disabled={spotsSelected.length < 1}>
+          Add Features
+        </Button>
+        &nbsp;
+        <Button type="submit" className={loadGrid ? "" : "hide-content"} disabled={spotsSelected.length < 1}>
+          Submit
+        </Button>
+      </div>
+    );
+  };
+
+  const getUpdateButtons = () => {
+    return (
+      <div className="line-break-1">
+        <Button disabled={!enableUpdateButton} type="submit">
+          Update Block
+        </Button>
+        &nbsp;
+        <Button onClick={() => history.push("/blocklayouts")}>Back</Button>
+      </div>
+    );
+  };
+
+  const handleSpotSelectionChange = e => {
+    const id = e.target.value !== "" ? e.target.options[e.target.value].id : "";
+    const name = e.target.name;
+    const value = e.target.value;
+    setSelectedSpotMetadata({ id: id, name: name, value: value });
+  };
+
+  return (
+    <>
+      <div className="page-container">
+        {!props.publicView && (
+          <>
+            <Helmet>
+              <title>{head.addBlockLayout.title}</title>
+              {getMeta(head.addBlockLayout)}
+            </Helmet>
+
+            <Title title={title} />
+
+            {showErrorSummary === true && (
+              <ErrorSummary
+                show={showErrorSummary}
+                form="blockLayouts"
+                errorJson={pageErrorsJson}
+                errorMessage={pageErrorMessage}
+              ></ErrorSummary>
+            )}
+            {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
+          </>
+        )}
+        {!addFeatures && (
+          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+            <GridForm
+              gridParams={gridParams}
+              updatedGridParams={updatedGridParams}
+              handleChange={handleChange}
+              isUpdate={isUpdateBlock}
+              loadGrid={loadGrid}
+              changeRowsandColumns={changeRowsandColumns}
+              validateForm={validateForm}
+              duplicateName={duplicateName}
+              characterCounter={characterCounter}
+              accordionDrop={accordionDrop}
+              publicView={props.publicView}
+              selectedSpotMetadata={selectedSpotMetadata}
+              spotList={listSpots}
+              handleSpotSelection={handleSpotSelectionChange}
+              enableSpotMetadataSelection={true}
+            />
+
+            {!props.publicView ? loadGrid && (isUpdateBlock ? getUpdateButtons() : getButtons()) : ""}
+
+            {/*loading addfeature and submit button */}
+            {loadGrid && (
+              <>
+                <Row style={{ width: "1200px", marginTop: "2em" }}>
+                  <Col md={8}>
+                    <div
+                      className="grid-table"
+                      style={{
+                        height: gridParams.rows > 30 ? "800px" : "fit-content"
+                      }}
+                    >
+                      {createGrid()}
+                    </div>
+                    <div
+                      style={{
+                        paddingBottom: "30px",
+                        marginLeft: "343px"
+                      }}
+                    >
+                      {!props.publicView ? (isUpdateBlock ? getUpdateButtons() : getButtons()) : ""}
+                    </div>
+                  </Col>
+
+                  <Col md={4} style={{ paddingBottom: "10%" }}>
+                    <ColorNotation pageLabels={"blocklayout"} isUpdate={isUpdateBlock} />
+
+                    {!isUpdateBlock && !props.publicView && (
+                      <div className="spots-selected">
+                        {spotsSelected && spotsSelected.length > 0 ? (
+                          <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
+                        ) : null}
+                      </div>
+                    )}
+
+                    {spotFeatureCard && (
+                      <>
+                        <div className="selected-spot-info">
+                          <SpotInformation spotFeaturedCard={spotFeatureCard} />
+                        </div>
+                        <br />
+                        <br />
+                        <div
+                          style={{
+                            border: "1px solid rgba(0, 0, 0, 0.1)",
+                            borderRadius: "8px"
+                          }}
+                        >
+                          <div className={"summary-border"}>
+                            <h4>Spot Metadata</h4>
+                          </div>
+                          {isUpdateBlock && spotFeatureCard.metadata ? (
+                            <MetadataKeyPairs metadata={spotFeatureCard.metadata} showLoading={false} />
+                          ) : (
+                            <h6>No Data Available</h6>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </Col>
+                </Row>
+              </>
+            )}
+          </Form>
+        )}
+        {addFeatures && (
+          <div className="add-feature-div">
+            <AddFeatureToBlock
+              setSpotsSelected={setSpotsSelected}
+              spotsSelected={spotsSelected}
+              setAddFeatures={setAddFeatures}
+              setSpotFeatureCard={setSpotFeatureCard}
+              groupCounter={groupCounter}
+              setGroupCounter={setGroupCounter}
+              spotMetadata={selectedSpotMetadata}
+              spotMetadataList={listSpots}
+            />
+          </div>
+        )}
+        <Loading show={showLoading} />
+        <ConfirmationModal
+          showModal={showAddFeatureModal}
+          onCancel={cancelModal}
+          onConfirm={confirmModal}
+          title="Confirm"
+          body="You are going to replace features in some Spots. Are you sure you want to proceed?"
+        />
+      </div>
+      {/* <Col>{scrollToTop()}</Col> */}
+    </>
+  );
+
+  function handleSubmit(e) {
+    setValidated(true);
+
+    setShowLoading(true);
+
+    if (isUpdateBlock) {
+      wsCall(
+        "updateblocklayout",
+        "POST",
+        null,
+        true,
+        {
+          id: blockLayoutId,
+          name: gridParams.name,
+          description: gridParams.description
+        },
+        updateBlockLayoutSuccess,
+        updateBlockLayoutFailure
+      );
+    } else {
+      var spotsData = getSpotsData();
+
+      if (e.currentTarget.checkValidity() && spotsData.length > 0) {
+        wsCall(
+          "addblocklayout",
+          "POST",
+          null,
+          true,
+          {
+            name: gridParams.name,
+            description: gridParams.description,
+            width: updatedGridParams.cols,
+            height: updatedGridParams.rows,
+            spots: spotsData
+          },
+          addBlockLayoutSuccess,
+          addBlockLayoutFailure
+        );
+      } else {
+        setShowLoading(false);
+        setShowErrorSummary(true);
+        setPageErrorMessage("Cannot submit empty block");
+      }
+    }
+
+    e.preventDefault();
+  }
+
+  function getSpotsData() {
+    var spots = [];
+    arraySelected.forEach(element => {
+      if (element.selectedFeatures.length > 0) {
+        spots.push({
+          row: element.selectedRow,
+          column: element.selectedCol,
+          features: element.selectedFeatures.map(e => e.feature),
+          group: element.groupAssigned,
+          concentration: element.selectedConcentration,
+          ratioMap: getFeaturetoRatioMap(element.selectedFeatures),
+          metadata: element.spotMetadata
+        });
+      }
+    });
+    return spots;
+  }
+
+  function getFeaturetoRatioMap(features) {
+    var featureToRatio = {};
+
+    features.forEach(element => {
+      element.ratio && Object.assign(featureToRatio, { [element.feature.id]: element.ratio });
+    });
+    return featureToRatio;
+  }
+
+  function addBlockLayoutSuccess(response) {
+    console.log(response);
+    setShowLoading(false);
+    setEnablePrompt(false);
+    history.push("/blocklayouts");
+  }
+
+  function addBlockLayoutFailure(response) {
+    response.json().then(response => {
+      setPageErrorsJson(response);
+      setShowErrorSummary(true);
+    });
+  }
+
+  function updateBlockLayoutSuccess(response) {
+    console.log(response);
+    setShowLoading(false);
+    setEnablePrompt(false);
+    history.push("/blocklayouts");
+  }
+
+  function updateBlockLayoutFailure(response) {
+    setEnableUpdateButton(false);
+
+    var formError = false;
+
+    response.json().then(parsedJson => {
+      parsedJson.errors.forEach(element => {
+        if (element.objectName === "name") {
+          setValidated(false);
+          setDuplicateName(true);
+          formError = true;
+        }
+      });
+
+      if (!formError) {
+        setPageErrorsJson(parsedJson);
+        setShowErrorSummary(true);
+      }
+    });
+
+    setShowLoading(false);
+  }
+
+  function getBlockLayoutSuccess(response) {
+    response.json().then(parsedResponse => {
+      setBlockLayoutData(parsedResponse);
+      console.log(parsedResponse);
+      // setSelectedSpot();
+    });
+    setShowLoading(false);
+  }
+
+  function getBlockLayoutFailure(response) {
+    setShowLoading(false);
+    console.log(response);
+  }
+
+  function setBlockLayoutData(blocklayout) {
+    setGridParams(updateBlockGridParams(blocklayout));
+    setUpdatedGridParams(updateBlockGridParams(blocklayout));
+
+    blocklayout.spots.forEach(spotElement => {
+      var spot = [];
+      spot.selectedRow = spotElement.row;
+      spot.selectedCol = spotElement.column;
+      spot.selectedConcentration = spotElement.concentration;
+      spot.groupAssigned = spotElement.group;
+      spot.selectedFeatures = [];
+      spot.metadata = spotElement.metadata;
+      // spot.color = "";
+
+      spotElement.features.forEach(feature => {
+        var featureSelected = {
+          feature: feature,
+          ratio: spot.ratio
+        };
+        spot.selectedFeatures.push(featureSelected);
+      });
+      spotsSelected.push(spot);
+    });
+
+    setArraySelected(spotsSelected);
+    setAddFeatures(false);
+    setLoadGrid(true);
+    setBackGroundColorForUpdateBlock();
+    setAccordionDrop(true);
+    setIsUpdateBlock(true);
+  }
+};
+
+function updateBlockGridParams(blocklayout) {
+  return {
+    name: blocklayout.name,
+    description: blocklayout.description,
+    cols: blocklayout.width,
+    rows: blocklayout.height
+  };
+}
+
+AddBlockLayout.propTypes = {
+  blocklayoutId: PropTypes.string,
+  match: PropTypes.object,
+  authCheckAgent: PropTypes.func,
+  publicView: PropTypes.string
+};
+
+export { AddBlockLayout };

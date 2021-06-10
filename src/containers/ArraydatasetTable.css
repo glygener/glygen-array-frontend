@@ -1,0 +1,9 @@
+.rt-expandable,
+.rt-th:not(.rt-resizable-header) {
+  width: 75px !important;
+  max-width: 70px !important;
+}
+
+.ReactTable .rt-thead .rt-th {
+  padding: 0 !important;
+}

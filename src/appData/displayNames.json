@@ -1,0 +1,40 @@
+{
+  "glycan": {
+    "GLYCAN": "Glycan",
+    "GLYTOUCAN_ID": "Glytoucan Id",
+    "SEQUENCE": "Sequence",
+    "INTERNAL_ID": "Internal Id",
+    "SEQUENCE_DEFINED": "Sequence Defined",
+    "MASS_ONLY": "Mass Defined",
+    "UNKNOWN": "Unknown",
+    "COMPOSITION_BASED": "Composition Based",
+    "CLASSIFICATION_BASED": "Classification Based",
+    "FRAGMENT_ONLY": "Fragment Only"
+  },
+  "linker": {
+    "LINKER": "Linker",
+    "PUBCHEM_ID": "PubChem Id",
+    "STRUCTURE": "Structure Image",
+    "INCHIKEY": "InchIKey",
+    "INCHI_SEQUENCE": "InchI Sequence",
+    "SMILES": "SMILES",
+    "OPENS_RING": "Opens Ring",
+    "SMALLMOLECULE_LINKER": "Small Molecule",
+    "PEPTIDE_LINKER": "Peptide",
+    "PROTEIN_LINKER": "Protein"
+  },
+  "feature": {
+    "FEATURE": "Feature",
+    "NORMAL": "Normal",
+    "CONTROL": "Control",
+    "NEGATIVE_CONTROL": "Negative Control",
+    "COMPOUND": "Organic Compound",
+    "LANDING_LIGHT": "Landing Light"
+  },
+  "blocklayout": {
+    "BLOCK_LAYOUT": "Block Layout"
+  },
+  "slidelayout": {
+    "SLIDE_LAYOUT": "Slide Layout"
+  }
+}

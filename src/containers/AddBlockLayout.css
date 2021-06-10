@@ -1,0 +1,40 @@
+.spots-selected {
+  border-radius: 25px !important;
+  position: sticky !important;
+  margin-top: 5% !important;
+  width: 125% !important;
+}
+
+.selected-spot-info {
+  border-radius: 0.3rem;
+  border: 1px solid;
+  margin-top: 5% !important;
+  position: sticky !important;
+}
+
+.spot-title {
+  font-size: 0rem;
+}
+
+.grid-table {
+  overflow: auto;
+  width: 100%;
+}
+
+.add-feature-div {
+  width: 110%;
+}
+
+::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5em;
+}
+::-webkit-scrollbar-button {
+  background: #ccc;
+}
+::-webkit-scrollbar-track-piece {
+  background: #eee;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+}

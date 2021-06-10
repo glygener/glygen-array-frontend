@@ -1,0 +1,8 @@
+.cursorBlock {
+  cursor: no-drop;
+  color: gray;
+}
+
+.cursorUnblock {
+  color: blue;
+}

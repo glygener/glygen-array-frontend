@@ -1,0 +1,36 @@
+.color-notation {
+  border: 1px solid black;
+  height: 26px;
+  width: 35px;
+}
+.color-notation-span {
+  text-align: left;
+  font-size: 16px;
+}
+.color-notation-yellow {
+  /* background-color: #f5e498; */
+  background-color: darkgreen;
+}
+
+.color-notation-orange {
+  background-color: orange;
+}
+
+.color-notation-gray {
+  background-color: gray;
+}
+
+.row-separation {
+  margin-bottom: 2px;
+}
+
+.Selection-X-mark {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.selection-mark {
+  font-size: large;
+  font-weight: bold;
+  /* margin-left: 10px; */
+}

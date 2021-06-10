@@ -1,0 +1,28 @@
+.side-menu-header {
+  padding: 20px 10px;
+  color: #13548d;
+  font-size: 1.8em;
+  font-weight: 600;
+  border-bottom: 1px solid #acabab;
+  text-align: left;
+}
+
+.MuiListItem-button:hover,
+.active {
+  background-color: var(--legacy-blue) !important;
+  color: #e6e6e6 !important;
+}
+
+.MuiTypography-body1 {
+  font-size: 1.1em !important;
+  font-weight: bold !important;
+}
+
+.MuiTypography-body1:hover {
+  color: #e6e6e6 !important;
+}
+
+.MuiSvgIcon-root {
+  width: 0 !important;
+  height: 0 !important;
+}

@@ -1,0 +1,42 @@
+.brand-link,
+.brand-link:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-link {
+  color: white !important;
+}
+
+.nav-link:hover,
+.nav-link.active:hover {
+  background-color: var(--dark-blue-1);
+}
+
+.navbar {
+  background-color: var(--legacy-blue) !important;
+}
+
+.nav-link.active {
+  background-color: var(--dark-blue-2) !important;
+}
+
+.topbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.nav-link-container {
+  border-radius: 0.25rem;
+}
+
+.navbar-expand {
+  flex-flow: row nowrap !important;
+  justify-content: flex-start !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 1030 !important;
+}

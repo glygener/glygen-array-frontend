@@ -1,0 +1,24 @@
+.form-container {
+  padding-top: 5%;
+  font-size: 0.8em;
+}
+
+.sequence-label-div {
+  padding-top: 8px;
+}
+
+.sequence-textarea {
+  font-family: monospace;
+  font-size: 0.95em;
+  height: auto;
+}
+
+.linker-field-label {
+  flex: 0 0 16.666667%;
+  max-width: 16.666667%;
+  margin-left: 25%;
+}
+
+.selected-glycans-review {
+  margin-left: 25%;
+}

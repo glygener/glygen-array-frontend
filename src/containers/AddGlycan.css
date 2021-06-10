@@ -1,0 +1,152 @@
+.primary {
+  background-color: #2f78b4 !important;
+}
+
+.MuiStepIcon-root.MuiStepIcon-active {
+  color: #2f78b4 !important;
+}
+
+.MuiStepIcon-root.MuiStepIcon-completed {
+  color: #2f78b4 !important;
+}
+.form-check-label {
+  margin-bottom: 2em;
+  font-size: medium !important;
+  font-feature-settings: normal !important;
+}
+
+label.form-check-label {
+  display: inline !important;
+}
+
+.radioform {
+  text-align: left !important;
+  padding-left: 45% !important;
+  padding-top: 5%;
+}
+
+.radioform1 {
+  text-align: left !important;
+  padding-top: 5%;
+}
+
+.radioform2 {
+  text-align: left !important;
+  padding-top: 5%;
+}
+
+.radioform3 {
+  text-align: left !important;
+  padding-top: 5%;
+}
+
+.makeStyles-root-1 {
+  width: 120% !important;
+}
+
+.div-button {
+  padding-right: 11% !important;
+}
+
+.hide-content {
+  display: none !important;
+}
+
+.pageheading {
+  padding-top: 70px;
+  padding-bottom: 5px;
+  font-size: 1.8em;
+  font-weight: 600;
+  text-align: left;
+}
+
+.MuiTypography-body2 {
+  font-size: 1.2rem !important;
+}
+
+.disableradio {
+  opacity: 0.5;
+}
+
+.formButton {
+  height: 38px;
+}
+
+.stepper-button {
+  height: 38px !important;
+  color: white !important;
+  background-color: var(--legacy-blue) !important;
+  margin: 10px 10px 0px 10px !important;
+}
+
+.add-button {
+  min-width: 35px !important;
+  font-size: 1em !important;
+  height: 37px !important;
+  padding: 0 !important;
+}
+
+.stepper-button:disabled {
+  color: rgba(0, 0, 0, 0.5) !important;
+  background-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.button-div {
+  padding-right: 0% !important;
+}
+
+/*MultiToggle*/
+
+.toggle-wrapper label {
+  padding: 0.3em;
+  font-size: 17px;
+  display: block;
+}
+
+.toggleContainer {
+  width: 100%;
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #28a745;
+  border-radius: 0.25rem;
+  height: 38px;
+}
+
+.toggleContainer .toggleOption {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  height: 38px;
+  line-height: 38px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  color: #807b77;
+  font-size: 0.8em;
+}
+
+.toggleContainer .toggleOption.selected {
+  color: #ffffff;
+  cursor: initial;
+}
+
+.toggleContainer .toggle {
+  position: absolute;
+  height: 101%;
+  bottom: 0;
+  left: 0;
+  transition: all 0.4s ease-in-out;
+  background: var(--legacy-blue);
+}
+
+.optionDisabled {
+  background: #e6e6e6;
+  cursor: no-drop !important;
+}
+
+/*End MultiToggle*/
+
+.sequence-text-area {
+  font-size: 0.95em;
+  font-family: monospace;
+}

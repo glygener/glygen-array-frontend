@@ -1,0 +1,32 @@
+.descriptor-header {
+  text-align: left;
+  color: green;
+  margin-bottom: 0.5rem;
+  font-size: 20px;
+  border-bottom: 0.5rem;
+  padding-top: 4px;
+  font-size: 25px;
+}
+
+.font-awesome-color {
+  color: green;
+}
+
+.fa-arrow {
+  font-size: 40px;
+  float: right;
+  margin-top: -11px;
+}
+
+.delete-icon {
+  color: red;
+  margin-bottom: 8px;
+}
+
+/* .accordion > .card:first-of-type {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+} */
+
+#dateField {
+  background-color: white !important;
+}

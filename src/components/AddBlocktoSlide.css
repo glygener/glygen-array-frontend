@@ -1,0 +1,8 @@
+.spots-selected-block-to-slide {
+  margin-left: 78%;
+  width: 25%;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  margin-bottom: -20%;
+  margin-top: 6%;
+}

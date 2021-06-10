@@ -1,0 +1,504 @@
+{
+  "home": {
+    "title": "Home",
+    "meta": [
+      {
+        "name": "description",
+        "content": "home page"
+      }
+    ]
+  },
+  "publicdatalist": {
+    "title": "Glycan Array data",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "signup": {
+    "title": "Signup",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+
+  "verifyToken": {
+    "title": "Token Verification",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "login": {
+    "title": "Login",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "profile": {
+    "title": "Profile",
+    "meta": [
+      {
+        "name": "description",
+        "content": "user profile page"
+      }
+    ]
+  },
+  "changeEmail": {
+    "title": "Change Email",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "forgotUsername": {
+    "title": "Forgot Username",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "contribute": {
+    "title": "Contribute",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "glycans": {
+    "title": "My Glycans",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addGlycan": {
+    "title": "Add Glycan",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding glycans to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Glycans, Sequence Based, Mass Only, Unknown, GlytoucanId, Sequence, Sequence Type"
+      }
+    ]
+  },
+  "editGlycan": {
+    "title": "Edit Glycan",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "linkers": {
+    "title": "My Linkers",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Browse my linker repository"
+      }
+    ]
+  },
+  "addLinker": {
+    "title": "Add Linker",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding linkers to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Linkers, Protein, Peptide, Small Molecule, PubChemId, UniProtId, Sequence, Inchi"
+      }
+    ]
+  },
+  "editLinker": {
+    "title": "Edit Linker",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "features": {
+    "title": "My Features",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Browse my feature repository"
+      }
+    ]
+  },
+  "addFeature": {
+    "title": "Add Feature",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding features to my Glygen Array repository"
+      }
+    ]
+  },
+  "editFeature": {
+    "title": "Edit Feature",
+    "meta": [
+      {
+        "name": "description",
+        "content": "View/Edit a feature in my Glygen Array repository"
+      }
+    ]
+  },
+  "blockLayouts": {
+    "title": "My BlockLayouts",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "editBlockLayout": {
+    "title": "Edit Block Layout",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addBlockLayout": {
+    "title": "Add Block Layout",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "slideLayouts": {
+    "title": "My SlideLayouts",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "editSlideLayout": {
+    "title": "Edit Slide Layout",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addSlideLayout": {
+    "title": "Add Slide Layout",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addMultiSlideLayout": {
+    "title": "Add Multiple Slide Layouts",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Add multiple slide layouts from GAL/XML file"
+      }
+    ]
+  },
+  "emailConfirmation": {
+    "title": "Email Confirmation",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "samples": {
+    "title": "Samples",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addSample": {
+    "title": "Add Sample",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding samples to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Samples"
+      }
+    ]
+  },
+  "printers": {
+    "title": "Printers",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "imageanalysis": {
+    "title": "Image Analysis",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "scanners": {
+    "title": "Scanners",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "dataprocessing": {
+    "title": "Data Processing",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "slidemeta": {
+    "title": "Slide Metadata",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addPrinter": {
+    "title": "Add Printer",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding printers to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Printers"
+      }
+    ]
+  },
+  "addScanner": {
+    "title": "Add Scanner",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding Scanners to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "SCanners"
+      }
+    ]
+  },
+  "addImageAnalysis": {
+    "title": "Add Image Analysis",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding Image Analysis to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Image Analysis"
+      }
+    ]
+  },
+  "addDataProcessing": {
+    "title": "Add Data Processing",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding Data Processing to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Data Processing"
+      }
+    ]
+  },
+  "addSlideMeta": {
+    "title": "Add Slide Meta",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding Slide Metadata to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Slide Metadata"
+      }
+    ]
+  },
+  "slides": {
+    "title": "My Slides",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "editSlide": {
+    "title": "Edit Slide",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addSlide": {
+    "title": "Add Slide",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "experiments": {
+    "title": "My Experiments",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addExperiment": {
+    "title": "Add Experiment",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "rawdata": {
+    "title": "My Raw Data",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addRawData": {
+    "title": "Add Raw Data",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addProcessData": {
+    "title": "Add Process Data",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+
+  "addAssay": {
+    "title": "Add Assay",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "assays": {
+    "title": "My Assays",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "spots": {
+    "title": "My Spots",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addSpot": {
+    "title": "Add Spot",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  }
+}

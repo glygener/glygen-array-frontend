@@ -1,0 +1,16 @@
+.blocklayout-display {
+  color: var(--legacy-blue);
+  font-size: larger;
+  font-weight: 300;
+  cursor: pointer;
+}
+
+.slideHeader {
+  margin-left: 10px;
+}
+
+.slideTableofContents {
+  color: steelblue;
+  font-size: large;
+  cursor: pointer;
+}

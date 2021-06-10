@@ -1,0 +1,32 @@
+.-loading.-active {
+  opacity: 1;
+  z-index: 2;
+  pointer-events: all;
+}
+
+.-loading {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.-loading > div {
+  position: absolute;
+  display: block;
+  text-align: center;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.6);
+  transform: translateY(-52%);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
