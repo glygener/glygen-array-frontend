@@ -1,4 +1,4 @@
-import "../src/components/wdyr";
+//import "../src/components/wdyr";
 
 import React from "react";
 import ReactDOM from "react-dom";
