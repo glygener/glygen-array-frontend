@@ -125,9 +125,9 @@ export function getDateCreated(dateCreated) {
 
 // eslint-disable-next-line react/prop-types
 export function ContextAwareToggle({ children, eventKey, callback, classname }) {
-  debugger;
-
   const currentEventKey = useContext(AccordionContext);
+
+  console.log(AccordionContext + "-" + currentEventKey);
   const decoratedOnClick = useAccordionToggle(eventKey, () => callback && callback(eventKey));
   const isCurrentEventKey = currentEventKey === eventKey;
 
