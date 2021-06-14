@@ -329,7 +329,7 @@ const AddGlycan = () => {
                       minLength={8}
                     />
                   </Col>
-                  {userSelection.glytoucanId !== "" && (
+                  {userSelection.glytoucanId !== "" && userSelection.glytoucanId.length > 7 && (
                     <Button
                       variant="contained"
                       onClick={() => getSequenceFromGlytoucan(userSelection.glytoucanId)}
