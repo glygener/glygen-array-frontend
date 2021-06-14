@@ -4,11 +4,11 @@ import "../containers/AddGlycan.css";
 import { Form, FormCheck, Row, Col } from "react-bootstrap";
 import { FormLabel, Feedback, Title } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
-import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { ErrorSummary } from "../components/ErrorSummary";
 import displayNames from "../appData/displayNames";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,20 +23,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const AddGlycan = props => {
+const AddGlycan = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [registrationCheckFlag, setRegistrationCheckFlag] = useState(true);
-  const [disableReset, setReset] = useState(false);
+  const [disableReset, setDisableReset] = useState(false);
+  const [invalidMass, setInvalidMass] = useState(false);
+  const history = useHistory();
 
   const initialState = {
     selectedGlycan: "SequenceDefined",
     internalId: "",
     name: "",
-    comments: "",
+    comment: "",
     mass: "",
     glytoucanId: "",
     sequence: "",
@@ -102,6 +104,8 @@ const AddGlycan = props => {
   };
 
   const handleChange = e => {
+    setDisableReset(true);
+
     const name = e.target.name;
     const newValue = e.target.value;
     if (name === "name" && newValue.trim().length < 1 && userSelection.selectedGlycan === "Unknown") {
@@ -112,7 +116,10 @@ const AddGlycan = props => {
 
     if (name === "glytoucanCheck") {
       userSelection.glytoucanRegistration = false;
+    } else if (name === "mass" && newValue < 1) {
+      setInvalidMass(true);
     } else {
+      name === "mass" && newValue === "" && setInvalidMass(false);
       setUserSelection({ [name]: newValue });
     }
   };
@@ -123,8 +130,64 @@ const AddGlycan = props => {
   };
 
   const clearGlytoucanSequence = () => {
-    setUserSelection(initialState);
-    setReset(false);
+    setUserSelection({ ...initialState, ...{ selectedGlycan: userSelection.selectedGlycan } });
+    setDisableReset(false);
+  };
+
+  const getUnknownGlycanStep = () => {
+    return (
+      <Form className="radioform1">
+        <Form.Group as={Row} controlId="name">
+          <FormLabel label="Name" className={userSelection.selectedGlycan === "Unknown" ? "required-asterik" : ""} />
+          <Col md={4}>
+            <Form.Control
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={userSelection.name}
+              onChange={handleChange}
+              required={true}
+              isInvalid={validate}
+              maxLength={50}
+            />
+            <Feedback message="Please Enter Glycan Name." />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="internalID">
+          <FormLabel label="Internal Id" />
+          <Col md={4}>
+            <Form.Control
+              type="text"
+              name="internalId"
+              placeholder="Internal Id"
+              value={userSelection.internalId}
+              onChange={handleChange}
+              maxLength={30}
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="comments">
+          <FormLabel label="Comments" />
+          <Col md={4}>
+            <Form.Control
+              as="textarea"
+              rows={4}
+              name="comment"
+              placeholder="Comments"
+              value={userSelection.comment}
+              onChange={handleChange}
+              maxLength={2000}
+            />
+            <span className="character-counter">
+              {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : ""}
+              /2000
+            </span>
+          </Col>
+        </Form.Group>
+      </Form>
+    );
   };
 
   return (
@@ -136,7 +199,6 @@ const AddGlycan = props => {
 
       <div className="page-container">
         <Title title="Add Glycan to Repository" />
-
         <Stepper activeStep={activeStep}>
           {steps.map(label => (
             <Step key={label}>
@@ -145,6 +207,7 @@ const AddGlycan = props => {
           ))}
         </Stepper>
         {getNavigationButtons("button - div")}
+        &nbsp; &nbsp;
         {showErrorSummary === true && (
           <ErrorSummary show={showErrorSummary} form="glycans" errorJson={pageErrorsJson}></ErrorSummary>
         )}
@@ -159,6 +222,7 @@ const AddGlycan = props => {
       </div>
     </>
   );
+
   function getSteps() {
     return ["Select the Glycan Type", "Add Glycan Information", "Review and Add"];
   }
@@ -239,6 +303,7 @@ const AddGlycan = props => {
                       value={userSelection.name}
                       onChange={handleChange}
                       required={userSelection.selectedGlycan === "Unknown"}
+                      maxLength={50}
                     />
                     <Feedback message="Please enter current password." />
                   </Col>
@@ -258,6 +323,7 @@ const AddGlycan = props => {
                       value={userSelection.glytoucanId}
                       onChange={handleChange}
                       onFocus={() => setShowErrorSummary(false)}
+                      minLength={8}
                     />
                   </Col>
                   {userSelection.glytoucanId !== "" && (
@@ -329,9 +395,9 @@ const AddGlycan = props => {
                       placeholder="Mass"
                       value={userSelection.mass}
                       onChange={handleChange}
-                      isInvalid={validate}
+                      isInvalid={invalidMass}
                     />
-                    <Feedback message="Please Enter Mass" />
+                    <Feedback message={invalidMass ? "Mass should be greater than 0" : "Please Enter Mass"} />
                   </Col>
                 </Form.Group>
 
@@ -365,6 +431,7 @@ const AddGlycan = props => {
                       placeholder="InternalId"
                       value={userSelection.internalId}
                       onChange={handleChange}
+                      maxLength={30}
                     />
                   </Col>
                 </Form.Group>
@@ -373,12 +440,18 @@ const AddGlycan = props => {
                   <FormLabel label="Comments" />
                   <Col md={4}>
                     <Form.Control
-                      type="textArea"
-                      name="comments"
+                      as="textarea"
+                      rows={4}
+                      name="comment"
                       placeholder="Comments"
-                      value={userSelection.comments}
+                      value={userSelection.comment}
                       onChange={handleChange}
+                      maxLength={2000}
                     />
+                    <span className="character-counter">
+                      {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : ""}
+                      /2000
+                    </span>
                   </Col>
                 </Form.Group>
 
@@ -400,7 +473,7 @@ const AddGlycan = props => {
         } else {
           return (
             <>
-              <Step2valid handleChange={handleChange} userSelection={userSelection} validate={validate} />
+              {getUnknownGlycanStep()}
 
               <Form.Group as={Row}>
                 <Col md={{ span: 1, offset: 5 }}>
@@ -490,7 +563,7 @@ const AddGlycan = props => {
               <Form.Group as={Row} controlId="comments">
                 <FormLabel label="Comments" />
                 <Col>
-                  <Form.Control type="text" name="comments" value={userSelection.comments} disabled />
+                  <Form.Control as="textarea" rows={4} name="comment" value={userSelection.comment} disabled />
                 </Col>
               </Form.Group>
             </Form>
@@ -522,7 +595,7 @@ const AddGlycan = props => {
       setUserSelection({ sequence: parsedJson });
       setRegistrationCheckFlag(false);
       getGlytoucanRegistration();
-      setReset(true);
+      setDisableReset(true);
     });
   }
 
@@ -558,7 +631,7 @@ const AddGlycan = props => {
         sequenceType: userSelection.sequenceType,
         internalId: userSelection.internalId,
         name: userSelection.name,
-        comment: userSelection.comments,
+        description: userSelection.comment,
         type: glycanType,
         mass: userSelection.mass
       },
@@ -570,7 +643,7 @@ const AddGlycan = props => {
   }
 
   function addGlycanSuccess() {
-    props.history.push("/glycans");
+    history.push("/glycans");
   }
 
   function addGlycanFailure(response) {
@@ -594,63 +667,6 @@ const AddGlycan = props => {
   }
 };
 
-const Step2valid = props => {
-  const { validate, handleChange, userSelection } = props;
-  Step2valid.propTypes = {
-    handleChange: PropTypes.func,
-    userSelection,
-    validate
-  };
-
-  return (
-    <Form className="radioform1">
-      <Form.Group as={Row} controlId="name">
-        <FormLabel label="Name" className={userSelection.selectedGlycan === "Unknown" ? "required-asterik" : ""} />
-        <Col md={4}>
-          <Form.Control
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={userSelection.name}
-            onChange={handleChange}
-            required={true}
-            isInvalid={validate}
-          />
-          <Feedback message="Please Enter Glycan Name." />
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} controlId="internalID">
-        <FormLabel label="Internal Id" />
-        <Col md={4}>
-          <Form.Control
-            type="text"
-            name="internalId"
-            placeholder="Internal Id"
-            value={userSelection.internalId}
-            onChange={handleChange}
-          />
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} controlId="comments">
-        <FormLabel label="Comments" />
-        <Col md={4}>
-          <Form.Control
-            type="textArea"
-            name="comments"
-            placeholder="Comments"
-            value={userSelection.comments}
-            onChange={handleChange}
-          />
-        </Col>
-      </Form.Group>
-    </Form>
-  );
-};
-
-AddGlycan.propTypes = {
-  history: PropTypes.object.isRequired
-};
+AddGlycan.propTypes = {};
 
 export { AddGlycan };

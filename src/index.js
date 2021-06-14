@@ -12,7 +12,7 @@ import { Loading } from "./components/Loading";
 ReactDOM.render(
   <Router basename="/ggarray">
     <App />
-    <Loading />
+    {/* <Loading />s */}
   </Router>,
   document.getElementById("root")
 );

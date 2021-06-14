@@ -97,6 +97,7 @@ const Linkers = props => {
           showCommentsButton
           showDeleteButton
           showEditButton
+          showSearchBox
           commentsRefColumn="pubChemId"
           fetchWS="linkerlist"
           deleteWS="linkerdelete"

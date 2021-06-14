@@ -11,8 +11,9 @@ const Loading = props => {
     <>
       <div className={"-loading -active"}>
         <div className={"-loading-inner"}>
-          <div>Loading...</div>
+          {/* <div>Loading...</div> */}
           {/* <Spinner animation="border" role="status" /> */}
+          <img src={LoadingImage} alt="loadingImage" className={"card-loader-image"} />
         </div>
       </div>
     </>

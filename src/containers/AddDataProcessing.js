@@ -29,19 +29,20 @@ const AddDataProcessing = props => {
         <title>{head.addDataProcessing.title}</title>
         {getMeta(head.addDataProcessing)}
       </Helmet>
+      <div className="page-container">
+        <Title title="Create Data Processing" />
 
-      <Title title="Create Data Processing" />
-
-      <MetaData
-        metaID={dataProcessingId}
-        isCopy={isCopyDataProcessing}
-        type={type}
-        getMetaData={"getdataprocessing"}
-        addMeta={"adddataprocessing"}
-        updateMeta={"updatedataprocessing"}
-        redirectTo={"dataprocessing"}
-        metadataType={"Data Processing"}
-      />
+        <MetaData
+          metaID={dataProcessingId}
+          isCopy={isCopyDataProcessing}
+          type={type}
+          getMetaData={"getdataprocessing"}
+          addMeta={"adddataprocessing"}
+          updateMeta={"updatedataprocessing"}
+          redirectTo={"dataprocessing"}
+          metadataType={"Data Processing"}
+        />
+      </div>
     </>
   );
 };

@@ -11,6 +11,7 @@ import { GlygenTableRowsInfo } from "./GlygenTableRowsInfo";
 import { ErrorSummary } from "./ErrorSummary";
 import mirageIcon from "../images/mirageIcon.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CardLoader from "./CardLoader";
 
 const GlygenTable = props => {
   const history = useHistory();
@@ -28,6 +29,7 @@ const GlygenTable = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [selectedIdMakePublic, setSelectedIdMakePublic] = useState("");
   const [showMakePublicModal, setShowMakePublicModal] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
   var columnsToRender = Object.assign({}, props.columns);
 
@@ -50,6 +52,7 @@ const GlygenTable = props => {
 
   const cancelDelete = () => setShowDeleteModal(false);
   const confirmDelete = () => {
+    setShowLoading(true);
     wsCall(
       props.deleteWS,
       "DELETE",
@@ -79,7 +82,7 @@ const GlygenTable = props => {
             rootClose
             overlay={
               <Popover>
-                <Popover.Title as="h3">
+                <Popover.Title as="h3" style={{ marginTop: "-70px" }}>
                   Comments for {props.commentsRefColumn}: {row.original[props.commentsRefColumn]}
                 </Popover.Title>
                 <Popover.Content>{row.value}</Popover.Content>
@@ -287,7 +290,8 @@ const GlygenTable = props => {
         defaultPageSize={props.defaultPageSize}
         data={props.data ? props.data : data}
         pages={pages}
-        loading={false}
+        loading={showLoading}
+        loadingText={<CardLoader pageLoading={showLoading} />}
         multiSort={false}
         showPaginationTop
         manual
@@ -306,6 +310,7 @@ const GlygenTable = props => {
           }*/
 
           if (props.fetchWS) {
+            setShowLoading(true);
             var sortColumn = state.sorted.length > 0 ? state.sorted[0].id : props.defaultSortColumn;
             var sortOrder = state.sorted.length > 0 ? (state.sorted[0].desc === false ? 1 : 0) : props.defaultSortOrder;
             wsCall(
@@ -379,6 +384,7 @@ const GlygenTable = props => {
       setData(responseJson.rows);
       setRows(responseJson.total);
       setPages(Math.ceil(responseJson.total / state.pageSize));
+      setShowLoading(false);
     });
   }
 
@@ -388,12 +394,14 @@ const GlygenTable = props => {
       setPageErrorsJson(response);
     });
     setShowErrorSummary(true);
+    setShowLoading(false);
   }
 
   function deleteSuccess() {
     props.enableRefreshOnAction && props.enableRefreshOnAction(true);
     setShowDeleteModal(false);
     tableElement.fireFetchData();
+    setShowLoading(false);
   }
 
   function deleteError(response) {
@@ -402,6 +410,7 @@ const GlygenTable = props => {
     });
     setShowErrorSummary(true);
     setShowDeleteModal(false);
+    setShowLoading(false);
   }
 
   function isMirageCheckSuccess(response) {

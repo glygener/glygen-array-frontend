@@ -19,6 +19,11 @@
   opacity: 0.8;
 }
 
+.ReactTable .-loading.-active {
+  margin-top: 6.2%;
+  margin-bottom: 4.2%;
+}
+
 .image-icon {
   margin-bottom: 10px;
 }

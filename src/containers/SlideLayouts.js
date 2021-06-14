@@ -53,6 +53,7 @@ const SlideLayouts = props => {
           showCommentsButton
           showDeleteButton
           showEditButton
+          showSearchBox
           commentsRefColumn="description"
           fetchWS="slidelayoutlist"
           deleteWS="slidelayoutdelete"

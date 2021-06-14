@@ -42,6 +42,7 @@ const Slides = props => {
           showDeleteButton
           showEditButton
           showMakePublic
+          showSearchBox
           commentsRefColumn="description"
           fetchWS="slidelist"
           deleteWS="slidedelete"

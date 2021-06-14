@@ -29,17 +29,21 @@ const AddImageAnalysis = props => {
         <title>{head.addImageAnalysis.title}</title>
         {getMeta(head.addImageAnalysis)}
       </Helmet>
+
       <Title title="Create Image Analysis" />
-      <MetaData
-        metaID={imageAnalysisId}
-        isCopy={isCopyImageAnalysis}
-        type={type}
-        getMetaData={"getimageanalysis"}
-        addMeta={"addimageanalysis"}
-        updateMeta={"updateimageanalysis"}
-        redirectTo={"imageanalysis"}
-        metadataType={"Image Analysis"}
-      />
+
+      <div className="page-container">
+        <MetaData
+          metaID={imageAnalysisId}
+          isCopy={isCopyImageAnalysis}
+          type={type}
+          getMetaData={"getimageanalysis"}
+          addMeta={"addimageanalysis"}
+          updateMeta={"updateimageanalysis"}
+          redirectTo={"imageanalysis"}
+          metadataType={"Image Analysis"}
+        />
+      </div>
     </>
   );
 };

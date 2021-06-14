@@ -17,7 +17,7 @@ const ErrorSummary = props => {
           if (props.customMessage) {
             aggregatedSummary += "\n" + error.objectName + " - " + error.defaultMessage + "\n";
           } else {
-            aggregatedSummary += getFormErrorMessage(props.form, error);
+            aggregatedSummary += getFormErrorMessage(props.form, error) + "\n";
           }
         });
         setSummary(aggregatedSummary);

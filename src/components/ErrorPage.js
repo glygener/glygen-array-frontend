@@ -57,7 +57,9 @@ const ErrorPage = () => {
                     rootClose
                     overlay={
                       <Popover>
-                        <Popover.Title as="h3">{row.original.objectName}</Popover.Title>
+                        <Popover.Title as="h3" style={{ marginTop: "-70px" }}>
+                          {row.original.objectName}
+                        </Popover.Title>
                         <Popover.Content style={{ textTransform: "uppercase", textAlign: "justify" }}>
                           {row.original.defaultMessage} &nbsp; &nbsp;
                           <br />

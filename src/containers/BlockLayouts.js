@@ -47,6 +47,7 @@ const BlockLayouts = props => {
           showCommentsButton
           showDeleteButton
           showEditButton
+          showSearchBox
           commentsRefColumn="description"
           fetchWS="blocklayoutlist"
           deleteWS="blocklayoutdelete"

@@ -68,7 +68,7 @@ const Glycans = props => {
           showDeleteButton
           showSearchBox
           showEditButton
-          commentsRefColumn="internalId"
+          commentsRefColumn="description"
           fetchWS="glycanlist"
           deleteWS="glycandelete"
           editUrl="glycans/editglycan"

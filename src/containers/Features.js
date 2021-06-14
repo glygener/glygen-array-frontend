@@ -83,6 +83,7 @@ const Features = props => {
           defaultPageSize={10}
           showDeleteButton
           showEditButton
+          showSearchBox
           commentsRefColumn="name"
           fetchWS="featurelist"
           deleteWS="featuredelete"

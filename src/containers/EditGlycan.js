@@ -21,7 +21,7 @@ const EditGlycan = props => {
   const [glycanDetails, setGlycanDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
     name: "",
     internalId: "",
-    comment: "",
+    description: "",
     glytoucanId: "",
     type: "",
     mass: "",
@@ -40,10 +40,11 @@ const EditGlycan = props => {
       props.authCheckAgent();
     }
     wsCall("getglycan", "GET", [glycanId], true, null, getGlycanSuccess, getGlycanFailure);
-  }, [props]);
+  }, [props, glycanId]);
 
   function getGlycanSuccess(response) {
     response.json().then(parsedJson => {
+      debugger;
       setGlycanDetails(parsedJson);
       console.log(parsedJson);
     });
@@ -107,8 +108,8 @@ const EditGlycan = props => {
               <Form.Control
                 as="textarea"
                 placeholder="comment"
-                name="comment"
-                defaultValue={glycanDetails.comment}
+                name="description"
+                defaultValue={glycanDetails.description}
                 onChange={handleChange}
               />
             </Col>
