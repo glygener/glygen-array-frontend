@@ -21,8 +21,8 @@ const Printers = props => {
         <Title title="Printers" />
 
         <ButtonToolbar>
-          <Col md={{ span: 2 }}>
-            <Link to="/printers/addPrinter" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/printers/addPrinter" className="link-button" style={{ width: "150px" }}>
               Add Printer
             </Link>
           </Col>

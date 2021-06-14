@@ -21,8 +21,8 @@ const SlideMeta = props => {
         <Title title="Slide Meta" />
 
         <ButtonToolbar>
-          <Col md={{ span: 3 }}>
-            <Link to="/listslidemeta/addSlideMeta" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/listslidemeta/addSlideMeta" className="link-button" style={{ width: "150px" }}>
               Add Slide Meta
             </Link>
           </Col>

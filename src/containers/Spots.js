@@ -20,8 +20,8 @@ const Spots = props => {
         <Title title="Spots" />
 
         <ButtonToolbar>
-          <Col md={{ span: 2 }}>
-            <Link to="/spots/addSpot" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/spots/addSpot" className="link-button" style={{ width: "150px" }}>
               Add Spot
             </Link>
           </Col>

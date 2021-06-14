@@ -21,8 +21,8 @@ const Scanners = props => {
         <Title title="Scanners" />
 
         <ButtonToolbar>
-          <Col md={{ span: 2 }}>
-            <Link to="/scanners/addScanner" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/scanners/addScanner" className="link-button" style={{ width: "150px" }}>
               Add Scanner
             </Link>
           </Col>

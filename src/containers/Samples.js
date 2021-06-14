@@ -21,8 +21,8 @@ const Samples = props => {
         <Title title="Samples" />
 
         <ButtonToolbar>
-          <Col md={{ span: 2 }}>
-            <Link to="/samples/addSample" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/samples/addSample" className="link-button" style={{ width: "150px" }}>
               Add Sample
             </Link>
           </Col>

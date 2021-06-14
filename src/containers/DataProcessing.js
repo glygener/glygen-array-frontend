@@ -21,8 +21,8 @@ const DataProcessing = props => {
         <Title title="Data Processing" />
 
         <ButtonToolbar>
-          <Col md={{ span: 3 }}>
-            <Link to="/dataprocessing/addDataProcessing" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/dataprocessing/addDataProcessing" className="link-button" style={{ width: "180px" }}>
               Add Data Processing
             </Link>
           </Col>

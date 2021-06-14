@@ -20,8 +20,8 @@ const Assay = props => {
         <Title title="Assays" />
 
         <ButtonToolbar>
-          <Col md={{ span: 2 }}>
-            <Link to="/assays/addAssay" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/assays/addAssay" className="link-button" style={{ width: "150px" }}>
               Add Assay
             </Link>
           </Col>

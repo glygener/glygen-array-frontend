@@ -69,7 +69,8 @@ const AddGlycan = () => {
       (userSelection.mass === " " || userSelection.mass.trim().length < 1) &&
       activeStep === 1
     ) {
-      setValidate(true);
+      setValidate(false);
+      setInvalidMass(true);
       return;
     } else if (
       userSelection.selectedGlycan === "SequenceDefined" &&
@@ -116,10 +117,12 @@ const AddGlycan = () => {
 
     if (name === "glytoucanCheck") {
       userSelection.glytoucanRegistration = false;
-    } else if (name === "mass" && newValue < 1) {
+    } else if (name === "mass" && newValue !== "" && newValue < 1) {
       setInvalidMass(true);
     } else {
-      name === "mass" && newValue === "" && setInvalidMass(false);
+      if (name === "mass" && (newValue === "" || newValue > 0)) {
+        setInvalidMass(false);
+      }
       setUserSelection({ [name]: newValue });
     }
   };
@@ -396,6 +399,8 @@ const AddGlycan = () => {
                       value={userSelection.mass}
                       onChange={handleChange}
                       isInvalid={invalidMass}
+                      isValid={validate}
+                      required={true}
                     />
                     <Feedback message={invalidMass ? "Mass should be greater than 0" : "Please Enter Mass"} />
                   </Col>

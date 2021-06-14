@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Col, ButtonToolbar } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import PropTypes from "prop-types";
+import { Title } from "../components/FormControls";
 
 const ImageAnalysis = props => {
   useEffect(props.authCheckAgent, []);
@@ -16,11 +17,11 @@ const ImageAnalysis = props => {
       </Helmet>
 
       <div className="page-container">
-        <h1>Image Analysis</h1>
+        <Title title="Image Analysis" />
 
         <ButtonToolbar>
-          <Col md={{ span: 3 }}>
-            <Link to="/imageanalysis/addImageMetadata" className="link-button">
+          <Col className={"col-link-button"}>
+            <Link to="/imageanalysis/addImageMetadata" className="link-button" style={{ width: "180px" }}>
               Add Image Metadata
             </Link>
           </Col>

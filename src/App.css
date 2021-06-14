@@ -364,3 +364,8 @@ body > :not(.card) {
 .download-btn {
   color: var(--legacy-blue);
 }
+
+.col-link-button {
+  text-align: left;
+  padding-left: 0px !important;
+}
