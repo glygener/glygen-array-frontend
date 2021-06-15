@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import { Button, makeStyles, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
 import "../containers/AddGlycan.css";
 import { Form, FormCheck, Row, Col } from "react-bootstrap";
@@ -23,7 +23,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const AddGlycan = () => {
+const AddGlycan = props => {
+  useEffect(props.authCheckAgent, []);
+
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
@@ -115,8 +117,8 @@ const AddGlycan = () => {
       setValidate(false);
     }
 
-    if (name === "glytoucanCheck") {
-      userSelection.glytoucanRegistration = false;
+    if (name === "glytoucanRegistration") {
+      setUserSelection({ [name]: e.target.checked });
     } else if (name === "mass" && newValue !== "" && newValue < 1) {
       setInvalidMass(true);
     } else {
@@ -418,10 +420,10 @@ const AddGlycan = () => {
                 >
                   <Col md={{ span: 6, offset: 5 }}>
                     <Form.Check
-                      name="glytoucanCheck"
+                      name="glytoucanRegistration"
                       type="checkbox"
                       label="Register for Glytoucan"
-                      defaultChecked
+                      checked={userSelection.glytoucanRegistration}
                       onChange={handleChange}
                     />
                   </Col>
@@ -628,7 +630,7 @@ const AddGlycan = () => {
     wsCall(
       "addglycan",
       "POST",
-      { noGlytoucanRegistration: userSelection.glytoucanRegistration },
+      { noGlytoucanRegistration: !userSelection.glytoucanRegistration },
       true,
       {
         id: userSelection.glytoucanId,

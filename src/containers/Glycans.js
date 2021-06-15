@@ -27,8 +27,8 @@ const Glycans = props => {
           existing glycans and remove glycans that are not used.
         </p>
 
-        <Col md={{ span: 2 }}>
-          <Link to="/glycans/addglycan" className="link-button">
+        <Col className={"col-link-button"}>
+          <Link to="/glycans/addglycan" className="link-button" style={{ width: "150px" }}>
             Add Glycan
           </Link>
         </Col>

@@ -24,8 +24,8 @@ const Linkers = props => {
       <div className="page-container">
         <Title title="Linkers" />
 
-        <Col md={{ span: 2 }}>
-          <Link to="/linkers/addlinker" className="link-button">
+        <Col className={"col-link-button"}>
+          <Link to="/linkers/addlinker" className="link-button" style={{ width: "150px" }}>
             Add Linker
           </Link>
         </Col>

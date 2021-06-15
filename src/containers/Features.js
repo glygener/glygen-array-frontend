@@ -22,8 +22,8 @@ const Features = props => {
       <div className="page-container">
         <Title title="Features" />
 
-        <Col md={{ span: 2 }}>
-          <Link to="/features/addfeature" className="link-button">
+        <Col className={"col-link-button"}>
+          <Link to="/features/addfeature" className="link-button" style={{ width: "150px" }}>
             Add Feature
           </Link>
         </Col>

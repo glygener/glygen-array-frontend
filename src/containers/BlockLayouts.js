@@ -21,11 +21,13 @@ const BlockLayouts = props => {
 
       <div className="page-container">
         <Title title="Block Layouts" />
-        <Col md={{ span: 2 }}>
-          <Link to="/blocklayouts/addBlock" className="link-button">
+
+        <Col className={"col-link-button"}>
+          <Link to="/blocklayouts/addBlock" className="link-button" style={{ width: "180px" }}>
             Add Block Layout
           </Link>
         </Col>
+
         <GlygenTable
           columns={[
             {

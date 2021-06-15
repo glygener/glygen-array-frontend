@@ -22,24 +22,20 @@ const SlideLayouts = props => {
       <div className="page-container">
         <Title title="Slide Layouts" />
 
-        <ButtonToolbar>
-          <Col md={{ span: 2 }}>
-            <Link to="/slidelayouts/addSlide" className="link-button">
-              Add Slide Layout
-            </Link>
-          </Col>
-
-          <Col md={{ span: 2 }}>
-            <Link
-              to="/slidelayouts/addMultiple"
-              className="link-button"
-              title="Upload a GAL/XML file wih Slide Layouts"
-              style={{ width: "110%" }}
-            >
-              Upload Slide Layouts
-            </Link>
-          </Col>
-        </ButtonToolbar>
+        <Col className={"col-link-button"}>
+          <Link to="/slidelayouts/addSlide" className="link-button" style={{ width: "180px" }}>
+            Add Slide Layout
+          </Link>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Link
+            to="/slidelayouts/addMultiple"
+            className="link-button"
+            title="Upload a GAL/XML file wih Slide Layouts"
+            style={{ width: "180px" }}
+          >
+            Upload Slide Layouts
+          </Link>
+        </Col>
 
         <GlygenTable
           columns={[
