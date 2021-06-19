@@ -11,6 +11,14 @@ import { ErrorSummary } from "../components/ErrorSummary";
 
 const EditGlycan = props => {
   let { glycanId } = useParams();
+
+  useEffect(() => {
+    if (props.authCheckAgent) {
+      props.authCheckAgent();
+    }
+    wsCall("getglycan", "GET", [glycanId], true, null, getGlycanSuccess, getGlycanFailure);
+  }, [props, glycanId]);
+
   const history = useHistory();
 
   const [validated, setValidated] = useState(false);
@@ -34,13 +42,6 @@ const EditGlycan = props => {
 
     setGlycanDetails({ [name]: newValue });
   };
-
-  useEffect(() => {
-    if (props.authCheckAgent) {
-      props.authCheckAgent();
-    }
-    wsCall("getglycan", "GET", [glycanId], true, null, getGlycanSuccess, getGlycanFailure);
-  }, [props, glycanId]);
 
   function getGlycanSuccess(response) {
     response.json().then(parsedJson => {

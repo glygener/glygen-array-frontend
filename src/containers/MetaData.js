@@ -12,6 +12,8 @@ import { Form, Row, Col, Button, Popover, OverlayTrigger, Alert } from "react-bo
 import { DragDropContext } from "react-beautiful-dnd";
 
 const MetaData = props => {
+  useEffect(props.authCheckAgent, []);
+
   var meta = [];
 
   const history = useHistory();

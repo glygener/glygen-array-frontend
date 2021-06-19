@@ -9,7 +9,8 @@ import { FeatureCard } from "../components/FeatureCard";
 import { useParams } from "react-router-dom";
 
 const EditFeature = props => {
-  // useEffect(props.authCheckAgent, []);
+  useEffect(props.authCheckAgent, []);
+
   let { featureId } = useParams();
   const [validated, setValidated] = useState(false);
 

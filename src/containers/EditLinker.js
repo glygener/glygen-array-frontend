@@ -10,6 +10,8 @@ import { useHistory, useParams } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 
 const EditLinker = props => {
+  useEffect(props.authCheckAgent, []);
+
   const history = useHistory();
   let { linkerId } = useParams();
 

@@ -138,7 +138,7 @@ const Routes = props => {
     /*  glycans */
     {
       path: "/glycans/editglycan/:glycanId",
-      main: props => <EditGlycan {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <EditGlycan authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {
@@ -155,7 +155,7 @@ const Routes = props => {
     /*  linkers */
     {
       path: "/linkers/editlinker/:linkerId",
-      main: props => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {
@@ -172,7 +172,7 @@ const Routes = props => {
     /*  features */
     {
       path: "/features/editfeature/:featureId",
-      main: props => <EditFeature {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <EditFeature {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {
@@ -190,7 +190,7 @@ const Routes = props => {
 
     {
       path: "/blocklayouts/editBlock/:blockLayoutId?",
-      main: props => <AddBlockLayout {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddBlockLayout {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {
@@ -209,7 +209,7 @@ const Routes = props => {
 
     {
       path: "/slidelayouts/editSlide/:slideLayoutId?",
-      main: props => <AddSlideLayout {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSlideLayout {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {
@@ -234,7 +234,7 @@ const Routes = props => {
 
     {
       path: "/slide/editSlide/:slideId?",
-      main: props => <AddSlide {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSlide {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {
@@ -252,12 +252,12 @@ const Routes = props => {
     /* Sample */
     {
       path: "/samples/editSample/:sampleId?",
-      main: props => <AddSample {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSample {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/samples/copySample/:sampleId?",
-      main: props => <AddSample {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSample {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -276,12 +276,12 @@ const Routes = props => {
 
     {
       path: "/printers/editPrinter/:printerId?",
-      main: props => <AddPrinter {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddPrinter {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/printers/copyPrinter/:printerId?",
-      main: props => <AddPrinter {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddPrinter {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -300,12 +300,12 @@ const Routes = props => {
 
     {
       path: "/imageanalysis/editImageAnalysisMetadata/:imageAnalysisId?",
-      main: props => <AddImageAnalysis {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddImageAnalysis {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/imageanalysis/copyImageAnalysisMetadata/:imageAnalysisId?",
-      main: props => <AddImageAnalysis {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddImageAnalysis {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -323,12 +323,12 @@ const Routes = props => {
     /* Scanner */
     {
       path: "/scanners/editScanner/:scannerId?",
-      main: props => <AddScanner {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddScanner {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/scanners/copyScanner/:scannerId?",
-      main: props => <AddScanner {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddScanner {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -346,12 +346,12 @@ const Routes = props => {
     /* Data Processing */
     {
       path: "/dataprocessing/editDataProcessing/:dataProcessingId?",
-      main: props => <AddDataProcessing {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddDataProcessing {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/dataprocessing/copyDataProcessing/:dataProcessingId?",
-      main: props => <AddDataProcessing {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddDataProcessing {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -370,12 +370,12 @@ const Routes = props => {
 
     {
       path: "/listslidemeta/editSlideMeta/:slideMetaId?",
-      main: props => <AddSlideMeta {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSlideMeta {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/listslidemeta/copySlideMeta/:slideMetaId?",
-      main: props => <AddSlideMeta {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSlideMeta {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -392,12 +392,12 @@ const Routes = props => {
     /* Assay */
     {
       path: "/assays/editAssay/:assayId?",
-      main: props => <AddAssay {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddAssay {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/assays/copyAssay/:assayId?",
-      main: props => <AddAssay {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddAssay {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -414,12 +414,12 @@ const Routes = props => {
     /* Spots */
     {
       path: "/spots/editSpot/:spotId?",
-      main: props => <AddSpot {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSpot {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
       path: "/spots/copySpot/:spotId?",
-      main: props => <AddSpot {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddSpot {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta")
     },
     {
@@ -436,22 +436,22 @@ const Routes = props => {
     /* experiment */
     {
       path: "/experiments/addExperiment/addGrant/:experimentId?",
-      main: props => <AddGrant {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddGrant {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments/addRawData/:experimentId?",
-      main: props => <AddRawData {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddRawData {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments/editExperiment/:experimentId?",
-      main: props => <AddExperiment {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddExperiment {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments/editExperiment/:experimentId?",
-      main: props => <AddExperiment {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddExperiment {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("experiment")
     },
     {
@@ -476,17 +476,17 @@ const Routes = props => {
     /* Process Data */
     {
       path: "/uploadProcessedData/editProcessedData/:experimentId/:processedDataId",
-      main: props => <AddProcessedData {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddProcessedData {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/uploadProcessedData/addUploadProcessedData/:experimentId?",
-      main: props => <AddProcessedData {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <AddProcessedData {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("experiment")
     },
     // {
     //   path: "/addPublication/:experimentId?",
-    //   main: props => <AddPublication {...props} authCheckAgent={props.authCheckAgent} />,
+    //   main: ()=> <AddPublication {...props} authCheckAgent={props.authCheckAgent} />,
     //   sidebar: () => (
     //     <div className="sidenav">
     //       <SideMenu openMenu={"experiment"} />
@@ -497,7 +497,7 @@ const Routes = props => {
     /* Error Process Data */
     {
       path: "/errorProcessdata",
-      main: props => <ErrorPage {...props} authCheckAgent={props.authCheckAgent} />,
+      main: () => <ErrorPage {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("experiment")
     }
   ];
@@ -514,15 +514,13 @@ const Routes = props => {
     <>
       <Switch>
         {routes.map((element, index) => {
-          // eslint-disable-next-line react/no-children-prop
-          return <Route key={index} path={element.path} exact={element.exact} children={<element.sidebar />} />;
+          return <Route key={index} path={element.path} exact={element.exact} render={element.sidebar} />;
         })}
       </Switch>
 
       <Switch>
         {routes.map((element, index) => {
-          // eslint-disable-next-line react/no-children-prop
-          return <Route key={index} path={element.path} exact={element.exact} children={<element.main />} />;
+          return <Route key={index} path={element.path} exact={element.exact} render={element.main} />;
         })}
       </Switch>
     </>

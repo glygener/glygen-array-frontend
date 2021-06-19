@@ -21,6 +21,7 @@ import MetadataKeyPairs from "../public/MetadataKeyPairs";
 
 const AddBlockLayout = props => {
   let { blockLayoutId } = useParams();
+  // useEffect(props.authCheckAgent, []);
   // var count = 0;
 
   useEffect(() => {

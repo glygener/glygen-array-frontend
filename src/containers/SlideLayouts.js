@@ -5,7 +5,7 @@ import "./Contribute.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Col, ButtonToolbar } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 
