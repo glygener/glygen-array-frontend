@@ -92,8 +92,7 @@ const GridForm = props => {
             />
             <Col md={5}>
               <Form.Control
-                type="text"
-                pattern={"^[0-9]*$"}
+                type="number"
                 name="cols"
                 placeholder="columns"
                 value={props.gridParams.cols}
@@ -116,9 +115,7 @@ const GridForm = props => {
             />
             <Col md={5}>
               <Form.Control
-                // type="number"
-                type="text"
-                pattern={"^[0-9]*$"}
+                type="number"
                 name="rows"
                 placeholder="rows"
                 value={props.gridParams.rows}
