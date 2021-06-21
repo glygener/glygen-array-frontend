@@ -92,7 +92,8 @@ const GridForm = props => {
             />
             <Col md={5}>
               <Form.Control
-                type="number"
+                type="text"
+                pattern={"^[0-9]*$"}
                 name="cols"
                 placeholder="columns"
                 value={props.gridParams.cols}
@@ -100,7 +101,7 @@ const GridForm = props => {
                 readOnly={props.isUpdate || props.publicView}
                 required
               />
-              <Feedback message="Please enter columns" />
+              <Feedback message="Please enter valid columns" />
             </Col>
             {props.loadGrid && !props.isUpdate && !props.publicView && props.updatedGridParams.cols !== "" && (
               <Button variant="contained" onClick={() => props.changeRowsandColumns()} className="get-btn">
@@ -115,7 +116,9 @@ const GridForm = props => {
             />
             <Col md={5}>
               <Form.Control
-                type="number"
+                // type="number"
+                type="text"
+                pattern={"^[0-9]*$"}
                 name="rows"
                 placeholder="rows"
                 value={props.gridParams.rows}
@@ -123,7 +126,7 @@ const GridForm = props => {
                 readOnly={props.isUpdate || props.publicView}
                 required
               />
-              <Feedback message="Please enter rows" />
+              <Feedback message="Please enter valid rows" />
             </Col>
             {props.loadGrid && !props.isUpdate && !props.publicView && props.updatedGridParams.rows !== "" && (
               <Button onClick={() => props.changeRowsandColumns()} className="get-btn">

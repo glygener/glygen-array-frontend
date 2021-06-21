@@ -1,3 +1,6 @@
+/* eslint-disable no-loop-func */
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useReducer } from "react";
 import { Feedback, FormLabel } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -12,7 +15,7 @@ import { Form, Row, Col, Button, Popover, OverlayTrigger, Alert } from "react-bo
 import { DragDropContext } from "react-beautiful-dnd";
 
 const MetaData = props => {
-  useEffect(props.authCheckAgent, []);
+  // useEffect(props.authCheckAgent, []);
 
   var meta = [];
 
@@ -249,7 +252,7 @@ const MetaData = props => {
       sampleModelUpdated[selectedSampleIndex] = selectedSample;
       setSampleModel(sampleModelUpdated);
     }
-    props.importedInAPage && props.setSpotMetadataforImportedPage(sampleModel);
+    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
   const handleDescriptorSelectChange = e => {
@@ -345,7 +348,7 @@ const MetaData = props => {
         setSampleModel(sampleModelUpdate);
       }
     }
-    props.importedInAPage && props.setSpotMetadataforImportedPage(sampleModel);
+    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
   const getDescriptorSubGroupOptions = selectedDescriptorSubGroup => {
@@ -452,6 +455,8 @@ const MetaData = props => {
 
     if (isUpdate || props.isCopy) {
       sampleType = { ...sampleModel };
+    } else if (props.type === "FEATURE") {
+      sampleType = sampleModel[0];
     } else {
       sampleType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
     }
@@ -526,6 +531,10 @@ const MetaData = props => {
     }
 
     var existedElement = selectedSample.descriptors.find(e => e.name === descriptorValue && !e.isNewlyAdded);
+
+    // var existedElement = selectedSample.descriptors.find(e => e.name === descriptorValue);
+    // && !e.isNewlyAdded);
+
     var newItemsCount = selectedSample.descriptors.filter(e => e.isNewlyAdded === true && e.name === descriptorValue)
       .length;
 
@@ -580,7 +589,7 @@ const MetaData = props => {
       sortAssayDescriptors(selectedSample);
     }
     setSampleModel(sampleModelUpdate);
-    //props.importedInAPage && props.setSpotMetadataforImportedPage(sampleModel);
+    //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
   const sortAssayDescriptors = selectedMetadata => {
@@ -640,7 +649,7 @@ const MetaData = props => {
       setSampleModel(sampleModelDelete);
     }
 
-    props.importedInAPage && props.setSpotMetadataforImportedPage(sampleModel);
+    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
   const handleSubGroupDelete = (group, id) => {
@@ -672,7 +681,7 @@ const MetaData = props => {
       sampleModelDelete[itemByTypeIndex] = itemByType;
       setSampleModel(sampleModelDelete);
     }
-    props.importedInAPage && props.setSpotMetadataforImportedPage(sampleModel);
+    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
   const getMetaData = () => {
@@ -1179,13 +1188,24 @@ const MetaData = props => {
         template.descriptors.sort((a, b) => a.order - b.order);
       });
 
-      setSampleModel(responseJson);
+      if (props.type && props.type === "FEATURE") {
+        debugger;
+        props.importedPageData.length < 1
+          ? setMetaDataDetails({ sample: responseJson[0] })
+          : setMetaDataDetails({ sample: props.importedPageData[0] });
+      } else {
+        setMetaDataDetails({ sample: responseJson });
+      }
+
+      if (props.importedPageData && props.importedPageData.length > 0 && props.type && props.type === "FEATURE") {
+        setSampleModel(props.importedPageData);
+      } else {
+        setSampleModel(responseJson);
+      }
 
       if (responseJson.length === 1) {
         setMetaDataDetails({ selectedtemplate: responseJson[0].name });
       }
-      setMetaDataDetails({ sample: responseJson });
-      console.log(responseJson);
     });
   }
 
@@ -1216,7 +1236,7 @@ const MetaData = props => {
         setSampleModel(props.importedPageData);
       } else {
         setSampleModel(responseJson);
-        props.importedInAPage && props.setSpotMetadataforImportedPage(responseJson);
+        props.importedInAPage && props.setMetadataforImportedPage(responseJson);
       }
     });
   }
@@ -1253,6 +1273,48 @@ const MetaData = props => {
             descriptor.descriptors &&
               descriptor.descriptors.forEach(subGroupDesc => {
                 const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
+                subGrp.value = subGroupDesc.value;
+                subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
+              });
+          }
+        });
+      }
+    });
+  }
+
+  function setUpdateMetaDataForFeatureMetadata() {
+    metaDataDetails.sample.descriptors.forEach(generalDsc => {
+      debugger;
+      const simpleDescs = sampleModel[0].descriptors.find(i => i.id === generalDsc.id && i.group === false);
+
+      if (simpleDescs) {
+        simpleDescs.value = generalDsc.value;
+        simpleDescs.unit = generalDsc.unit ? generalDsc.unit : "";
+      }
+    });
+
+    metaDataDetails.sample.descriptors.forEach(group => {
+      const templateDescriptorGroup = sampleModel[0].descriptors.find(i => i.id === group.id && i.group === true);
+
+      if (templateDescriptorGroup.descriptors) {
+        if (!templateDescriptorGroup.mandatory) {
+          templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
+          templateDescriptorGroup.isNewlyAdded = true;
+        }
+        group.descriptors.forEach(descriptor => {
+          const subdescriptor =
+            templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === descriptor.id);
+          if (subdescriptor && !subdescriptor.group) {
+            subdescriptor.value = descriptor.value;
+            subdescriptor.unit = descriptor.unit ? descriptor.unit : "";
+          } else {
+            if (!subdescriptor.mandatory) {
+              subdescriptor.id = "newlyAddedItems" + subdescriptor.id;
+              subdescriptor.isNewlyAdded = true;
+            }
+            descriptor.descriptors &&
+              descriptor.descriptors.forEach(subGroupDesc => {
+                const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.id);
                 subGrp.value = subGroupDesc.value;
                 subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
               });
@@ -1312,13 +1374,15 @@ const MetaData = props => {
   const getButtonsForImportedPage = () => {
     return (
       <>
-        <div style={{ margin: "30px" }}>
-          <Button onClick={props.handleBack} className="stepper-button">
-            Back
+        <div className={"button-div line-break-2"}>
+          <Button onClick={props.handleBack} className={"button-test"}>
+            <span className={"MuiButton-label"}>Back</span>
+            <span className={"MuiTouchRipple-root"}></span>
           </Button>
-          &nbsp;
-          <Button type="submit" className="stepper-button">
-            Next
+
+          <Button type="submit" className={"button-test"}>
+            <span className={"MuiButton-label"}>Next</span>
+            <span className={"MuiTouchRipple-root"}></span>
           </Button>
         </div>
       </>
@@ -1344,9 +1408,9 @@ const MetaData = props => {
 
       {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
       <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-        <Row>
-          {!loadDescriptors && !props.importedInAPage && (
-            <>
+        {!loadDescriptors && !props.importedInAPage && (
+          <>
+            <Row>
               <Col md={10}>
                 {getStartMetadataPage()}
                 <Row>
@@ -1363,11 +1427,13 @@ const MetaData = props => {
                   </Col>
                 </Row>
               </Col>
-            </>
-          )}
+            </Row>
+          </>
+        )}
 
-          {loadDescriptors && !props.importedInAPage && (
-            <>
+        {loadDescriptors && !props.importedInAPage && (
+          <>
+            <Row>
               <Col md={9}>
                 <div
                   style={{
@@ -1395,33 +1461,32 @@ const MetaData = props => {
                   {getAddons()}
                 </div>
               </Col>
-            </>
-          )}
+            </Row>
+          </>
+        )}
 
-          {props.importedInAPage ? (
-            <>
+        {props.importedInAPage ? (
+          <>
+            {getButtonsForImportedPage()}
+            <Row>
               <Col md={10}>
-                {getButtonsForImportedPage()}
-                {!loadDataOnFirstNextInUpdate && !props.importedPageData.id && setSampleUpdateData()}
-                {/* 
-                {!loadDataOnFirstNextInUpdate &&
-                  ((!props.importedPageData.id && props.idChange) || (props.importedPageData.id && !props.idChange)) &&
-                  setSampleUpdateData()} */}
+                {props.type !== "FEATURE" && !loadDataOnFirstNextInUpdate
+                  ? !props.importedPageData.id && setSampleUpdateData()
+                  : props.importedPageData.length > 0 && setUpdateMetaDataForFeatureMetadata()}
+
+                {props.importPageContent && props.importPageContent()}
 
                 {getMetaData()}
-                {getButtonsForImportedPage()}
               </Col>
               <Col md={2}>
-                <div className={"addon-setting"}>
-                  {/* {getExpandCollapseIcon()} */}
-                  {getAddons()}
-                </div>
+                <div className={"addon-setting"}>{getAddons()}</div>
               </Col>
-            </>
-          ) : (
-            ""
-          )}
-        </Row>
+            </Row>
+            {getButtonsForImportedPage()}
+          </>
+        ) : (
+          ""
+        )}
       </Form>
     </>
   );
@@ -1438,12 +1503,13 @@ MetaData.propTypes = {
   redirectTo: PropTypes.string,
   metadataType: PropTypes.string,
   importedInAPage: PropTypes.bool,
-  setSpotMetadataforImportedPage: PropTypes.func,
+  setMetadataforImportedPage: PropTypes.func,
   importedPageData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   setImportedPageDataToSubmit: PropTypes.func,
   handleBack: PropTypes.func,
   handleNext: PropTypes.func,
-  idChange: PropTypes.bool
+  idChange: PropTypes.bool,
+  importPageContent: PropTypes.func
 };
 
 export { MetaData };

@@ -122,6 +122,7 @@ const AddBlockLayout = props => {
   const handleChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
+    
     setGridParams({ [name]: newValue });
 
     if (isUpdateBlock) {
@@ -620,6 +621,7 @@ const AddBlockLayout = props => {
           body="You are going to replace features in some Spots. Are you sure you want to proceed?"
         />
       </div>
+
       {/* <Col>{scrollToTop()}</Col> */}
     </>
   );

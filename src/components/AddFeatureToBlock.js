@@ -276,7 +276,7 @@ const AddFeatureToBlock = props => {
   const getSpotMetadata = () => {
     return (
       <>
-        <Form.Group as={Row} controlId={"spotmetadataid"}>
+        {/* <Form.Group as={Row} controlId={"spotmetadataid"}>
           <FormLabel label={`Spot Metadata`} className="required-asterik" />
           <Col md={5}>
             <Form.Control
@@ -295,7 +295,7 @@ const AddFeatureToBlock = props => {
               })}
             </Form.Control>
           </Col>
-        </Form.Group>
+        </Form.Group> */}
 
         {getMetadata()}
       </>
@@ -315,7 +315,7 @@ const AddFeatureToBlock = props => {
         metadataType={"Spot"}
         importedInAPage={true}
         importedPageData={spotMetadataforAddBlockLayout}
-        setSpotMetadataforImportedPage={setSpotMetadataforAddBlockLayout}
+        setMetadataforImportedPage={setSpotMetadataforAddBlockLayout}
         setImportedPageDataToSubmit={setSpotMetaDataToSubmit}
         handleBack={handleBack}
         handleNext={handleNext}
@@ -413,7 +413,7 @@ const AddFeatureToBlock = props => {
       </Stepper>
 
       <div>
-        {activeStep !== 3 && getNavigationButtons("button - div line-break-2")}
+        {activeStep !== 3 && getNavigationButtons("button-div line-break-2")}
 
         {showErrorSummary === true && (
           <ErrorSummary show={showErrorSummary} form="glycans" errorMessage={pageErrorMessage}></ErrorSummary>

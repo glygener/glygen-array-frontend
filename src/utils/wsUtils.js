@@ -346,7 +346,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
   }
 
   var response =
-    url.includes("public") || url.includes("getuserdetails")
+    url.includes("public") || url.includes("getuserdetails") || url.includes("list")
       ? // || url.includes("download")
         await fetch(url, {
           // mode: "no-cors", // 'cors' by default

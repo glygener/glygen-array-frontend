@@ -38,9 +38,13 @@ const Descriptors = props => {
   const buildDescriptors = () => {
     let descriptorsByMetaType;
 
-    isUpdate || isCopySample
-      ? (descriptorsByMetaType = descriptors)
-      : (descriptorsByMetaType = descriptors.find(e => e.name === metaDataTemplate));
+    if (isUpdate || isCopySample) {
+      descriptorsByMetaType = descriptors;
+    } else if (metaType === "Feature") {
+      descriptorsByMetaType = descriptors[0];
+    } else {
+      descriptorsByMetaType = descriptors.find(e => e.name === metaDataTemplate);
+    }
 
     var subGroupKeyIndex = 900;
     let descMetaData = descriptorsByMetaType.descriptors;
@@ -268,11 +272,11 @@ const Descriptors = props => {
     );
 
     const accCollapse = (
-      <Accordion.Collapse eventKey={isAllExpanded ? 0 : groupElement.id}>{cardBody}</Accordion.Collapse>
+      <Accordion.Collapse eventKey={isAllExpanded ? groupElement.id : 0}>{cardBody}</Accordion.Collapse>
     );
 
     const accToggle = (
-      <ContextAwareToggle eventKey={isAllExpanded ? 0 : groupElement.id} classname={"font-awesome-color"} />
+      <ContextAwareToggle eventKey={isAllExpanded ? groupElement.id : 0} classname={"font-awesome-color"} />
     );
 
     var card = (
@@ -330,7 +334,7 @@ const Descriptors = props => {
           // {...(isAllExpanded && metaType !== "Assay"
           //   ? `defaultActiveKey = ${isAllExpanded} ? 0 : ${groupElement.id}`
           //   : null)}
-          defaultActiveKey={isAllExpanded ? 0 : groupElement.id}
+          defaultActiveKey={isAllExpanded ? groupElement.id : 0}
         >
           {card}
         </Accordion>

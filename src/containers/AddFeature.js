@@ -15,6 +15,7 @@ import { StructureImage } from "../components/StructureImage";
 import { getAAPositionsFromSequence } from "../utils/sequence";
 import { wsCall } from "../utils/wsUtils";
 import { useHistory } from "react-router-dom";
+import { MetaData } from "./MetaData";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -30,6 +31,7 @@ const AddFeature = props => {
   };
   const featureAddInitState = {
     name: "",
+    featureId: "",
     linker: {},
     glycans: []
   };
@@ -53,6 +55,9 @@ const AddFeature = props => {
     ...{ type: "NORMAL" }
   });
 
+  const [featureMetaData, setFeatureMetaData] = useState();
+  const [metadataforAddFeature, setMetadataforAddFeature] = useState([]);
+
   const isStepSkipped = step => {
     return featureAddState.type !== "NORMAL" && step === 2 && activeStep === 3;
   };
@@ -70,6 +75,10 @@ const AddFeature = props => {
         } else {
           return;
         }
+      }
+    } else if (activeStep === 2) {
+      if (featureAddState.glycans[0].glycan && !featureAddState.glycans[0].glycan.id) {
+        return;
       }
     } else if (activeStep === 3) {
       setGenericInfoValidated(true);
@@ -125,6 +134,66 @@ const AddFeature = props => {
     setFeatureAddState({ glycans: pickedGlycans });
   };
 
+  const getStep3Content = () => {
+    return (
+      <>
+        <div className="radioform1">
+          <Form.Group as={Row} controlId="name">
+            <FormLabel label="Name" className={"required-asterik"} />
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={featureAddState.name}
+                onChange={handleChange}
+                isInvalid={genericInfoValidated && featureAddState.name === ""}
+                maxLength={50}
+                required
+              />
+              <Feedback message="Name is required"></Feedback>
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="featureId">
+            <FormLabel label="Feature Id" className={"required-asterik"} />
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                name="featureId"
+                placeholder="Feature Id"
+                value={featureAddState.featureId}
+                onChange={handleChange}
+                isInvalid={genericInfoValidated && featureAddState.featureId === ""}
+                maxLength={30}
+                required
+              />
+              <Feedback message="Feature Id is required"></Feedback>
+            </Col>
+          </Form.Group>
+        </div>
+      </>
+    );
+  };
+
+  const getMetadata = () => {
+    return (
+      <MetaData
+        // metaID={metadataId}
+        isCopy={false}
+        type={"FEATURE"}
+        metadataType={"Feature"}
+        importedInAPage={true}
+        importedPageData={metadataforAddFeature}
+        setMetadataforImportedPage={setMetadataforAddFeature}
+        setImportedPageDataToSubmit={setFeatureMetaData}
+        handleBack={handleBack}
+        handleNext={handleNext}
+        importPageContent={getStep3Content}
+      />
+    );
+  };
+
   function formatSequenceForDisplay(sequence, charsPerLine) {
     return sequence.match(new RegExp(".{1," + charsPerLine + "}", "g")).join("\n");
   }
@@ -157,12 +226,16 @@ const AddFeature = props => {
     var featureObj = {
       type: featureAddState.type,
       name: featureAddState.name,
+      internalId: featureAddState.featureId,
       linker: featureAddState.linker,
       glycans: featureAddState.glycans.map(glycanObj => glycanObj.glycan),
       positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
-        map[glycanObj.position] = glycanObj.glycan.id;
+        if (glycanObj && glycanObj.glycan && glycanObj.glycan.id) {
+          map[glycanObj.position] = glycanObj.glycan.id;
+        }
         return map;
-      }, {})
+      }, {}),
+      metadata: featureMetaData
     };
 
     setShowLoading(true);
@@ -471,26 +544,7 @@ const AddFeature = props => {
           </>
         );
       case 3:
-        return (
-          <>
-            <Form className="radioform1">
-              <Form.Group as={Row} controlId="name">
-                <FormLabel label="Name" />
-                <Col md={4}>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    value={featureAddState.name}
-                    onChange={handleChange}
-                    isInvalid={genericInfoValidated && featureAddState.name === ""}
-                  />
-                  <Feedback message="Name is required"></Feedback>
-                </Col>
-              </Form.Group>
-            </Form>
-          </>
-        );
+        return getMetadata();
       case 4:
         return (
           <Form className="radioform2">
@@ -498,6 +552,12 @@ const AddFeature = props => {
               <FormLabel label="Name" />
               <Col md={6}>
                 <Form.Control as="input" value={featureAddState.name} disabled />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="featureId">
+              <FormLabel label="Feature Id" />
+              <Col md={6}>
+                <Form.Control as="input" value={featureAddState.featureId} disabled />
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="linker">
@@ -553,12 +613,12 @@ const AddFeature = props => {
                       {
                         Header: "Glytoucan Id",
                         accessor: "glycan",
-                        Cell: row => row.value.glytoucanId
+                        Cell: row => row.value && row.value.glytoucanId
                       },
                       {
                         Header: "Name",
                         accessor: "glycan",
-                        Cell: row => row.value.name
+                        Cell: row => row.value && row.value.name
                       },
                       {
                         Header: "Glycan",
@@ -618,26 +678,33 @@ const AddFeature = props => {
         </Stepper>
         <div>
           <div>
-            <div className="button-div">
-              <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-                Back
-              </Button>
-              <Button variant="contained" onClick={handleNext} className="stepper-button">
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
-            </div>
+            {activeStep !== 3 && (
+              <div className="button-div">
+                <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+                  Back
+                </Button>
+                <Button variant="contained" onClick={handleNext} className="stepper-button">
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                </Button>
+              </div>
+            )}
+
             <ErrorSummary show={showErrorSummary} form="feature" errorJson={pageErrorsJson}></ErrorSummary>
+
             <Typography component={"span"} variant={"body2"}>
               {getStepContent(activeStep)}
             </Typography>
-            <div className="button-div">
-              <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-                Back
-              </Button>
-              <Button variant="contained" onClick={handleNext} className="stepper-button">
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
-            </div>
+
+            {activeStep !== 3 && (
+              <div className="button-div">
+                <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+                  Back
+                </Button>
+                <Button variant="contained" onClick={handleNext} className="stepper-button">
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
