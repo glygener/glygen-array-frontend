@@ -136,6 +136,7 @@ const AddGlycan = props => {
 
   const clearGlytoucanSequence = () => {
     setUserSelection({ ...initialState, ...{ selectedGlycan: userSelection.selectedGlycan } });
+    setRegistrationCheckFlag(true);
     setDisableReset(false);
   };
 
@@ -602,6 +603,7 @@ const AddGlycan = props => {
       setUserSelection({ sequence: parsedJson });
       setRegistrationCheckFlag(false);
       getGlytoucanRegistration();
+      setUserSelection({ glytoucanRegistration: false });
       setDisableReset(true);
     });
   }

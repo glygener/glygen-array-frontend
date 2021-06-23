@@ -125,6 +125,7 @@ const GridForm = props => {
               />
               <Feedback message="Please enter valid rows" />
             </Col>
+
             {props.loadGrid && !props.isUpdate && !props.publicView && props.updatedGridParams.rows !== "" && (
               <Button onClick={() => props.changeRowsandColumns()} className="get-btn">
                 Change Grid
