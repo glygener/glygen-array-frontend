@@ -782,34 +782,43 @@ const MetaData = props => {
     for (var pair of itr) {
       var groupId = pair[0];
       var element = pair[1];
-      listMandatoryGroup.push(getList(element, groupId, message));
+      listMandatoryGroup.push(getList(element, groupId));
     }
     return (
       <>
-        <span
+        <Alert
+          variant="danger"
           style={{
-            color: "#",
-            fontWeight: "bold",
-            paddingRight: "600px",
-            borderColor: "#f5c6cb",
-            textTransform: "uppercase"
+            width: "fit-content",
+            marginLeft: "25%"
           }}
         >
-          {message}
-        </span>
-        <Alert variant="danger">{listMandatoryGroup}</Alert>
+          <span
+            style={{
+              color: "#",
+              fontWeight: "bold",
+              // paddingRight: "600px",
+              borderColor: "#f5c6cb",
+              textTransform: "uppercase"
+            }}
+          >
+            {message}
+          </span>
+          <br />
+          {listMandatoryGroup}
+        </Alert>
       </>
     );
   };
 
   const getList = (groupElements, groupId) => {
-    let sameGroupElements = groupElements.map(element => {
-      return "  " + `${element.name.toUpperCase()}, `;
+    let sameGroupElements = groupElements.map((element, index) => {
+      return `   ${element.name.toUpperCase()},`;
     });
 
     return (
       <>
-        <Row>
+        <Row style={{ marginTop: "10px" }}>
           <Col md={4} style={{ textAlign: "right" }}>{`Group ID: ${groupId}`}</Col>
           <Col md={8} style={{ textAlign: "left" }}>
             {sameGroupElements}
@@ -1478,7 +1487,7 @@ const MetaData = props => {
 
                 {getMetaData()}
               </Col>
-              <Col md={2}>
+              <Col md={2} style={{ marginLeft: "-35px" }}>
                 <div className={"addon-setting"}>{getAddons()}</div>
               </Col>
             </Row>

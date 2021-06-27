@@ -635,7 +635,8 @@ const AddGlycan = props => {
       { noGlytoucanRegistration: !userSelection.glytoucanRegistration },
       true,
       {
-        id: userSelection.glytoucanId,
+        // id: userSelection.glytoucanId,
+        glytoucanId: userSelection.glytoucanId,
         sequence: userSelection.sequence,
         sequenceType: userSelection.sequenceType,
         internalId: userSelection.internalId,
