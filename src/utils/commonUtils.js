@@ -127,7 +127,6 @@ export function getDateCreated(dateCreated) {
 export function ContextAwareToggle({ children, eventKey, callback, classname }) {
   const currentEventKey = useContext(AccordionContext);
 
-  console.log(AccordionContext + "-" + currentEventKey);
   const decoratedOnClick = useAccordionToggle(eventKey, () => callback && callback(eventKey));
   const isCurrentEventKey = currentEventKey === eventKey;
 

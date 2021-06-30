@@ -79,7 +79,9 @@ const Descriptors = props => {
         metaType === "Assay"
           ? getAssayDroppable(descMetaData, subGroupKeyIndex)
           : descMetaData.map((descriptor, index) => {
-              if (descriptor.group && (descriptor.mandatory || descriptor.isNewlyAddedNonMandatory)) {
+              if (metaType === "Feature" && descriptor.group) {
+                return <>{getDescriptorGroups(descriptor, index)}</>;
+              } else if (descriptor.group && (descriptor.mandatory || descriptor.isNewlyAddedNonMandatory)) {
                 return <>{getDescriptorGroups(descriptor, index)}</>;
               }
 
@@ -89,7 +91,7 @@ const Descriptors = props => {
 
     descriptorForm.push(accorGroup);
 
-    setLoadDataOnFirstNextInUpdate(true);
+    setLoadDataOnFirstNextInUpdate && setLoadDataOnFirstNextInUpdate(true);
 
     return descriptorForm;
   };
@@ -101,7 +103,9 @@ const Descriptors = props => {
           {provided => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {descMetaData.map((descriptor, index) => {
-                if (descriptor.group && (descriptor.mandatory || descriptor.isNewlyAddedNonMandatory)) {
+                if (metaType === "Feature" && descriptor.group) {
+                  return <>{getDescriptorGroups(descriptor, index)}</>;
+                } else if (descriptor.group && (descriptor.mandatory || descriptor.isNewlyAddedNonMandatory)) {
                   return <>{getDescriptorGroups(descriptor, index)}</>;
                 }
 

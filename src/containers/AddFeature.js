@@ -15,7 +15,7 @@ import { StructureImage } from "../components/StructureImage";
 import { getAAPositionsFromSequence } from "../utils/sequence";
 import { wsCall } from "../utils/wsUtils";
 import { useHistory } from "react-router-dom";
-import { MetaData } from "./MetaData";
+import { FeatureMetaData } from "../containers/FeatureMetaData";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -178,10 +178,7 @@ const AddFeature = props => {
 
   const getMetadata = () => {
     return (
-      <MetaData
-        // metaID={metadataId}
-        isCopy={false}
-        type={"FEATURE"}
+      <FeatureMetaData
         metadataType={"Feature"}
         importedInAPage={true}
         importedPageData={metadataforAddFeature}
