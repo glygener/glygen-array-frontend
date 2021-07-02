@@ -455,8 +455,6 @@ const MetaData = props => {
 
     if (isUpdate || props.isCopy) {
       sampleType = { ...sampleModel };
-    } else if (props.type === "FEATURE") {
-      sampleType = sampleModel[0];
     } else {
       sampleType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
     }
@@ -531,9 +529,6 @@ const MetaData = props => {
     }
 
     var existedElement = selectedSample.descriptors.find(e => e.name === descriptorValue && !e.isNewlyAdded);
-
-    // var existedElement = selectedSample.descriptors.find(e => e.name === descriptorValue);
-    // && !e.isNewlyAdded);
 
     var newItemsCount = selectedSample.descriptors.filter(e => e.isNewlyAdded === true && e.name === descriptorValue)
       .length;
@@ -735,7 +730,6 @@ const MetaData = props => {
     );
   };
   const dragEnd = result => {
-    console.log(result);
     const { source, destination } = result;
     var sampleModelDragandDrop;
     var itemByType;
@@ -755,18 +749,33 @@ const MetaData = props => {
 
     var itemDescriptors = itemByType.descriptors;
 
-    // let descriptorGroupList = itemDescriptors.filter(i => i.group === true);
-
     const sourceIndex = source.index;
     const destinationIndex = destination.index;
 
     const sourceElement = itemDescriptors[sourceIndex];
+    const destinationElement = itemDescriptors[destinationIndex];
+
+    const destinationOrder = destinationElement.order;
+    sourceElement.order = destinationOrder;
 
     itemDescriptors.splice(sourceIndex, 1);
 
     itemDescriptors.splice(destinationIndex, 0, sourceElement);
 
+    if (sourceIndex < destinationIndex) {
+      const reOrderItems = itemDescriptors.slice(sourceIndex, destinationIndex);
+      reOrderItems.forEach(item => {
+        item.order--;
+      });
+    } else if (sourceIndex > destinationIndex) {
+      const reOrderItems = itemDescriptors.slice(destinationIndex + 1);
+      reOrderItems.forEach(item => {
+        item.order++;
+      });
+    }
+    
     itemByType.descriptors = itemDescriptors;
+    
     if (isUpdate || props.isCopy) {
       setSampleModel(itemByType);
     } else {
@@ -1141,6 +1150,7 @@ const MetaData = props => {
       if (dgArray.length > 0) {
         dArray.push({
           descriptors: dgArray,
+          order: d.order ? d.order : -1,
           key: {
             "@type": "descriptortemplate",
             ...getkey(d)
@@ -1149,7 +1159,6 @@ const MetaData = props => {
         });
       }
     });
-
     return dArray;
   }
 
@@ -1197,16 +1206,9 @@ const MetaData = props => {
         template.descriptors.sort((a, b) => a.order - b.order);
       });
 
-      if (props.type && props.type === "FEATURE") {
-        debugger;
-        props.importedPageData.length < 1
-          ? setMetaDataDetails({ sample: responseJson[0] })
-          : setMetaDataDetails({ sample: props.importedPageData[0] });
-      } else {
-        setMetaDataDetails({ sample: responseJson });
-      }
+      setMetaDataDetails({ sample: responseJson });
 
-      if (props.importedPageData && props.importedPageData.length > 0 && props.type && props.type === "FEATURE") {
+      if (props.importedPageData && props.importedPageData.length > 0) {
         setSampleModel(props.importedPageData);
       } else {
         setSampleModel(responseJson);
@@ -1262,6 +1264,7 @@ const MetaData = props => {
 
     metaDataDetails.sample.descriptorGroups.forEach(group => {
       const templateDescriptorGroup = sampleModel.descriptors.find(i => i.id === group.key.id);
+      templateDescriptorGroup.order = group.order;
 
       if (templateDescriptorGroup.descriptors) {
         if (!templateDescriptorGroup.mandatory) {
@@ -1282,48 +1285,6 @@ const MetaData = props => {
             descriptor.descriptors &&
               descriptor.descriptors.forEach(subGroupDesc => {
                 const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
-                subGrp.value = subGroupDesc.value;
-                subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
-              });
-          }
-        });
-      }
-    });
-  }
-
-  function setUpdateMetaDataForFeatureMetadata() {
-    metaDataDetails.sample.descriptors.forEach(generalDsc => {
-      debugger;
-      const simpleDescs = sampleModel[0].descriptors.find(i => i.id === generalDsc.id && i.group === false);
-
-      if (simpleDescs) {
-        simpleDescs.value = generalDsc.value;
-        simpleDescs.unit = generalDsc.unit ? generalDsc.unit : "";
-      }
-    });
-
-    metaDataDetails.sample.descriptors.forEach(group => {
-      const templateDescriptorGroup = sampleModel[0].descriptors.find(i => i.id === group.id && i.group === true);
-
-      if (templateDescriptorGroup.descriptors) {
-        if (!templateDescriptorGroup.mandatory) {
-          templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
-          templateDescriptorGroup.isNewlyAdded = true;
-        }
-        group.descriptors.forEach(descriptor => {
-          const subdescriptor =
-            templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === descriptor.id);
-          if (subdescriptor && !subdescriptor.group) {
-            subdescriptor.value = descriptor.value;
-            subdescriptor.unit = descriptor.unit ? descriptor.unit : "";
-          } else {
-            if (!subdescriptor.mandatory) {
-              subdescriptor.id = "newlyAddedItems" + subdescriptor.id;
-              subdescriptor.isNewlyAdded = true;
-            }
-            descriptor.descriptors &&
-              descriptor.descriptors.forEach(subGroupDesc => {
-                const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.id);
                 subGrp.value = subGroupDesc.value;
                 subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
               });
@@ -1479,9 +1440,7 @@ const MetaData = props => {
             {getButtonsForImportedPage()}
             <Row>
               <Col md={10}>
-                {props.type !== "FEATURE" && !loadDataOnFirstNextInUpdate
-                  ? !props.importedPageData.id && setSampleUpdateData()
-                  : props.importedPageData.length > 0 && setUpdateMetaDataForFeatureMetadata()}
+                {!loadDataOnFirstNextInUpdate && !props.importedPageData.id && setSampleUpdateData()}
 
                 {props.importPageContent && props.importPageContent()}
 

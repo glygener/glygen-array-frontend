@@ -55,15 +55,19 @@ const Descriptors = props => {
       descriptorForm.push(getSimpleDescriptors(accorSimpleDesc));
     }
 
-    //sorting for general descriptors
-    descMetaData.sort((a, b) => b.group - a.group);
+    //sorting for assay to display in order or regular metadatas
+    if (metaType === "Assay") {
+      descMetaData.sort((a, b) => a.order - b.order);
+    } else {
+      descMetaData.sort((a, b) => b.group - a.group);
+    }
 
     let accorGroup;
 
     if (isUpdate || isCopySample) {
       accorGroup =
         metaType === "Assay"
-          ? getAssayDroppableUpdateOrCopy(descMetaData)
+          ? getAssayDroppableUpdateOrCopy(descMetaData, subGroupKeyIndex)
           : descMetaData.map((descriptor, index) => {
               if (
                 descriptor.group &&
@@ -96,7 +100,7 @@ const Descriptors = props => {
     return descriptorForm;
   };
 
-  const getAssayDroppable = descMetaData => {
+  const getAssayDroppable = (descMetaData, subGroupKeyIndex) => {
     return (
       <>
         <Droppable droppableId={"descriptors"}>
@@ -124,7 +128,7 @@ const Descriptors = props => {
       <>
         <Droppable droppableId={"descriptors"}>
           {provided => (
-            <div {...provided.droppableProps} key={subGroupKeyIndex++} ref={provided.inneref}>
+            <div {...provided.droppableProps} ref={provided.innerRef}>
               {descMetaData.map((descriptor, index) => {
                 if (
                   descriptor.group &&
@@ -426,7 +430,7 @@ const Descriptors = props => {
               name="unitlevel"
               value={element.unit}
               onChange={e => props.handleUnitSelectionChange(descriptorDetails, e, subGroupName, "")}
-              required
+              required={element.mandatory ? true : false}
             >
               <option value="">select</option>
               {element.units.map((unit, index) => {
