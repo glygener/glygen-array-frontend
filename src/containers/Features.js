@@ -37,6 +37,10 @@ const Features = props => {
               Cell: ({ row }, index) => <div key={index}>{row.name ? row.name : row.id}</div>
             },
             {
+              Header: "Feature Id",
+              accessor: "internalId"
+            },
+            {
               Header: "Type",
               accessor: "type",
               Cell: row => displayNames.feature[row.value]

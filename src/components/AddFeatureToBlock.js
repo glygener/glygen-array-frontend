@@ -447,6 +447,10 @@ const AddFeatureToBlock = props => {
                   {
                     Header: "Name",
                     accessor: "name"
+                  },
+                  {
+                    Header: "Feature Id",
+                    accessor: "internalId"
                   }
                 ]}
                 defaultPageSize={10}
