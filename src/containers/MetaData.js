@@ -533,6 +533,7 @@ const MetaData = props => {
     var newItemsCount = selectedSample.descriptors.filter(e => e.isNewlyAdded === true && e.name === descriptorValue)
       .length;
 
+    maxCurrentOrder = selectedSample.descriptors[selectedSample.descriptors.length - 1].order;
     var newElement;
 
     if (existedElement) {
@@ -550,6 +551,7 @@ const MetaData = props => {
         newElement = JSON.parse(JSON.stringify(existedElement));
         newElement.id = "newlyAddedItems" + newItemsCount;
         newElement.isNewlyAdded = true;
+        newElement.order = maxCurrentOrder + 1;
 
         newElement.group &&
           newElement.descriptors.forEach(e => {
@@ -611,32 +613,57 @@ const MetaData = props => {
 
     var itemDescriptors = itemByType.descriptors;
     var itemToBeDeleted = itemDescriptors.find(i => i.id === id);
+    var itemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
 
     if (!itemToBeDeleted.mandatory) {
-      itemToBeDeleted.isNewlyAddedNonMandatory = false;
-      itemToBeDeleted.isNewlyAdded = false;
+      if (itemToBeDeleted.id.startsWith("newly")) {
+        const ItemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
+        itemDescriptors.splice(ItemToBeDeletedIndex, 1);
+      } else {
+        itemToBeDeleted.isNewlyAddedNonMandatory = false;
+        itemToBeDeleted.isNewlyAdded = false;
+        itemToBeDeleted.order = 0;
 
-      const itemSubDescriptors = itemToBeDeleted.descriptors;
+        const itemSubDescriptors = itemToBeDeleted.descriptors;
 
-      itemSubDescriptors.forEach(d => {
-        if (d.id.startsWith("newly")) {
-          const newlyAddedsubGroupIndex = itemSubDescriptors.indexOf(d);
-          itemSubDescriptors.splice(newlyAddedsubGroupIndex, 1);
-        } else if (d.group) {
-          var dg = d.descriptors;
-          dg.forEach(sgd => {
-            sgd.value = undefined;
-          });
-        } else {
-          d.value = undefined;
-        }
-      });
+        itemSubDescriptors.forEach(d => {
+          if (d.id.startsWith("newly")) {
+            const newlyAddedsubGroupIndex = itemSubDescriptors.indexOf(d);
+            itemSubDescriptors.splice(newlyAddedsubGroupIndex, 1);
+          } else if (d.group) {
+            var dg = d.descriptors;
+            dg.forEach(sgd => {
+              sgd.value = undefined;
+            });
+          } else {
+            d.value = undefined;
+          }
+        });
+      }
     } else {
-      var itemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
       itemDescriptors.splice(itemToBeDeletedIndex, 1);
     }
 
+    if (props.metadataType === "Assay") {
+      var reOrderItems;
+
+      if (itemToBeDeletedIndex + 1 < itemDescriptors.length) {
+        reOrderItems = itemDescriptors.slice(itemToBeDeletedIndex + 1);
+      } else if (itemToBeDeletedIndex + 1 === itemDescriptors.length) {
+        reOrderItems = itemDescriptors.slice(itemToBeDeletedIndex);
+      }
+
+      reOrderItems &&
+        reOrderItems.length > 0 &&
+        reOrderItems.forEach(item => {
+          if (item.order !== 0) {
+            item.order--;
+          }
+        });
+    }
+
     itemByType.descriptors = itemDescriptors;
+
     if (isUpdate || props.isCopy) {
       setSampleModel(itemByType);
     } else {
@@ -768,14 +795,14 @@ const MetaData = props => {
         item.order--;
       });
     } else if (sourceIndex > destinationIndex) {
-      const reOrderItems = itemDescriptors.slice(destinationIndex + 1);
+      const reOrderItems = itemDescriptors.slice(destinationIndex + 1, sourceIndex + 1);
       reOrderItems.forEach(item => {
         item.order++;
       });
     }
-    
+
     itemByType.descriptors = itemDescriptors;
-    
+
     if (isUpdate || props.isCopy) {
       setSampleModel(itemByType);
     } else {
