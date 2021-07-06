@@ -18,17 +18,22 @@ const PublicMetadata = props => {
     {
       title: "Scanner",
       wscall: "getpublicscanner",
-      metadataId: props.dataset.images[0].scanner.id
+      metadataId: props.dataset.images[0] && props.dataset.images[0].scanner && props.dataset.images[0].scanner.id
     },
     {
       title: "Image Analysis",
       wscall: "getpublicimageanalysis",
-      metadataId: props.dataset.rawDataList[0].metadata.id
+      metadataId:
+        props.dataset.rawDataList[0] &&
+        props.dataset.rawDataList[0].metadata &&
+        props.dataset.rawDataList[0].metadata.id
     },
     {
       title: "Data Processing",
       wscall: "getpublicdataprocessing",
       metadataId:
+        props.dataset.rawDataList[0] &&
+        props.dataset.rawDataList[0].processedDataList[0] &&
         props.dataset.rawDataList[0].processedDataList[0].metadata &&
         props.dataset.rawDataList[0].processedDataList[0].metadata.id
     }
@@ -127,19 +132,22 @@ const PublicMetadata = props => {
         >
           <span className={"dataset-headings"}>List of Slides</span>
           &nbsp;
-          <Row style={{ marginLeft: "10px" }}>Number of Slides on this page: {props.dataset.slides.length}</Row>
+          <Row style={{ marginLeft: "10px" }}>
+            Number of Slides on this page: {props.dataset.slides && props.dataset.slides.length}
+          </Row>
           &nbsp;
-          {props.dataset.slides.map(slide => {
-            return (
-              <>
-                <Row className={"slideTableofContents"} style={{ marginLeft: "15px" }}>
-                  <Link key={slide.id + slide.name} activeClass="active" spy={true} smooth={true} to={slide.id}>
-                    {slide.id}
-                  </Link>
-                </Row>
-              </>
-            );
-          })}
+          {props.dataset.slides &&
+            props.dataset.slides.map(slide => {
+              return (
+                <>
+                  <Row className={"slideTableofContents"} style={{ marginLeft: "15px" }}>
+                    <Link key={slide.id + slide.name} activeClass="active" spy={true} smooth={true} to={slide.id}>
+                      {slide.id}
+                    </Link>
+                  </Row>
+                </>
+              );
+            })}
         </div>
       </>
     );
@@ -248,8 +256,7 @@ PublicMetadata.propTypes = {
 
 export default PublicMetadata;
 
-{
-  /* <FontAwesomeIcon
+/* <FontAwesomeIcon
               key={slide.id}
               icon={["fas", openSlide !== "" && openSlide === slide.id ? "caret-right" : "caret-down"]}
               size="xs"
@@ -259,4 +266,3 @@ export default PublicMetadata;
             />
             <Collapse in={openSlide !== "" || openSlide === slide.id ? true : false}></Collapse> 
              </Collapse> */
-}

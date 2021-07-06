@@ -717,12 +717,18 @@ const MetaData = props => {
                 <Form.Control type="text" name="name" disabled value={metaDataDetails.name} />
               </Col>
             </Form.Group>
-            <Form.Group as={Row} controlId="type">
-              <FormLabel label="Sample Type" className="required-asterik" />
-              <Col md={6}>
-                <Form.Control type="text" name="type" disabled value={metaDataDetails.selectedtemplate} />
+            {sampleModel && sampleModel.length > 1 ? (
+              <Form.Group as={Row} controlId="type">
+                <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+                <Col md={6}>
+                  <Form.Control type="text" name="type" disabled value={metaDataDetails.selectedtemplate} />
+                </Col>
+              </Form.Group>
+            ) : (
+              <Col md={6} style={{ marginLeft: "41%" }}>
+                <Form.Control plaintext readOnly defaultValue={metaDataDetails.selectedtemplate} />
               </Col>
-            </Form.Group>
+            )}
           </>
         )}
 
@@ -866,7 +872,9 @@ const MetaData = props => {
 
   const getListTemplate = (
     <Form.Group as={Row} controlId="type">
-      <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+      {sampleModel && sampleModel.length > 1 && (
+        <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+      )}
       <Col md={6}>
         {sampleModel && sampleModel.length > 1 ? (
           <Form.Control
@@ -894,14 +902,15 @@ const MetaData = props => {
             )}
           </Form.Control>
         ) : (
-          <Form.Control
-            type="text"
-            name="type"
-            value={metaDataDetails.selectedtemplate}
-            isInvalid={errorType}
-            required
-            readOnly
-          />
+          <Col style={{ border: "none", marginLeft: "85%" }}>
+            <Form.Control
+              plaintext
+              readOnly
+              defaultValue={metaDataDetails.selectedtemplate}
+              isInvalid={errorType}
+              required
+            />
+          </Col>
         )}
         <Feedback message={`${props.metadataType} Type is required`} />
       </Col>
@@ -1224,6 +1233,8 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
+      debugger;
+
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
           if (desc.group) {
