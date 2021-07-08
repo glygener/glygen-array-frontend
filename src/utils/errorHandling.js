@@ -35,7 +35,8 @@ const FORM_ERROR_MESSAGES = {
     Duplicate_name: "Another glycan in your collection has the same Name. Please use another Name",
     NotValid_sequence:
       "Sequence string seems to be unrecognizable or may not be compatible with the selected format. Please check again for validity",
-    NotValid_glytoucanId: "That Glytoucan Id is not recognized by Glytoucan. Please try again."
+    NotValid_glytoucanId: "That Glytoucan Id is not recognized by Glytoucan. Please try again.",
+    Invalid_structure: "Provided Glycan does not specify the Glytoucan Id"
   },
   linkers: {
     NotValid_pubChemId: "That PubChem Id was not recognized by PubChem. Please try again.",

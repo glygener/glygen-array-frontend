@@ -55,6 +55,7 @@ import { Switch, Route } from "react-router-dom";
 import { PublicData } from "./public/PublicData";
 import { PublicDataset } from "./public/PublicDataset";
 import { AddGrant } from "./containers/AddGrant";
+import { AddMultipleGlycans } from "./containers/AddMultipleGlycans";
 
 const Routes = props => {
   const routes = [
@@ -144,6 +145,11 @@ const Routes = props => {
     {
       path: "/glycans/addglycan",
       main: () => <AddGlycan authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("slide")
+    },
+    {
+      path: "/glycans/addMultiple",
+      main: () => <AddMultipleGlycans authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {

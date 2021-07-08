@@ -31,6 +31,15 @@ const Glycans = props => {
           <Link to="/glycans/addglycan" className="link-button" style={{ width: "150px" }}>
             Add Glycan
           </Link>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Link
+            to="/glycans/addMultiple"
+            className="link-button"
+            title="Upload a GAL/XML file wih Glycans"
+            style={{ width: "150px" }}
+          >
+            Upload Glycans
+          </Link>
         </Col>
 
         <GlygenTable

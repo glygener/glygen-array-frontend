@@ -21,7 +21,7 @@ const ErrorSummary = props => {
           }
         });
         setSummary(aggregatedSummary);
-      } else if (null !== props.errorMessage && "" !== props.errorMessage) {
+      } else if (props.errorMessage) {
         setSummary(props.errorMessage);
       } else {
         console.log(props.errorJson.errorCode + " - " + props.errorJson.statusCode + " - Bad Request");

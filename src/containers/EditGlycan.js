@@ -77,14 +77,13 @@ const EditGlycan = props => {
 
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
           <Form.Group as={Row} controlId="validationuserName">
-            <FormLabel label="InternalId" className="required-asterik" />
+            <FormLabel label="Internal Id" />
             <Col md={4}>
               <Form.Control
                 type="text"
                 name="internalId"
                 defaultValue={glycanDetails.internalId}
                 onChange={handleChange}
-                required
               />
               <Feedback message="Please Enter Internal Id." />
             </Col>
