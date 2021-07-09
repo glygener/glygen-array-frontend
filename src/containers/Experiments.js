@@ -49,7 +49,7 @@ const Experiments = props => {
               accessor: "status"
             }
           ]}
-          defaultPageSize={7}
+          defaultPageSize={5}
           defaultSortColumn="id"
           showDeleteButton
           showEditButton

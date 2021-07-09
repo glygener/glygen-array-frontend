@@ -45,7 +45,6 @@ const EditGlycan = props => {
 
   function getGlycanSuccess(response) {
     response.json().then(parsedJson => {
-      debugger;
       setGlycanDetails(parsedJson);
       console.log(parsedJson);
     });
@@ -76,7 +75,7 @@ const EditGlycan = props => {
         )}
 
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-          <Form.Group as={Row} controlId="validationuserName">
+          <Form.Group as={Row} controlId="internalId">
             <FormLabel label="Internal Id" />
             <Col md={4}>
               <Form.Control
@@ -85,9 +84,9 @@ const EditGlycan = props => {
                 defaultValue={glycanDetails.internalId}
                 onChange={handleChange}
               />
-              <Feedback message="Please Enter Internal Id." />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="name">
             <FormLabel label="Name" className="required-asterik" />
             <Col md={4}>
@@ -102,6 +101,7 @@ const EditGlycan = props => {
               <Feedback message="Please Enter Glycan Name." />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="comment">
             <FormLabel label="Comment" />
             <Col md={4}>
@@ -114,30 +114,35 @@ const EditGlycan = props => {
               />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="glycanToucanId">
             <FormLabel label="Glytoucan Id" />
             <Col md={4}>
               <Form.Control type="text" plaintext readOnly defaultValue={glycanDetails.glytoucanId} />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="glycanType">
             <FormLabel label="Type" />
             <Col md={4}>
               <Form.Control type="text" plaintext readOnly defaultValue={glycanDetails.type} />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="mass">
             <FormLabel label="Mass" />
             <Col md={4}>
               <Form.Control type="text" plaintext readOnly defaultValue={glycanDetails.mass} />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="mass">
             <FormLabel label="Structure Image" />
             <Col md={4} style={{ alignContent: "left" }}>
               <StructureImage base64={glycanDetails.cartoon}></StructureImage>
             </Col>
           </Form.Group>
+
           <FormButton className="line-break-1" type="submit" label="Submit" />
           <LinkButton to="/glycans" label="Cancel" />
         </Form>
