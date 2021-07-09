@@ -80,8 +80,9 @@ const EditGlycan = props => {
             <Col md={4}>
               <Form.Control
                 type="text"
+                placeholder="internal Id"
                 name="internalId"
-                defaultValue={glycanDetails.internalId}
+                value={glycanDetails.internalId}
                 onChange={handleChange}
               />
             </Col>
@@ -94,7 +95,7 @@ const EditGlycan = props => {
                 type="text"
                 placeholder="name"
                 name="name"
-                defaultValue={glycanDetails.name}
+                value={glycanDetails.name}
                 onChange={handleChange}
                 required
               />
@@ -109,7 +110,7 @@ const EditGlycan = props => {
                 as="textarea"
                 placeholder="comment"
                 name="description"
-                defaultValue={glycanDetails.description}
+                value={glycanDetails.description}
                 onChange={handleChange}
               />
             </Col>
@@ -118,21 +119,21 @@ const EditGlycan = props => {
           <Form.Group as={Row} controlId="glycanToucanId">
             <FormLabel label="Glytoucan Id" />
             <Col md={4}>
-              <Form.Control type="text" plaintext readOnly defaultValue={glycanDetails.glytoucanId} />
+              <Form.Control type="text" plaintext readOnly value={glycanDetails.glytoucanId} />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="glycanType">
             <FormLabel label="Type" />
             <Col md={4}>
-              <Form.Control type="text" plaintext readOnly defaultValue={glycanDetails.type} />
+              <Form.Control type="text" plaintext readOnly value={glycanDetails.type} />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="mass">
             <FormLabel label="Mass" />
             <Col md={4}>
-              <Form.Control type="text" plaintext readOnly defaultValue={glycanDetails.mass} />
+              <Form.Control type="text" plaintext readOnly value={glycanDetails.mass} />
             </Col>
           </Form.Group>
 
@@ -165,6 +166,7 @@ const EditGlycan = props => {
   function updateGlycanFailure(response) {
     response.json().then(parsedJson => {
       setShowErrorSummary(true);
+      setPageErrorMessage("");
       setPageErrorsJson(parsedJson);
     });
   }
