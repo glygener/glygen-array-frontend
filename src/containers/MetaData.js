@@ -717,7 +717,8 @@ const MetaData = props => {
                 <Form.Control type="text" name="name" disabled value={metaDataDetails.name} />
               </Col>
             </Form.Group>
-            {sampleModel && sampleModel.length > 1 ? (
+            {(sampleModel && sampleModel.length > 1) ||
+            (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
               <Form.Group as={Row} controlId="type">
                 <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
                 <Col md={6}>
@@ -725,9 +726,7 @@ const MetaData = props => {
                 </Col>
               </Form.Group>
             ) : (
-              <Col md={6} style={{ marginLeft: "41%" }}>
-                <Form.Control plaintext readOnly defaultValue={metaDataDetails.selectedtemplate} />
-              </Col>
+              ""
             )}
           </>
         )}
@@ -872,11 +871,15 @@ const MetaData = props => {
 
   const getListTemplate = (
     <Form.Group as={Row} controlId="type">
-      {sampleModel && sampleModel.length > 1 && (
+      {(sampleModel && sampleModel.length > 1) ||
+      (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
         <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+      ) : (
+        ""
       )}
       <Col md={6}>
-        {sampleModel && sampleModel.length > 1 ? (
+        {(sampleModel && sampleModel.length > 1) ||
+        (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
           <Form.Control
             as="select"
             name="selectedtemplate"
@@ -902,15 +905,7 @@ const MetaData = props => {
             )}
           </Form.Control>
         ) : (
-          <Col style={{ border: "none", marginLeft: "85%" }}>
-            <Form.Control
-              plaintext
-              readOnly
-              defaultValue={metaDataDetails.selectedtemplate}
-              isInvalid={errorType}
-              required
-            />
-          </Col>
+          ""
         )}
         <Feedback message={`${props.metadataType} Type is required`} />
       </Col>

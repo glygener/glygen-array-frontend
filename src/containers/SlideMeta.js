@@ -49,8 +49,8 @@ const SlideMeta = props => {
           commentsRefColumn="description"
           fetchWS="listslidemeta"
           deleteWS="slideMetaDelete"
-          editUrl="slidemeta/editSlideMeta"
-          copyUrl="slidemeta/copySlideMeta"
+          editUrl="listslidemeta/editSlideMeta"
+          copyUrl="listslidemeta/copySlideMeta"
           copyPage="copySlideMeta"
           keyColumn="id"
           showRowsInfo

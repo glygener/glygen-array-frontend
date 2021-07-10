@@ -8,14 +8,17 @@ import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import { useParams, useHistory } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
+import { Loading } from "../components/Loading";
 
 const EditGlycan = props => {
   let { glycanId } = useParams();
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
     }
+    setShowLoading(true);
     wsCall("getglycan", "GET", [glycanId], true, null, getGlycanSuccess, getGlycanFailure);
   }, [props, glycanId]);
 
@@ -46,12 +49,14 @@ const EditGlycan = props => {
   function getGlycanSuccess(response) {
     response.json().then(parsedJson => {
       setGlycanDetails(parsedJson);
+      setShowLoading(false);
       console.log(parsedJson);
     });
   }
 
   function getGlycanFailure(response) {
     setValidated(false);
+    setShowLoading(false);
     console.log(response);
   }
 
@@ -65,13 +70,15 @@ const EditGlycan = props => {
       <div className="page-container">
         <Title title="Edit Glycan" />
 
+        {<Loading show={showLoading} />}
+
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
             form="glycans"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
-          ></ErrorSummary>
+          />
         )}
 
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
