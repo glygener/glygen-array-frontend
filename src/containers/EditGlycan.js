@@ -84,12 +84,13 @@ const EditGlycan = props => {
                 name="internalId"
                 value={glycanDetails.internalId}
                 onChange={handleChange}
+                maxLength={30}
               />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="name">
-            <FormLabel label="Name" className="required-asterik" />
+            <FormLabel label="Name" className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""} />
             <Col md={4}>
               <Form.Control
                 type="text"
@@ -97,7 +98,8 @@ const EditGlycan = props => {
                 name="name"
                 value={glycanDetails.name}
                 onChange={handleChange}
-                required
+                required={glycanDetails.type === "UNKNOWN" ? true : false}
+                maxLength={50}
               />
               <Feedback message="Please Enter Glycan Name." />
             </Col>
@@ -112,7 +114,14 @@ const EditGlycan = props => {
                 name="description"
                 value={glycanDetails.description}
                 onChange={handleChange}
+                maxLength={2000}
               />
+              <span className="character-counter" style={{ marginLeft: "80%" }}>
+                {glycanDetails.description && glycanDetails.description.length > 0
+                  ? glycanDetails.description.length
+                  : ""}
+                /2000
+              </span>
             </Col>
           </Form.Group>
 
