@@ -330,7 +330,7 @@ const MetaData = props => {
       const selectedGroupNewItemCount = selectedDescriptor.descriptors.filter(i => i.isNewlyAdded === true).length;
 
       var newElement = JSON.parse(JSON.stringify(selectedSubGroup));
-      newElement.id = "newlyAddedItems" + selectedGroupNewItemCount;
+      newElement.id = "newlyAddedItems" + selectedGroupNewItemCount + selectedSubGroup.name.trim();
       newElement.isNewlyAdded = true;
       newElement.group &&
         newElement.descriptors.forEach(e => {
@@ -549,7 +549,7 @@ const MetaData = props => {
         }
 
         newElement = JSON.parse(JSON.stringify(existedElement));
-        newElement.id = "newlyAddedItems" + newItemsCount;
+        newElement.id = "newlyAddedItems" + newItemsCount + existedElement.name.trim();
         newElement.isNewlyAdded = true;
         newElement.order = maxCurrentOrder + 1;
 
@@ -1194,7 +1194,9 @@ const MetaData = props => {
   }
 
   function getkey(descriptorGroup) {
-    return descriptorGroup.id.startsWith("newly") ? { uri: descriptorGroup.uri } : { id: descriptorGroup.id };
+    return descriptorGroup.id.startsWith("newly")
+      ? { uri: descriptorGroup.uri, id: descriptorGroup.id }
+      : { id: descriptorGroup.id };
   }
 
   function addMetaSuccess(response) {
@@ -1228,8 +1230,6 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
-      debugger;
-
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
           if (desc.group) {
@@ -1296,8 +1296,13 @@ const MetaData = props => {
     });
 
     metaDataDetails.sample.descriptorGroups.forEach(group => {
-      const templateDescriptorGroup = sampleModel.descriptors.find(i => i.id === group.key.id);
-      templateDescriptorGroup.order = group.order;
+      const templateDescriptorGroups = sampleModel.descriptors.filter(i => i.id === group.key.id);
+
+      let templateDescriptorGroup;
+      if (templateDescriptorGroups.length === 1) {
+        templateDescriptorGroup = templateDescriptorGroups[0];
+        templateDescriptorGroup.order = group.order;
+      }
 
       if (templateDescriptorGroup.descriptors) {
         if (!templateDescriptorGroup.mandatory) {
