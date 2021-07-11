@@ -481,7 +481,7 @@ const AddFeature = props => {
               />
               {showGlycanPicker && (
                 <Modal
-                  size="lg"
+                  size="xl"
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                   show={showGlycanPicker}
@@ -495,6 +495,19 @@ const AddFeature = props => {
                   <Modal.Body>
                     <GlygenTable
                       columns={[
+                        {
+                          Header: "Select",
+                          Cell: (row, index) => (
+                            <div style={{ textAlign: "center" }}>
+                              <input
+                                key={index}
+                                type="button"
+                                onClick={() => handleGlycanSelect(row.original)}
+                                value={"Select"}
+                              />
+                            </div>
+                          )
+                        },
                         {
                           Header: "Internal Id",
                           accessor: "internalId"
@@ -526,10 +539,8 @@ const AddFeature = props => {
                       fetchWS="listallglycans"
                       keyColumn="id"
                       showRowsInfo
+                      showSearchBox
                       infoRowsText="Glycans"
-                      showSelectButton
-                      selectButtonHeader=""
-                      selectButtonHandler={handleGlycanSelect}
                     />
                   </Modal.Body>
                   <Modal.Footer>
