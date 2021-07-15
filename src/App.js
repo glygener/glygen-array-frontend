@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import "./Responsive.css";
 import { Routes } from "./Routes";
 import { useHistory, useLocation } from "react-router-dom";
 import { TopNavBar } from "./components/TopNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { getLoginStatus, getPageName } from "./utils/commonUtils";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faEdit, faTrashAlt, faClone, faEyeSlash, faEye } from "@fortawesome/free-regular-svg-icons";
+import {
+  faEdit,
+  faTrashAlt,
+  faClone,
+  faEyeSlash,
+  faEye,
+} from "@fortawesome/free-regular-svg-icons";
 import {
   faUsers,
   faComments,
@@ -27,14 +34,15 @@ import {
   faUserPlus,
   faTable,
   faCaretUp,
-  faVial
+  faVial,
 } from "@fortawesome/free-solid-svg-icons";
 import { CssBaseline } from "@material-ui/core";
+import { ResponsiveEmbed } from "react-bootstrap";
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const loginUpdater = flag => setLoggedIn(flag);
-  const logoutHandler = e => logout(e);
+  const loginUpdater = (flag) => setLoggedIn(flag);
+  const logoutHandler = (e) => logout(e);
   const history = useHistory();
   const location = useLocation();
 
@@ -74,7 +82,9 @@ const App = () => {
         <TopNavBar loggedInFlag={loggedIn} logoutHandler={logoutHandler} />
         <CssBaseline />
 
-        {location && location.pathname && (location.pathname === "/data" || location.pathname === "/") ? (
+        {location &&
+        location.pathname &&
+        (location.pathname === "/data" || location.pathname === "/") ? (
           <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
         ) : (
           <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
@@ -96,7 +106,7 @@ const App = () => {
       "signup",
       "emailConfirmation",
       "data",
-      "verifyToken"
+      "verifyToken",
     ];
     var pagename = getPageName(history);
 
@@ -108,7 +118,7 @@ const App = () => {
         redirectFrom = "/";
         history.push({
           pathname: "/",
-          state: { redirectedFrom: redirectFrom }
+          state: { redirectedFrom: redirectFrom },
         });
       } else {
         redirectFrom = history.location.pathname;
@@ -118,7 +128,7 @@ const App = () => {
     if (!authorized && !loginNotRequiredPages.includes(pagename)) {
       history.push({
         pathname: "/login",
-        state: { redirectedFrom: redirectFrom }
+        state: { redirectedFrom: redirectFrom },
       });
     }
   }

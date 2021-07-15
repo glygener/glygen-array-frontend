@@ -1,0 +1,198 @@
+/*==================================================
+			 Media Queries        
+==================================================*/
+
+/* Large Devices (Desktops & Laptops) */
+
+@media (min-width: 1200px) and (max-width: 1299px) {
+}
+
+/* Medium Devices (Landscape Tablets & Medium Desktops) */
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  /* Generic */
+  .vertical-heading h2 {
+    font-size: 29px;
+  }
+  .gg-footer {
+    padding: 15px 0;
+  }
+}
+
+/* Small Devices (Portrait Tablets & Small Desktops) */
+
+@media (min-width: 768px) and (max-width: 991px) {
+  /* Generic */
+  .vertical-heading h2 {
+    font-size: 29px;
+  }
+  .summary-panel {
+    width: 100% !important;
+  }
+  .gg-footer {
+    padding: 15px 0;
+  }
+  .gg-protvista-container {
+    width: 92% !important;
+    margin: 0 auto !important;
+  }
+  .btn-outline-white-col {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+  .btn-outline-white {
+    display: inline-block !important;
+  }
+  .inline-evidence:nth-child(n + 4) {
+    margin-top: 5px !important;
+  }
+  .id-mapping-content {
+    padding: 40px 60px 40px 80px !important;
+  }
+}
+
+/* Extra Small Devices (Landscape Phones & Portrait Tablets) */
+
+@media (max-width: 767px) {
+  /* Vertical heading */
+  .vertical-heading {
+    text-align: center;
+  }
+  .vertical-heading h5 {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    display: block;
+    position: static;
+    margin-bottom: 15px;
+  }
+  .vertical-heading h2 {
+    font-size: 29px;
+    line-height: normal;
+    margin: 0;
+  }
+  .horizontal-heading h2 {
+    font-size: 30px;
+  }
+  .align-logo {
+    padding-top: 0 !important;
+    margin-right: 40px !important;
+  }
+  .vert-head-logo-container {
+    padding: 0 20px !important;
+  }
+  .summary-panel {
+    width: 100% !important;
+  }
+  .panel-width {
+    width: 99% !important;
+  }
+  .tutorial-text-middle p {
+    width: 100%;
+  }
+  .gg-download-btn-width {
+    width: 100%;
+  }
+  .gg-footer {
+    padding: 15px 0;
+  }
+  .about-item {
+    padding: 55px 30px;
+    margin-bottom: 35px;
+  }
+  .framework,
+  .framework .icon,
+  .framework .icon-svg {
+    text-align: center !important;
+  }
+  .framework:hover .icon,
+  .framework:hover .icon-svg {
+    -webkit-transform: translateY(-10px);
+    transform: translateY(-10px);
+  }
+  .framework h4 {
+    font-size: 18px;
+  }
+  .gg-btn-outline-white,
+  .gg-btn-outline-blue {
+    margin: 10px 10px 0;
+  }
+  .gg-protvista-container {
+    width: 92% !important;
+    margin: 0 auto !important;
+  }
+  .contact-univ-address {
+    text-align: center !important;
+  }
+  .btn-outline-white-col {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+  .btn-outline-white {
+    display: inline-flex !important;
+  }
+  .inline-evidence:nth-child(n + 2) {
+    margin-top: 5px !important;
+  }
+  .id-mapping-content {
+    padding: 40px 60px 40px 80px !important;
+  }
+}
+
+/* Extra Small Devices (Portrait Phones & Smaller Devices) */
+
+@media (max-width: 480px) {
+  /* Generic */
+  .vertical-heading h2 {
+    font-size: 22px;
+  }
+  .gg-btn-outline,
+  .gg-btn-blue {
+    margin: 0 auto;
+    overflow: auto;
+    margin-right: 0 !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    width: 100% !important;
+  }
+  .gg-btn-outline-white,
+  .gg-btn-outline-blue {
+    margin: 5px auto;
+    overflow: auto;
+    width: 100% !important;
+  }
+  .contact-univ-address {
+    text-align: center !important;
+  }
+  .btn-outline-white-col {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .btn-outline-white {
+    display: inline-flex !important;
+    width: 100% !important;
+  }
+  .inline-evidence:nth-child(n + 2) {
+    margin-top: 5px !important;
+  }
+  .id-mapping-content {
+    padding: 40px 40px 40px 50px !important;
+  }
+}
+@media (min-width: 600px) {
+  .materials-tabs .MuiTab-root {
+    min-width: 0;
+  }
+}
+
+/* Extra Small Devices (Portrait Phones & Smaller Devices) */
+
+@media (max-width: 320px) {
+}
+@media (min-width: 280px) and (max-width: 1199px) {
+  .gg-baseline {
+    margin: 0 auto !important;
+  }
+}

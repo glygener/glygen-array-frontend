@@ -6,8 +6,10 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaUserPlus } from "react-icons/fa";
+import { BiLogIn } from "react-icons/bi";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   mainFeaturedCard: {
     position: "relative",
     backgroundColor: theme.palette.grey[800],
@@ -16,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     // backgroundImage: 'url(https://source.unsplash.com/random)',
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "center"
+    backgroundPosition: "center",
   },
   overlay: {
     position: "absolute",
@@ -24,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     bottom: 0,
     right: 0,
     left: 0,
-    backgroundColor: "rgba(0,0,0,.4)"
+    backgroundColor: "rgba(0,0,0,.4)",
   },
   mainFeaturedCardContent: {
     position: "relative",
@@ -32,8 +34,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     [theme.breakpoints.up("md")]: {
       padding: theme.spacing(3, 4),
-      textAlign: "left"
-    }
+      textAlign: "left",
+    },
   },
   mainFeaturedCardButtons: {
     position: "relative",
@@ -41,9 +43,9 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     [theme.breakpoints.up("md")]: {
       padding: theme.spacing(3, 4),
-      textAlign: "right"
-    }
-  }
+      textAlign: "right",
+    },
+  },
 }));
 export default function MainFeaturedCard(props) {
   const classes = useStyles();
@@ -55,11 +57,14 @@ export default function MainFeaturedCard(props) {
       <div className={classes.overlay} />
       <Grid container>
         <Grid item sm={12} md={8} lg={6}>
-          <div className={classes.mainFeaturedCardContent} style={{ letterSpacing: "1px", paddingTop: "35px" }}>
+          <div
+            className={classes.mainFeaturedCardContent}
+            style={{ letterSpacing: "1px", paddingTop: "35px" }}
+          >
             <Typography
               component="h5"
               style={{
-                fontSize: "1.25rem"
+                fontSize: "1.25rem",
               }}
               variant="h5"
               color="inherit"
@@ -75,7 +80,7 @@ export default function MainFeaturedCard(props) {
               style={{
                 textAlign: "justify",
                 lineHeight: "1.5",
-                fontSize: "1rem"
+                fontSize: "1rem",
               }}
             >
               {post.description}
@@ -85,33 +90,36 @@ export default function MainFeaturedCard(props) {
 
         <Grid item sm={12} md={4} lg={6} className="btn-outline-white-col">
           <div className={classes.mainFeaturedCardButtons}>
-            <div className="btn-outline-white">
+            <div className="btn-outline-white text-left">
               <Link to={"/signup"} className="gg-btn-outline-blue">
                 <span
                   style={{
-                    paddingRight: "15px",
-                    paddingLeft: "5px"
+                    paddingRight: "10px",
                   }}
                 >
-                  <FontAwesomeIcon key={"signup"} icon={["fas", "user-plus"]} size="1x" title="signup" />
+                  <FaUserPlus key={"signup"} size="22px" title="signup" />
                 </span>
                 Sign up
               </Link>
             </div>
-            <div className="btn-outline-white">
+            <div className="btn-outline-white text-left">
               <Link to={"/login"} className="gg-btn-outline-white">
-                <span style={{ paddingRight: "30px" }}>
-                  <FontAwesomeIcon key={"login"} icon={["fas", "sign-in-alt"]} size="1x" title="login" />
+                <span style={{ paddingRight: "10px" }}>
+                  <BiLogIn key={"login"} size="22px" title="login" />
                 </span>
                 Log In
               </Link>
             </div>
-            <div className="btn-outline-white">
+            <div className="btn-outline-white text-left">
               <Link to={"/data"} className="gg-btn-outline-white">
-                <span style={{ paddingRight: "40px" }}>
+                <span
+                  style={{
+                    paddingRight: "10px",
+                  }}
+                >
                   <FontAwesomeIcon key={"data"} icon={["fas", "table"]} size="1x" title="data" />
                 </span>
-                Data
+                Datasets
               </Link>
             </div>
           </div>
@@ -122,5 +130,5 @@ export default function MainFeaturedCard(props) {
 }
 
 MainFeaturedCard.propTypes = {
-  post: PropTypes.object
+  post: PropTypes.object,
 };

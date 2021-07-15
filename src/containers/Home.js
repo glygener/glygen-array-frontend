@@ -3,7 +3,8 @@ import "./Home.css";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import MainFeaturedCard from "../components/MainFeaturedCard";
-import mainImg from "../images/main.png";
+// import mainImg from "../images/main.png";
+import mainImg from "../images/main-featured-img.svg";
 import TwitterCard from "../components/TwitterCard";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
@@ -23,7 +24,7 @@ const Home = () => {
       "Glycan Array Data Repository is a public repository for the deposition, reporting and sharing of glycan array data. The repository contains both, published and unpublished, datasets. All data is provided under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.",
     image: mainImg,
     linkText: "Learn More…",
-    to: ""
+    to: "",
   };
   // const [pageLoading, setPageLoading] = useState(false);
 
@@ -45,7 +46,7 @@ const Home = () => {
                   container
                   spacing={4}
                   style={{
-                    justifyContent: "center"
+                    justifyContent: "center",
                   }}
                 >
                   <Grid item xs={12} sm={12}>
@@ -67,7 +68,7 @@ const Home = () => {
                   container
                   spacing={4}
                   style={{
-                    justifyContent: "center"
+                    justifyContent: "center",
                   }}
                 >
                   <VersionCard data={{}} />
