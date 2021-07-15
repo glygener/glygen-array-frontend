@@ -11,7 +11,7 @@ import "../components/VersionCard.css";
 
 const useStyles = makeStyles(() => ({
   cardAction: {
-    display: "inline-flex"
+    display: "inline-flex",
   },
   card: {
     // display: 'flex'
@@ -19,11 +19,11 @@ const useStyles = makeStyles(() => ({
     // width: '100%'
   },
   cardTitle: {
-    textAlign: "center"
+    textAlign: "center",
   },
   cardDetails: {
-    flex: 1
-  }
+    flex: 1,
+  },
 }));
 
 export default function VersionCard() {
@@ -41,14 +41,14 @@ export default function VersionCard() {
       null,
       false,
       null,
-      response =>
-        response.json().then(responseJson => {
+      (response) =>
+        response.json().then((responseJson) => {
           console.log(responseJson);
           setVersionData(responseJson);
           setShowLoading(false);
         }),
-      response =>
-        response.json().then(responseJson => {
+      (response) =>
+        response.json().then((responseJson) => {
           setPageErrorsJson(responseJson);
           setPageErrorMessage("");
           setShowErrorSummary(true);
@@ -60,15 +60,19 @@ export default function VersionCard() {
 
   return (
     <>
-      <ErrorSummary show={showErrorSummary} form="version" errorJson={pageErrorsJson} errorMessage={pageErrorMessage} />
+      <ErrorSummary
+        show={showErrorSummary}
+        form="version"
+        errorJson={pageErrorsJson}
+        errorMessage={pageErrorMessage}
+      />
       <Grid item xs={12} sm={6} md={12}>
         <Card className="card">
           {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
           <div className={classes.cardDetails}>
             <CardContent>
               <h4 className={classes.cardTitle}>Version</h4>
-              <br />
-              <span style={{ textAlign: "left" }}>
+              <span>
                 <strong>Portal: &nbsp;</strong>
               </span>
               {versionData.portalVersion}
@@ -87,5 +91,5 @@ export default function VersionCard() {
 
 VersionCard.propTypes = {
   data: PropTypes.object,
-  pageLoading: PropTypes.bool
+  pageLoading: PropTypes.bool,
 };
