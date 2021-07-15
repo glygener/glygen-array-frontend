@@ -1,42 +1,35 @@
-.brand-link,
-.brand-link:hover {
-  color: white;
-  text-decoration: none;
-}
-
-.nav-link {
-  color: white !important;
-}
-
-.nav-link:hover,
-.nav-link.active:hover {
-  background-color: var(--dark-blue-1);
-}
-
-.navbar {
+.gg-blue {
   background-color: var(--legacy-blue) !important;
 }
-
-.nav-link.active {
-  background-color: var(--dark-blue-2) !important;
+.align-right-header {
+  display: flex !important;
+  justify-content: flex-end !important;
+  float: right !important;
 }
-
+.gg-nav-link {
+  color: var(--light) !important;
+  padding: 10px !important;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+.gg-nav-link:hover{
+  color: var(--gg-light-blue) !important;
+  padding: 10px !important;
+}
+.gg-nav-link.active {
+  color: var(--white) !important;
+  border-bottom: 4px solid var(--gg-light-blue) !important;
+  padding-bottom: 0 !important;
+  padding-right: 15px !important;
+  padding-left: 15px !important;
+  margin-right: 10px !important;
+  margin-left: 10px !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+.gg-nav-link.active:hover {
+  color: var(--gg-light-blue) !important;
+}
 .topbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-.nav-link-container {
-  border-radius: 0.25rem;
-}
-
-.navbar-expand {
-  flex-flow: row nowrap !important;
-  justify-content: flex-start !important;
-  position: fixed !important;
-  top: 0 !important;
-  right: 0 !important;
-  left: 0 !important;
-  z-index: 1030 !important;
+  margin-bottom: 6px !important;
 }

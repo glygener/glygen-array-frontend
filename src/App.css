@@ -1,27 +1,29 @@
 :root {
-  --legacy-blue: #2f78b4;
+  /* --legacy-blue: #2f78b4; */
+  --legacy-blue: #2f78b7; 
   --dark-blue-1: #215b9e;
   --dark-blue-2: #175385;
   --gg-blue: #2f78b7 !important;
   --gg-dark-blue: #1c4e78 !important;
   --gg-light-blue: #afd9fd !important;
   --gg-dark-hover: #57affa !important;
-  --gg-green: #1d9901 !important;
+  --gg-green: #60BA4B !important;
+  /* --gg-green: #1d9901 !important; */
 }
 
-.app {
+/* .app {
   text-align: center;
-}
+} */
+
 
 /* ========================================
                Bootstrap Card
   ==========================================*/
-
-:not(.MuiCard-root) .brand-link,
-.brand-link:hover {
-  color: white;
-  text-decoration: none;
-}
+  /* :not(.MuiCard-root) .brand-link,
+  .brand-link:hover {
+    color: white;
+    text-decoration: none;
+  } */
 
 /* ========================================
                 Fields
@@ -352,10 +354,10 @@ body {
   font-size: 18px !important;
 }
 
-body > :not(.page-container),
+/* body > :not(.page-container),
 body > :not(.card) {
   padding-top: 70px !important;
-}
+} */
 
 .MuiPaper-root {
   background-color: #f5f5f5 !important;
