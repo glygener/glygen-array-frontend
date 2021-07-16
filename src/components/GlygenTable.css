@@ -1,17 +1,17 @@
 .table-btn {
   width: 25px;
   height: 25px;
-  cursor: pointer;
-  font-size: large !important;
+  /* cursor: pointer; */
+  /* font-size: large !important; */
 }
 
-.table-btn:hover {
+/* .table-btn:hover {
   opacity: 0.6;
   border: 1px solid black;
-}
+} */
 
 .ReactTable .-pagination .-btn {
-  background-color: var(--legacy-blue) !important;
+  background-color: var(--gg-blue) !important;
   color: white !important;
 }
 
@@ -33,5 +33,5 @@
 }
 
 .edit-icon {
-  color: var(--legacy-blue);
+  color: var(--gg-blue);
 }

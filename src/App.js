@@ -7,6 +7,8 @@ import { TopNavBar } from "./components/TopNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { getLoginStatus, getPageName } from "./utils/commonUtils";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import ScrollToTopBtn from "./components/ScrollToTop";
 import {
   faEdit,
   faTrashAlt,
@@ -38,6 +40,24 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { CssBaseline } from "@material-ui/core";
 import { ResponsiveEmbed } from "react-bootstrap";
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      "Oxygen",
+      "Ubuntu",
+      "Cantarell",
+      '"Fira Sans"',
+      '"Droid Sans"',
+      '"Helvetica Neue"',
+      "sans-serif",
+    ].join(","),
+  },
+});
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -79,16 +99,18 @@ const App = () => {
 
     return (
       <div className="app">
-        <TopNavBar loggedInFlag={loggedIn} logoutHandler={logoutHandler} />
-        <CssBaseline />
-
-        {location &&
-        location.pathname &&
-        (location.pathname === "/data" || location.pathname === "/") ? (
-          <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
-        ) : (
-          <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
-        )}
+        <ThemeProvider theme={theme}>
+          <TopNavBar loggedInFlag={loggedIn} logoutHandler={logoutHandler} />
+          <CssBaseline />
+          <ScrollToTopBtn />
+          {location &&
+          location.pathname &&
+          (location.pathname === "/data" || location.pathname === "/") ? (
+            <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
+          ) : (
+            <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
+          )}
+        </ThemeProvider>
       </div>
     );
   };

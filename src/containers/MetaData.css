@@ -1,10 +1,10 @@
 .plus-button-icon {
-  color: var(--legacy-blue) !important;
+  color: var(--gg-blue) !important;
   margin-top: 8px !important;
 }
 
 .add-subGroup-button {
-  color: var(--legacy-blue) !important;
+  color: var(--gg-blue) !important;
   font-size: 27px !important;
   width: 40px !important;
   margin-top: 7px !important;
@@ -57,6 +57,6 @@
   -webkit-tap-highlight-color: transparent !important;
   height: 38px !important;
   color: white !important;
-  background-color: var(--legacy-blue) !important;
+  background-color: var(--gg-blue) !important;
   margin: 10px 10px 0px 10px !important;
 }

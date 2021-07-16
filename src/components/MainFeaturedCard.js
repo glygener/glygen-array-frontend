@@ -52,7 +52,7 @@ export default function MainFeaturedCard(props) {
   const { post } = props;
 
   return (
-    <Paper className={classes.mainFeaturedCard} style={{ backgroundImage: `url(${post.image})` }}>
+    <Paper className={classes.mainFeaturedCard} alt="Main featured card" style={{ backgroundImage: `url(${post.image})` }}>
       {<img style={{ display: "none" }} src={post.image} alt={post.imageText} />}
       <div className={classes.overlay} />
       <Grid container>

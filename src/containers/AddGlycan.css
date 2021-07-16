@@ -1,13 +1,13 @@
 .primary {
-  background-color: #2f78b4 !important;
+  background-color: var(--gg-blue) !important;
 }
 
 .MuiStepIcon-root.MuiStepIcon-active {
-  color: #2f78b4 !important;
+  color: var(--gg-blue) !important;
 }
 
 .MuiStepIcon-root.MuiStepIcon-completed {
-  color: #2f78b4 !important;
+  color: var(--gg-blue) !important;
 }
 .form-check-label {
   margin-bottom: 2em;
@@ -75,7 +75,7 @@ label.form-check-label {
 .stepper-button {
   height: 38px !important;
   color: white !important;
-  background-color: var(--legacy-blue) !important;
+  background-color: var(--gg-blue) !important;
   margin: 10px 10px 0px 10px !important;
 }
 
@@ -136,7 +136,7 @@ label.form-check-label {
   bottom: 0;
   left: 0;
   transition: all 0.4s ease-in-out;
-  background: var(--legacy-blue);
+  background: var(--gg-blue);
 }
 
 .optionDisabled {

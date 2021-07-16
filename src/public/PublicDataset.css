@@ -46,7 +46,7 @@
 }
 
 .more-less {
-  color: #2f78b4;
+  color: var(--gg-blue);
   border: none !important;
   background: none !important;
   box-shadow: none !important;

@@ -1,5 +1,5 @@
 .gg-blue {
-  background-color: var(--legacy-blue) !important;
+  background-color: var(--gg-blue) !important;
 }
 .align-right-header {
   display: flex !important;

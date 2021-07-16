@@ -5,7 +5,7 @@
 .stepper-button {
   height: 38px !important;
   color: white !important;
-  background-color: var(--legacy-blue) !important;
+  background-color: var(--gg-blue) !important;
   margin: 10px 10px 0px 10px !important;
 }
 
@@ -66,7 +66,7 @@
   bottom: 0;
   left: 0;
   transition: all 0.4s ease-in-out;
-  background: var(--legacy-blue);
+  background: var(--gg-blue);
 }
 
 .optionDisabled {

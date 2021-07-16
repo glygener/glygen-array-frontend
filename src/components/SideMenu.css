@@ -9,7 +9,7 @@
 
 .MuiListItem-button:hover,
 .active {
-  background-color: var(--legacy-blue) !important;
+  background-color: var(--gg-blue) !important;
   color: #e6e6e6 !important;
 }
 

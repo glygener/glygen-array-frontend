@@ -81,8 +81,3 @@
   display: inline-block;
   line-height: 0.85;
 }
-
-/* mouse over link */
-a:hover {
-  color: blue;
-}
