@@ -57,6 +57,9 @@ const AddFeature = props => {
 
   const [featureMetaData, setFeatureMetaData] = useState();
   const [metadataforAddFeature, setMetadataforAddFeature] = useState([]);
+  const [onlyMyglycans, setOnlyMyglycans] = useState(false);
+  const [onlyMyLinkers, setOnlyMyLinkers] = useState(false);
+  const [linkerFetchWS, setLinkerFetchWS] = useState("listalllinkers");
 
   const isStepSkipped = step => {
     return featureAddState.type !== "NORMAL" && step === 2 && activeStep === 3;
@@ -313,7 +316,27 @@ const AddFeature = props => {
                 </Form.Group>
               </Form>
             )}
+
             <Form className="form-container">
+              <Row style={{ textAlign: "right", marginBottom: "-25px", fontSize: "18px", marginLeft: "50px" }}>
+                <Col md={{ offset: 8 }}>
+                  <input
+                    type="checkbox"
+                    style={{
+                      height: "20px",
+                      width: "15px"
+                    }}
+                    onChange={() => {
+                      setOnlyMyLinkers(!onlyMyLinkers);
+                      onlyMyLinkers ? setLinkerFetchWS("listalllinkers") : setLinkerFetchWS("linkerlist");
+                    }}
+                    checked={onlyMyglycans}
+                  />
+                </Col>
+                <Col style={{ textAlign: "left", marginLeft: "-22px", marginTop: "-1px" }}>
+                  {"all available linkers"}
+                </Col>
+              </Row>
               <GlygenTable
                 columns={[
                   {
@@ -391,7 +414,7 @@ const AddFeature = props => {
                 defaultSortOrder={0}
                 showCommentsButton
                 commentsRefColumn="pubChemId"
-                fetchWS="listalllinkers"
+                fetchWS={linkerFetchWS}
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Linkers"

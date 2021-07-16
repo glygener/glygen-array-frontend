@@ -381,7 +381,7 @@ const AddGlycan = props => {
                     >
                       <option value="GlycoCT">GlycoCT</option>
                       <option value="GlycoWorkbench">GlycoWorkbench</option>
-                      <option value="Wurcs">Wurcs</option>
+                      <option value="Wurcs">WURCS</option>
                       <option value="IUPAC">CFG IUPAC Condensed</option>
                     </Form.Control>
                     <Feedback message="Sequence Type is required"></Feedback>

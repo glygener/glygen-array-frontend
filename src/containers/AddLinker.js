@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { validateSequence } from "../utils/sequence";
 import displayNames from "../appData/displayNames";
+import { ConfirmationModal } from "../components/ConfirmationModal";
 
 const AddLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -23,6 +24,7 @@ const AddLinker = props => {
   const [classifications, setClassifications] = useState([]);
   const [disableClassification, setDisableClassification] = useState(false);
   const [disablePubChemFields, setDisablePubChemFields] = useState(false);
+  const [disableReset, setDisableReset] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [newPubMedId, setNewPubMedId] = useState("");
   const [validatedSpecificDetails, setValidatedSpecificDetails] = useState(false);
@@ -31,6 +33,8 @@ const AddLinker = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [sequenceError, setSequenceError] = useState("");
+  const [deleteData, setDeleteData] = useState();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const linkerAddInitState = {
     pubChemId: "",
@@ -60,18 +64,18 @@ const AddLinker = props => {
 
   const reviewFields = {
     type: { label: "Linker Type", type: "text" },
-    pubChemId: { label: "PubChem Id", type: "text" },
-    uniProtId: { label: "UniProt Id", type: "text" },
+    pubChemId: { label: "PubChem Compound CID", type: "text" },
+    uniProtId: { label: "UniProt Id", type: "text", length: 100 },
     pdbIds: { label: "PDB Ids", type: "text" },
     classification: { label: "Classification", type: "text" },
     inChiKey: { label: "InChiKey", type: "textarea" },
     inChiSequence: { label: "InchI Sequence", type: "textarea" },
-    iupacName: { label: "IUPAC Name", type: "text" },
+    iupacName: { label: "Name", type: "text" },
     molecularFormula: { label: "Molecular Formula", type: "text" },
     smiles: { label: "SMILES", type: "text" },
-    name: { label: "Name", type: "text" },
-    comment: { label: "Comments", type: "textarea" },
-    description: { label: "Description", type: "textarea" },
+    name: { label: "Name", type: "text", length: 100 },
+    comment: { label: "Comments", type: "textarea", length: 10000 },
+    description: { label: "Description", type: "textarea", length: 250 },
     mass: { label: "Mass", type: "text" },
     sequence: { label: "Sequence", type: "textarea" },
     opensRing: { label: "Opens Ring", type: "text" }
@@ -86,18 +90,18 @@ const AddLinker = props => {
   };
 
   const smLinkerPubChemFields = {
-    inChiKey: { label: displayNames.linker.INCHIKEY, type: "textarea" },
-    inChiSequence: { label: displayNames.linker.INCHI_SEQUENCE, type: "textarea" },
-    iupacName: { label: "IUPAC Name", type: "text" },
+    inChiKey: { label: displayNames.linker.INCHIKEY, type: "textarea", length: 27 },
+    inChiSequence: { label: displayNames.linker.INCHI_SEQUENCE, type: "textarea", length: 10000 },
+    iupacName: { label: "Name", type: "text", length: 2000 },
     mass: { label: "Mass", type: "text" },
-    molecularFormula: { label: "Molecular Formula", type: "text" },
-    smiles: { label: displayNames.linker.SMILES, type: "text" }
+    molecularFormula: { label: "Molecular Formula", type: "text", length: 256 },
+    smiles: { label: displayNames.linker.SMILES, type: "text", length: 10000 }
   };
 
   const commonFields = {
-    name: { label: "Name", type: "text" },
-    comment: { label: "Comments", type: "textarea" },
-    description: { label: "Description", type: "textarea" }
+    name: { label: "Name", type: "text", length: 100 },
+    comment: { label: "Comments", type: "textarea", length: 2000 },
+    description: { label: "Description", type: "textarea", length: 250 }
   };
 
   const opensRingOptions = [
@@ -116,12 +120,14 @@ const AddLinker = props => {
   ];
 
   const handleChange = e => {
+    setDisableReset(true);
     const name = e.target.name;
     const newValue = e.target.value;
     setLinkerAddState({ [name]: newValue });
   };
 
   const handleTypeSelect = e => {
+    setDisableReset(true);
     const newValue = e.target.value;
     setLinkerAddState({ ...linkerAddInitState, ...{ type: newValue } });
     setDisableClassification(false);
@@ -138,6 +144,7 @@ const AddLinker = props => {
         classification: classificationValue
       }
     });
+    setDisableReset(true);
   };
 
   const handleNext = () => {
@@ -236,17 +243,24 @@ const AddLinker = props => {
           smiles: responseJson.smiles,
           mass: responseJson.mass
         });
+
         if (responseJson.classification) {
           setClassifications([responseJson.classification]);
           setDisableClassification(true);
         }
         setDisablePubChemFields(true);
       });
+
+      setDisablePubChemFields(true);
       setShowLoading(false);
     }
 
-    function populateLinkerDetailsError() {
-      console.log("Classification fetch error");
+    function populateLinkerDetailsError(response) {
+      response.json().then(resp => {
+        console.log(resp);
+        setPageErrorsJson(resp);
+        setShowErrorSummary(true);
+      });
       setShowLoading(false);
     }
   }
@@ -274,7 +288,13 @@ const AddLinker = props => {
       setValidatedSpecificDetails(false);
     }
 
-    function getSequenceFromUniprotError() {
+    function getSequenceFromUniprotError(response) {
+      response.text().then(function(text) {
+        return text ? console.log(JSON.parse(text)) : "helo";
+        // setPageErrorsJson(text);
+        // setShowErrorSummary(true);
+      });
+
       console.log("Sequence fetch error");
       setShowLoading(false);
     }
@@ -285,6 +305,7 @@ const AddLinker = props => {
 
     function addPublicationSuccess(response) {
       response.json().then(responseJson => {
+        setShowErrorSummary(false);
         setLinkerAddState({
           publications: linkerAddState.publications.concat([responseJson])
         });
@@ -292,7 +313,14 @@ const AddLinker = props => {
       });
     }
 
-    function addPublicationError() {}
+    function addPublicationError(response) {
+      response.json().then(resp => {
+        // "pubmedid"
+        setPageErrorsJson(resp);
+        setShowErrorSummary(true);
+        console.log(resp);
+      });
+    }
   }
 
   function addLinker() {
@@ -359,20 +387,54 @@ const AddLinker = props => {
     }
   }
 
+  function deleteRow(id, wscall) {
+    setDeleteData({ id: id, wscall: wscall });
+    setShowDeleteModal(true);
+  }
+
+  const cancelDelete = () => setShowDeleteModal(false);
+
+  const confirmDelete = () => {
+    setShowDeleteModal(false);
+
+    wsCall(
+      deleteData.wscall,
+      "DELETE",
+      [deleteData.id],
+      true,
+      null,
+      response => {
+        console.log(linkerAddState.publications);
+
+        const currentPublications = linkerAddState.publications;
+        const pubmedIndexDeleted = currentPublications.indexOf(deleteData.id);
+        currentPublications.slice(pubmedIndexDeleted, 1);
+
+        setLinkerAddState({
+          publications: currentPublications
+        });
+      },
+      response => {
+        response.json().then(responseJson => {
+          setPageErrorsJson(responseJson);
+          setShowErrorSummary(true);
+        });
+      }
+    );
+  };
+
   function clearPubChemFields() {
     setLinkerAddState({
-      pubChemId: "",
-      inChiKey: "",
-      inChiSequence: "",
-      iupacName: "",
-      imageURL: "",
-      molecularFormula: "",
-      smiles: "",
-      mass: ""
+      ...linkerAddInitState,
+      ...{ type: "SMALLMOLECULE_LINKER" }
     });
+
     populateClassifications();
     setDisableClassification(false);
     setDisablePubChemFields(false);
+    setShowErrorSummary(false);
+    setDisableReset(false);
+    setPageErrorsJson({});
     setValidatedSpecificDetails(false);
   }
 
@@ -402,7 +464,11 @@ const AddLinker = props => {
                 {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </Button>
             </div>
-            <ErrorSummary show={showErrorSummary} form="linkers" errorJson={pageErrorsJson}></ErrorSummary>
+
+            {showErrorSummary === true && (
+              <ErrorSummary show={showErrorSummary} form="linkers" errorJson={pageErrorsJson}></ErrorSummary>
+            )}
+
             <Typography component={"span"} variant={"body2"}>
               {getStepContent(activeStep)}
             </Typography>
@@ -451,14 +517,15 @@ const AddLinker = props => {
               {linkerAddState.type === "SMALLMOLECULE_LINKER" && (
                 <>
                   <Form.Group as={Row} controlId="pubChemId">
-                    <FormLabel label="PubChem Id" />
+                    <FormLabel label="PubChem Compound CID" />
                     <Col md={4}>
                       <Form.Control
                         type="number"
                         name="pubChemId"
-                        placeholder="PubChem Id"
+                        placeholder="PubChem Compound CID"
                         value={linkerAddState.pubChemId}
                         onChange={handleChange}
+                        disabled={disablePubChemFields}
                       />
                     </Col>
                     {linkerAddState.pubChemId !== "" && !disablePubChemFields && (
@@ -515,6 +582,7 @@ const AddLinker = props => {
                             value={linkerAddState[key]}
                             onChange={handleChange}
                             disabled={disablePubChemFields}
+                            maxLength={smLinkerPubChemFields[key].length}
                           />
                         </Col>
                         {(key === "inChiKey" || key === "smiles") &&
@@ -535,7 +603,7 @@ const AddLinker = props => {
                     <Col md={{ span: 2, offset: 5 }}>
                       <Button
                         variant="contained"
-                        disabled={!disablePubChemFields}
+                        disabled={!disableReset}
                         onClick={clearPubChemFields}
                         className="stepper-button"
                       >
@@ -556,6 +624,7 @@ const AddLinker = props => {
                         placeholder="UniProt Id"
                         value={linkerAddState.uniProtId}
                         onChange={handleChange}
+                        maxLength={100}
                       />
                     </Col>
                     {linkerAddState.uniProtId !== "" && (
@@ -581,6 +650,7 @@ const AddLinker = props => {
                             pdbIds: csvToArray(e.target.value)
                           })
                         }
+                        maxLength={100}
                       />
                     </Col>
                   </Form.Group>
@@ -597,6 +667,7 @@ const AddLinker = props => {
                         className="sequence-text-area"
                         isInvalid={validatedSpecificDetails && (linkerAddState.sequence === "" || sequenceError !== "")}
                         spellCheck="false"
+                        maxLength={10000}
                       />
                       {linkerAddState.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
                       {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
@@ -619,6 +690,7 @@ const AddLinker = props => {
                         className="sequence-text-area"
                         isInvalid={validatedSpecificDetails && (linkerAddState.sequence === "" || sequenceError !== "")}
                         spellCheck="false"
+                        maxLength={10000}
                       />
                       {linkerAddState.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
                       {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
@@ -646,6 +718,7 @@ const AddLinker = props => {
                         placeholder={commonFields[key].label}
                         value={linkerAddState[key]}
                         onChange={handleChange}
+                        maxLength={commonFields[key].length}
                       />
                     </Col>
                   </Form.Group>
@@ -665,16 +738,17 @@ const AddLinker = props => {
                 <FormLabel label="Publications" />
                 <Col md={4}>
                   {linkerAddState.publications.map(pub => {
-                    return <PublicationCard key={pub.pubmedId} {...pub}></PublicationCard>;
+                    return <PublicationCard key={pub.pubmedId} {...pub} deletePublication={deleteRow} />;
                   })}
                   <Row>
                     <Col md={10}>
                       <Form.Control
-                        as="input"
+                        type="number"
                         name="publication"
                         placeholder="Enter a Pubmed ID and click +"
                         value={newPubMedId}
                         onChange={e => setNewPubMedId(e.target.value)}
+                        maxLength={100}
                       />
                     </Col>
                     <Col md={1}>
@@ -709,6 +783,13 @@ const AddLinker = props => {
                   <Feedback message="Please check all the urls"></Feedback>
                 </Col>
               </Form.Group>
+              <ConfirmationModal
+                showModal={showDeleteModal}
+                onCancel={cancelDelete}
+                onConfirm={confirmDelete}
+                title="Confirm Delete"
+                body="Are you sure you want to delete?"
+              />
             </Form>
           </>
         );

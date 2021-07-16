@@ -1287,7 +1287,11 @@ const MetaData = props => {
 
   function setSampleUpdateData() {
     metaDataDetails.sample.descriptors.forEach(generalDsc => {
-      const simpleDescs = sampleModel.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
+      let simpleDescs;
+
+      if (generalDsc.key && generalDsc.key.id) {
+        simpleDescs = sampleModel.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
+      }
 
       if (simpleDescs) {
         simpleDescs.value = generalDsc.value;

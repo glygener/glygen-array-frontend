@@ -36,11 +36,13 @@ const FORM_ERROR_MESSAGES = {
     NotValid_sequence:
       "Sequence string seems to be unrecognizable or may not be compatible with the selected format. Please check again for validity",
     NotValid_glytoucanId: "That Glytoucan Id is not recognized by Glytoucan. Please try again.",
-    Invalid_structure: "Provided Glycan does not specify the Glytoucan Id"
+    Invalid_structure: "Provided Glycan does not specify the Glytoucan Id",
+    NotValid_file: "Invalid file. Please verify the file, selected format and upload again"
   },
   linkers: {
-    NotValid_pubChemId: "That PubChem Id was not recognized by PubChem. Please try again.",
-    Duplicate_pubChemId: "A linker with that PubChem Id already exists in your collection",
+    NotValid_pubchemid: "That PubChem Id was not recognized by PubChem. Please try again.",
+    NotValid_pubmedid: "The PubMed Id entered is invalid. Please try again.",
+    Duplicate_pubchemid: "A linker with that PubChem Id already exists in your collection",
     Duplicate_name: "Another linker in your collection has the same Name. Please use another Name"
   },
   feature: {},
