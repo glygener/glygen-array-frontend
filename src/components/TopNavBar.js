@@ -13,7 +13,7 @@ import { FaUserPlus } from "react-icons/fa";
 const TopNavBar = (props) => {
   return (
     <React.Fragment>
-      <Navbar collapseOnSelect5 className="gg-blue topbar" expand="lg">
+      <Navbar collapseOnSelect className="gg-blue topbar" expand="lg">
         <Navbar.Brand>
           <Link to="/">
             <img src={logo} alt="GlyGen logo" />
