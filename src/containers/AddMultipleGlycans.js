@@ -266,6 +266,7 @@ const AddMultipleGlycans = props => {
                 {
                   Header: "Id",
                   accessor: "id",
+                  minWidth: 80,
                   Cell: row => {
                     return row.original.glycan && row.original.glycan.id;
                   }
@@ -273,28 +274,22 @@ const AddMultipleGlycans = props => {
                 {
                   Header: "Sequence",
                   accessor: "sequence",
-                  width: 170,
+                  minWidth: 130,
                   getProps: (state, rowInfo, column) => {
                     return {
                       style: {
-                        wordBreak: "normal"
-                        // wordWrap: "break-word"
+                        whiteSpace: "initial"
                       }
                     };
-                    // <div>{rowInfo.row.original.glycan && rowInfo.row.original.glycan.sequence}</div>;
                   },
-
                   Cell: row => {
-                    return (
-                      // <div style={{ wordWrap: "break-word" }}>
-                      row.original.glycan && row.original.glycan.sequence
-                      // </div>
-                    );
+                    return row.original.glycan && row.original.glycan.sequence;
                   }
                 },
                 {
                   Header: "Error message",
                   accessor: "errorMessage",
+                  minWidth: 80,
                   Cell: row => {
                     return (
                       row.original.error &&

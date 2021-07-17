@@ -297,7 +297,12 @@ const AddFeature = props => {
                 </Form.Group>
                 {featureAddState.linker.imageURL && (
                   <Form.Group as={Row} controlId="name">
-                    <FormLabel label="" />
+                    <Col md={{ span: 3, offset: 2 }}>
+                      <Form.Label style={{ marginTop: "55px" }}>
+                        {featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "INCHI code" : "AA sequence"}
+                      </Form.Label>
+                    </Col>
+
                     <Col md={4}>
                       <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
                     </Col>
@@ -439,7 +444,7 @@ const AddFeature = props => {
                 <Form.Group as={Row} controlId="name">
                   <FormLabel label="" />
                   <Col md={4}>
-                    <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
+                    <StructureImage imgUrl={featureAddState.linker.imageURL} />
                   </Col>
                 </Form.Group>
               )}
