@@ -395,7 +395,7 @@ const AddExperiment = props => {
                   <FormLabel label="Publications" />
                   <Col md={4}>
                     {experiment.publications.map(pub => {
-                      return <PublicationCard key={pub.pubmedId} {...pub} />;
+                      return <PublicationCard key={pub.pubmedId} enableDelete {...pub} />;
                     })}
                     <Row>
                       <Col md={9}>{getPublicationFormControl()}</Col>
@@ -476,7 +476,7 @@ const AddExperiment = props => {
                       </tr>
                     ) : (
                       experiment.publications.map((pub, pubIndex) => {
-                        return <PublicationCard key={pubIndex} {...pub} deletePublication={deleteRow} />;
+                        return <PublicationCard key={pubIndex} {...pub} enableDelete deletePublication={deleteRow} />;
                       })
                     )}
                   </tbody>

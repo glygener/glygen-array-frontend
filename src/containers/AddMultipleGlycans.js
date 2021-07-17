@@ -110,9 +110,9 @@ const AddMultipleGlycans = props => {
     return (
       <>
         <ul>
-          {summaryLinks.map(linkGlycans => {
+          {summaryLinks.map((linkGlycans, index) => {
             return (
-              <div className={"summar-links"}>
+              <div className={"summar-links"} key={index}>
                 <li style={{ textAlign: "left" }} onClick={() => window.scrollTo(0, linkGlycans.scrollto)}>
                   {linkGlycans.tableLink}
                 </li>
@@ -265,15 +265,49 @@ const AddMultipleGlycans = props => {
               [
                 {
                   Header: "Id",
-                  accessor: "id"
+                  accessor: "id",
+                  Cell: row => {
+                    return row.original.glycan && row.original.glycan.id;
+                  }
                 },
                 {
                   Header: "Sequence",
-                  accessor: "sequence"
+                  accessor: "sequence",
+                  width: 170,
+                  getProps: (state, rowInfo, column) => {
+                    return {
+                      style: {
+                        wordBreak: "normal"
+                        // wordWrap: "break-word"
+                      }
+                    };
+                    // <div>{rowInfo.row.original.glycan && rowInfo.row.original.glycan.sequence}</div>;
+                  },
+
+                  Cell: row => {
+                    return (
+                      // <div style={{ wordWrap: "break-word" }}>
+                      row.original.glycan && row.original.glycan.sequence
+                      // </div>
+                    );
+                  }
                 },
                 {
                   Header: "Error message",
-                  accessor: "errorMessage"
+                  accessor: "errorMessage",
+                  Cell: row => {
+                    return (
+                      row.original.error &&
+                      row.original.error.errors &&
+                      row.original.error.errors.map(err => {
+                        return (
+                          <div style={{ textAlign: "center" }}>
+                            {err.objectName === "sequence" ? "Invalid Sequence" : `${err.defaultMessage}`}
+                          </div>
+                        );
+                      })
+                    );
+                  }
                 }
               ],
               "Glycan could not be uploaded"

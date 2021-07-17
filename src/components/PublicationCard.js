@@ -30,15 +30,17 @@ const PublicationCard = props => {
               </div>
             </div>
           </td>
-          <td>
-            <FontAwesomeIcon
-              icon={["far", "trash-alt"]}
-              size="xs"
-              title="Delete"
-              className="caution-color table-btn"
-              onClick={() => props.deletePublication(props.id, "deletePublication")}
-            />
-          </td>
+          {props.enableDelete && (
+            <td>
+              <FontAwesomeIcon
+                icon={["far", "trash-alt"]}
+                size="xs"
+                title="Delete"
+                className="caution-color table-btn"
+                onClick={() => props.deletePublication(props.id, "deletePublication")}
+              />
+            </td>
+          )}
         </tr>
       </>
     );
@@ -61,6 +63,7 @@ PublicationCard.propTypes = {
   endPage: PropTypes.string,
   doiId: PropTypes.string,
   uri: PropTypes.string,
+  enableDelete: PropTypes.bool,
   deletePublication: PropTypes.func
 };
 

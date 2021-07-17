@@ -65,8 +65,6 @@ const AddLinker = props => {
   const reviewFields = {
     type: { label: "Linker Type", type: "text" },
     pubChemId: { label: "PubChem Compound CID", type: "text" },
-    uniProtId: { label: "UniProt Id", type: "text", length: 100 },
-    pdbIds: { label: "PDB Ids", type: "text" },
     classification: { label: "Classification", type: "text" },
     inChiKey: { label: "InChiKey", type: "textarea" },
     inChiSequence: { label: "InchI Sequence", type: "textarea" },
@@ -77,6 +75,8 @@ const AddLinker = props => {
     comment: { label: "Comments", type: "textarea", length: 10000 },
     description: { label: "Description", type: "textarea", length: 250 },
     mass: { label: "Mass", type: "text" },
+    uniProtId: { label: "UniProt Id", type: "text", length: 100 },
+    pdbIds: { label: "PDB Ids", type: "text" },
     sequence: { label: "Sequence", type: "textarea" },
     opensRing: { label: "Opens Ring", type: "text" }
   };
@@ -738,7 +738,7 @@ const AddLinker = props => {
                 <FormLabel label="Publications" />
                 <Col md={4}>
                   {linkerAddState.publications.map(pub => {
-                    return <PublicationCard key={pub.pubmedId} {...pub} deletePublication={deleteRow} />;
+                    return <PublicationCard key={pub.pubmedId} {...pub} enableDelete deletePublication={deleteRow} />;
                   })}
                   <Row>
                     <Col md={10}>
@@ -796,29 +796,36 @@ const AddLinker = props => {
       case 3:
         return (
           <Form className="radioform2">
-            {Object.keys(reviewFields).map(key => (
+            {Object.keys(reviewFields).map(key =>
               // eslint-disable-next-line react/jsx-key
-              <Form.Group as={Row} controlId={key} key={key}>
-                <FormLabel label={reviewFields[key].label} />
-                <Col md={6}>
-                  <Form.Control
-                    as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
-                    rows={key === "sequence" ? "15" : "4"}
-                    name={key}
-                    placeholder={"-"}
-                    value={getReviewDisplay(key, linkerAddState[key])}
-                    disabled
-                    className={key === "sequence" ? "sequence-text-area" : false}
-                  />
-                </Col>
-              </Form.Group>
-            ))}
+              linkerAddState.type === "SMALLMOLECULE_LINKER" &&
+              (reviewFields[key].label === "UniProt Id" ||
+                reviewFields[key].label === "PDB Ids" ||
+                reviewFields[key].label === "Sequence") ? (
+                ""
+              ) : (
+                <Form.Group as={Row} controlId={key} key={key}>
+                  <FormLabel label={reviewFields[key].label} />
+                  <Col md={6}>
+                    <Form.Control
+                      as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
+                      rows={key === "sequence" ? "15" : "4"}
+                      name={key}
+                      placeholder={"-"}
+                      value={getReviewDisplay(key, linkerAddState[key])}
+                      disabled
+                      className={key === "sequence" ? "sequence-text-area" : false}
+                    />
+                  </Col>
+                </Form.Group>
+              )
+            )}
             <Form.Group as={Row} controlId="publications">
               <FormLabel label="Publications" />
               <Col md={4}>
                 {linkerAddState.publications.length > 0 ? (
                   linkerAddState.publications.map(pub => {
-                    return <PublicationCard key={pub.pubmedId} {...pub}></PublicationCard>;
+                    return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
                   })
                 ) : (
                   <div style={{ marginTop: "8px" }}>None</div>
