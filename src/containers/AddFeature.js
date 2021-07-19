@@ -213,7 +213,7 @@ const AddFeature = props => {
         chooseGlycanTableData.forEach(e => (e["glycan"] = undefined));
       }
     }
-    setFeatureAddState({ glycans: chooseGlycanTableData });
+    featureAddState.glycans.length === 0 && setFeatureAddState({ glycans: chooseGlycanTableData });
     return valid;
   }
 
@@ -335,7 +335,7 @@ const AddFeature = props => {
                       setOnlyMyLinkers(!onlyMyLinkers);
                       onlyMyLinkers ? setLinkerFetchWS("listalllinkers") : setLinkerFetchWS("linkerlist");
                     }}
-                    checked={onlyMyglycans}
+                    checked={onlyMyLinkers}
                   />
                 </Col>
                 <Col style={{ textAlign: "left", marginLeft: "-22px", marginTop: "-1px" }}>
@@ -442,7 +442,12 @@ const AddFeature = props => {
               </Form.Group>
               {featureAddState.linker.imageURL && (
                 <Form.Group as={Row} controlId="name">
-                  <FormLabel label="" />
+                  <Col md={{ span: 3, offset: 2 }}>
+                    <Form.Label style={{ marginTop: "55px" }}>
+                      {featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "INCHI code" : "AA sequence"}
+                    </Form.Label>
+                  </Col>
+
                   <Col md={4}>
                     <StructureImage imgUrl={featureAddState.linker.imageURL} />
                   </Col>

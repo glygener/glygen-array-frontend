@@ -16,6 +16,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { validateSequence } from "../utils/sequence";
 import displayNames from "../appData/displayNames";
 import { ConfirmationModal } from "../components/ConfirmationModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AddLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -35,6 +36,7 @@ const AddLinker = props => {
   const [sequenceError, setSequenceError] = useState("");
   const [deleteData, setDeleteData] = useState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [newURL, setNewURL] = useState("");
 
   const linkerAddInitState = {
     pubChemId: "",
@@ -188,6 +190,63 @@ const AddLinker = props => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
     setShowErrorSummary(false);
   };
+
+  const urlWidget = enableDelete => {
+    return (
+      <>
+        {linkerAddState.urls.length > 0 ? (
+          linkerAddState.urls.map((url, index) => {
+            return (
+              <Row style={{ marginTop: "8px" }} key={index}>
+                <Col>
+                  <Link
+                    style={{ fontSize: "0.9em" }}
+                    href={externalizeUrl(url)}
+                    target="_blank"
+                    rel="external noopener noreferrer"
+                  >
+                    {url}
+                  </Link>
+                </Col>
+                {enableDelete && (
+                  <Col style={{ marginTop: "2px" }}>
+                    <FontAwesomeIcon
+                      icon={["far", "trash-alt"]}
+                      size="xs"
+                      title="Delete Url"
+                      className="caution-color table-btn"
+                      onClick={() => {
+                        const listUrls = linkerAddState.urls;
+                        debugger;
+                        listUrls.splice(index, 1);
+                        setLinkerAddState({ urls: listUrls });
+                      }}
+                    />
+                  </Col>
+                )}
+              </Row>
+            );
+          })
+        ) : (
+          <div style={{ marginTop: "8px" }}>None</div>
+        )}
+      </>
+    );
+  };
+  function addURL() {
+    var listUrls = linkerAddState.urls;
+    var urlEntered = csvToArray(newURL)[0];
+
+    if (urlEntered !== "" && !isValidURL(urlEntered)) {
+      setInvalidUrls(true);
+      return;
+    } else {
+      listUrls.push(urlEntered);
+      setInvalidUrls(false);
+    }
+    setNewURL("");
+    setLinkerAddState({ urls: listUrls });
+  }
 
   function populateClassifications() {
     wsCall(
@@ -762,25 +821,25 @@ const AddLinker = props => {
               <Form.Group as={Row} controlId="urls">
                 <FormLabel label="URLs" />
                 <Col md={4}>
-                  <Form.Control
-                    as="input"
-                    name="urls"
-                    placeholder="URLs separated by ;"
-                    value={linkerAddState.urls.join(";")}
-                    onChange={e => {
-                      var enteredUrls = csvToArray(e.target.value);
-                      setLinkerAddState({ urls: enteredUrls });
-                      for (var url of enteredUrls) {
-                        if (url !== "" && !isValidURL(url)) {
-                          setInvalidUrls(true);
-                          return;
-                        }
-                      }
-                      setInvalidUrls(false);
-                    }}
-                    isInvalid={invalidUrls}
-                  />
-                  <Feedback message="Please check all the urls"></Feedback>
+                  {urlWidget(true)}
+                  <Row>
+                    <Col md={10}>
+                      <Form.Control
+                        as="input"
+                        name="urls"
+                        placeholder="Enter URL and click +"
+                        value={newURL}
+                        onChange={e => setNewURL(e.target.value)}
+                        isInvalid={invalidUrls}
+                      />
+                      <Feedback message="Please check the url entered" />
+                    </Col>
+                    <Col md={1}>
+                      <Button variant="contained" onClick={addURL} className="add-button">
+                        +
+                      </Button>
+                    </Col>
+                  </Row>
                 </Col>
               </Form.Group>
               <ConfirmationModal

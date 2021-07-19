@@ -72,6 +72,9 @@ const GlygenTable = props => {
     columnsToRender["commentsColumn"] = {
       Header: "Comments",
       accessor: "description",
+      style: {
+        textAlign: "center"
+      },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) =>
         row.value ? (
@@ -108,6 +111,9 @@ const GlygenTable = props => {
   if (props.showDeleteButton || props.showEditButton) {
     columnsToRender["actionsColumn"] = {
       Header: "Actions",
+      style: {
+        textAlign: "center"
+      },
       sortable: false,
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (

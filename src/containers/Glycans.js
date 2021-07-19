@@ -46,7 +46,10 @@ const Glycans = props => {
           columns={[
             {
               Header: "Internal Id",
-              accessor: "internalId"
+              accessor: "internalId",
+              style: {
+                textAlign: "left"
+              }
             },
             {
               Header: "GlyTouCan ID",
