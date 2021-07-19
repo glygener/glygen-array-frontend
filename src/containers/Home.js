@@ -3,7 +3,6 @@ import "./Home.css";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import MainFeaturedCard from "../components/MainFeaturedCard";
-// import mainImg from "../images/main.png";
 import mainImg from "../images/main-featured-img.svg";
 import TwitterCard from "../components/TwitterCard";
 import Grid from "@material-ui/core/Grid";

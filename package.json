@@ -17,6 +17,7 @@
     "bootstrap": "~4.3.1",
     "env-cmd": "~10.1.0",
     "material-table": "~1.67.1",
+    "material-ui": "^0.20.2",
     "moment": "^2.29.1",
     "react": "^16.10.2",
     "react-beautiful-dnd": "~10.0.4",

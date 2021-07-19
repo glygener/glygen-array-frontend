@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>glycan-icon</title>
+    <g id="glycan-icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-6" transform="translate(22.973864, 23.173864) rotate(45.000000) translate(-22.973864, -23.173864) translate(2.473864, 12.173864)" fill="#2F78B7" stroke="#2F78B7" stroke-width="0.995053339">
+            <line x1="24.2543445" y1="11.0341627" x2="33.0330793" y2="11.0341627" id="Line-4-Copy-4" stroke-linecap="square"></line>
+            <line x1="34.8841058" y1="11.0341627" x2="40.3210788" y2="11.0341627" id="Line-4-Copy-6" stroke-linecap="square"></line>
+            <line x1="2.08401976" y1="2.74077995" x2="10.8627546" y2="2.74077995" id="Line-4-Copy" stroke-linecap="square"></line>
+            <path d="M40.6718263,7.72807377 C39.9409096,10.1243269 41.6556438,11.2831067 40.7046791,13.6622678" id="Path-2"></path>
+            <rect id="Rectangle-Copy-3" x="29.8232767" y="8.38927122" width="5.05442307" height="5.01570496"></rect>
+            <rect id="Rectangle-Copy-3" x="-5.65149102e-14" y="0" width="5.32044534" height="5.27968943"></rect>
+            <line x1="13.0948265" y1="6.95494488" x2="21.9424037" y2="7.02303289" id="Line-4-Copy-8" stroke-linecap="square" transform="translate(17.518615, 6.988989) rotate(44.345323) translate(-17.518615, -6.988989) "></line>
+            <line x1="2.08401976" y1="19.1854597" x2="10.8627546" y2="19.1854597" id="Line-4-Copy-7" stroke-linecap="square"></line>
+            <ellipse id="Circle-Blue-Copy-6" cx="13.1505668" cy="2.91547556" rx="2.66022267" ry="2.63984472"></ellipse>
+            <line x1="13.0952037" y1="15.1442779" x2="21.9420265" y2="15.2783796" id="Line-4-Copy-9" stroke-linecap="square" transform="translate(17.518615, 15.211329) rotate(-45.654677) translate(-17.518615, -15.211329) "></line>
+            <rect id="Rectangle-Copy-4" x="2.82574551e-13" y="16.4446797" width="5.32044534" height="5.27968943"></rect>
+            <ellipse id="Circle-Blue-Copy-9" cx="13.1505668" cy="19.3601553" rx="2.66022267" ry="2.63984472"></ellipse>
+            <ellipse id="Circle-Blue-Copy-8" cx="21.727133" cy="10.8971237" rx="2.66022267" ry="2.63984472"></ellipse>
+        </g>
+    </g>
+</svg>

@@ -5,7 +5,8 @@ import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "./ErrorSummary";
 import CardLoader from "./CardLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import microArraySlideIcon from "../images/microArray.png";
+import microArraySlideIcon from "../images/icons/microArray.svg";
+import glycanIcon from "../images/icons/glycan-icon.svg";
 
 const StatisticsCard = () => {
   const [statistics, setStatistics] = useState([]);
@@ -22,13 +23,13 @@ const StatisticsCard = () => {
       null,
       false,
       null,
-      response =>
-        response.json().then(responseJson => {
+      (response) =>
+        response.json().then((responseJson) => {
           setStatistics(responseJson);
           setShowLoading(false);
         }),
-      response =>
-        response.json().then(responseJson => {
+      (response) =>
+        response.json().then((responseJson) => {
           setPageErrorsJson(responseJson);
           setPageErrorMessage("");
           setShowErrorSummary(true);
@@ -39,9 +40,26 @@ const StatisticsCard = () => {
 
   const icons = [
     { name: "users", title: "Users", value: statistics.userCount ? statistics.userCount : 0 },
-    { name: "table", title: "Datasets", value: statistics.datasetCount ? statistics.datasetCount : 0 },
-    { name: "table", title: "Slides", value: statistics.slideCount ? statistics.slideCount : 0 },
-    { name: "vial", title: "Samples", value: statistics.sampleCount ? statistics.sampleCount : 0 }
+    {
+      name: "table",
+      title: "Datasets",
+      value: statistics.datasetCount ? statistics.datasetCount : 0,
+    },
+    {
+      name: "slides",
+      src: microArraySlideIcon,
+      alt: "Micro Array Slide Icon",
+      title: "Slides",
+      value: statistics.slideCount ? statistics.slideCount : 0,
+    },
+    { name: "vial", title: "Samples", value: statistics.sampleCount ? statistics.sampleCount : 0 },
+    {
+      name: "glycans",
+      src: glycanIcon,
+      alt: "Glycans Icon",
+      title: "Glycans",
+      value: statistics.glycanCount ? statistics.glycanCount : 0,
+    },
   ];
 
   return (
@@ -61,19 +79,20 @@ const StatisticsCard = () => {
               <>
                 <Col style={{ textAlign: "-webkit-center" }}>
                   <div className={"statcard-icon-col"}>
-                    {icon.title !== "Slides" ? (
+                    {icon.title !== "Slides" && icon.title !== "Glycans" ? (
                       <FontAwesomeIcon
                         key={index + "icon"}
                         icon={["fas", icon.name]}
                         title={icon.title}
+                        alt={icon.alt}
                         className={"statcard-icon"}
                       />
                     ) : (
                       <img
                         className="table-btn"
-                        src={microArraySlideIcon}
-                        alt="Slide"
-                        title="Micro Array Slide"
+                        src={icon.src}
+                        alt={icon.alt}
+                        title={icon.title}
                         aria-hidden="true"
                       />
                     )}
@@ -84,9 +103,9 @@ const StatisticsCard = () => {
                       {`${icon.value}`}
                     </h2>
                     <p
-                      style={{
-                        fontSize: "16px"
-                      }}
+                    // style={{
+                    //   fontSize: "16px",
+                    // }}
                     >
                       {icon.title}
                     </p>
