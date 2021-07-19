@@ -221,7 +221,7 @@ const AddMultipleGlycans = props => {
                     <option value="Library XML">CarbArrayART library (*.xml)</option>
                     <option value="GlycoWorkbench">GlycoWorkbench (*.gws)</option>
                     <option value="wurcs">WURCS</option>
-                    <option value="cfg">CFG</option>
+                    <option value="cfg">CFG IUPAC Condensed</option>
                   </Form.Control>
                   <Feedback message="Please choose a file type for the file to be uploaded"></Feedback>
                 </Col>
