@@ -1,5 +1,5 @@
-import glygenNotFoundSmall from "../images/glygenNotFoundSmall.png";
-import glygenNotFound from "../images/glygenNotFound.png";
+import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
+import glygenNotFound from "../images/glygenNotFound.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAccordionToggle } from "react-bootstrap/AccordionToggle";
 import AccordionContext from "react-bootstrap/AccordionContext";
@@ -51,7 +51,7 @@ function parseJwt(token) {
   var base64 = decodeURIComponent(
     atob(base64Url)
       .split("")
-      .map(function(c) {
+      .map(function (c) {
         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
       })
       .join("")
@@ -90,10 +90,10 @@ export function csvToArray(csv) {
 export function isValidURL(str) {
   var pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
-    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
       "(\\#[-a-z\\d_]*)?$",
     "i"
   ); // fragment locator
@@ -157,7 +157,7 @@ export function scrollToTop() {
             position: "absolute",
             float: "left",
             left: 0,
-            bottom: 0
+            bottom: 0,
           }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         />
@@ -166,22 +166,28 @@ export function scrollToTop() {
   );
 }
 
-export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, wscall) {
+export function downloadFile(
+  file,
+  setPageErrorsJson,
+  setPageErrorMessage,
+  setShowErrorSummary,
+  wscall
+) {
   wsCall(
     wscall,
     "GET",
     {
       fileFolder: file.fileFolder,
       fileIdentifier: file.identifier,
-      originalName: file.originalName
+      originalName: file.originalName,
     },
     true,
     undefined,
-    response => fileDownloadSuccess(response),
-    response => fileDownloadFailure(response),
+    (response) => fileDownloadSuccess(response),
+    (response) => fileDownloadFailure(response),
     {
       Accept: "*/*",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     }
   );
   function fileDownloadSuccess(response) {
@@ -192,7 +198,7 @@ export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setSh
     const fileName = contentDisposition.substring(fileNameIndex, contentDisposition.length - 1);
 
     //   window.location.href = fileUrl;
-    response.blob().then(blob => {
+    response.blob().then((blob) => {
       var fileUrl = URL.createObjectURL(blob);
       var a = document.createElement("a");
       document.body.appendChild(a);
@@ -205,7 +211,7 @@ export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setSh
   }
 
   function fileDownloadFailure(response) {
-    response.json().then(responseJson => {
+    response.json().then((responseJson) => {
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
       setShowErrorSummary(true);
