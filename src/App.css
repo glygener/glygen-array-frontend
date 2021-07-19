@@ -1,12 +1,12 @@
 :root {
   /* --gg-blue: #2f78b4; */
-  --gg-blue: #2f78b7 !important; 
+  --gg-blue: #2f78b7 !important;
   --dark-blue-1: #215b9e;
   --dark-blue-2: #175385;
   --gg-dark-blue: #1c4e78 !important;
   --gg-light-blue: #afd9fd !important;
   --gg-dark-hover: #57affa !important;
-  --gg-green: #60BA4B !important;
+  --gg-green: #60ba4b !important;
   /* --gg-green: #1d9901 !important; */
 }
 
@@ -28,7 +28,7 @@ a:hover {
 /* ========================================
                Bootstrap Card
   ==========================================*/
-  /* :not(.MuiCard-root) .brand-link,
+/* :not(.MuiCard-root) .brand-link,
   .brand-link:hover {
     color: white;
     text-decoration: none;
@@ -71,10 +71,14 @@ input[type]:not(:-ms-input-placeholder) + label {
 }
 
 .password-visibility {
-  margin-right: 10px;
-  margin-top: -30px;
-  float: right;
   cursor: pointer;
+  height: 16px;
+  border-radius: 50%;
+  bottom: 11px;
+  height: 28px;
+  position: absolute;
+  right: 28px;
+  width: 28px;
 }
 
 .required-asterik:after {
@@ -239,15 +243,15 @@ hr {
 /* =========================================
           Buttons
   ============================================ */
-  .scroll-to-top {
-    position: fixed;
-    bottom: 0.5rem;
-    right: 0.5rem;
-    animation: fadeIn 700ms ease-in-out 1s both;
-    cursor: pointer;
-    z-index: 1;
-  }
-  .goToTop {
+.scroll-to-top {
+  position: fixed;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  animation: fadeIn 700ms ease-in-out 1s both;
+  cursor: pointer;
+  z-index: 1;
+}
+.goToTop {
   float: right;
   padding-right: 5%;
   padding-left: 5%;
@@ -365,7 +369,6 @@ hr {
     padding-right: 24px;
   }
 }
-
 
 /* body > :not(.page-container),
 body > :not(.card) {

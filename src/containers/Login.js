@@ -87,8 +87,6 @@ const Login = props => {
                 className={"custom-text-fields"}
               />
               <Form.Label className={"label required-asterik"}>Password</Form.Label>
-              <Feedback message="Please enter password." />
-
               {credentials.password ? (
                 <FontAwesomeIcon
                   className={"password-visibility"}
@@ -101,6 +99,8 @@ const Login = props => {
               ) : (
                 ""
               )}
+
+              <Feedback message="Please enter password." />
             </Col>
           </Form.Group>
 
