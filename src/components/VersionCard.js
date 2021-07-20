@@ -8,6 +8,7 @@ import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "./ErrorSummary";
 import { Card } from "react-bootstrap";
 import "../components/VersionCard.css";
+import { getDateMMDDYYYY } from "../utils/commonUtils";
 
 const useStyles = makeStyles(() => ({
   cardAction: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function VersionCard() {
+export default function VersionCard(props) {
   const [versionData, setVersionData] = useState({});
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
@@ -43,9 +44,17 @@ export default function VersionCard() {
       null,
       (response) =>
         response.json().then((responseJson) => {
-          console.log(responseJson);
-          setVersionData(responseJson);
+          // console.log(responseJson);
           setShowLoading(false);
+          var verData = {};
+          // alert(JSON.stringify(responseJson));
+          responseJson.version.forEach((verObj) => {
+            verData[verObj.component] = {
+              version: verObj.version,
+              releaseDate: verObj.releaseDate,
+            };
+          });
+          setVersionData(verData);
         }),
       (response) =>
         response.json().then((responseJson) => {
@@ -75,12 +84,17 @@ export default function VersionCard() {
               <span>
                 <strong>Portal: &nbsp;</strong>
               </span>
-              {versionData.portalVersion}
+              {versionData.Portal &&
+                versionData.Portal.version +
+                  " (" +
+                  getDateMMDDYYYY(versionData.Portal.releaseDate) +
+                  ")"}
               <br />
               <span>
                 <strong>Api: &nbsp;</strong>
               </span>
-              {versionData.apiVersion}
+              {versionData.API &&
+                versionData.API.version + " (" + getDateMMDDYYYY(versionData.API.releaseDate) + ")"}
             </CardContent>
           </div>
         </Card>

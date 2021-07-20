@@ -7,6 +7,35 @@ import React, { useContext } from "react";
 import { wsCall } from "../utils/wsUtils";
 
 /**
+ *
+ * @param {String} date Date string returned by backend (format: YYYY-MM-DD hh:mm:ss Z offset)
+ * returns date string in MM/DD/YYYY format
+ */
+export function getDateMMDDYYYY(date) {
+  var monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  var day = date.slice(8, 10);
+  var month = date.slice(4, 7);
+  // var monthIndex = parseInt(date.slice(5, 7)) - 1;
+  var year = date.slice(24, 28);
+  return day + "/" + month + "/" + year;
+  // return day + "/" + monthNames[monthIndex] + "/" + year;
+}
+
+/**
  * Check logged in status and update app component state
  */
 export function getLoginStatus() {
