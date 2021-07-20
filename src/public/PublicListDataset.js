@@ -8,7 +8,9 @@ import { Row, Form, Col, Card } from "react-bootstrap";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "../components/CardLoader";
-
+import Table from "react-bootstrap/Table";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 const PublicListDataset = () => {
   const [listDataSet, setListDataSet] = useState([]);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -19,9 +21,12 @@ const PublicListDataset = () => {
 
   const dataset = {
     pages: "",
-    sortBy: ""
+    sortBy: "",
   };
-  const [publicData, setPublicData] = useReducer((state, newState) => ({ ...state, ...newState }), dataset);
+  const [publicData, setPublicData] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    dataset
+  );
 
   useEffect(() => {
     setShowLoading(true);
@@ -31,8 +36,8 @@ const PublicListDataset = () => {
       { offset: "0", loadAll: false, sortBy: publicData.sortBy, order: orderBy ? 1 : 0 },
       false,
       null,
-      response =>
-        response.json().then(responseJson => {
+      (response) =>
+        response.json().then((responseJson) => {
           setListDataSet(responseJson.rows);
           setShowLoading(false);
         }),
@@ -41,14 +46,14 @@ const PublicListDataset = () => {
   }, [orderBy, publicData.sortBy]);
 
   function errorWscall(response) {
-    response.json().then(responseJson => {
+    response.json().then((responseJson) => {
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
       setShowErrorSummary(true);
     });
   }
 
-  const handleSelectSortBy = e => {
+  const handleSelectSortBy = (e) => {
     const name = e.target.name;
     const selected = e.target.options[e.target.selectedIndex].value;
     setPublicData({ [name]: selected });
@@ -82,7 +87,7 @@ const PublicListDataset = () => {
       <>
         <div
           style={{
-            margin: "10px"
+            margin: "10px",
           }}
         >
           <Row>
@@ -110,6 +115,7 @@ const PublicListDataset = () => {
               {getSortByOptions()}
             </Col>
           </Row>
+
           <ReactTable
             columns={[
               {
@@ -123,32 +129,39 @@ const PublicListDataset = () => {
                     <div>
                       <strong>{row.original.name}</strong>
                     </div>
-                    <div>Sample: {row.original.sample.name}</div>
                     <div>
+                      <strong>Sample:</strong> {row.original.sample.name}
+                    </div>
+                    <div>
+                      <strong>Dataset Description:</strong> {row.original.description}
+                    </div>
+                    {/* <div>
                       Dataset Description:
                       <h5 style={{ fontSize: "1.25rem", color: "#4a4a4a" }}>
                         <strong>{row.original.description}</strong>
                       </h5>
-                    </div>
+                    </div> */}
                     <div>
-                      Submitter: &nbsp;
+                      <strong>Submitter:</strong> &nbsp;
                       <Link
                         to={""}
                         style={{
                           color: "dodgerblue",
                           textDecoration: "underline",
-                          textTransform: "uppercase"
+                          textTransform: "uppercase",
                         }}
                       >
                         {row.original.user.name}
                       </Link>
                     </div>
                     <div>
-                      <span>Public since: {getDateCreated(row.original.dateCreated)}</span>
+                      <span>
+                        <strong>Public since:</strong> {getDateCreated(row.original.dateCreated)}
+                      </span>
                     </div>
                   </div>
-                )
-              }
+                ),
+              },
             ]}
             data={listDataSet}
             pageSizeOptions={[5, 10, 25]}
