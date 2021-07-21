@@ -212,7 +212,7 @@ const AddGlycan = props => {
             </Step>
           ))}
         </Stepper>
-        {getNavigationButtons("button - div")}
+        {getNavigationButtons("button - div text-center")}
         &nbsp; &nbsp;
         {showErrorSummary === true && (
           <ErrorSummary show={showErrorSummary} form="glycans" errorJson={pageErrorsJson}></ErrorSummary>
@@ -222,7 +222,7 @@ const AddGlycan = props => {
             <Typography className={classes.instructions} component={"span"} variant={"body2"}>
               {getStepContent(activeStep, validate)}
             </Typography>
-            {getNavigationButtons("button-div line-break-1")}
+            {getNavigationButtons("button-div line-break-1 text-center")}
           </div>
         </div>
       </div>
