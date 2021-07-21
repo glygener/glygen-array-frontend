@@ -36,26 +36,33 @@ const AddMultipleGlycans = props => {
   const defaultFileType = "*/*";
 
   const fileDetails = {
-    fileType: defaultFileType
+    fileType: defaultFileType,
+    glytoucanRegistration: false
   };
 
   const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
 
   function handleChange(e) {
+    setShowErrorSummary(false);
     const name = e.target.name;
     const value = e.target.value;
 
+    if (name === "glytoucanRegistration") {
+      setUploadDetails({ [name]: e.target.checked });
+      return;
+    }
     setUploadDetails({ [name]: value });
   }
 
   function handleSubmit(e) {
     setShowLoading(true);
+    setShowErrorSummary(false);
 
     wsCall(
       "addmultipleglycans",
       "POST",
       {
-        noGlytoucanRegistration: true,
+        noGlytoucanRegistration: !uploadDetails.glytoucanRegistration,
         filetype: encodeURIComponent(uploadDetails.fileType)
       },
       true,
@@ -74,6 +81,7 @@ const AddMultipleGlycans = props => {
 
   function glycanUploadSucess(response) {
     response.json().then(resp => {
+      setShowErrorSummary(false);
       setAddedGlycans(resp.addedGlycans);
       setInvalidSequences(resp.wrongSequences);
       setDuplicateSequences(resp.duplicateSequences);
@@ -84,8 +92,7 @@ const AddMultipleGlycans = props => {
   function glycanUploadError(response) {
     response.json().then(resp => {
       setTitle("Summary for glycan file upload");
-      setPageErrorsJson(resp);
-      setPageErrorMessage("");
+      resp.error ? setPageErrorMessage("Invalid format. Please try again.") : setPageErrorsJson(resp);
       setShowErrorSummary(true);
       setShowLoading(false);
     });
@@ -223,7 +230,7 @@ const AddMultipleGlycans = props => {
                     <option value="wurcs">WURCS</option>
                     <option value="cfg">CFG IUPAC Condensed</option>
                   </Form.Control>
-                  <Feedback message="Please choose a file type for the file to be uploaded"></Feedback>
+                  <Feedback message="Please choose a file type for the file to be uploaded" />
                 </Col>
               </Form.Group>
 
@@ -246,9 +253,39 @@ const AddMultipleGlycans = props => {
                   </Col>
                 </Form.Group>
               )}
+              <Col md={{ span: 6, offset: 5 }}>
+                <Form.Check
+                  name="glytoucanRegistration"
+                  type="checkbox"
+                  label="register in GlyTouCan"
+                  checked={uploadDetails.glytoucanRegistration}
+                  onChange={handleChange}
+                />
+              </Col>
             </>
           )}
+          &nbsp;&nbsp;
           {(duplicateSequences || addedGlycans || invalidSequences) && getSummary()}
+          <Row className="line-break-1">
+            <Col style={{ textAlign: "right", marginLeft: "9%" }} md={{ offset: 1 }}>
+              <Link
+                to="/glycans"
+                className="link-button"
+                style={{
+                  width: "25%"
+                }}
+              >
+                Back to Glycans
+              </Link>
+            </Col>
+            <Col style={{ textAlign: "left" }}>
+              {!duplicateSequences && !addedGlycans && !invalidSequences && (
+                <Button type="submit" disabled={!uploadedGlycanFile}>
+                  Submit
+                </Button>
+              )}
+            </Col>
+          </Row>
           {addedGlycans && (
             <div style={{ marginTop: "5%" }}>
               {getTableForGlycans(addedGlycans ? addedGlycans : [], "", "Glycans successful uploaded")}
@@ -307,28 +344,6 @@ const AddMultipleGlycans = props => {
               ],
               "Glycan could not be uploaded"
             )}
-          &nbsp;
-          <Row className="line-break-1">
-            <Col style={{ textAlign: "right", marginLeft: "9%" }} md={{ offset: 1 }}>
-              <Link
-                to="/glycans"
-                className="link-button"
-                style={{
-                  width: "25%",
-                  marginBottom: "20%"
-                }}
-              >
-                Back to Glycans
-              </Link>
-            </Col>
-            <Col style={{ textAlign: "left" }}>
-              {!duplicateSequences && !addedGlycans && !invalidSequences && (
-                <Button type="submit" disabled={!uploadedGlycanFile}>
-                  Submit
-                </Button>
-              )}
-            </Col>
-          </Row>
           <Loading show={showLoading}></Loading>
         </Form>
       </div>

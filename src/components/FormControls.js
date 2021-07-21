@@ -78,7 +78,13 @@ const Title = props => {
   Title.propTypes = {
     title: PropTypes.string.isRequired
   };
-  return <h2 className="line-break-2 ">{props.title}</h2>;
+  return (
+    <h2 className="line-break-2 text-center">
+      {props.title}
+      <br />
+      <br />
+    </h2>
+  );
 };
 
 export { FormLabel, Feedback, FormButton, LinkButton, Title, RedirectLink };
