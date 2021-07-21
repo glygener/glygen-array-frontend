@@ -587,7 +587,7 @@ const FeatureMetaData = props => {
   const getButtonsForImportedPage = () => {
     return (
       <>
-        <div className={"button-div line-break-2"}>
+        <div className={"button-div line-break-2 text-center"}>
           <Button onClick={props.handleBack} className={"button-test"}>
             <span className={"MuiButton-label"}>Back</span>
             <span className={"MuiTouchRipple-root"}></span>

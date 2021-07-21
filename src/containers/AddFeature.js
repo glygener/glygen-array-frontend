@@ -121,7 +121,7 @@ const AddFeature = props => {
   };
 
   const handleLinkerSelect = linker => {
-    setFeatureAddState({ linker: linker, glycans: [] });
+    setFeatureAddState({ linker: linker });
     window.scrollTo({
       top: 0,
       left: 0,
@@ -194,6 +194,98 @@ const AddFeature = props => {
     );
   };
 
+  const getTableforLinkers = fetchws => {
+    debugger;
+    return (
+      <>
+        <GlygenTable
+          columns={[
+            {
+              Header: "PubChem Id",
+              accessor: "pubChemId",
+              // eslint-disable-next-line react/prop-types
+              // eslint-disable-next-line react/display-name
+              Cell: (row, index) =>
+                row.value ? (
+                  <a key={index} href={row.original.pubChemUrl} target="_blank" rel="noopener noreferrer">
+                    {row.value}
+                  </a>
+                ) : (
+                  ""
+                ),
+              minWidth: 70
+            },
+            {
+              Header: "Name",
+              accessor: "name",
+              minWidth: 50
+            },
+            {
+              Header: "Type",
+              accessor: "type"
+            },
+            {
+              Header: "Classification",
+              accessor: "classification",
+              // eslint-disable-next-line react/display-name
+              Cell: (row, index) =>
+                row.value ? (
+                  <a
+                    key={index}
+                    href={row.value.uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={row.value.classification}
+                  >
+                    {row.value.classification}
+                  </a>
+                ) : (
+                  ""
+                )
+            },
+            {
+              Header: "Structure Image",
+              accessor: "imageURL",
+              // eslint-disable-next-line react/prop-types
+              // eslint-disable-next-line react/display-name
+              Cell: (row, index) => <StructureImage key={index} imgUrl={row.value}></StructureImage>,
+              minWidth: 150
+            },
+            {
+              Header: "Mass",
+              accessor: "mass",
+              // eslint-disable-next-line react/prop-types
+              // eslint-disable-next-line react/display-name
+              Cell: (row, index) => <div key={index}>{row.value ? parseFloat(row.value).toFixed(4) : ""}</div>,
+              minWidth: 70
+            },
+            {
+              Header: "InChiKey",
+              accessor: "inChiKey",
+              minWidth: 150
+            },
+            {
+              Header: "Sequence",
+              accessor: "sequence",
+              minWidth: 70
+            }
+          ]}
+          defaultPageSize={10}
+          defaultSortColumn="dateModified"
+          defaultSortOrder={0}
+          showCommentsButton
+          commentsRefColumn="pubChemId"
+          fetchWS={fetchws}
+          keyColumn="id"
+          showRowsInfo
+          infoRowsText="Linkers"
+          showSelectButton
+          selectButtonHeader="Select"
+          selectButtonHandler={handleLinkerSelect}
+        />
+      </>
+    );
+  };
   function formatSequenceForDisplay(sequence, charsPerLine) {
     return sequence.match(new RegExp(".{1," + charsPerLine + "}", "g")).join("\n");
   }
@@ -298,9 +390,7 @@ const AddFeature = props => {
                 {featureAddState.linker.imageURL && (
                   <Form.Group as={Row} controlId="name">
                     <Col md={{ span: 3, offset: 2 }}>
-                      <Form.Label style={{ marginTop: "55px" }}>
-                        {featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "INCHI code" : "AA sequence"}
-                      </Form.Label>
+                      <FormLabel label={""} />
                     </Col>
 
                     <Col md={4}>
@@ -309,12 +399,19 @@ const AddFeature = props => {
                   </Form.Group>
                 )}
                 <Form.Group as={Row} controlId="sequence">
-                  <FormLabel label="Sequence" />
+                  <FormLabel label={featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "InChI" : "AA sequence"} />
                   <Col md={6} className="sequence-label-div">
-                    <Form.Control className="sequence-textarea" as="label" isInvalid={linkerValidated && !validLinker}>
-                      {featureAddState.linker.sequence
-                        ? formatSequenceForDisplay(featureAddState.linker.sequence, 60)
-                        : "No sequence"}
+                    <Form.Control
+                      rows={6}
+                      className="sequence-textarea"
+                      as="label"
+                      isInvalid={linkerValidated && !validLinker}
+                    >
+                      {featureAddState.linker.type === "SMALLMOLECULE_LINKER"
+                        ? featureAddState.linker && featureAddState.linker.inChiSequence
+                          ? featureAddState.linker.inChiSequence
+                          : "No sequence"
+                        : formatSequenceForDisplay(featureAddState.linker.sequence, 60)}
                     </Form.Control>
                     <Feedback message="Glycans cannot be attached to this protein/peptide linker. If you did not mean to add glycans to this feature, please select another type of feature."></Feedback>
                   </Col>
@@ -323,110 +420,25 @@ const AddFeature = props => {
             )}
 
             <Form className="form-container">
-              <Row style={{ textAlign: "right", marginBottom: "-25px", fontSize: "18px", marginLeft: "50px" }}>
-                <Col md={{ offset: 8 }}>
-                  <input
-                    type="checkbox"
-                    style={{
-                      height: "20px",
-                      width: "15px"
-                    }}
-                    onChange={() => {
-                      setOnlyMyLinkers(!onlyMyLinkers);
-                      onlyMyLinkers ? setLinkerFetchWS("listalllinkers") : setLinkerFetchWS("linkerlist");
-                    }}
-                    checked={onlyMyLinkers}
-                  />
-                </Col>
-                <Col style={{ textAlign: "left", marginLeft: "-22px", marginTop: "-1px" }}>
+              <div style={{ textAlign: "right", marginBottom: "-25px", fontSize: "18px", marginLeft: "30px" }}>
+                <input
+                  type="checkbox"
+                  style={{
+                    height: "20px",
+                    width: "15px"
+                  }}
+                  onChange={() => {
+                    setOnlyMyLinkers(!onlyMyLinkers);
+                  }}
+                  checked={onlyMyLinkers}
+                />
+
+                <span style={{ textAlign: "left", marginLeft: "2px", marginTop: "-1px" }}>
                   {"all available linkers"}
-                </Col>
-              </Row>
-              <GlygenTable
-                columns={[
-                  {
-                    Header: "PubChem Id",
-                    accessor: "pubChemId",
-                    // eslint-disable-next-line react/prop-types
-                    // eslint-disable-next-line react/display-name
-                    Cell: (row, index) =>
-                      row.value ? (
-                        <a key={index} href={row.original.pubChemUrl} target="_blank" rel="noopener noreferrer">
-                          {row.value}
-                        </a>
-                      ) : (
-                        ""
-                      ),
-                    minWidth: 70
-                  },
-                  {
-                    Header: "Name",
-                    accessor: "name",
-                    minWidth: 50
-                  },
-                  {
-                    Header: "Type",
-                    accessor: "type"
-                  },
-                  {
-                    Header: "Classification",
-                    accessor: "classification",
-                    // eslint-disable-next-line react/display-name
-                    Cell: (row, index) =>
-                      row.value ? (
-                        <a
-                          key={index}
-                          href={row.value.uri}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={row.value.classification}
-                        >
-                          {row.value.classification}
-                        </a>
-                      ) : (
-                        ""
-                      )
-                  },
-                  {
-                    Header: "Structure Image",
-                    accessor: "imageURL",
-                    // eslint-disable-next-line react/prop-types
-                    // eslint-disable-next-line react/display-name
-                    Cell: (row, index) => <StructureImage key={index} imgUrl={row.value}></StructureImage>,
-                    minWidth: 150
-                  },
-                  {
-                    Header: "Mass",
-                    accessor: "mass",
-                    // eslint-disable-next-line react/prop-types
-                    // eslint-disable-next-line react/display-name
-                    Cell: (row, index) => <div key={index}>{row.value ? parseFloat(row.value).toFixed(4) : ""}</div>,
-                    minWidth: 70
-                  },
-                  {
-                    Header: "InChiKey",
-                    accessor: "inChiKey",
-                    minWidth: 150
-                  },
-                  {
-                    Header: "Sequence",
-                    accessor: "sequence",
-                    minWidth: 70
-                  }
-                ]}
-                defaultPageSize={10}
-                defaultSortColumn="dateModified"
-                defaultSortOrder={0}
-                showCommentsButton
-                commentsRefColumn="pubChemId"
-                fetchWS={linkerFetchWS}
-                keyColumn="id"
-                showRowsInfo
-                infoRowsText="Linkers"
-                showSelectButton
-                selectButtonHeader="Select"
-                selectButtonHandler={handleLinkerSelect}
-              />
+                </span>
+              </div>
+
+              {onlyMyLinkers ? getTableforLinkers("listalllinkers") : getTableforLinkers("linkerlist")}
             </Form>
           </>
         );
@@ -443,9 +455,7 @@ const AddFeature = props => {
               {featureAddState.linker.imageURL && (
                 <Form.Group as={Row} controlId="name">
                   <Col md={{ span: 3, offset: 2 }}>
-                    <Form.Label style={{ marginTop: "55px" }}>
-                      {featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "INCHI code" : "AA sequence"}
-                    </Form.Label>
+                    <FormLabel label={""} />
                   </Col>
 
                   <Col md={4}>
@@ -454,12 +464,14 @@ const AddFeature = props => {
                 </Form.Group>
               )}
               <Form.Group as={Row} controlId="sequence">
-                <FormLabel label="Sequence" />
+                <FormLabel label={featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "InChI" : "AA sequence"} />
                 <Col md={4} className="sequence-label-div">
                   <label className="sequence-textarea">
-                    {featureAddState.linker.sequence
-                      ? formatSequenceForDisplay(featureAddState.linker.sequence, 60)
-                      : "No sequence"}
+                    {featureAddState.linker.type === "SMALLMOLECULE_LINKER"
+                      ? featureAddState.linker && featureAddState.linker.inChiSequence
+                        ? featureAddState.linker.inChiSequence
+                        : "No sequence"
+                      : formatSequenceForDisplay(featureAddState.linker.sequence, 60)}
                   </label>
                 </Col>
               </Form.Group>
@@ -720,7 +732,7 @@ const AddFeature = props => {
         <div>
           <div>
             {activeStep !== 3 && (
-              <div className="button-div">
+              <div className="button-div text-center">
                 <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
                   Back
                 </Button>
@@ -737,7 +749,7 @@ const AddFeature = props => {
             </Typography>
 
             {activeStep !== 3 && (
-              <div className="button-div">
+              <div className="button-div text-center">
                 <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
                   Back
                 </Button>
