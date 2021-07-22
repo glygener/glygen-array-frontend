@@ -8,7 +8,10 @@
   color: rgb(47, 120, 180);
   font-size: 1.5em;
 }
-
+.statistics-icon {
+  width: 30px;
+  height: 30px;
+}
 .stat-label {
   color: #444444 !important;
   font-size: 16px;

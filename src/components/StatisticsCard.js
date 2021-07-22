@@ -89,7 +89,7 @@ const StatisticsCard = () => {
                       />
                     ) : (
                       <img
-                        className="table-btn"
+                        className="statistics-icon"
                         src={icon.src}
                         alt={icon.alt}
                         title={icon.title}
