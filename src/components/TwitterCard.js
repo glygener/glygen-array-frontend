@@ -11,14 +11,14 @@ import CardLoader from "./CardLoader";
 const useStyles = makeStyles(() => ({
   cardAction: {
     display: "inline-flex",
-    backgroundColor: "transperent"
+    backgroundColor: "transperent",
   },
   cardTitle: {
-    textAlign: "center"
+    textAlign: "center",
   },
   cardDetails: {
-    flex: 1
-  }
+    flex: 1,
+  },
 }));
 
 export default function TwitterCard() {
@@ -28,7 +28,7 @@ export default function TwitterCard() {
 
   return (
     <Grid item xs={12} sm={6} md={12}>
-      <Card className="card">
+      <Card className="gg-card-hover">
         <CardLoader pageLoading={showLoading} />
         <div className={classes.cardDetails}>
           <CardContent>
@@ -49,7 +49,7 @@ export default function TwitterCard() {
                     // tweetLimit: '3',
                     width: "100%",
                     height: 500,
-                    fontSize: "16px !important"
+                    fontSize: "16px !important",
                   }}
                   // theme="dark"
                   noHeader={true}
@@ -67,5 +67,5 @@ export default function TwitterCard() {
 }
 
 TwitterCard.propTypes = {
-  post: PropTypes.object
+  post: PropTypes.object,
 };

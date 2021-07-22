@@ -152,7 +152,7 @@ const PublicListDataset = () => {
             data={listDataSet}
             pageSizeOptions={[5, 10, 25]}
             // defaultPageSize={listDataSet.length < 5 ? 5 : 15}
-            defaultPageSize={listDataSet.length > 0 ? 5 : 1}
+            defaultPageSize={listDataSet.length < 5 ? 5 : 1}
             showPaginationTop
             className={"-striped -highlight"}
             sortable={true}

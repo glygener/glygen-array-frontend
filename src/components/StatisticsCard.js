@@ -71,7 +71,7 @@ const StatisticsCard = () => {
         errorMessage={pageErrorMessage}
       />
 
-      <Card>
+      <Card className="gg-card-hover">
         {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
         <Row>
           {icons.map((icon, index) => {

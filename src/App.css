@@ -115,43 +115,34 @@ input[type]:not(:-ms-input-placeholder) + label {
                Cards
   ==========================================*/
 
-/* custom class for pages completely on bootstrap card */
-.card-page {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  margin-right: -50% !important;
-  transform: translate(-50%, -50%) !important;
-  padding: 50px;
-}
+  /* custom class for pages completely on bootstrap card */
+  .card-page {
+    /* position: absolute !important; */
+    margin-top:350px;
+    left: 50% !important;
+    margin-right: -50% !important;
+    transform: translate(-50%, -50%) !important;
+    padding: 50px;
+  }
+  
+  .gg-card-hover {
+    width: 100%;
+    -webkit-transition: -webkit-box-shadow 0.25s;
+    transition: -webkit-box-shadow 0.25s;
+    transition: box-shadow 0.25s;
+    transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+    /* border-radius: 8px !important; */
+  
+  }
+  .gg-card-hover:hover {
+    -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    -webkit-transition: -webkit-box-shadow 0.25s;
+    transition: -webkit-box-shadow 0.25s;
+    transition: box-shadow 0.25s;
+    transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+  }
 
-.card {
-  width: 100%;
-  -webkit-transition: -webkit-box-shadow 0.25s;
-  transition: -webkit-box-shadow 0.25s;
-  transition: box-shadow 0.25s;
-  transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
-  border-radius: 8px !important;
-  /* padding: 16px; */
-}
-.card:hover {
-  -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
-  -webkit-transition: -webkit-box-shadow 0.25s;
-  transition: -webkit-box-shadow 0.25s;
-  transition: box-shadow 0.25s;
-  transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
-}
-
-/* .card-body {
-  font-weight: 200;
-  font-size: 25px;
-  font-family: fangsong;
-  padding: 0px !important;
-  // padding-bottom: 15px; 
-} */
-
-/* Cards */
 hr {
   border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
   width: 70%;
@@ -159,16 +150,6 @@ hr {
 .devider {
   height: 1px !important;
   background-color: rgba(0, 0, 0, 0.12) !important;
-}
-
-.card-padding-zero.card-body {
-  padding: 0 !important;
-}
-.card-padding-zero.card-body td {
-  padding: 20px 25px;
-}
-.card-padding-zero table {
-  margin-bottom: 0 !important;
 }
 
 .error-form-invalid {

@@ -76,7 +76,7 @@ export default function VersionCard(props) {
         errorMessage={pageErrorMessage}
       />
       <Grid item xs={12} sm={6} md={12}>
-        <Card className="card">
+        <Card className="gg-card-hover">
           {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
           <div className={classes.cardDetails}>
             <CardContent>
