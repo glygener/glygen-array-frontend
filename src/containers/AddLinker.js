@@ -7,7 +7,7 @@ import { Form, Row, Col, FormCheck } from "react-bootstrap";
 import { FormLabel, Feedback, Title } from "../components/FormControls";
 import MultiToggle from "react-multi-toggle";
 import { wsCall } from "../utils/wsUtils";
-import { csvToArray, isValidURL, externalizeUrl } from "../utils/commonUtils";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber } from "../utils/commonUtils";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { head, getMeta } from "../utils/head";
@@ -30,13 +30,13 @@ const AddLinker = props => {
   const [newPubMedId, setNewPubMedId] = useState("");
   const [validatedSpecificDetails, setValidatedSpecificDetails] = useState(false);
   const [invalidUrls, setInvalidUrls] = useState(false);
-  const history = useHistory();
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [sequenceError, setSequenceError] = useState("");
   const [deleteData, setDeleteData] = useState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [newURL, setNewURL] = useState("");
+  const history = useHistory();
 
   const linkerAddInitState = {
     pubChemId: "",
@@ -68,14 +68,15 @@ const AddLinker = props => {
     type: { label: "Linker Type", type: "text" },
     pubChemId: { label: "PubChem Compound CID", type: "text" },
     classification: { label: "Classification", type: "text" },
-    inChiKey: { label: "InChiKey", type: "textarea" },
-    inChiSequence: { label: "InchI Sequence", type: "textarea" },
+    inChiKey: { label: "InChI Key", type: "text" },
+    inChiSequence: { label: "InChI", type: "textarea" },
     iupacName: { label: "Name", type: "text" },
     molecularFormula: { label: "Molecular Formula", type: "text" },
-    smiles: { label: "SMILES", type: "text" },
+    canonicalSmiles: { label: "CANONICAL SMILES", type: "text" },
+    isomericSmiles: { label: "ISOMERIC SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
     comment: { label: "Comments", type: "textarea", length: 10000 },
-    description: { label: "Description", type: "textarea", length: 250 },
+    description: { label: "Description", type: "text", length: 250 },
     mass: { label: "Mass", type: "text" },
     uniProtId: { label: "UniProt Id", type: "text", length: 100 },
     pdbIds: { label: "PDB Ids", type: "text" },
@@ -92,18 +93,24 @@ const AddLinker = props => {
   };
 
   const smLinkerPubChemFields = {
-    inChiKey: { label: displayNames.linker.INCHIKEY, type: "textarea", length: 27 },
-    inChiSequence: { label: displayNames.linker.INCHI_SEQUENCE, type: "textarea", length: 10000 },
+    inChiKey: { label: displayNames.linker.INCHIKEY, type: "text", length: 27 },
+    inChiSequence: {
+      label: displayNames.linker.INCHI_SEQUENCE,
+      type: "textarea",
+      length: 10000,
+      enableCharacterCounter: true
+    },
     iupacName: { label: "Name", type: "text", length: 2000 },
     mass: { label: "Mass", type: "text" },
     molecularFormula: { label: "Molecular Formula", type: "text", length: 256 },
-    smiles: { label: displayNames.linker.SMILES, type: "text", length: 10000 }
+    isomericSmiles: { label: displayNames.linker.ISOMERIC_SMILES, type: "text", length: 10000 },
+    canonicalSmiles: { label: displayNames.linker.CANONICAL_SMILES, type: "text", length: 10000 }
   };
 
   const commonFields = {
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comments", type: "textarea", length: 2000 },
-    description: { label: "Description", type: "textarea", length: 250 }
+    comment: { label: "Comments", type: "textarea", length: 2000, enableCharacterCounter: true },
+    description: { label: "Description", type: "text", length: 250, enableCharacterCounter: true }
   };
 
   const opensRingOptions = [
@@ -515,7 +522,7 @@ const AddLinker = props => {
         </Stepper>
         <div>
           <div>
-            <div className="button-div">
+            <div className="button-div text-center">
               <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
                 Back
               </Button>
@@ -531,7 +538,7 @@ const AddLinker = props => {
             <Typography component={"span"} variant={"body2"}>
               {getStepContent(activeStep)}
             </Typography>
-            <div className="button-div">
+            <div className="button-div text-center">
               <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
                 Back
               </Button>
@@ -585,12 +592,15 @@ const AddLinker = props => {
                         value={linkerAddState.pubChemId}
                         onChange={handleChange}
                         disabled={disablePubChemFields}
+                        onKeyDown={e => {
+                          isValidNumber(e);
+                        }}
                       />
                     </Col>
                     {linkerAddState.pubChemId !== "" && !disablePubChemFields && (
                       <Button
                         variant="contained"
-                        onClick={() => populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId))}
+                        onClick={() => populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId.trim()))}
                         className="get-btn "
                       >
                         Get Details from PubChem
@@ -627,6 +637,7 @@ const AddLinker = props => {
                     </Col>
                   </Form.Group>
                   {Object.keys(smLinkerPubChemFields).map(key => {
+                    debugger;
                     return (
                       // eslint-disable-next-line react/jsx-key
                       <Form.Group as={Row} controlId={key} key={key}>
@@ -642,14 +653,28 @@ const AddLinker = props => {
                             onChange={handleChange}
                             disabled={disablePubChemFields}
                             maxLength={smLinkerPubChemFields[key].length}
+                            onKeyDown={
+                              key === "mass"
+                                ? e => {
+                                    isValidNumber(e);
+                                  }
+                                : ""
+                            }
                           />
+
+                          {smLinkerPubChemFields[key].enableCharacterCounter && (
+                            <span className="character-counter">
+                              {linkerAddState[key] && linkerAddState[key].length > 0 ? linkerAddState[key].length : ""}/
+                              {smLinkerPubChemFields[key].length}
+                            </span>
+                          )}
                         </Col>
                         {(key === "inChiKey" || key === "smiles") &&
                           linkerAddState[key] !== "" &&
                           !disablePubChemFields && (
                             <Button
                               variant="contained"
-                              onClick={() => populateLinkerDetails(encodeURIComponent(linkerAddState[key]))}
+                              onClick={() => populateLinkerDetails(encodeURIComponent(linkerAddState[key].trim()))}
                               className="get-btn "
                             >
                               Get Details from PubChem
@@ -689,7 +714,7 @@ const AddLinker = props => {
                     {linkerAddState.uniProtId !== "" && (
                       <Button
                         variant="contained"
-                        onClick={() => getSequenceFromUniprot(encodeURIComponent(linkerAddState.uniProtId))}
+                        onClick={() => getSequenceFromUniprot(encodeURIComponent(linkerAddState.uniProtId.trim()))}
                         className="get-btn "
                       >
                         Get Sequence from Uniprot
@@ -779,6 +804,12 @@ const AddLinker = props => {
                         onChange={handleChange}
                         maxLength={commonFields[key].length}
                       />
+                      {commonFields[key].enableCharacterCounter && (
+                        <span className="character-counter">
+                          {linkerAddState[key] && linkerAddState[key].length > 0 ? linkerAddState[key].length : ""}/
+                          {commonFields[key].length}
+                        </span>
+                      )}
                     </Col>
                   </Form.Group>
                 );
@@ -808,6 +839,9 @@ const AddLinker = props => {
                         value={newPubMedId}
                         onChange={e => setNewPubMedId(e.target.value)}
                         maxLength={100}
+                        onKeyDown={e => {
+                          isValidNumber(e);
+                        }}
                       />
                     </Col>
                     <Col md={1}>

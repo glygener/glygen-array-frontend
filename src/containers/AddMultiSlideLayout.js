@@ -12,6 +12,7 @@ import { ResumableUploader } from "../components/ResumableUploader";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import ReactTable from "react-table";
 import "../containers/AddMultiSlideLayout.css";
+import { isValidNumber } from "../utils/commonUtils";
 
 const AddMultiSlideLayout = props => {
   const fileMap = new Map();
@@ -581,6 +582,9 @@ const AddMultiSlideLayout = props => {
                       value={uploadDetails.height}
                       onChange={handleChange}
                       isInvalid={invalidWidth}
+                      onKeyDown={e => {
+                        isValidNumber(e);
+                      }}
                     />
                     <Feedback message="Width is not valid. Please update" />
                   </Col>
@@ -595,6 +599,9 @@ const AddMultiSlideLayout = props => {
                       value={uploadDetails.width}
                       onChange={handleChange}
                       isInvalid={invalidHeight}
+                      onKeyDown={e => {
+                        isValidNumber(e);
+                      }}
                     />
                     <Feedback message="Height is not valid. Please update" />
                   </Col>

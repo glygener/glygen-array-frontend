@@ -13,6 +13,7 @@ import { wsCall } from "../utils/wsUtils";
 import { Popover } from "react-bootstrap";
 import { MetaData } from "../containers/MetaData";
 import { Button, makeStyles, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
+import { isValidNumber } from "../utils/commonUtils";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -184,7 +185,15 @@ const AddFeatureToBlock = props => {
                 <Form.Group as={Row} controlId={index}>
                   <FormLabel label={element.name} style={{ textAlign: "right" }} />
                   <Col md={2} style={{ textAlign: "left" }}>
-                    <FormControl type="number" name="featureRatio" onChange={handleChange} value={element.ratio} />
+                    <FormControl
+                      type="number"
+                      name="featureRatio"
+                      onChange={handleChange}
+                      value={element.ratio}
+                      onKeyDown={e => {
+                        isValidNumber(e);
+                      }}
+                    />
                   </Col>
                   <span className="percentage-symbol">%</span>
                 </Form.Group>
@@ -225,6 +234,9 @@ const AddFeatureToBlock = props => {
               name="concentration"
               value={spotConcentration.concentration}
               onChange={handleConcentration}
+              onKeyDown={e => {
+                isValidNumber(e);
+              }}
             />
           </Col>
           <Col md={2}>

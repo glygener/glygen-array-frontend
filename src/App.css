@@ -400,3 +400,8 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.form-check-input {
+  position: inherit !important;
+  margin-right: 5px !important;
+}

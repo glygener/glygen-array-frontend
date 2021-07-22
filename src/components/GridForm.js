@@ -5,6 +5,7 @@ import { HelpToolTip } from "./HelpToolTip";
 import { FormLabel, Feedback } from "./FormControls";
 import { Form, Row, Col, Button, Accordion, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isValidNumber } from "../utils/commonUtils";
 
 const GridForm = props => {
   const [arrow, setArrow] = useState("angle-up");
@@ -99,6 +100,9 @@ const GridForm = props => {
                 onChange={props.handleChange}
                 readOnly={props.isUpdate || props.publicView}
                 required
+                onKeyDown={e => {
+                  isValidNumber(e);
+                }}
               />
               <Feedback message="Please enter valid columns" />
             </Col>
@@ -122,6 +126,9 @@ const GridForm = props => {
                 onChange={props.handleChange}
                 readOnly={props.isUpdate || props.publicView}
                 required
+                onKeyDown={e => {
+                  isValidNumber(e);
+                }}
               />
               <Feedback message="Please enter valid rows" />
             </Col>

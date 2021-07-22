@@ -6,7 +6,7 @@ import { HelpToolTip } from "./HelpToolTip";
 import { Form, Col, Row, Accordion, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { ScrollTo } from "react-scroll-to";
-import { ContextAwareToggle } from "../utils/commonUtils";
+import { ContextAwareToggle, isValidNumber } from "../utils/commonUtils";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import { Droppable, Draggable } from "react-beautiful-dnd";
@@ -408,6 +408,9 @@ const Descriptors = props => {
               placeholder={element.description.toLowerCase()}
               onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
               required={element.mandatory ? true : false}
+              onKeyDown={e => {
+                isValidNumber(e);
+              }}
             ></Form.Control>
           ) : element.namespace.name === "date" ? (
             <Datetime

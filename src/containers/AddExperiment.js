@@ -16,6 +16,7 @@ import { AddCoOwnerandCollab } from "./AddCoOwnerandCollab";
 import { ArraydatasetTables } from "../containers/ArraydatasetTables";
 import { Collaborators } from "./Collaborators";
 import { CoOwners } from "./CoOwners";
+import { isValidNumber } from "../utils/commonUtils";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -233,6 +234,9 @@ const AddExperiment = props => {
             if (showErrorSummary) {
               setShowErrorSummary(false);
             }
+          }}
+          onKeyDown={e => {
+            isValidNumber(e);
           }}
         />
       </>

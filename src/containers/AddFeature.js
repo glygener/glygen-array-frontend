@@ -59,7 +59,6 @@ const AddFeature = props => {
   const [metadataforAddFeature, setMetadataforAddFeature] = useState([]);
   const [onlyMyglycans, setOnlyMyglycans] = useState(false);
   const [onlyMyLinkers, setOnlyMyLinkers] = useState(false);
-  const [linkerFetchWS, setLinkerFetchWS] = useState("listalllinkers");
 
   const isStepSkipped = step => {
     return featureAddState.type !== "NORMAL" && step === 2 && activeStep === 3;
@@ -194,8 +193,7 @@ const AddFeature = props => {
     );
   };
 
-  const getTableforLinkers = fetchws => {
-    debugger;
+  const getTableforLinkers = () => {
     return (
       <>
         <GlygenTable
@@ -275,13 +273,18 @@ const AddFeature = props => {
           defaultSortOrder={0}
           showCommentsButton
           commentsRefColumn="pubChemId"
-          fetchWS={fetchws}
+          fetchWS={onlyMyLinkers ? "listalllinkers" : "linkerlist"}
           keyColumn="id"
           showRowsInfo
           infoRowsText="Linkers"
           showSelectButton
+          showSearchBox
           selectButtonHeader="Select"
           selectButtonHandler={handleLinkerSelect}
+          showOnlyMyLinkersOrGlycansCheckBox
+          handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyLinkers(!onlyMyLinkers)}
+          onlyMyLinkersGlycans={onlyMyLinkers}
+          onlyMyLinkersGlycansCheckBoxLabel={"all available linkers"}
         />
       </>
     );
@@ -419,27 +422,7 @@ const AddFeature = props => {
               </Form>
             )}
 
-            <Form className="form-container">
-              <div style={{ textAlign: "right", marginBottom: "-25px", fontSize: "18px", marginLeft: "30px" }}>
-                <input
-                  type="checkbox"
-                  style={{
-                    height: "20px",
-                    width: "15px"
-                  }}
-                  onChange={() => {
-                    setOnlyMyLinkers(!onlyMyLinkers);
-                  }}
-                  checked={onlyMyLinkers}
-                />
-
-                <span style={{ textAlign: "left", marginLeft: "2px", marginTop: "-1px" }}>
-                  {"all available linkers"}
-                </span>
-              </div>
-
-              {onlyMyLinkers ? getTableforLinkers("listalllinkers") : getTableforLinkers("linkerlist")}
-            </Form>
+            <Form className="form-container">{getTableforLinkers()}</Form>
           </>
         );
       case 2:
@@ -498,7 +481,7 @@ const AddFeature = props => {
                     Cell: (row, index) =>
                       row.value ? (
                         row.value.cartoon ? (
-                          <StructureImage key={index} base64={row.value.cartoon}></StructureImage>
+                          <StructureImage key={index} base64={row.value.cartoon} />
                         ) : (
                           row.value.name
                         )
@@ -523,7 +506,9 @@ const AddFeature = props => {
                 data={featureAddState.glycans}
                 defaultPageSize={featureAddState.glycans.length}
                 showPagination={false}
+                showSearchBox
               />
+
               {showGlycanPicker && (
                 <Modal
                   size="xl"
@@ -570,7 +555,7 @@ const AddFeature = props => {
                           accessor: "cartoon",
                           // eslint-disable-next-line react/prop-types
                           // eslint-disable-next-line react/display-name
-                          Cell: row => <StructureImage base64={row.value}></StructureImage>,
+                          Cell: row => <StructureImage base64={row.value} />,
                           minWidth: 300
                         },
                         {
@@ -581,11 +566,15 @@ const AddFeature = props => {
                         }
                       ]}
                       defaultPageSize={10}
-                      fetchWS="listallglycans"
+                      fetchWS={onlyMyglycans ? "listallglycans" : "glycanlist"}
                       keyColumn="id"
                       showRowsInfo
                       showSearchBox
                       infoRowsText="Glycans"
+                      showOnlyMyLinkersOrGlycansCheckBox
+                      handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyglycans(!onlyMyglycans)}
+                      onlyMyLinkersGlycans={onlyMyglycans}
+                      onlyMyLinkersGlycansCheckBoxLabel={"all available glycans"}
                     />
                   </Modal.Body>
                   <Modal.Footer>

@@ -35,7 +35,7 @@ const GlygenTable = props => {
 
   useEffect(() => {
     tableElement.state && tableElement.fireFetchData();
-  }, [searchFilter]);
+  }, [searchFilter, props]);
 
   const deletePrompt = (id, queryParamDelete) => {
     setSelectedId(id);
@@ -264,7 +264,7 @@ const GlygenTable = props => {
       {props.showRowsInfo && (
         <>
           <Row>
-            <Col md={{ span: 4, offset: 4 }}>
+            <Col md={{ span: 3, offset: 4 }}>
               <GlygenTableRowsInfo
                 currentPage={tableElement.state ? tableElement.state.page : 0}
                 pageSize={tableElement.state ? tableElement.state.pageSize : 0}
@@ -275,8 +275,30 @@ const GlygenTable = props => {
               />
             </Col>
 
+            {props.showOnlyMyLinkersOrGlycansCheckBox && (
+              <Col
+                style={{
+                  marginTop: "10px",
+                  marginLeft: "85px"
+                }}
+              >
+                <Form.Check
+                  type="checkbox"
+                  label={props.onlyMyLinkersGlycansCheckBoxLabel}
+                  checked={props.onlyMyLinkersGlycans}
+                  onChange={props.handleChangeForOnlyMyLinkersGlycans}
+                />
+              </Col>
+            )}
+
             {props.showSearchBox && (
-              <Col md={{ span: 3, offset: 1 }} style={{ marginBottom: "10px" }}>
+              <Col
+                md={{ span: 3, offset: props.showOnlyMyLinkersOrGlycansCheckBox ? 0 : 2 }}
+                style={{
+                  marginBottom: "10px",
+                  marginRight: props.showOnlyMyLinkersOrGlycansCheckBox ? "-50px" : ""
+                }}
+              >
                 <Form.Control
                   type="text"
                   name="search"
@@ -473,7 +495,11 @@ GlygenTable.propTypes = {
   queryParamDelete: PropTypes.string,
   enableRefreshOnAction: PropTypes.func,
   form: PropTypes.string,
-  showSearchBox: PropTypes.bool
+  showSearchBox: PropTypes.bool,
+  showOnlyMyLinkersOrGlycansCheckBox: PropTypes.bool,
+  handleChangeForOnlyMyLinkersGlycans: PropTypes.func,
+  onlyMyLinkersGlycans: PropTypes.bool,
+  onlyMyLinkersGlycansCheckBoxLabel: PropTypes.string
 };
 
 GlygenTable.defaultProps = {

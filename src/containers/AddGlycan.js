@@ -9,6 +9,7 @@ import { head, getMeta } from "../utils/head";
 import { ErrorSummary } from "../components/ErrorSummary";
 import displayNames from "../appData/displayNames";
 import { useHistory } from "react-router-dom";
+import { isValidNumber } from "../utils/commonUtils";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -404,6 +405,9 @@ const AddGlycan = props => {
                       isInvalid={invalidMass}
                       isValid={validate}
                       required={true}
+                      onKeyDown={e => {
+                        isValidNumber(e);
+                      }}
                     />
                     <Feedback message={invalidMass ? "Mass should be greater than 0" : "Please Enter Mass"} />
                   </Col>
