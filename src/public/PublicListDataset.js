@@ -8,9 +8,7 @@ import { Row, Form, Col, Card } from "react-bootstrap";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "../components/CardLoader";
-import Table from "react-bootstrap/Table";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+
 const PublicListDataset = () => {
   const [listDataSet, setListDataSet] = useState([]);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -62,22 +60,27 @@ const PublicListDataset = () => {
   const getSortByOptions = () => {
     return (
       <>
-        <Form.Group controlId={0} style={{ marginLeft: "70px", marginTop: "-28px" }}>
-          <Form.Control
-            style={{ width: "33%", height: "33px" }}
-            as="select"
-            name={"sortBy"}
-            value={publicData.sortBy}
-            onChange={handleSelectSortBy}
-            required={true}
-          >
-            {/* <option value=""></option> */}
-            <option value="id">Accession</option>
-            <option value="label">Dataset Name</option>
-            <option value="dateAddedToLibrary">Submission Date</option>
-            <option value="dateCreated">Publication Date</option>
-          </Form.Control>
-        </Form.Group>
+        <Form>
+          <Form.Group as={Row} className="mb-3" controlId={0}>
+            <Form.Label column xs={3} sm={4} className="text-xs-left text-sm-left text-md-right">
+              Sort by
+            </Form.Label>
+            <Col xs={9} sm={8}>
+              <Form.Control
+                as="select"
+                name={"sortBy"}
+                value={publicData.sortBy}
+                onChange={handleSelectSortBy}
+                required={true}
+              >
+                <option value="id">Accession</option>
+                <option value="label">Dataset Name</option>
+                <option value="dateAddedToLibrary">Submission Date</option>
+                <option value="dateCreated">Publication Date</option>
+              </Form.Control>
+            </Col>
+          </Form.Group>
+        </Form>
       </>
     );
   };
@@ -85,35 +88,24 @@ const PublicListDataset = () => {
   const getTableDetails = () => {
     return (
       <>
-        <div
-          style={{
-            margin: "10px",
-          }}
-        >
+        <div className="m-3">
           <Row>
-            <Col
-              md={{ span: 3 }}
-              style={{ marginTop: "10px", textAlign: "right", marginLeft: "14.5%" }}
-            >{`List of Datasets (${listDataSet.length})`}</Col>
-
-            <span style={{ width: "5%" }} />
-            <span style={{ marginTop: "10px" }}>Order by &nbsp;</span>
-
-            <FontAwesomeIcon
-              style={{ textAlign: "left", marginTop: "6px" }}
-              key={"view"}
-              icon={["fas", orderBy ? "caret-up" : "caret-down"]}
-              size="2x"
-              title="Order by"
-              onClick={() => setOrderBy(!orderBy)}
-            />
-
-            <span style={{ width: "5%" }} />
-
-            <Col md={5} style={{ textAlign: "left", marginTop: "10px", marginLeft: "-1%" }}>
-              <span>Sort by </span>
-              {getSortByOptions()}
+            <Col className="pt-2 mb-3">
+              {" "}
+              List&nbsp;of&nbsp;Datasets&nbsp;{"("}
+              {listDataSet.length}
+              {")"}
             </Col>
+            <Col className="pt-2 mb-3">
+              <span>Order&nbsp;by&nbsp;&nbsp;</span>
+              <FontAwesomeIcon
+                key={"view"}
+                icon={["fas", orderBy ? "caret-up" : "caret-down"]}
+                title="Order by"
+                onClick={() => setOrderBy(!orderBy)}
+              />
+            </Col>
+            <Col md={6}>{getSortByOptions()}</Col>
           </Row>
 
           <ReactTable
@@ -135,12 +127,6 @@ const PublicListDataset = () => {
                     <div>
                       <strong>Dataset Description:</strong> {row.original.description}
                     </div>
-                    {/* <div>
-                      Dataset Description:
-                      <h5 style={{ fontSize: "1.25rem", color: "#4a4a4a" }}>
-                        <strong>{row.original.description}</strong>
-                      </h5>
-                    </div> */}
                     <div>
                       <strong>Submitter:</strong> &nbsp;
                       <Link
@@ -165,9 +151,10 @@ const PublicListDataset = () => {
             ]}
             data={listDataSet}
             pageSizeOptions={[5, 10, 25]}
-            defaultPageSize={listDataSet.length < 5 ? 5 : 15}
+            // defaultPageSize={listDataSet.length < 5 ? 5 : 15}
+            defaultPageSize={listDataSet.length > 0 ? 5 : 1}
             showPaginationTop
-            // className={"-striped -highlight"}
+            className={"-striped -highlight"}
             sortable={true}
           />
         </div>

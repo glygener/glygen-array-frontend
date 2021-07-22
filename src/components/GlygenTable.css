@@ -1,8 +1,8 @@
 .table-btn {
-  width: 26px;
-  height: 26px;
-  /* cursor: pointer; */
-  /* font-size: large !important; */
+  width: 25px;
+  height: 25px;
+  /* cursor: pointer;
+  font-size: large !important; */
 }
 
 /* .table-btn:hover {
@@ -34,4 +34,10 @@
 
 .edit-icon {
   color: var(--gg-blue);
+}
+.ReactTable.-highlight .rt-tbody .rt-tr:not(.-padRow):hover {
+  background-color: #e2e8ef !important;
+} 
+.ReactTable {
+  background-color: #fff !important;
 }
