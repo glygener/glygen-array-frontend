@@ -5,8 +5,9 @@ import Alert from "react-bootstrap/Alert";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { useParams, Link } from "react-router-dom";
-import { Col, Card, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { Title } from "./FormControls";
+import Container from "@material-ui/core/Container";
 
 const EmailConfirmation = () => {
   const [variant, setVariant] = useState("success");
@@ -24,29 +25,23 @@ const EmailConfirmation = () => {
         <title>{head.emailConfirmation.title}</title>
         {getMeta(head.addGlycan)}
       </Helmet>
-
-      <Card
-        style={{
-          width: "500px"
-        }}
-        className={"card-page"}
-      >
-        <Title title={"Email Confirmation"} />
-        <Form>
-          <Col>
-            <Alert variant={variant} show={unauthorized} className="alert-message line-break-1">
-              {errorMessage}
-            </Alert>
-          </Col>
-          <hr />
-          <Col md={{ span: 6 }} style={{ marginLeft: "38%", width: "100px" }}>
-            <Link to="/login" className="ui-link">
-              Log In
-            </Link>
-          </Col>
-        </Form>
-        &nbsp;&nbsp;
-      </Card>
+      <Container maxWidth="sm" className="card-page-container">
+        <div className="card-page-sm">
+          <Title title={"Email Confirmation"} />
+          <Form>
+            <div>
+              <Alert variant={variant} show={unauthorized} className="alert-message line-break-1">
+                {errorMessage}
+              </Alert>
+            </div>
+            <br />
+            <hr />
+            <div className="text-center">
+              <Link to="/login">Log In</Link>
+            </div>
+          </Form>
+        </div>
+      </Container>
     </>
   );
 
@@ -59,13 +54,15 @@ const EmailConfirmation = () => {
     console.log(response);
     setUnauthorized(true);
     setVariant("danger");
-    setErrorMessage("The link from your email has already expired. Please return to sign up and create an account.");
+    setErrorMessage(
+      "The link from your email has already expired. Please return to sign up and create an account."
+    );
   }
 };
 
 EmailConfirmation.propTypes = {
   match: PropTypes.object.isRequired,
-  token: PropTypes.object
+  token: PropTypes.object,
 };
 
 export { EmailConfirmation };
