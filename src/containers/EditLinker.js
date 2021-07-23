@@ -103,7 +103,7 @@ const EditLinker = props => {
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="inChiKey">
-            <FormLabel label="In Chi Key" />
+            <FormLabel label="InChI Key" />
             <Col md={4}>
               <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.inChiKey} />
             </Col>

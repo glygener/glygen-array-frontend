@@ -15,7 +15,6 @@ import { useHistory } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { validateSequence } from "../utils/sequence";
 import displayNames from "../appData/displayNames";
-import { ConfirmationModal } from "../components/ConfirmationModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AddLinker = props => {
@@ -33,8 +32,6 @@ const AddLinker = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [sequenceError, setSequenceError] = useState("");
-  const [deleteData, setDeleteData] = useState();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [newURL, setNewURL] = useState("");
   const history = useHistory();
 
@@ -66,7 +63,7 @@ const AddLinker = props => {
 
   const reviewFields = {
     type: { label: "Linker Type", type: "text" },
-    pubChemId: { label: "PubChem Compound CID", type: "text" },
+    pubChemId: { label: "PubChem Compound CID", type: "text", length: 12},
     classification: { label: "Classification", type: "text" },
     inChiKey: { label: "InChI Key", type: "text" },
     inChiSequence: { label: "InChI", type: "textarea" },
@@ -76,7 +73,7 @@ const AddLinker = props => {
     isomericSmiles: { label: "ISOMERIC SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
     comment: { label: "Comments", type: "textarea", length: 10000 },
-    description: { label: "Description", type: "text", length: 250 },
+    description: { label: "Description", type: "textarea", length: 250 },
     mass: { label: "Mass", type: "text" },
     uniProtId: { label: "UniProt Id", type: "text", length: 100 },
     pdbIds: { label: "PDB Ids", type: "text" },
@@ -110,7 +107,7 @@ const AddLinker = props => {
   const commonFields = {
     name: { label: "Name", type: "text", length: 100 },
     comment: { label: "Comments", type: "textarea", length: 2000, enableCharacterCounter: true },
-    description: { label: "Description", type: "text", length: 250, enableCharacterCounter: true }
+    description: { label: "Description", type: "textarea", length: 250, enableCharacterCounter: true }
   };
 
   const opensRingOptions = [
@@ -201,45 +198,51 @@ const AddLinker = props => {
   const urlWidget = enableDelete => {
     return (
       <>
-        {linkerAddState.urls.length > 0 ? (
-          linkerAddState.urls.map((url, index) => {
-            return (
-              <Row style={{ marginTop: "8px" }} key={index}>
-                <Col>
-                  <Link
-                    style={{ fontSize: "0.9em" }}
-                    href={externalizeUrl(url)}
-                    target="_blank"
-                    rel="external noopener noreferrer"
-                  >
-                    {url}
-                  </Link>
-                </Col>
-                {enableDelete && (
-                  <Col style={{ marginTop: "2px" }}>
-                    <FontAwesomeIcon
-                      icon={["far", "trash-alt"]}
-                      size="xs"
-                      title="Delete Url"
-                      className="caution-color table-btn"
-                      onClick={() => {
-                        const listUrls = linkerAddState.urls;
-                        debugger;
-                        listUrls.splice(index, 1);
-                        setLinkerAddState({ urls: listUrls });
-                      }}
-                    />
+        {linkerAddState.urls.length > 0
+          ? linkerAddState.urls.map((url, index) => {
+              return (
+                <Row style={{ marginTop: "8px" }} key={index}>
+                  <Col>
+                    <Link
+                      style={{ fontSize: "0.9em" }}
+                      href={externalizeUrl(url)}
+                      target="_blank"
+                      rel="external noopener noreferrer"
+                    >
+                      {url}
+                    </Link>
                   </Col>
-                )}
-              </Row>
-            );
-          })
-        ) : (
-          <div style={{ marginTop: "8px" }}>None</div>
-        )}
+                  {enableDelete && (
+                    <Col style={{ marginTop: "2px" }}>
+                      <FontAwesomeIcon
+                        icon={["far", "trash-alt"]}
+                        size="xs"
+                        title="Delete Url"
+                        className="caution-color table-btn"
+                        onClick={() => {
+                          const listUrls = linkerAddState.urls;
+                          listUrls.splice(index, 1);
+                          setLinkerAddState({ urls: listUrls });
+                        }}
+                      />
+                    </Col>
+                  )}
+                </Row>
+              );
+            })
+          : ""}
       </>
     );
   };
+
+  function deletePublication(id, wscall) {
+    const publications = linkerAddState.publications;
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
+    const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
+    publications.splice(pubDeleteIndex, 1);
+    setLinkerAddState({ publications: publications });
+  }
+
   function addURL() {
     var listUrls = linkerAddState.urls;
     var urlEntered = csvToArray(newURL)[0];
@@ -453,42 +456,6 @@ const AddLinker = props => {
     }
   }
 
-  function deleteRow(id, wscall) {
-    setDeleteData({ id: id, wscall: wscall });
-    setShowDeleteModal(true);
-  }
-
-  const cancelDelete = () => setShowDeleteModal(false);
-
-  const confirmDelete = () => {
-    setShowDeleteModal(false);
-
-    wsCall(
-      deleteData.wscall,
-      "DELETE",
-      [deleteData.id],
-      true,
-      null,
-      response => {
-        console.log(linkerAddState.publications);
-
-        const currentPublications = linkerAddState.publications;
-        const pubmedIndexDeleted = currentPublications.indexOf(deleteData.id);
-        currentPublications.slice(pubmedIndexDeleted, 1);
-
-        setLinkerAddState({
-          publications: currentPublications
-        });
-      },
-      response => {
-        response.json().then(responseJson => {
-          setPageErrorsJson(responseJson);
-          setShowErrorSummary(true);
-        });
-      }
-    );
-  };
-
   function clearPubChemFields() {
     setLinkerAddState({
       ...linkerAddInitState,
@@ -595,6 +562,12 @@ const AddLinker = props => {
                         onKeyDown={e => {
                           isValidNumber(e);
                         }}
+                        maxLength={12}
+                        onInput={e => {
+                          if (e.target.value.length > e.target.maxLength) {
+                            e.target.value = e.target.value.slice(0, e.target.maxLength);
+                          }
+                        }}
                       />
                     </Col>
                     {linkerAddState.pubChemId !== "" && !disablePubChemFields && (
@@ -637,7 +610,6 @@ const AddLinker = props => {
                     </Col>
                   </Form.Group>
                   {Object.keys(smLinkerPubChemFields).map(key => {
-                    debugger;
                     return (
                       // eslint-disable-next-line react/jsx-key
                       <Form.Group as={Row} controlId={key} key={key}>
@@ -658,7 +630,7 @@ const AddLinker = props => {
                                 ? e => {
                                     isValidNumber(e);
                                   }
-                                : ""
+                                : e => {}
                             }
                           />
 
@@ -827,8 +799,8 @@ const AddLinker = props => {
               <Form.Group as={Row} controlId="publications">
                 <FormLabel label="Publications" />
                 <Col md={4}>
-                  {linkerAddState.publications.map(pub => {
-                    return <PublicationCard key={pub.pubmedId} {...pub} enableDelete deletePublication={deleteRow} />;
+                  {linkerAddState.publications.map((pub, index) => {
+                    return <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />;
                   })}
                   <Row>
                     <Col md={10}>
@@ -876,13 +848,6 @@ const AddLinker = props => {
                   </Row>
                 </Col>
               </Form.Group>
-              <ConfirmationModal
-                showModal={showDeleteModal}
-                onCancel={cancelDelete}
-                onConfirm={confirmDelete}
-                title="Confirm Delete"
-                body="Are you sure you want to delete?"
-              />
             </Form>
           </>
         );
@@ -916,13 +881,11 @@ const AddLinker = props => {
             <Form.Group as={Row} controlId="publications">
               <FormLabel label="Publications" />
               <Col md={4}>
-                {linkerAddState.publications.length > 0 ? (
-                  linkerAddState.publications.map(pub => {
-                    return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
-                  })
-                ) : (
-                  <div style={{ marginTop: "8px" }}>None</div>
-                )}
+                {linkerAddState.publications.length > 0
+                  ? linkerAddState.publications.map(pub => {
+                      return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
+                    })
+                  : ""}
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="urls">

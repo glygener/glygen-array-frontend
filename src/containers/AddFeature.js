@@ -79,7 +79,11 @@ const AddFeature = props => {
         }
       }
     } else if (activeStep === 2) {
-      if (featureAddState.glycans[0].glycan && !featureAddState.glycans[0].glycan.id) {
+      if (
+        featureAddState.glycans.length > 0 &&
+        featureAddState.glycans[0].glycan &&
+        !featureAddState.glycans[0].glycan.id
+      ) {
         return;
       }
     } else if (activeStep === 3) {
@@ -120,7 +124,7 @@ const AddFeature = props => {
   };
 
   const handleLinkerSelect = linker => {
-    setFeatureAddState({ linker: linker });
+    setFeatureAddState({ linker: linker, glycans: [] });
     window.scrollTo({
       top: 0,
       left: 0,

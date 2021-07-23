@@ -11,6 +11,7 @@
   font-family: monospace;
   font-size: 0.95em;
   height: auto;
+  display: inline-table !important;
 }
 
 .linker-field-label {
