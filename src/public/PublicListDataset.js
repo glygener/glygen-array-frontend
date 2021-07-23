@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "./PublicListDataset.css";
 import ReactTable from "react-table";
 import { getDateCreated } from "../utils/commonUtils";
-import { Row, Form, Col, Card } from "react-bootstrap";
+import { Row, Form, Col } from "react-bootstrap";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "../components/CardLoader";
@@ -102,6 +102,7 @@ const PublicListDataset = () => {
                 key={"view"}
                 icon={["fas", orderBy ? "caret-up" : "caret-down"]}
                 title="Order by"
+                alt="Caret Icon"
                 onClick={() => setOrderBy(!orderBy)}
               />
             </Col>

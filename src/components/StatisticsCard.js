@@ -39,9 +39,15 @@ const StatisticsCard = () => {
   }, []);
 
   const icons = [
-    { name: "users", title: "Users", value: statistics.userCount ? statistics.userCount : 0 },
+    {
+      name: "users",
+      alt: "Users Icon",
+      title: "Users",
+      value: statistics.userCount ? statistics.userCount : 0,
+    },
     {
       name: "table",
+      alt: "Datasets Icon",
       title: "Datasets",
       value: statistics.datasetCount ? statistics.datasetCount : 0,
     },
@@ -52,7 +58,12 @@ const StatisticsCard = () => {
       title: "Slides",
       value: statistics.slideCount ? statistics.slideCount : 0,
     },
-    { name: "vial", title: "Samples", value: statistics.sampleCount ? statistics.sampleCount : 0 },
+    {
+      name: "vial",
+      alt: "Samples Icon",
+      title: "Samples",
+      value: statistics.sampleCount ? statistics.sampleCount : 0,
+    },
     {
       name: "glycans",
       src: glycanIcon,
