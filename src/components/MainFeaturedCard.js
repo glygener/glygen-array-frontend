@@ -52,7 +52,11 @@ export default function MainFeaturedCard(props) {
   const { post } = props;
 
   return (
-    <Paper className={classes.mainFeaturedCard} alt="Main featured card" style={{ backgroundImage: `url(${post.image})` }}>
+    <Paper
+      className={classes.mainFeaturedCard}
+      alt="Main featured card"
+      style={{ backgroundImage: `url(${post.image})` }}
+    >
       {<img style={{ display: "none" }} src={post.image} alt={post.imageText} />}
       <div className={classes.overlay} />
       <Grid container>
@@ -90,7 +94,7 @@ export default function MainFeaturedCard(props) {
 
         <Grid item sm={12} md={4} lg={6} className="btn-outline-white-col">
           <div className={classes.mainFeaturedCardButtons}>
-            <div className="btn-outline-white text-left">
+            <div className="btn-outline-white text-md-left text-xs-center">
               <Link to={"/signup"} className="gg-btn-outline-blue">
                 <span
                   style={{
@@ -102,7 +106,7 @@ export default function MainFeaturedCard(props) {
                 Sign up
               </Link>
             </div>
-            <div className="btn-outline-white text-left">
+            <div className="btn-outline-white text-md-left text-xs-center">
               <Link to={"/login"} className="gg-btn-outline-white">
                 <span style={{ paddingRight: "10px" }}>
                   <BiLogIn key={"login"} size="22px" title="login" />
@@ -110,14 +114,14 @@ export default function MainFeaturedCard(props) {
                 Log In
               </Link>
             </div>
-            <div className="btn-outline-white text-left">
+            <div className="btn-outline-white text-md-left text-xs-center">
               <Link to={"/data"} className="gg-btn-outline-white">
                 <span
                   style={{
                     paddingRight: "10px",
                   }}
                 >
-                  <FontAwesomeIcon key={"data"} icon={["fas", "table"]} size="1x" title="data" />
+                  <FontAwesomeIcon key={"data"} icon={["fas", "table"]} size="1x" title="data" alt="Dataset Icon" />
                 </span>
                 Datasets
               </Link>
