@@ -407,19 +407,21 @@ const AddFeature = props => {
                 )}
                 <Form.Group as={Row} controlId="sequence">
                   <FormLabel label={featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "InChI" : "AA sequence"} />
-                  <Col md={6} className="sequence-label-div">
+                  <Col md={4} className="sequence-label-div">
                     <Form.Control
-                      rows={6}
+                      as="textarea"
+                      rows={5}
                       className="sequence-textarea"
-                      as="label"
+                      value={
+                        featureAddState.linker.type === "SMALLMOLECULE_LINKER"
+                          ? featureAddState.linker && featureAddState.linker.inChiSequence
+                            ? featureAddState.linker.inChiSequence.trim()
+                            : "No sequence"
+                          : formatSequenceForDisplay(featureAddState.linker.sequence.trim(), 60)
+                      }
+                      disabled
                       isInvalid={linkerValidated && !validLinker}
-                    >
-                      {featureAddState.linker.type === "SMALLMOLECULE_LINKER"
-                        ? featureAddState.linker && featureAddState.linker.inChiSequence
-                          ? featureAddState.linker.inChiSequence
-                          : "No sequence"
-                        : formatSequenceForDisplay(featureAddState.linker.sequence, 60)}
-                    </Form.Control>
+                    />
                     <Feedback message="Glycans cannot be attached to this protein/peptide linker. If you did not mean to add glycans to this feature, please select another type of feature."></Feedback>
                   </Col>
                 </Form.Group>
