@@ -7,18 +7,22 @@
   -webkit-user-select: none;
   user-select: none;
   background-color: var(--gg-blue);
-  border: 1px solid transparent;
+  border-color: var(--gg-blue) !important;
+  border: 1px solid;
   padding: 0.375rem;
   font-size: 1rem;
   line-height: 1.5;
   border-radius: 0.25rem;
   text-decoration: none !important;
   width: 100%;
+  -webkit-transition: all 0.5s !important;
+  transition: ease-in-out 0.5s !important;
 }
 
 .link-button:hover {
-  color: white !important;
-  background-color: var(--dark-blue-1);
+  color: #fff !important;
+  background-color: var(--gg-dark-blue) !important;
+  border-color: var(--gg-dark-blue) !important;
 }
 
 .feedback {

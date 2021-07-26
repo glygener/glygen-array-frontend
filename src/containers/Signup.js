@@ -48,7 +48,7 @@ const Signup = () => {
         <title>{head.signup.title}</title>
         {getMeta(head.signup)}
       </Helmet>
-      <Container maxWidth="sm" className="card-page-container">
+      <Container maxWidth="md" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Sign Up"} />
           {showErrorSummary === true && (
@@ -62,40 +62,36 @@ const Signup = () => {
           <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
             <Row>
               <Col md={6}>
-                <Form.Group as={Row} controlId="validationuserName">
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      name="userName"
-                      placeholder=" "
-                      onChange={handleChange}
-                      onBlur={checkUsername()}
-                      value={userInput.username}
-                      minLength={5}
-                      maxLength={20}
-                      required
-                      className={"custom-text-fields"}
-                    />
-                    <Form.Label className={"label required-asterik"}>Username</Form.Label>
-                    <Feedback message="Username should be between 5 and 20 characters." />
-                  </Col>
+                <Form.Group controlId="validationuserName">
+                  <Form.Control
+                    type="text"
+                    name="userName"
+                    placeholder=" "
+                    onChange={handleChange}
+                    onBlur={checkUsername()}
+                    value={userInput.username}
+                    minLength={5}
+                    maxLength={20}
+                    required
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label required-asterik"}>Username</Form.Label>
+                  <Feedback message="Username should be between 5 and 20 characters." />
                 </Form.Group>
               </Col>
               <Col md={6}>
-                <Form.Group as={Row} controlId="validaitonEmail">
-                  <Col>
-                    <Form.Control
-                      type="email"
-                      placeholder=" "
-                      name="email"
-                      value={userInput.emailAddress}
-                      onChange={handleChange}
-                      required
-                      className={"custom-text-fields"}
-                    />
-                    <Form.Label className={"label required-asterik"}>Email</Form.Label>
-                    <Feedback message="Please enter a valid email" />
-                  </Col>
+                <Form.Group controlId="validaitonEmail">
+                  <Form.Control
+                    type="email"
+                    placeholder=" "
+                    name="email"
+                    value={userInput.emailAddress}
+                    onChange={handleChange}
+                    required
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label required-asterik"}>Email</Form.Label>
+                  <Feedback message="Please enter a valid email" />
                 </Form.Group>
               </Col>
             </Row>
@@ -122,15 +118,17 @@ const Signup = () => {
                     <Feedback message={`* 1 numeric value,`} />
                     <Feedback message={`* 1 special character (!@#$%^&).`} />
 
-                    <FontAwesomeIcon
-                      className={"password-visibility"}
-                      key={"view"}
-                      icon={["far", viewPassword ? "eye" : "eye-slash"]}
-                      size="xs"
-                      alt="Password Visibility Icon"
-                      title="password"
-                      onClick={() => setViewPassword(!viewPassword)}
-                    />
+                    {!validated && (
+                      <FontAwesomeIcon
+                        className={"password-visibility"}
+                        key={"view"}
+                        icon={["far", viewPassword ? "eye" : "eye-slash"]}
+                        size="xs"
+                        alt="Password Visibility Icon"
+                        title="password"
+                        onClick={() => setViewPassword(!viewPassword)}
+                      />
+                    )}
                   </Col>
                 </Form.Group>
               </Col>
@@ -150,15 +148,17 @@ const Signup = () => {
                     <Form.Label className={"label required-asterik"}>Confirm password</Form.Label>
                     <Feedback message="Please confirm password." />
 
-                    <FontAwesomeIcon
-                      className={"password-visibility"}
-                      key={"view"}
-                      icon={["far", viewConfirmPassword ? "eye" : "eye-slash"]}
-                      alt="Password Visibility Icon"
-                      size="xs"
-                      title="confirm password"
-                      onClick={() => setViewConfirmPassword(!viewConfirmPassword)}
-                    />
+                    {!validated && (
+                      <FontAwesomeIcon
+                        className={"password-visibility"}
+                        key={"view"}
+                        icon={["far", viewConfirmPassword ? "eye" : "eye-slash"]}
+                        alt="Password Visibility Icon"
+                        size="xs"
+                        title="confirm password"
+                        onClick={() => setViewConfirmPassword(!viewConfirmPassword)}
+                      />
+                    )}
                   </Col>
                 </Form.Group>
               </Col>
@@ -166,53 +166,47 @@ const Signup = () => {
 
             <Row>
               <Col md={6}>
-                <Form.Group as={Row} controlId="firstname">
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      placeholder=" "
-                      name="firstName"
-                      onChange={handleChange}
-                      value={userInput.firstName}
-                      required
-                      className={"custom-text-fields"}
-                    />
-                    <Form.Label className={"label required-asterik"}>First name</Form.Label>
-                    <Feedback message="Please enter first name." />
-                  </Col>
+                <Form.Group controlId="firstname">
+                  <Form.Control
+                    type="text"
+                    placeholder=" "
+                    name="firstName"
+                    onChange={handleChange}
+                    value={userInput.firstName}
+                    required
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label required-asterik"}>First name</Form.Label>
+                  <Feedback message="Please enter first name." />
                 </Form.Group>
               </Col>
               <Col md={6}>
-                <Form.Group as={Row} controlId="lastname">
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      placeholder=" "
-                      name="lastName"
-                      onChange={handleChange}
-                      value={userInput.lastName}
-                      required
-                      className={"custom-text-fields"}
-                    />
-                    <Form.Label className={"label required-asterik"}>Last name</Form.Label>
-                    <Feedback message="Please enter last name." />
-                  </Col>
+                <Form.Group controlId="lastname">
+                  <Form.Control
+                    type="text"
+                    placeholder=" "
+                    name="lastName"
+                    onChange={handleChange}
+                    value={userInput.lastName}
+                    required
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label required-asterik"}>Last name</Form.Label>
+                  <Feedback message="Please enter last name." />
                 </Form.Group>
               </Col>
             </Row>
 
-            <Form.Group as={Row} controlId="formAffiliation">
-              <Col>
-                <Form.Control
-                  type="text"
-                  placeholder=" "
-                  name="affiliation"
-                  value={userInput.affiliation}
-                  onChange={handleChange}
-                  className={"custom-text-fields"}
-                />
-                <Form.Label className={"label"}>Affiliation</Form.Label>
-              </Col>
+            <Form.Group controlId="formAffiliation">
+              <Form.Control
+                type="text"
+                placeholder=" "
+                name="affiliation"
+                value={userInput.affiliation}
+                onChange={handleChange}
+                className={"custom-text-fields"}
+              />
+              <Form.Label className={"label"}>Affiliation</Form.Label>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formAffiliationWebsite">
@@ -226,7 +220,7 @@ const Signup = () => {
                   className={"custom-text-fields"}
                 />
                 <Form.Label className={"label"}>Affiliation Website</Form.Label>
-                <Feedback message="Please enter valid Affiliation Website." />
+                <Feedback message="Please enter valid affiliation website." />
               </Col>
             </Form.Group>
             <br />
@@ -271,7 +265,7 @@ const Signup = () => {
         setPageErrorMessage("Internal Server Error - Please try again");
         setShowErrorSummary(true);
       } else if (response.status === 409) {
-        setPageErrorMessage("Username already in use. Choose a different one");
+        setPageErrorMessage("The username is already in use. Please choose a different username.");
         setShowErrorSummary(true);
       }
     }
@@ -285,7 +279,7 @@ const Signup = () => {
       userInput.confirmPassword !== "" &&
       userInput.password !== userInput.confirmPassword
     ) {
-      setPageErrorMessage("Passwords don't match");
+      setPageErrorMessage("Passwords must match.");
       setShowErrorSummary(true);
     } else if (e.currentTarget.checkValidity()) {
       checkUsername();

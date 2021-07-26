@@ -329,7 +329,25 @@ hr {
   align-items: center;
   /* text-align: right; */
 }
-
+.gg-responsive-btn {
+  width: 30%;
+}
+.gg-profile-mr-ml {
+  margin-right: 40px !important;
+  margin-left: 40px !important;
+}
+.gg-mr-20 {
+  margin-right: 20px !important;
+}
+.gg-ml-20 {
+  margin-left: 20px !important;
+}
+.gg-mr-40 {
+  margin-right: 40px !important;
+}
+.gg-ml-40 {
+  margin-left: 40px !important;
+}
 /* =========================================
                 Card Loader
   ============================================ */

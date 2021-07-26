@@ -50,6 +50,10 @@
   .id-mapping-content {
     padding: 40px 60px 40px 80px !important;
   }
+  .gg-profile-mr-ml {
+    margin-right: 25px !important;
+    margin-left: 25px !important;
+  }
 }
 
 /* Extra Small Devices (Landscape Phones & Portrait Tablets) */
@@ -137,6 +141,25 @@
   }
   .id-mapping-content {
     padding: 40px 60px 40px 80px !important;
+  }
+  .gg-responsive-btn {
+    width: 100% !important;
+  }
+  .gg-profile-mr-ml {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+  .gg-mr-20 {
+    margin-right: 0 !important;
+  }
+  .gg-ml-20 {
+    margin-left: 0 !important;
+  }
+  .gg-mr-40 {
+    margin-right: 0 !important;
+  }
+  .gg-ml-40 {
+    margin-left: 0 !important;
   }
 }
 

@@ -1,24 +1,28 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { wsCall } from "../utils/wsUtils";
-import { Row, Col, Button, Form, Card } from "react-bootstrap";
+import { Row, Col, Button, Form } from "react-bootstrap";
 import { FormLabel, FormButton, Feedback, Title } from "../components/FormControls";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import PropTypes from "prop-types";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Link } from "react-router-dom";
+import Container from "@material-ui/core/Container";
 
-const Profile = props => {
+const Profile = (props) => {
   const profile = {
     userName: "",
     firstName: "",
     lastName: "",
     email: "",
     affiliation: "",
-    affiliationWebsite: ""
+    affiliationWebsite: "",
   };
 
-  const [userProfile, setUserProfile] = useReducer((state, newState) => ({ ...state, ...newState }), profile);
+  const [userProfile, setUserProfile] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    profile
+  );
 
   const username = window.localStorage.getItem("loggedinuser");
   const [validated, setValidate] = useState(false);
@@ -34,7 +38,7 @@ const Profile = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     var name = e.currentTarget.name;
     var value = e.currentTarget.value;
 
@@ -58,122 +62,121 @@ const Profile = props => {
         <title>{head.profile.title}</title>
         {getMeta(head.profile)}
       </Helmet>
+      <Container maxWidth="md" className="card-page-container">
+        <div className="card-page-sm">
+          <Title title={title} />
 
-      <Card
-        style={{
-          width: "800px"
-        }}
-        className={"card-page"}
-      >
-        {/* <Card.Body style={{ padding: "1.25rem" }}>{title}</Card.Body> */}
-        <Title title={title} />
+          {showErrorSummary === true && (
+            <ErrorSummary show={showErrorSummary} form="editProfile" errorJson={pageErrorsJson} />
+          )}
 
-        {showErrorSummary === true && (
-          <ErrorSummary show={showErrorSummary} form="editProfile" errorJson={pageErrorsJson} />
-        )}
+          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="firstName">
+                  <Form.Label className={isUpdate ? "required-asterik" : ""}>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="firstName"
+                    disabled={!isUpdate}
+                    onChange={handleChange}
+                    value={userProfile.firstName}
+                    required
+                  />
+                  <Feedback message="First name is required" />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="lastName">
+                  <Form.Label className={isUpdate ? "required-asterik" : ""}>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="lastName"
+                    disabled={!isUpdate}
+                    onChange={handleChange}
+                    value={userProfile.lastName}
+                    required
+                  />
+                  <Feedback message="Last name is required" />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="username">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control type="text" name="userName" disabled value={userProfile.userName} />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="email">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control type="text" name="email" disabled value={userProfile.email} />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="affiliation">
+                  <Form.Label>Affiliation</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="affiliation"
+                    onChange={handleChange}
+                    disabled={!isUpdate}
+                    value={userProfile.affiliation}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="affiliationWebsite">
+                  <Form.Label>Affiliation Website</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="affiliationWebsite"
+                    onChange={handleChange}
+                    disabled={!isUpdate}
+                    value={userProfile.affiliationWebsite}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row className={!isUpdate ? "text-center mt-2" : "hide-content"}>
+              <Col md={4}>
+                <Button className="link-button mt-3" onClick={() => editUser()}>
+                  Edit
+                </Button>
+              </Col>
+              <Col md={4}>
+                <Link to="/changePassword">
+                  <Button className="link-button mt-3">Change Password</Button>
+                </Link>
+              </Col>
+              <Col md={4}>
+                <Link to="/changeEmail">
+                  <Button className="link-button mt-3">Change Email</Button>
+                </Link>
+              </Col>
+            </Row>
 
-        <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-          <Form.Group as={Row} controlId="username">
-            <FormLabel label="Username" className={"text-fields"} />
-            <Col md={6}>
-              <Form.Control type="text" name="userName" disabled value={userProfile.userName} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="firstName">
-            <FormLabel label="First Name" className={isUpdate ? "required-asterik text-fields" : "text-fields"} />
-            <Col md={6}>
-              <Form.Control
-                type="text"
-                name="firstName"
-                disabled={!isUpdate}
-                onChange={handleChange}
-                value={userProfile.firstName}
-                required
-              />
-              <Feedback message="first name is required" />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="lastName">
-            <FormLabel label="Last Name" className={isUpdate ? "required-asterik text-fields" : "text-fields"} />
-            <Col md={6}>
-              <Form.Control
-                type="text"
-                name="lastName"
-                disabled={!isUpdate}
-                onChange={handleChange}
-                value={userProfile.lastName}
-                required
-              />
-              <Feedback message="last name is required" />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="email">
-            <FormLabel label="Email" className={"text-fields"} />
-            <Col md={6}>
-              <Form.Control type="text" name="email" disabled value={userProfile.email} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="affiliation">
-            <FormLabel label="Affiliation" className={"text-fields"} />
-            <Col md={6}>
-              <Form.Control
-                type="text"
-                name="affiliation"
-                onChange={handleChange}
-                disabled={!isUpdate}
-                value={userProfile.affiliation}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="affiliationWebsite">
-            <FormLabel label="Affiliation Website" className={"text-fields"} />
-            <Col md={6}>
-              <Form.Control
-                type="text"
-                name="affiliationWebsite"
-                onChange={handleChange}
-                disabled={!isUpdate}
-                value={userProfile.affiliationWebsite}
-              />
-            </Col>
-          </Form.Group>
-
-          <Row className={!isUpdate ? "" : "hide-content"}>
-            <Col md={{ span: 4 }}>
-              <Button style={{ width: "100%", marginLeft: "304px", marginBottom: "10px" }} onClick={() => editUser()}>
-                Edit
+            <div className={isUpdate ? "text-center mt-2" : "hide-content"}>
+              <Button
+                className="gg-btn-blue gg-responsive-btn mt-3 gg-mr-20"
+                type="submit"
+                disabled={validated}
+              >
+                Submit
               </Button>
-            </Col>
-          </Row>
-
-          <Row className={!isUpdate ? "" : "hide-content"}>
-            <Col md={{ span: 4 }} style={{ width: "100%", marginLeft: "304px", marginBottom: "10px" }}>
-              <Link to="/changePassword" className="link-button">
-                Change Password
-              </Link>
-            </Col>
-          </Row>
-
-          <Row className={!isUpdate ? "" : "hide-content"}>
-            <Col md={{ span: 4 }} style={{ width: "100%", marginLeft: "304px", marginBottom: "10px" }}>
-              <Link to="/changeEmail" className="link-button">
-                Change Email
-              </Link>
-            </Col>
-            {/* <LinkButton to="/changeEmail" label="Change Email" /> */}
-          </Row>
-
-          <Row className={isUpdate ? "" : "hide-content"}>
-            <FormButton type="submit" label="Submit" disabled={validated} />
-            <Button onClick={() => handlecancel()}>Cancel</Button>
-          </Row>
-        </Form>
-      </Card>
+              <Button
+                className="gg-btn-blue gg-responsive-btn mt-3 gg-ml-20"
+                onClick={() => handlecancel()}
+              >
+                Cancel
+              </Button>
+            </div>
+          </Form>
+        </div>
+      </Container>
     </>
   );
 
@@ -182,7 +185,7 @@ const Profile = props => {
   }
 
   function getProfileSuccess(response) {
-    response.json().then(parsedJson => {
+    response.json().then((parsedJson) => {
       setUserProfile(parsedJson);
     });
   }
@@ -204,7 +207,7 @@ const Profile = props => {
   }
 
   function editProfileError(response) {
-    response.json().then(response => {
+    response.json().then((response) => {
       console.log(response);
       setShowErrorSummary(true);
       setPageErrorsJson(response);
@@ -215,7 +218,15 @@ const Profile = props => {
     setValidate(true);
 
     if (e.currentTarget.checkValidity()) {
-      wsCall("update", "POST", [userProfile.userName], true, userProfile, editProfileSuccess, editProfileError);
+      wsCall(
+        "update",
+        "POST",
+        [userProfile.userName],
+        true,
+        userProfile,
+        editProfileSuccess,
+        editProfileError
+      );
     }
 
     e.preventDefault();
@@ -223,7 +234,7 @@ const Profile = props => {
 };
 
 Profile.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
 };
 
 export { Profile };
