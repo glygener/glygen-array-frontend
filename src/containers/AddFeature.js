@@ -288,7 +288,7 @@ const AddFeature = props => {
           showOnlyMyLinkersOrGlycansCheckBox
           handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyLinkers(!onlyMyLinkers)}
           onlyMyLinkersGlycans={onlyMyLinkers}
-          onlyMyLinkersGlycansCheckBoxLabel={"all available linkers"}
+          onlyMyLinkersGlycansCheckBoxLabel={"Show all available linkers"}
         />
       </>
     );
@@ -414,10 +414,16 @@ const AddFeature = props => {
                       className="sequence-textarea"
                       value={
                         featureAddState.linker.type === "SMALLMOLECULE_LINKER"
-                          ? featureAddState.linker && featureAddState.linker.inChiSequence
+                          ? featureAddState.linker &&
+                            featureAddState.linker.length > 0 &&
+                            featureAddState.linker.inChiSequence
                             ? featureAddState.linker.inChiSequence.trim()
                             : "No sequence"
-                          : formatSequenceForDisplay(featureAddState.linker.sequence.trim(), 60)
+                          : featureAddState.linker.length > 0 &&
+                            formatSequenceForDisplay(
+                              featureAddState.linker.length > 0 && featureAddState.linker.sequence.trim(),
+                              60
+                            )
                       }
                       disabled
                       isInvalid={linkerValidated && !validLinker}
@@ -580,7 +586,7 @@ const AddFeature = props => {
                       showOnlyMyLinkersOrGlycansCheckBox
                       handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyglycans(!onlyMyglycans)}
                       onlyMyLinkersGlycans={onlyMyglycans}
-                      onlyMyLinkersGlycansCheckBoxLabel={"all available glycans"}
+                      onlyMyLinkersGlycansCheckBoxLabel={"Show all available glycans"}
                     />
                   </Modal.Body>
                   <Modal.Footer>

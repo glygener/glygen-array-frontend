@@ -5,7 +5,7 @@ import "react-table/react-table.css";
 import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import "./GlygenTable.css";
-import { OverlayTrigger, Popover, Form, Col, Row } from "react-bootstrap";
+import { OverlayTrigger, Popover, Form, Col, Row, FormCheck } from "react-bootstrap";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { GlygenTableRowsInfo } from "./GlygenTableRowsInfo";
 import { ErrorSummary } from "./ErrorSummary";
@@ -279,15 +279,24 @@ const GlygenTable = props => {
               <Col
                 style={{
                   marginTop: "10px",
-                  marginLeft: "85px"
+                  marginLeft: "40px"
                 }}
               >
-                <Form.Check
-                  type="checkbox"
-                  label={props.onlyMyLinkersGlycansCheckBoxLabel}
-                  checked={props.onlyMyLinkersGlycans}
-                  onChange={props.handleChangeForOnlyMyLinkersGlycans}
-                />
+                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                  <Form.Check
+                    type="checkbox"
+                    label={
+                      <span
+                        style={{
+                          backgroundColor: props.onlyMyLinkersGlycansCheckBoxLabel.includes("glycans") ? "#fff" : ""
+                        }}
+                      >
+                        {props.onlyMyLinkersGlycansCheckBoxLabel}
+                      </span>
+                    }
+                    onChange={props.handleChangeForOnlyMyLinkersGlycans}
+                  />
+                </Form.Group>
               </Col>
             )}
 
