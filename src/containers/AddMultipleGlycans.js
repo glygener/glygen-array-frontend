@@ -46,11 +46,6 @@ const AddMultipleGlycans = props => {
     setShowErrorSummary(false);
     const name = e.target.name;
     const value = e.target.value;
-
-    if (name === "glytoucanRegistration") {
-      setUploadDetails({ [name]: e.target.checked });
-      return;
-    }
     setUploadDetails({ [name]: value });
   }
 
@@ -234,6 +229,18 @@ const AddMultipleGlycans = props => {
                 </Col>
               </Form.Group>
 
+              <Col md={{ span: 6, offset: 5 }}>
+                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                  <Form.Check
+                    type="checkbox"
+                    label={"register in GlyTouCan"}
+                    onChange={e => setUploadDetails({ glytoucanRegistration: e.target.checked })}
+                    name={"glytoucanRegistration"}
+                    checked={uploadDetails.glytoucanRegistration}
+                  />
+                </Form.Group>
+              </Col>
+
               {uploadDetails.fileType !== defaultFileType && (
                 <Form.Group as={Row} controlId="fileUploader">
                   <FormLabel label={"Upload Glycan File"} className="required-asterik" />
@@ -253,15 +260,6 @@ const AddMultipleGlycans = props => {
                   </Col>
                 </Form.Group>
               )}
-              <Col md={{ span: 6, offset: 5 }}>
-                <Form.Check
-                  name="glytoucanRegistration"
-                  type="checkbox"
-                  label="register in GlyTouCan"
-                  checked={uploadDetails.glytoucanRegistration}
-                  onChange={handleChange}
-                />
-              </Col>
             </>
           )}
           &nbsp;&nbsp;

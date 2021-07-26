@@ -291,3 +291,9 @@ export function isValidNumber(e) {
     e.preventDefault();
   }
 }
+
+export function numberLengthCheck(e) {
+  if (e.target.value.length > e.target.maxLength) {
+    e.target.value = e.target.value.slice(0, e.target.maxLength);
+  }
+}

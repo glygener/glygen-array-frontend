@@ -7,7 +7,7 @@ import { Form, Row, Col, FormCheck } from "react-bootstrap";
 import { FormLabel, Feedback, Title } from "../components/FormControls";
 import MultiToggle from "react-multi-toggle";
 import { wsCall } from "../utils/wsUtils";
-import { csvToArray, isValidURL, externalizeUrl, isValidNumber } from "../utils/commonUtils";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { head, getMeta } from "../utils/head";
@@ -31,6 +31,7 @@ const AddLinker = props => {
   const [invalidUrls, setInvalidUrls] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [sequenceError, setSequenceError] = useState("");
   const [newURL, setNewURL] = useState("");
   const history = useHistory();
@@ -63,11 +64,11 @@ const AddLinker = props => {
 
   const reviewFields = {
     type: { label: "Linker Type", type: "text" },
-    pubChemId: { label: "PubChem Compound CID", type: "text", length: 12},
+    pubChemId: { label: "PubChem Compound CID", type: "text", length: 12 },
     classification: { label: "Classification", type: "text" },
     inChiKey: { label: "InChI Key", type: "text" },
     inChiSequence: { label: "InChI", type: "textarea" },
-    iupacName: { label: "Name", type: "text" },
+    iupacName: { label: "IUPAC Name", type: "text" },
     molecularFormula: { label: "Molecular Formula", type: "text" },
     canonicalSmiles: { label: "CANONICAL SMILES", type: "text" },
     isomericSmiles: { label: "ISOMERIC SMILES", type: "text" },
@@ -97,7 +98,7 @@ const AddLinker = props => {
       length: 10000,
       enableCharacterCounter: true
     },
-    iupacName: { label: "Name", type: "text", length: 2000 },
+    iupacName: { label: "IUPAC Name", type: "text", length: 2000 },
     mass: { label: "Mass", type: "text" },
     molecularFormula: { label: "Molecular Formula", type: "text", length: 256 },
     isomericSmiles: { label: displayNames.linker.ISOMERIC_SMILES, type: "text", length: 10000 },
@@ -181,8 +182,8 @@ const AddLinker = props => {
       if (invalidUrls) {
         return;
       }
-      removeEmptyElementsAtEnd(linkerAddState.urls);
-      removeEmptyElementsAtEnd(linkerAddState.pdbIds);
+      linkerAddState.urls && linkerAddState.urls.length > 0 && removeEmptyElementsAtEnd(linkerAddState.urls);
+      linkerAddState.pdbIds && linkerAddState.pdbIds.length > 0 && removeEmptyElementsAtEnd(linkerAddState.pdbIds);
     } else if (activeStep === 3) {
       addLinker();
       return;
@@ -198,7 +199,7 @@ const AddLinker = props => {
   const urlWidget = enableDelete => {
     return (
       <>
-        {linkerAddState.urls.length > 0
+        {linkerAddState.urls && linkerAddState.urls.length > 0
           ? linkerAddState.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
@@ -246,16 +247,20 @@ const AddLinker = props => {
   function addURL() {
     var listUrls = linkerAddState.urls;
     var urlEntered = csvToArray(newURL)[0];
+    const urlExists = listUrls.find(i => i === urlEntered);
 
-    if (urlEntered !== "" && !isValidURL(urlEntered)) {
-      setInvalidUrls(true);
-      return;
-    } else {
-      listUrls.push(urlEntered);
-      setInvalidUrls(false);
+    if (!urlExists) {
+      if (urlEntered !== "" && !isValidURL(urlEntered)) {
+        setInvalidUrls(true);
+        return;
+      } else {
+        listUrls.push(urlEntered);
+        setInvalidUrls(false);
+      }
+
+      setLinkerAddState({ urls: listUrls });
     }
     setNewURL("");
-    setLinkerAddState({ urls: listUrls });
   }
 
   function populateClassifications() {
@@ -307,10 +312,13 @@ const AddLinker = props => {
           inChiKey: responseJson.inChiKey,
           inChiSequence: responseJson.inChiSequence,
           iupacName: responseJson.iupacName,
+          name: responseJson.iupacName,
           imageURL: responseJson.imageURL,
           molecularFormula: responseJson.molecularFormula,
-          smiles: responseJson.smiles,
-          mass: responseJson.mass
+          isomericSmiles: responseJson.isomericSmiles,
+          canonicalSmiles: responseJson.smiles,
+          mass: responseJson.mass,
+          urls: responseJson.urls
         });
 
         if (responseJson.classification) {
@@ -370,7 +378,14 @@ const AddLinker = props => {
   }
 
   function addPublication() {
-    wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
+    let publications = linkerAddState.publications;
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
+
+    if (!pubmedExists) {
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
+    } else {
+      setNewPubMedId("");
+    }
 
     function addPublicationSuccess(response) {
       response.json().then(responseJson => {
@@ -383,11 +398,13 @@ const AddLinker = props => {
     }
 
     function addPublicationError(response) {
-      response.json().then(resp => {
-        // "pubmedid"
-        setPageErrorsJson(resp);
+      response.text().then(resp => {
+        if (resp) {
+          setPageErrorsJson(JSON.parse(resp));
+        } else {
+          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
+        }
         setShowErrorSummary(true);
-        console.log(resp);
       });
     }
   }
@@ -411,7 +428,8 @@ const AddLinker = props => {
       linkerObj.iupacName = linkerAddState.iupacName;
       linkerObj.mass = linkerAddState.mass;
       linkerObj.molecularFormula = linkerAddState.molecularFormula;
-      linkerObj.smiles = linkerAddState.smiles;
+      linkerObj.smiles = linkerAddState.canonicalSmiles;
+      linkerObj.isomericSmiles = linkerAddState.isomericSmiles;
     } else if (linkerAddState.type === "PROTEIN_LINKER") {
       linkerObj.uniProtId = linkerAddState.uniProtId;
       linkerObj.pdbIds = linkerAddState.pdbIds;
@@ -436,6 +454,7 @@ const AddLinker = props => {
   }
 
   function removeEmptyElementsAtEnd(arr) {
+    debugger;
     if (arr.length > 0 && arr[arr.length - 1] === "") {
       arr.pop();
     }
@@ -499,7 +518,12 @@ const AddLinker = props => {
             </div>
 
             {showErrorSummary === true && (
-              <ErrorSummary show={showErrorSummary} form="linkers" errorJson={pageErrorsJson}></ErrorSummary>
+              <ErrorSummary
+                show={showErrorSummary}
+                form="linkers"
+                errorMessage={pageErrorMessage}
+                errorJson={pageErrorsJson}
+              />
             )}
 
             <Typography component={"span"} variant={"body2"}>
@@ -564,9 +588,7 @@ const AddLinker = props => {
                         }}
                         maxLength={12}
                         onInput={e => {
-                          if (e.target.value.length > e.target.maxLength) {
-                            e.target.value = e.target.value.slice(0, e.target.maxLength);
-                          }
+                          numberLengthCheck(e);
                         }}
                       />
                     </Col>
@@ -621,7 +643,7 @@ const AddLinker = props => {
                             rows="4"
                             name={key}
                             placeholder={smLinkerPubChemFields[key].label}
-                            value={linkerAddState[key]}
+                            value={linkerAddState[key] ? linkerAddState[key] : undefined}
                             onChange={handleChange}
                             disabled={disablePubChemFields}
                             maxLength={smLinkerPubChemFields[key].length}
@@ -814,6 +836,9 @@ const AddLinker = props => {
                         onKeyDown={e => {
                           isValidNumber(e);
                         }}
+                        onInput={e => {
+                          numberLengthCheck(e);
+                        }}
                       />
                     </Col>
                     <Col md={1}>
@@ -835,7 +860,10 @@ const AddLinker = props => {
                         name="urls"
                         placeholder="Enter URL and click +"
                         value={newURL}
-                        onChange={e => setNewURL(e.target.value)}
+                        onChange={e => {
+                          setNewURL(e.target.value);
+                          setInvalidUrls(false);
+                        }}
                         isInvalid={invalidUrls}
                       />
                       <Feedback message="Please check the url entered" />
@@ -881,7 +909,7 @@ const AddLinker = props => {
             <Form.Group as={Row} controlId="publications">
               <FormLabel label="Publications" />
               <Col md={4}>
-                {linkerAddState.publications.length > 0
+                {linkerAddState.publications && linkerAddState.publications.length > 0
                   ? linkerAddState.publications.map(pub => {
                       return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
                     })
@@ -891,7 +919,7 @@ const AddLinker = props => {
             <Form.Group as={Row} controlId="urls">
               <FormLabel label="Urls" />
               <Col md={4}>
-                {linkerAddState.urls.length > 0 ? (
+                {linkerAddState.urls && linkerAddState.urls.length > 0 ? (
                   linkerAddState.urls.map((url, index) => {
                     return (
                       <div style={{ marginTop: "8px" }} key={index}>
