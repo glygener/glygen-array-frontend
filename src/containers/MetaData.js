@@ -140,7 +140,11 @@ const MetaData = props => {
     } else if (metaDataDetails.name === "") {
       setErrorName(true);
     } else {
-      (isUpdate || props.isCopy) && !loadDataOnFirstNextInUpdate && setSampleUpdateData();
+      if ((isUpdate || props.isCopy) && !loadDataOnFirstNextInUpdate && props.metadataType !== "Assay") {
+        setSampleUpdateData();
+      } else if ((isUpdate || props.isCopy) && !loadDataOnFirstNextInUpdate && props.metadataType === "Assay") {
+        setAssayMetadataUpdate();
+      }
       setLoadDescriptors(true);
     }
   };
@@ -585,6 +589,7 @@ const MetaData = props => {
     if (props.metadataType === "Assay") {
       sortAssayDescriptors(selectedSample);
     }
+
     setSampleModel(sampleModelUpdate);
     //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
@@ -1286,11 +1291,13 @@ const MetaData = props => {
   }
 
   function setSampleUpdateData() {
+    let sampleModelUpdate = sampleModel;
+
     metaDataDetails.sample.descriptors.forEach(generalDsc => {
       let simpleDescs;
 
       if (generalDsc.key && generalDsc.key.id) {
-        simpleDescs = sampleModel.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
+        simpleDescs = sampleModelUpdate.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
       }
 
       if (simpleDescs) {
@@ -1300,16 +1307,28 @@ const MetaData = props => {
     });
 
     metaDataDetails.sample.descriptorGroups.forEach(group => {
-      const templateDescriptorGroups = sampleModel.descriptors.filter(i => i.id === group.key.id);
-
       let templateDescriptorGroup;
-      if (templateDescriptorGroups.length === 1) {
-        templateDescriptorGroup = templateDescriptorGroups[0];
-        templateDescriptorGroup.order = group.order;
+      let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.order === group.order);
+
+      if (!tempDescGroup) {
+        templateDescriptorGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
+
+        var newElement = JSON.parse(JSON.stringify(templateDescriptorGroup));
+        newElement.id = "newlyAddedItems" + templateDescriptorGroup.id;
+        newElement.isNewlyAdded = true;
+        newElement.order = group.order;
+        newElement.group &&
+          newElement.descriptors.forEach(e => {
+            e.id = "newlyAddedItems" + e.id;
+          });
+
+        sampleModelUpdate.descriptors.push(newElement);
+      } else {
+        templateDescriptorGroup = tempDescGroup;
       }
 
       if (templateDescriptorGroup.descriptors) {
-        if (!templateDescriptorGroup.mandatory) {
+        if (!templateDescriptorGroup.mandatory && !tempDescGroup) {
           templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
           templateDescriptorGroup.isNewlyAdded = true;
         }
@@ -1320,11 +1339,11 @@ const MetaData = props => {
             subdescriptor.value = descriptor.value;
             subdescriptor.unit = descriptor.unit ? descriptor.unit : "";
           } else {
-            if (!subdescriptor.mandatory) {
+            if (subdescriptor && !subdescriptor.mandatory) {
               subdescriptor.id = "newlyAddedItems" + subdescriptor.id;
               subdescriptor.isNewlyAdded = true;
             }
-            descriptor.descriptors &&
+            descriptor.group &&
               descriptor.descriptors.forEach(subGroupDesc => {
                 const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
                 subGrp.value = subGroupDesc.value;
@@ -1334,6 +1353,72 @@ const MetaData = props => {
         });
       }
     });
+    setSampleModel(sampleModelUpdate);
+  }
+
+  function setAssayMetadataUpdate() {
+    let sampleModelUpdate = sampleModel;
+
+    metaDataDetails.sample.descriptors.forEach(generalDsc => {
+      let simpleDescs;
+
+      if (generalDsc.key && generalDsc.key.id) {
+        simpleDescs = sampleModelUpdate.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
+      }
+
+      if (simpleDescs) {
+        simpleDescs.value = generalDsc.value;
+        simpleDescs.unit = generalDsc.unit ? generalDsc.unit : "";
+      }
+    });
+
+    metaDataDetails.sample.descriptorGroups.forEach(group => {
+      let templateDescriptorGroup;
+      let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id && i.order === group.order);
+
+      if (!tempDescGroup) {
+        templateDescriptorGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
+
+        var newElement = JSON.parse(JSON.stringify(templateDescriptorGroup));
+        newElement.id = "newlyAddedItems" + templateDescriptorGroup.id;
+        newElement.isNewlyAdded = true;
+        newElement.group &&
+          newElement.descriptors.forEach(e => {
+            e.id = "newlyAddedItems" + e.id;
+          });
+
+        sampleModelUpdate.descriptors.push(newElement);
+      } else {
+        templateDescriptorGroup = tempDescGroup;
+      }
+
+      if (templateDescriptorGroup.descriptors) {
+        if (!templateDescriptorGroup.mandatory && !tempDescGroup) {
+          templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
+          templateDescriptorGroup.isNewlyAdded = true;
+        }
+        group.descriptors.forEach(descriptor => {
+          const subdescriptor =
+            templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === descriptor.key.id);
+          if (subdescriptor && !subdescriptor.group) {
+            subdescriptor.value = descriptor.value;
+            subdescriptor.unit = descriptor.unit ? descriptor.unit : "";
+          } else {
+            if (subdescriptor && !subdescriptor.mandatory) {
+              subdescriptor.id = "newlyAddedItems" + subdescriptor.id;
+              subdescriptor.isNewlyAdded = true;
+            }
+            descriptor.group &&
+              descriptor.descriptors.forEach(subGroupDesc => {
+                const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
+                subGrp.value = subGroupDesc.value;
+                subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
+              });
+          }
+        });
+      }
+    });
+    setSampleModel(sampleModelUpdate);
   }
 
   function getListTemplatesFailure(response) {
@@ -1482,7 +1567,15 @@ const MetaData = props => {
             {getButtonsForImportedPage()}
             <Row>
               <Col md={10}>
-                {!loadDataOnFirstNextInUpdate && !props.importedPageData.id && setSampleUpdateData()}
+                {props.metadataType !== "Assay" &&
+                  !loadDataOnFirstNextInUpdate &&
+                  !props.importedPageData.id &&
+                  setSampleUpdateData()}
+
+                {props.metadataType === "Assay" &&
+                  !loadDataOnFirstNextInUpdate &&
+                  !props.importedPageData.id &&
+                  setAssayMetadataUpdate()}
 
                 {props.importPageContent && props.importPageContent()}
 
