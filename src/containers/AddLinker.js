@@ -46,7 +46,8 @@ const AddLinker = props => {
     iupacName: "",
     imageURL: "",
     molecularFormula: "",
-    smiles: "",
+    canonicalSmiles: "",
+    isomericSmiles: "",
     name: "",
     comment: "",
     description: "",
@@ -172,6 +173,16 @@ const AddLinker = props => {
       ) {
         return;
       } else {
+        if (!disablePubChemFields) {
+          if (linkerAddState.pubChemId !== "") {
+            populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId.trim()));
+          } else if (linkerAddState.canonicalSmiles) {
+            populateLinkerDetails(encodeURIComponent(linkerAddState.canonicalSmiles.trim()));
+          } else if (linkerAddState.inChiKey) {
+            populateLinkerDetails(encodeURIComponent(linkerAddState.inChiKey.trim()));
+          }
+        }
+
         var seqError = validateSequence(linkerAddState.type, linkerAddState.sequence);
         setSequenceError(seqError);
         if (seqError !== "") {
@@ -454,7 +465,6 @@ const AddLinker = props => {
   }
 
   function removeEmptyElementsAtEnd(arr) {
-    debugger;
     if (arr.length > 0 && arr[arr.length - 1] === "") {
       arr.pop();
     }
@@ -663,7 +673,7 @@ const AddLinker = props => {
                             </span>
                           )}
                         </Col>
-                        {(key === "inChiKey" || key === "smiles") &&
+                        {(key === "inChiKey" || key === "canonicalSmiles") &&
                           linkerAddState[key] !== "" &&
                           !disablePubChemFields && (
                             <Button
