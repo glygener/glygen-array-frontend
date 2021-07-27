@@ -63,10 +63,10 @@ const ForgotPassword = () => {
             </Form.Group>
             <br />
             <div className="text-center">
-              <Button type="submit">Submit</Button>
-            </div>
-            <hr />
-            <div className="text-center">
+              <Button type="submit" className="gg-btn-blue">
+                Submit
+              </Button>
+              <hr />
               <div>
                 <Link to="/login">Return To Log In</Link>
               </div>

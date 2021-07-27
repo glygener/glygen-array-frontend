@@ -69,7 +69,9 @@ const VerifyToken = () => {
             </Form.Group>
             <br />
             <div className="text-center">
-              <Button type="submit">Verify Sign Up</Button>
+              <Button type="submit" className="gg-btn-blue">
+                Verify Sign Up
+              </Button>
               <hr />
               <div>
                 <Link to="/login">Log In</Link>

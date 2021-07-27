@@ -104,7 +104,9 @@ const Login = (props) => {
             </Form.Group>
             <br />
             <div className="text-center">
-              <Button type="submit">Log In</Button>
+              <Button type="submit" className="gg-btn-blue">
+                Log In
+              </Button>
               <hr />
               <div>
                 <Link to="/signup">New user?</Link>

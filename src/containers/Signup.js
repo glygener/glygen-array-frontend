@@ -225,7 +225,7 @@ const Signup = () => {
             </Form.Group>
             <br />
             <div className="text-center">
-              <Button type="submit" disabled={showErrorSummary}>
+              <Button type="submit" disabled={showErrorSummary} className="gg-btn-blue">
                 Sign Up
               </Button>
               <hr />
