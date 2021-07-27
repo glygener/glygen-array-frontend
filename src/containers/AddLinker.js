@@ -36,6 +36,8 @@ const AddLinker = props => {
   const [newURL, setNewURL] = useState("");
   const history = useHistory();
 
+  const pubchemUrl = "https://pubchem.ncbi.nlm.nih.gov/compound/";
+
   const linkerAddInitState = {
     pubChemId: "",
     uniProtId: "",
@@ -214,7 +216,7 @@ const AddLinker = props => {
           ? linkerAddState.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
-                  <Col>
+                  <Col md={10}>
                     <Link
                       style={{ fontSize: "0.9em" }}
                       href={externalizeUrl(url)}
@@ -225,7 +227,7 @@ const AddLinker = props => {
                     </Link>
                   </Col>
                   {enableDelete && (
-                    <Col style={{ marginTop: "2px" }}>
+                    <Col style={{ marginTop: "2px", textAlign: "center" }} md={2}>
                       <FontAwesomeIcon
                         icon={["far", "trash-alt"]}
                         size="xs"
@@ -329,7 +331,7 @@ const AddLinker = props => {
           isomericSmiles: responseJson.isomericSmiles,
           canonicalSmiles: responseJson.smiles,
           mass: responseJson.mass,
-          urls: responseJson.urls
+          urls: [`${pubchemUrl}${responseJson.pubChemId}`]
         });
 
         if (responseJson.classification) {
