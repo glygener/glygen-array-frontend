@@ -17,6 +17,8 @@ const Profile = (props) => {
     email: "",
     affiliation: "",
     affiliationWebsite: "",
+    groupName: "",
+    department: "",
   };
 
   const [userProfile, setUserProfile] = useReducer(
@@ -117,8 +119,34 @@ const Profile = (props) => {
             </Row>
             <Row>
               <Col md={6}>
+                <Form.Group controlId="groupName">
+                  <Form.Label>Group Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="groupName"
+                    onChange={handleChange}
+                    disabled={!isUpdate}
+                    value={userProfile.groupName}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="department">
+                  <Form.Label>Department</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="department"
+                    onChange={handleChange}
+                    disabled={!isUpdate}
+                    value={userProfile.department}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
                 <Form.Group controlId="affiliation">
-                  <Form.Label>Affiliation</Form.Label>
+                  <Form.Label>Organization/Institution</Form.Label>
                   <Form.Control
                     type="text"
                     name="affiliation"
@@ -130,7 +158,7 @@ const Profile = (props) => {
               </Col>
               <Col md={6}>
                 <Form.Group controlId="affiliationWebsite">
-                  <Form.Label>Affiliation Website</Form.Label>
+                  <Form.Label>Website</Form.Label>
                   <Form.Control
                     type="text"
                     name="affiliationWebsite"
@@ -160,17 +188,10 @@ const Profile = (props) => {
             </Row>
 
             <div className={isUpdate ? "text-center mt-2" : "hide-content"}>
-              <Button
-                className="gg-btn-blue gg-responsive-btn mt-3 gg-mr-20"
-                type="submit"
-                disabled={validated}
-              >
+              <Button className="gg-btn-blue mt-3 gg-mr-20" type="submit" disabled={validated}>
                 Submit
               </Button>
-              <Button
-                className="gg-btn-blue gg-responsive-btn mt-3 gg-ml-20"
-                onClick={() => handlecancel()}
-              >
+              <Button className="gg-btn-blue mt-3 gg-ml-20" onClick={() => handlecancel()}>
                 Cancel
               </Button>
             </div>

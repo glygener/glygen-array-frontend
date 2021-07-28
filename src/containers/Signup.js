@@ -21,6 +21,8 @@ const Signup = () => {
     email: "",
     affiliation: "",
     affiliationWebsite: "",
+    groupName: "",
+    department: "",
   });
 
   const [validated, setValidated] = useState(false);
@@ -60,6 +62,38 @@ const Signup = () => {
             />
           )}
           <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="firstname">
+                  <Form.Control
+                    type="text"
+                    placeholder=" "
+                    name="firstName"
+                    onChange={handleChange}
+                    value={userInput.firstName}
+                    required
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label required-asterik"}>First name</Form.Label>
+                  <Feedback message="Please enter first name." />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="lastname">
+                  <Form.Control
+                    type="text"
+                    placeholder=" "
+                    name="lastName"
+                    onChange={handleChange}
+                    value={userInput.lastName}
+                    required
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label required-asterik"}>Last name</Form.Label>
+                  <Feedback message="Please enter last name." />
+                </Form.Group>
+              </Col>
+            </Row>
             <Row>
               <Col md={6}>
                 <Form.Group controlId="validationuserName">
@@ -163,68 +197,69 @@ const Signup = () => {
                 </Form.Group>
               </Col>
             </Row>
-
             <Row>
               <Col md={6}>
-                <Form.Group controlId="firstname">
+                <Form.Group controlId="formGroupName">
                   <Form.Control
                     type="text"
                     placeholder=" "
-                    name="firstName"
+                    name="groupName"
+                    value={userInput.groupName}
                     onChange={handleChange}
-                    value={userInput.firstName}
-                    required
                     className={"custom-text-fields"}
                   />
-                  <Form.Label className={"label required-asterik"}>First name</Form.Label>
-                  <Feedback message="Please enter first name." />
+                  <Form.Label className={"label"}>Group name</Form.Label>
                 </Form.Group>
               </Col>
               <Col md={6}>
-                <Form.Group controlId="lastname">
-                  <Form.Control
-                    type="text"
-                    placeholder=" "
-                    name="lastName"
-                    onChange={handleChange}
-                    value={userInput.lastName}
-                    required
-                    className={"custom-text-fields"}
-                  />
-                  <Form.Label className={"label required-asterik"}>Last name</Form.Label>
-                  <Feedback message="Please enter last name." />
+                <Form.Group as={Row} controlId="formDepartment">
+                  <Col>
+                    <Form.Control
+                      type="url"
+                      placeholder=" "
+                      name="department"
+                      value={userInput.department}
+                      onChange={handleChange}
+                      className={"custom-text-fields"}
+                    />
+                    <Form.Label className={"label"}>Department</Form.Label>
+                  </Col>
                 </Form.Group>
               </Col>
             </Row>
-
-            <Form.Group controlId="formAffiliation">
-              <Form.Control
-                type="text"
-                placeholder=" "
-                name="affiliation"
-                value={userInput.affiliation}
-                onChange={handleChange}
-                className={"custom-text-fields"}
-              />
-              <Form.Label className={"label"}>Affiliation</Form.Label>
-            </Form.Group>
-
-            <Form.Group as={Row} controlId="formAffiliationWebsite">
-              <Col>
-                <Form.Control
-                  type="url"
-                  placeholder=" "
-                  name="affiliationWebsite"
-                  value={userInput.affiliationWebsite}
-                  onChange={handleChange}
-                  className={"custom-text-fields"}
-                />
-                <Form.Label className={"label"}>Affiliation Website</Form.Label>
-                <Feedback message="Please enter valid affiliation website." />
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="formAffiliation">
+                  <Form.Control
+                    type="text"
+                    placeholder=" "
+                    name="affiliation"
+                    value={userInput.affiliation}
+                    onChange={handleChange}
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label"}>Organization/Institution</Form.Label>
+                </Form.Group>
               </Col>
-            </Form.Group>
-            <br />
-            <div className="text-center">
+              <Col md={6}>
+                <Form.Group as={Row} controlId="formAffiliationWebsite">
+                  <Col>
+                    <Form.Control
+                      type="url"
+                      placeholder=" "
+                      name="affiliationWebsite"
+                      value={userInput.affiliationWebsite}
+                      onChange={handleChange}
+                      className={"custom-text-fields"}
+                    />
+                    <Form.Label className={"label"}>Website</Form.Label>
+                    <Feedback message="Please enter valid affiliation website." />
+                  </Col>
+                </Form.Group>
+              </Col>
+            </Row>
+            {/* <br /> */}
+            <div className="text-center mt-4">
               <Button type="submit" disabled={showErrorSummary} className="gg-btn-blue">
                 Sign Up
               </Button>
