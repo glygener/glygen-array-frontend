@@ -142,7 +142,8 @@
   .id-mapping-content {
     padding: 40px 60px 40px 80px !important;
   }
-  .gg-responsive-btn {
+  .gg-btn-blue, 
+  .gg-btn-outline  {
     width: 100% !important;
   }
   .gg-profile-mr-ml {

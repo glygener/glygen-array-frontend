@@ -264,6 +264,7 @@ hr {
   border-color: var(--gg-blue) !important;
   -webkit-transition: all 0.5s !important;
   transition: ease-in-out 0.5s !important;
+  width: 270px;
 }
 
 .gg-btn-blue:hover {
@@ -277,6 +278,7 @@ hr {
   border-color: var(--gg-blue) !important;
   -webkit-transition: all 0.5s !important;
   transition: ease-in-out 0.5s !important;
+  width: 270px;
 }
 .gg-btn-outline:hover {
   color: #fff !important;
@@ -329,9 +331,7 @@ hr {
   align-items: center;
   /* text-align: right; */
 }
-.gg-responsive-btn {
-  width: 270px;
-}
+
 .gg-profile-mr-ml {
   margin-right: 40px !important;
   margin-left: 40px !important;
