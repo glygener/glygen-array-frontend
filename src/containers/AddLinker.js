@@ -178,8 +178,6 @@ const AddLinker = props => {
         if (!disablePubChemFields) {
           if (linkerAddState.pubChemId !== "") {
             populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId.trim()));
-          } else if (linkerAddState.canonicalSmiles) {
-            populateLinkerDetails(encodeURIComponent(linkerAddState.canonicalSmiles.trim()));
           } else if (linkerAddState.inChiKey) {
             populateLinkerDetails(encodeURIComponent(linkerAddState.inChiKey.trim()));
           }
@@ -488,10 +486,7 @@ const AddLinker = props => {
   }
 
   function clearPubChemFields() {
-    setLinkerAddState({
-      ...linkerAddInitState,
-      ...{ type: "SMALLMOLECULE_LINKER" }
-    });
+    setLinkerAddState({ ...linkerAddInitState, ...{ type: "SMALLMOLECULE_LINKER" } });
 
     populateClassifications();
     setDisableClassification(false);

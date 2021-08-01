@@ -555,6 +555,7 @@ const MetaData = props => {
         newElement = JSON.parse(JSON.stringify(existedElement));
         newElement.id = "newlyAddedItems" + newItemsCount + existedElement.name.trim();
         newElement.isNewlyAdded = true;
+        newElement.isNewlyAddedNonMandatory = true;
         newElement.order = maxCurrentOrder + 1;
 
         newElement.group &&
@@ -1372,32 +1373,48 @@ const MetaData = props => {
       }
     });
 
-    metaDataDetails.sample.descriptorGroups.forEach(group => {
+    sampleModelUpdate.descriptors.forEach(ele => {
+      let groupsToDisplay = metaDataDetails.sample.descriptorGroups.filter(i => i.key.id === ele.id);
       let templateDescriptorGroup;
-      let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id && i.order === group.order);
 
-      if (!tempDescGroup) {
-        templateDescriptorGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
+      if (groupsToDisplay.length === 1) {
+        templateDescriptorGroup = ele;
+        templateDescriptorGroup.order = groupsToDisplay[0].order;
+      } else if (groupsToDisplay.length > 1) {
+        templateDescriptorGroup = ele;
+        templateDescriptorGroup.order = groupsToDisplay[0].order;
 
-        var newElement = JSON.parse(JSON.stringify(templateDescriptorGroup));
-        newElement.id = "newlyAddedItems" + templateDescriptorGroup.id;
-        newElement.isNewlyAdded = true;
-        newElement.group &&
-          newElement.descriptors.forEach(e => {
-            e.id = "newlyAddedItems" + e.id;
-          });
+        let newGroupsToAdd = groupsToDisplay.slice(1, groupsToDisplay.length);
 
-        sampleModelUpdate.descriptors.push(newElement);
-      } else {
-        templateDescriptorGroup = tempDescGroup;
+        newGroupsToAdd.forEach(ele => {
+          var newElement = JSON.parse(JSON.stringify(ele.key));
+          newElement.id = "newlyAddedItems" + ele.id;
+          newElement.isNewlyAdded = true;
+          newElement.isNewlyAddedNonMandatory = ele.isNewlyAddedNonMandatory;
+          newElement.order = ele.order;
+          newElement.group &&
+            newElement.descriptors.forEach(e => {
+              const subGrp = ele.descriptors.find(i => i.key.id === e.id);
+              if (subGrp) {
+                e.id = "newlyAddedItems" + e.id;
+                e.value = subGrp.value;
+                e.unit = subGrp.unit ? subGrp.unit : "";
+              }
+            });
+
+          sampleModelUpdate.descriptors.push(newElement);
+        });
       }
 
-      if (templateDescriptorGroup.descriptors) {
-        if (!templateDescriptorGroup.mandatory && !tempDescGroup) {
+      if (templateDescriptorGroup && templateDescriptorGroup.descriptors) {
+        if (
+          !templateDescriptorGroup.mandatory
+          // && !tempDescGroup
+        ) {
           templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
           templateDescriptorGroup.isNewlyAdded = true;
         }
-        group.descriptors.forEach(descriptor => {
+        groupsToDisplay[0].descriptors.forEach(descriptor => {
           const subdescriptor =
             templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === descriptor.key.id);
           if (subdescriptor && !subdescriptor.group) {
