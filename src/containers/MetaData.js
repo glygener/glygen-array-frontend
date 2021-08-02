@@ -1091,6 +1091,7 @@ const MetaData = props => {
 
     setMandateGroupLimitDeceed(mandateGroupDeceed);
     setMandateGroupLimitExceed(mandateGroupExceed);
+
     return flag;
   }
 
@@ -1214,11 +1215,19 @@ const MetaData = props => {
 
   function addMetaFailure(response) {
     var formError = false;
+    let aggregatedSummary = "";
 
     response.json().then(responseJson => {
       responseJson.errors &&
         responseJson.errors.forEach(element => {
-          if (element.objectName === "name") {
+          if (element.defaultMessage === "NotFound") {
+            if (aggregatedSummary.includes("Please")) {
+              aggregatedSummary += `${","} ${element.objectName}`;
+            } else {
+              aggregatedSummary += `Please Add Descriptor Groups: ${element.objectName}`;
+            }
+            formError = true;
+          } else if (element.objectName === "name") {
             setValidated(false);
             setErrorName(true);
             setLoadDescriptors(false);
@@ -1229,6 +1238,9 @@ const MetaData = props => {
 
       if (!formError) {
         setPageErrorsJson(responseJson);
+        setShowErrorSummary(true);
+      } else if (aggregatedSummary) {
+        setPageErrorMessage(aggregatedSummary);
         setShowErrorSummary(true);
       }
     });

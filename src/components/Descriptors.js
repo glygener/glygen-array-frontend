@@ -307,7 +307,7 @@ const Descriptors = props => {
             {groupElement.isNewlyAddedNonMandatory && addSubGroupValidation(groupElement) && (
               <span>{descriptorSubGroup(groupElement)}</span>
             )}
-            {(groupElement.isNewlyAdded || groupElement.isNewlyAddedNonMandatory) && (
+            {(groupElement.isNewlyAdded || groupElement.isNewlyAddedNonMandatory || groupElement.xorMandate) && (
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}

@@ -12,7 +12,6 @@ const ErrorSummary = props => {
     var aggregatedSummary = "";
     if (props.show) {
       if (props.errorJson && null != props.errorJson.errors && props.errorJson.errors.length > 0) {
-        // getAlert();
         props.errorJson.errors.forEach(error => {
           if (props.customMessage) {
             aggregatedSummary += "\n" + error.objectName + " - " + error.defaultMessage + "\n";

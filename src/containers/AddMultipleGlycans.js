@@ -330,11 +330,7 @@ const AddMultipleGlycans = props => {
                       row.original.error &&
                       row.original.error.errors &&
                       row.original.error.errors.map(err => {
-                        return (
-                          <div style={{ textAlign: "center" }}>
-                            {err.objectName === "sequence" ? "Invalid Sequence" : `${err.defaultMessage}`}
-                          </div>
-                        );
+                        return <div style={{ textAlign: "center" }}>{err.defaultMessage}</div>;
                       })
                     );
                   }
