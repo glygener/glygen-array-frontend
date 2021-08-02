@@ -1500,7 +1500,7 @@ const MetaData = props => {
   const getButtonsForImportedPage = () => {
     return (
       <>
-        <div className={"button-div line-break-2"}>
+        <div className={"button-div line-break-2 text-center"}>
           <Button onClick={props.handleBack} className={"button-test"}>
             <span className={"MuiButton-label"}>Back</span>
             <span className={"MuiTouchRipple-root"}></span>
@@ -1539,7 +1539,7 @@ const MetaData = props => {
             <Row>
               <Col md={10}>
                 {getStartMetadataPage()}
-                <Row>
+                <Row className={"text-center"}>
                   <Col span={6}>
                     <Button
                       disabled={
