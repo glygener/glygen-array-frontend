@@ -35,6 +35,7 @@ const AddLinker = props => {
   const [sequenceError, setSequenceError] = useState("");
   const [newURL, setNewURL] = useState("");
   const history = useHistory();
+  const [invalidMass, setInvalidMass] = useState(false);
 
   const pubchemUrl = "https://pubchem.ncbi.nlm.nih.gov/compound/";
 
@@ -67,7 +68,7 @@ const AddLinker = props => {
 
   const reviewFields = {
     type: { label: "Linker Type", type: "text" },
-    pubChemId: { label: "PubChem Compound CID", type: "text", length: 12 },
+    pubChemId: { label: "PubChem Compound CID", type: "number", length: 12 },
     classification: { label: "Classification", type: "text" },
     inChiKey: { label: "InChI Key", type: "text" },
     inChiSequence: { label: "InChI", type: "textarea" },
@@ -78,7 +79,7 @@ const AddLinker = props => {
     name: { label: "Name", type: "text", length: 100 },
     comment: { label: "Comments", type: "textarea", length: 10000 },
     description: { label: "Description", type: "textarea", length: 250 },
-    mass: { label: "Mass", type: "text" },
+    mass: { label: "Mass", type: "number" },
     uniProtId: { label: "UniProt Id", type: "text", length: 100 },
     pdbIds: { label: "PDB Ids", type: "text" },
     sequence: { label: "Sequence", type: "textarea" },
@@ -102,7 +103,7 @@ const AddLinker = props => {
       enableCharacterCounter: true
     },
     iupacName: { label: "IUPAC Name", type: "text", length: 2000 },
-    mass: { label: "Mass", type: "text" },
+    mass: { label: "Mass", type: "number" },
     molecularFormula: { label: "Molecular Formula", type: "text", length: 256 },
     isomericSmiles: { label: displayNames.linker.ISOMERIC_SMILES, type: "text", length: 10000 },
     canonicalSmiles: { label: displayNames.linker.CANONICAL_SMILES, type: "text", length: 10000 }
@@ -133,6 +134,13 @@ const AddLinker = props => {
     setDisableReset(true);
     const name = e.target.name;
     const newValue = e.target.value;
+
+    if (name === "mass" && newValue === "") {
+      setInvalidMass(true);
+    } else if (name === "mass" && newValue !== "") {
+      setInvalidMass(false);
+    }
+
     setLinkerAddState({ [name]: newValue });
   };
 
@@ -175,17 +183,21 @@ const AddLinker = props => {
       ) {
         return;
       } else {
-        if (!disablePubChemFields) {
-          if (linkerAddState.pubChemId !== "") {
-            populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId.trim()));
-          } else if (linkerAddState.inChiKey) {
-            populateLinkerDetails(encodeURIComponent(linkerAddState.inChiKey.trim()));
+        if (!invalidMass) {
+          if (!disablePubChemFields) {
+            if (linkerAddState.pubChemId !== "") {
+              populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId.trim()));
+            } else if (linkerAddState.inChiKey) {
+              populateLinkerDetails(encodeURIComponent(linkerAddState.inChiKey.trim()));
+            }
           }
-        }
 
-        var seqError = validateSequence(linkerAddState.type, linkerAddState.sequence);
-        setSequenceError(seqError);
-        if (seqError !== "") {
+          var seqError = validateSequence(linkerAddState.type, linkerAddState.sequence);
+          setSequenceError(seqError);
+          if (seqError !== "") {
+            return;
+          }
+        } else {
           return;
         }
       }
@@ -654,6 +666,7 @@ const AddLinker = props => {
                             onChange={handleChange}
                             disabled={disablePubChemFields}
                             maxLength={smLinkerPubChemFields[key].length}
+                            // pattern={key === "mass" ? "/^d+/" : ""}
                             onKeyDown={
                               key === "mass"
                                 ? e => {
@@ -661,6 +674,7 @@ const AddLinker = props => {
                                   }
                                 : e => {}
                             }
+                            isInvalid={key === "mass" ? invalidMass : ""}
                           />
 
                           {smLinkerPubChemFields[key].enableCharacterCounter && (
@@ -669,6 +683,7 @@ const AddLinker = props => {
                               {smLinkerPubChemFields[key].length}
                             </span>
                           )}
+                          <Feedback message={`${smLinkerPubChemFields[key].label} is Invalid`} />
                         </Col>
                         {(key === "inChiKey" || key === "canonicalSmiles") &&
                           linkerAddState[key] !== "" &&
