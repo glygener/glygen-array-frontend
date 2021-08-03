@@ -84,6 +84,7 @@ const Profile = (props) => {
                     onChange={handleChange}
                     value={userProfile.firstName}
                     required
+                    maxLength={100}
                   />
                   <Feedback message="First name is required" />
                 </Form.Group>
@@ -98,6 +99,7 @@ const Profile = (props) => {
                     onChange={handleChange}
                     value={userProfile.lastName}
                     required
+                    maxLength={100}
                   />
                   <Feedback message="Last name is required" />
                 </Form.Group>
@@ -127,6 +129,7 @@ const Profile = (props) => {
                     onChange={handleChange}
                     disabled={!isUpdate}
                     value={userProfile.groupName}
+                    maxLength={250}
                   />
                 </Form.Group>
               </Col>
@@ -139,6 +142,7 @@ const Profile = (props) => {
                     onChange={handleChange}
                     disabled={!isUpdate}
                     value={userProfile.department}
+                    maxLength={250}
                   />
                 </Form.Group>
               </Col>
@@ -153,6 +157,7 @@ const Profile = (props) => {
                     onChange={handleChange}
                     disabled={!isUpdate}
                     value={userProfile.affiliation}
+                    maxLength={250}
                   />
                 </Form.Group>
               </Col>
@@ -165,6 +170,7 @@ const Profile = (props) => {
                     onChange={handleChange}
                     disabled={!isUpdate}
                     value={userProfile.affiliationWebsite}
+                    maxLength={250}
                   />
                 </Form.Group>
               </Col>

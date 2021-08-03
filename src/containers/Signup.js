@@ -72,10 +72,12 @@ const Signup = () => {
                     onChange={handleChange}
                     value={userInput.firstName}
                     required
+                    maxLength={100}
                     className={"custom-text-fields"}
                   />
                   <Form.Label className={"label required-asterik"}>First name</Form.Label>
                   <Feedback message="Please enter first name." />
+                  <Feedback maxLength message="Entry is too long - max length is 100." />
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -87,6 +89,7 @@ const Signup = () => {
                     onChange={handleChange}
                     value={userInput.lastName}
                     required
+                    maxLength={100}
                     className={"custom-text-fields"}
                   />
                   <Form.Label className={"label required-asterik"}>Last name</Form.Label>
@@ -205,6 +208,7 @@ const Signup = () => {
                     name="groupName"
                     value={userInput.groupName}
                     onChange={handleChange}
+                    maxLength={250}
                     className={"custom-text-fields"}
                   />
                   <Form.Label className={"label"}>Group name</Form.Label>
@@ -214,11 +218,12 @@ const Signup = () => {
                 <Form.Group as={Row} controlId="formDepartment">
                   <Col>
                     <Form.Control
-                      type="url"
+                      type="text"
                       placeholder=" "
                       name="department"
                       value={userInput.department}
                       onChange={handleChange}
+                      maxLength={250}
                       className={"custom-text-fields"}
                     />
                     <Form.Label className={"label"}>Department</Form.Label>
@@ -235,6 +240,7 @@ const Signup = () => {
                     name="affiliation"
                     value={userInput.affiliation}
                     onChange={handleChange}
+                    maxLength={250}
                     className={"custom-text-fields"}
                   />
                   <Form.Label className={"label"}>Organization/Institution</Form.Label>
@@ -249,10 +255,11 @@ const Signup = () => {
                       name="affiliationWebsite"
                       value={userInput.affiliationWebsite}
                       onChange={handleChange}
+                      maxLength={250}
                       className={"custom-text-fields"}
                     />
                     <Form.Label className={"label"}>Website</Form.Label>
-                    <Feedback message="Please enter valid affiliation website." />
+                    <Feedback message="Please enter a valid affiliation website." />
                   </Col>
                 </Form.Group>
               </Col>
@@ -296,7 +303,7 @@ const Signup = () => {
     // var errorList = [];
     if (!response.ok) {
       if (response.status === 500) {
-        setPageErrorMessage("Internal Server Error - Please try again");
+        setPageErrorMessage("Internal Server Error - Please try again.");
         setShowErrorSummary(true);
       } else if (response.status === 409) {
         setPageErrorMessage("The username is already in use. Please choose a different username.");

@@ -37,10 +37,13 @@ a:hover {
 /* ========================================
                 Fields
   ==========================================*/
+.form-control.is-valid, .was-validated .form-control:valid {
+    border-color: var(--dark-blue-1) !important;
+}
 
 .custom-text-fields {
   border: 1px solid #dddfe2;
-  font-size: 15px !important;
+  /* font-size: 15px !important; */
   padding: 24px 16px !important;
   border-radius: 6px !important;
   /* background: #f5f6f7 !important; */
