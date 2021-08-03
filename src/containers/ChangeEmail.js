@@ -85,7 +85,7 @@ const ChangeEmail = () => {
                   className={"custom-text-fields"}
                 />
                 <Form.Label className={"label required-asterik"}>New Email</Form.Label>
-                <Feedback message="Please enter a valid Email!" />
+                <Feedback message="Please enter a valid email!" />
               </Col>
             </Form.Group>
 

@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from "react";
-import { Form, Row, Col, Button, Card } from "react-bootstrap";
+import { Form, Row, Col, Button } from "react-bootstrap";
 import { wsCall } from "../utils/wsUtils";
 import { Link } from "react-router-dom";
 import { Feedback, Title } from "../components/FormControls";
@@ -146,12 +146,11 @@ const Signup = () => {
                     />
                     <Form.Label className={"label required-asterik"}>Password</Form.Label>
                     <Feedback message="Password must contain at least:" />
-                    <Feedback message={`* 5 - 20 characters in length,`} />
-                    <Feedback message={`* 1 uppercase character,`} />
-                    <Feedback message={`* 1 lowercase character,`} />
-                    <Feedback message={`* 1 numeric value,`} />
-                    <Feedback message={`* 1 special character (!@#$%^&).`} />
-
+                    <Feedback className="ml-2" message={`* 5 - 20 characters in length,`} />
+                    <Feedback className="ml-2" message={`* 1 uppercase character,`} />
+                    <Feedback className="ml-2" message={`* 1 lowercase character,`} />
+                    <Feedback className="ml-2" message={`* 1 numeric value,`} />
+                    <Feedback className="ml-2" message={`* 1 special character (!@#$%^&).`} />
                     {!validated && (
                       <FontAwesomeIcon
                         className={"password-visibility"}
@@ -265,7 +264,7 @@ const Signup = () => {
               </Button>
               <hr />
               <div>
-                <Link to="/login">Log In</Link>
+                Already have an account? <Link to="/login">Log In</Link>
               </div>
             </div>
           </Form>

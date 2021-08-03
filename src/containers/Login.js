@@ -112,10 +112,10 @@ const Login = (props) => {
                 <Link to="/signup">New user?</Link>
               </div>
               <div>
-                <Link to="/forgotPassword">Forgot password</Link>
+                <Link to="/forgotPassword">Forgot password?</Link>
               </div>
               <div>
-                <Link to="/forgotUsername">Forgot username</Link>
+                <Link to="/forgotUsername">Forgot username?</Link>
               </div>
             </div>
           </Form>

@@ -11,7 +11,7 @@ const FORM_ERROR_MESSAGES = {
   },
   changeEmail: {
     Duplicate_email: "There is already an account with this email, please enter a different one.",
-    Invalid_password: "Password is wrong. Please try again. ",
+    Invalid_password: "Wrong password. Please try again.",
   },
   changePassword: {
     Invalid_currentPassword: "Current Password is not valid. Please try again.",
@@ -80,7 +80,7 @@ const FORM_ERROR_MESSAGES = {
   },
   experiments: {
     NotDone_rawData: "RawData is still in process. Please try again.",
-    NotFound_publicationId: "Publication Id is Not found.",
+    NotFound_publicationId: "Publication ID is NOT found.",
   },
   grants: {
     Duplicate_grant: "Another grant has the same grant number. Please use a different Grant Number",

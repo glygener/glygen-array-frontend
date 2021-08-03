@@ -74,7 +74,7 @@ const VerifyToken = () => {
               </Button>
               <hr />
               <div>
-                <Link to="/login">Log In</Link>
+                Already have an account? <Link to="/login">Log In</Link>
               </div>
             </div>
           </Form>
