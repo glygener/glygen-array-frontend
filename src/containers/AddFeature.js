@@ -414,14 +414,12 @@ const AddFeature = props => {
                       className="sequence-textarea"
                       value={
                         featureAddState.linker.type === "SMALLMOLECULE_LINKER"
-                          ? featureAddState.linker &&
-                            featureAddState.linker.length > 0 &&
-                            featureAddState.linker.inChiSequence
+                          ? featureAddState.linker && featureAddState.linker.inChiSequence
                             ? featureAddState.linker.inChiSequence.trim()
                             : "No sequence"
-                          : featureAddState.linker.length > 0 &&
+                          : featureAddState.linker &&
                             formatSequenceForDisplay(
-                              featureAddState.linker.length > 0 && featureAddState.linker.sequence.trim(),
+                              featureAddState.linker.sequence && featureAddState.linker.sequence.trim(),
                               60
                             )
                       }
