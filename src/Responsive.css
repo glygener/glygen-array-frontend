@@ -54,6 +54,9 @@
     margin-right: 25px !important;
     margin-left: 25px !important;
   }
+  .gg-mr-20 {
+    margin-right: 0 !important;
+  }
 }
 
 /* Extra Small Devices (Landscape Phones & Portrait Tablets) */
