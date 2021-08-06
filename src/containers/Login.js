@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Login.css";
 import Container from "@material-ui/core/Container";
 
-const Login = (props) => {
+const Login = props => {
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
@@ -27,15 +27,12 @@ const Login = (props) => {
 
   const userDetails = {
     userName: "",
-    password: "",
+    password: ""
   };
 
-  const [credentials, setCredentials] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    userDetails
-  );
+  const [credentials, setCredentials] = useReducer((state, newState) => ({ ...state, ...newState }), userDetails);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
     setCredentials({ [name]: value });
@@ -53,7 +50,7 @@ const Login = (props) => {
           {showErrorSummary === true && (
             <ErrorSummary show={showErrorSummary} form="signin" errorMessage={pageErrorMessage} />
           )}
-          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
             <Form.Group as={Row} controlId="username">
               <Col>
                 <Form.Control
@@ -66,9 +63,7 @@ const Login = (props) => {
                   autoFocus
                   className={"custom-text-fields"}
                 />
-                <Form.Label className={"label required-asterik"}>
-                  Username or Email address
-                </Form.Label>
+                <Form.Label className={"label required-asterik"}>Username or Email address</Form.Label>
                 <Feedback message="Please enter username." />
               </Col>
             </Form.Group>

@@ -27,11 +27,14 @@ const SideMenu = props => {
 
   const classes = useStyles();
 
-  const slidePages = ["/glycans/?", "/linkers/?", "/features/?", "/blocklayouts/?", "/slidelayouts/?", "/slides/?"];
-  const slideSubMenuLabels = ["Glycans", "Linkers", "Features", "Block Layouts", "Slide Layouts", "Slides"];
+  const chemicalEntity = ["/glycans/?", "/peptides/?", "/proteins/?", "/lipids/?", "/linkers/?", "/others/?"];
+  const chemicalEntityLabels = ["Glycan", "Peptide", "Protein", "Lipid", "Linker", "Other"];
+
+  const slidePages = ["/features/?", "/blocklayouts/?", "/slidelayouts/?", "/slides/?"];
+  const slideSubMenuLabels = ["Feature", "Block Layout", "Slide Layout", "Slide"];
 
   const experimentPages = ["/experiments"];
-  const experimentSubMenuLabels = ["Experiments"];
+  const experimentSubMenuLabels = ["Experiment"];
 
   const metadataPages = [
     "/samples/?",
@@ -44,8 +47,8 @@ const SideMenu = props => {
     "/spots/?"
   ];
   const metaDataSubMenuLabels = [
-    "Samples",
-    "Printers",
+    "Sample",
+    "Printer",
     "Image Analysis",
     "Data Processing",
     "Scanner ",
@@ -55,6 +58,11 @@ const SideMenu = props => {
   ];
 
   var menu = new Map();
+
+  menu.set("Molecules", {
+    labels: chemicalEntityLabels,
+    pages: chemicalEntity
+  });
 
   menu.set("Slide", {
     labels: slideSubMenuLabels,
@@ -106,6 +114,18 @@ const SideMenu = props => {
       className={classes.root}
       style={{ backgroundColor: "#e6e6e6", color: "#4a4a4a" }}
     >
+      <ListItem button onClick={() => handleClick("molecules")} divider>
+        <ListItemText primary="Molecules" style={{ textDecoration: "none" }} />
+        {props.openMenu === "molecules" ? <ExpandMore /> : <ExpandLess />}
+      </ListItem>
+      <Collapse
+        in={open === "molecules" || (props.openMenu && props.openMenu === "molecules") ? true : false}
+        timeout="auto"
+        unmountOnExit
+      >
+        {getList(menu.get("Molecules").labels, menu.get("Molecules").pages)}
+      </Collapse>
+
       <ListItem button onClick={() => handleClick("slide")} divider>
         <ListItemText primary="Slide" style={{ textDecoration: "none" }} />
         {props.openMenu === "slide" ? <ExpandMore /> : <ExpandLess />}

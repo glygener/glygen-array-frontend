@@ -50,9 +50,7 @@ const AddGlycan = props => {
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
-
   const [userSelection, setUserSelection] = useReducer(reducer, initialState);
-
   const [defaultCheck, setDefaultCheck] = useState(true);
 
   const steps = getSteps();

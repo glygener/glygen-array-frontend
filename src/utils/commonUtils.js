@@ -287,8 +287,10 @@ const alphabets = [
 ];
 
 export function isValidNumber(e) {
+  debugger;
   if (includes(alphabets, e.key)) {
     e.preventDefault();
+    e.stopPropagation();
   }
 }
 

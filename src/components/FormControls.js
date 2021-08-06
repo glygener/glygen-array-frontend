@@ -84,11 +84,14 @@ const Title = (props) => {
     title: PropTypes.string.isRequired,
   };
   return (
-    <h2 className="line-break-2 text-center">
-      {props.title}
-      <br />
-      <br />
-    </h2>
+    <div className="content-box-md">
+      <h1 className="page-heading">{props.title}</h1>
+    </div>
+    // <h2 className="line-break-2 text-center">
+    //   {props.title}
+    //   <br />
+    //   <br />
+    // </h2>
   );
 };
 

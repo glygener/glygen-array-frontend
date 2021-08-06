@@ -11,6 +11,13 @@
     "CLASSIFICATION_BASED": "Classification Based",
     "FRAGMENT_ONLY": "Fragment Only"
   },
+
+  "peptide": {
+    "SEQUENCE": "Sequence defined peptide",
+    "UNKNOWN": "Unknown peptide",
+    "TYPE": "Peptide"
+  },
+
   "linker": {
     "LINKER": "Linker",
     "PUBCHEM_ID": "PubChem Id",

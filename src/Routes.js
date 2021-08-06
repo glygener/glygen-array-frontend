@@ -56,6 +56,10 @@ import { PublicData } from "./public/PublicData";
 import { PublicDataset } from "./public/PublicDataset";
 import { AddGrant } from "./containers/AddGrant";
 import { AddMultipleGlycans } from "./containers/AddMultipleGlycans";
+import { Peptides } from "./containers/Peptides";
+import { AddPeptide } from "./containers/AddPeptide";
+import { GlycanSearch } from "./containers/GlycanSearch";
+import { SubmitterSearch } from "./containers/SubmitterSearch";
 
 const Routes = props => {
   const routes = [
@@ -63,7 +67,20 @@ const Routes = props => {
       path: "/",
       exact: true,
       sidebar: () => "",
-      main: () => <Home />
+      main: () => <Home />,
+    },
+    /*  Public search */
+    {
+      path: "/submitterSearch",
+      exact: true,
+      main: () => <SubmitterSearch authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => "",
+    },
+    {
+      path: "/glycanSearch",
+      exact: true,
+      main: () => <GlycanSearch authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => "",
     },
     {
       path: "/data/dataset/:datasetId",
@@ -140,56 +157,73 @@ const Routes = props => {
     {
       path: "/glycans/editglycan/:glycanId",
       main: () => <EditGlycan authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/glycans/addglycan",
       main: () => <AddGlycan authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/glycans/addMultiple",
       main: () => <AddMultipleGlycans authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/glycans",
       main: () => <Glycans authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
+    },
+
+    /*  peptides */
+    {
+      path: "/peptides/editpeptide/:peptideId",
+      main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/peptides/addpeptide",
+      main: () => <AddPeptide authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/peptides",
+      main: () => <Peptides authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  linkers */
     {
       path: "/linkers/editlinker/:linkerId",
       main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/linkers/addlinker",
       main: () => <AddLinker authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/linkers",
       main: () => <Linkers authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  features */
     {
       path: "/features/editfeature/:featureId",
       main: () => <EditFeature {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/features/addfeature",
       main: () => <AddFeature authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/features",
       main: () => <Features authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide")
+      sidebar: () => getSidemenu("molecules")
     },
 
     /* Block layouts */

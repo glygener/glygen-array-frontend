@@ -330,6 +330,7 @@ const AddMultipleGlycans = props => {
                       row.original.error &&
                       row.original.error.errors &&
                       row.original.error.errors.map(err => {
+                        debugger;
                         return <div style={{ textAlign: "center" }}>{err.defaultMessage}</div>;
                       })
                     );

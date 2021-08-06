@@ -327,6 +327,7 @@ const AddLinker = props => {
     );
 
     function populateLinkerDetailsSuccess(response) {
+      debugger;
       response.json().then(responseJson => {
         setLinkerAddState({
           type: responseJson.type,
@@ -356,7 +357,9 @@ const AddLinker = props => {
     }
 
     function populateLinkerDetailsError(response) {
+      debugger;
       response.json().then(resp => {
+        debugger;
         console.log(resp);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
@@ -603,7 +606,11 @@ const AddLinker = props => {
                         onChange={handleChange}
                         disabled={disablePubChemFields}
                         onKeyDown={e => {
-                          isValidNumber(e);
+                          if (e.key.length === 1) {
+                            if (e.key !== "v" && e.key !== "V") {
+                              isValidNumber(e);
+                            }
+                          }
                         }}
                         maxLength={12}
                         onInput={e => {
@@ -775,6 +782,7 @@ const AddLinker = props => {
                   </Form.Group>
                 </>
               )}
+
               {linkerAddState.type === "PEPTIDE_LINKER" && (
                 <>
                   <Form.Group as={Row} controlId="sequence">
