@@ -129,6 +129,8 @@ const App = () => {
       "emailConfirmation",
       "data",
       "verifyToken",
+      "submitterSearch",
+      "glycanSearch",
     ];
     var pagename = getPageName(history);
 
