@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import "./Search.css";
 import Helmet from "react-helmet";
@@ -11,8 +11,54 @@ import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 import { Tab, Tabs, Container } from "react-bootstrap";
 import GlycanGeneralSearch from "../components/GlycanGeneralSearch";
-const GlycanSearch = (props) => {
-  useEffect(props.authCheckAgent, []);
+import { wsCall } from "../utils/wsUtils";
+import { ErrorSummary } from "../components/ErrorSummary";
+
+const GlycanSearch = props => {
+  function searchGlycan() {
+    wsCall(
+      "searchglycans",
+      "POST",
+      null,
+      false,
+      {
+        glytoucanIds: "test",
+        maxMass: 0,
+        minMass: 0,
+        structure: {
+          format: "GlycoCT",
+          reducingEnd: true,
+          sequence: "test"
+        },
+        substructure: {
+          format: "GlycoCT",
+          reducingEnd: true,
+          sequence: "test"
+        }
+      },
+      glycanSearchSuccess,
+      glycanSearchFailure
+    );
+
+    function glycanSearchSuccess(response) {
+      response.json().then(resp => {
+        console.log(resp);
+      });
+    }
+
+    function glycanSearchFailure(response) {
+      response.json().then(resp => {
+        console.log(resp);
+        setPageErrorsJson(resp);
+        setShowErrorSummary(true);
+        setPageErrorMessage("");
+      });
+    }
+  }
+
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [pageErrorMessage, setPageErrorMessage] = useState();
 
   return (
     <>
@@ -25,7 +71,17 @@ const GlycanSearch = (props) => {
         <Title title="Glycan Search" />
         <p className={"page-description5"}>Is coming soon</p>
       </div> */}
+
       <div className="lander">
+        {showErrorSummary === true && (
+          <ErrorSummary
+            show={showErrorSummary}
+            form="glycansearch"
+            errorJson={pageErrorsJson}
+            errorMessage={pageErrorMessage}
+          />
+        )}
+
         <Container>
           {/* <PageLoader pageLoading={pageLoading} />
           <DialogAlert
@@ -57,11 +113,7 @@ const GlycanSearch = (props) => {
                 {/* )} */}
               </Container>
             </Tab>
-            <Tab
-              eventKey="Structure-Search"
-              className="tab-content-padding"
-              title="Structure Search"
-            >
+            <Tab eventKey="Structure-Search" className="tab-content-padding" title="Structure Search">
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
                 <p>Structure Search is coming soon</p>
@@ -75,11 +127,7 @@ const GlycanSearch = (props) => {
                 )} */}
               </Container>
             </Tab>
-            <Tab
-              eventKey="Substructure-Search"
-              title="Substructure Search"
-              className="tab-content-padding"
-            >
+            <Tab eventKey="Substructure-Search" title="Substructure Search" className="tab-content-padding">
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
                 <p>Substructure Search is coming soon</p>
@@ -105,7 +153,7 @@ const GlycanSearch = (props) => {
 };
 
 GlycanSearch.propTypes = {
-  authCheckAgent: PropTypes.func,
+  authCheckAgent: PropTypes.func
 };
 
 export { GlycanSearch };
