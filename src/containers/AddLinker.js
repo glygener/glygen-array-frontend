@@ -393,12 +393,9 @@ const AddLinker = props => {
 
     function getSequenceFromUniprotError(response) {
       response.text().then(function(text) {
-        return text ? console.log(JSON.parse(text)) : "helo";
-        // setPageErrorsJson(text);
-        // setShowErrorSummary(true);
+        return text ? setPageErrorMessage(JSON.parse(text)) : "";
       });
 
-      console.log("Sequence fetch error");
       setShowLoading(false);
     }
   }

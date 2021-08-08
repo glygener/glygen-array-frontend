@@ -130,6 +130,68 @@
       }
     ]
   },
+  "peptides": {
+    "title": "My Peptides",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addPeptide": {
+    "title": "Add Peptide",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding peptides to Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Peptides, Sequence Based, Unknown, Name, Sequence, Linker"
+      }
+    ]
+  },
+  "editPeptide": {
+    "title": "Edit Peptide",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "proteins": {
+    "title": "My Peptides",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addProtein": {
+    "title": "Add Protein",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding proteins to Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Proteins, Sequence Based, Unknown, Name, Sequence, Linker, UniProtID, PDB IDs"
+      }
+    ]
+  },
+  "editProtein": {
+    "title": "Edit Protein",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
   "linkers": {
     "title": "My Linkers",
     "meta": [

@@ -15,8 +15,8 @@ const Peptides = props => {
   return (
     <>
       <Helmet>
-        <title>{head.glycans.title}</title>
-        {getMeta(head.glycans)}
+        <title>{head.peptides.title}</title>
+        {getMeta(head.peptides)}
       </Helmet>
 
       <div className="page-container">

@@ -14,8 +14,12 @@
 
   "peptide": {
     "SEQUENCE": "Sequence defined peptide",
-    "UNKNOWN": "Unknown peptide",
-    "TYPE": "Peptide"
+    "UNKNOWN": "Unknown peptide"
+  },
+
+  "protein": {
+    "SEQUENCE": "Sequence defined protein",
+    "UNKNOWN": "Unknown protein"
   },
 
   "linker": {

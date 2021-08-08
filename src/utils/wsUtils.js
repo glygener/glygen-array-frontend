@@ -21,6 +21,7 @@ export function getWsUrl(ws) {
   var ws_base_logger = ws_base + "weblogger";
   var ws_base_util = ws_base + "util";
   var ws_base_public = ws_base_array + "/public";
+  var ws_base_public_search = ws_base_public + "/search";
 
   switch (ws.toLowerCase()) {
     case "login":
@@ -309,6 +310,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/deleteCoowner";
     case "listusernamestypeahead":
       return ws_base_user + "/listusernames";
+    case "searchglycans":
+      return ws_base_public_search + "/searchGlycans";
 
     default:
       return ws_base_user;

@@ -310,7 +310,7 @@ const AddGlycan = props => {
                       required={userSelection.selectedGlycan === "Unknown"}
                       maxLength={50}
                     />
-                    <Feedback message="Please enter current password." />
+                    <Feedback message="Name is required." />
                   </Col>
                 </Form.Group>
 
