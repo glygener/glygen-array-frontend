@@ -7,12 +7,11 @@ import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { ErrorSummary } from "../components/ErrorSummary";
 import displayNames from "../appData/displayNames";
-import { validateSequence } from "../utils/sequence";
 import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
-import MultiToggle from "react-multi-toggle";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import MultiToggle from "react-multi-toggle";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
@@ -30,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const AddProtein = props => {
+const AddLipid = props => {
   useEffect(props.authCheckAgent, []);
 
   const classes = useStyles();
@@ -40,102 +39,123 @@ const AddProtein = props => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showLoading, setShowLoading] = useState(false);
-  const [validatedSpecificDetails, setValidatedSpecificDetails] = useState(false);
-  const [sequenceError, setSequenceError] = useState("");
-  const [newPubMedId, setNewPubMedId] = useState("");
   const [invalidUrls, setInvalidUrls] = useState(false);
+  const [invalidMass, setInvalidMass] = useState(false);
+  const [disablePubChemFields, setDisablePubChemFields] = useState(false);
   const [newURL, setNewURL] = useState("");
+  const [disableReset, setDisableReset] = useState(false);
+  const [newPubMedId, setNewPubMedId] = useState("");
   const history = useHistory();
 
-  const proteinInitialState = {
-    selectedProtein: "SequenceDefined",
+  const lipidInitialState = {
+    selectedLipid: "SequenceDefined",
     name: "",
-    sequence: "",
     comment: "",
-    uniProtId: "",
-    pdbIds: [],
+    pubChemId: "",
+    inChiKey: "",
+    inChiSequence: "",
+    iupacName: "",
+    imageURL: "",
+    molecularFormula: "",
+    canonicalSmiles: "",
+    isomericSmiles: "",
     publications: [],
     opensRing: 2,
     urls: []
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
-  const [protein, setProtein] = useReducer(reducer, proteinInitialState);
+
+  const [lipid, setLipid] = useReducer(reducer, lipidInitialState);
 
   const reviewFields = {
+    pubChemId: { label: "PubChem Compound CID", type: "number", length: 12 },
+    inChiKey: { label: "InChI Key", type: "text" },
+    inChiSequence: { label: "InChI", type: "textarea" },
+    iupacName: { label: "IUPAC Name", type: "text" },
+    molecularFormula: { label: "Molecular Formula", type: "text" },
+    canonicalSmiles: { label: "Canonical SMILES", type: "text" },
+    isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    sequence: { label: "Sequence", type: "textarea" },
     comment: { label: "Comments", type: "textarea", length: 10000 },
-    opensRing: { label: "Opens Ring", type: "text" },
-    uniProtId: { label: "UniProt Id", type: "text", length: 100 },
-    pdbIds: { label: "PDB Ids", type: "text" }
+    opensRing: { label: "Opens Ring", type: "text" }
   };
 
   const steps = getSteps();
+
+  const lipidFields = {
+    inChiKey: { label: displayNames.linker.INCHIKEY, type: "text", length: 27 },
+    inChiSequence: {
+      label: displayNames.linker.INCHI_SEQUENCE,
+      type: "textarea",
+      length: 10000,
+      enableCharacterCounter: true
+    },
+    iupacName: { label: "IUPAC Name", type: "text", length: 2000 },
+    mass: { label: "Mass", type: "number" },
+    molecularFormula: { label: "Molecular Formula", type: "text", length: 256 },
+    isomericSmiles: { label: displayNames.linker.ISOMERIC_SMILES, type: "text", length: 10000 },
+    canonicalSmiles: { label: displayNames.linker.CANONICAL_SMILES, type: "text", length: 10000 }
+  };
 
   const handleNext = e => {
     setValidate(false);
     var stepIncrement = 1;
 
-    if (activeStep === 0 && protein.selectedProtein === "Unknown") {
+    if (activeStep === 0 && lipid.selectedLipid === "Unknown") {
       stepIncrement += 1;
     } else if (activeStep === 1) {
-      setValidatedSpecificDetails(true);
-      if (protein.sequence === "") {
+      if (lipid.inChiSequence === "") {
+        setValidate(true);
         return;
-      } else {
-        var seqError = validateSequence("", protein.sequence);
-        setSequenceError(seqError);
-        if (seqError !== "") {
-          return;
+      }
+
+      if (!disablePubChemFields) {
+        if (lipid.pubChemId !== "") {
+          populateLinkerDetails(encodeURIComponent(lipid.pubChemId.trim()));
+        } else if (lipid.inChiKey) {
+          populateLinkerDetails(encodeURIComponent(lipid.inChiKey.trim()));
         }
       }
-    } else if (activeStep === 2 && protein.name === "") {
+    } else if (activeStep === 2 && lipid.name === "") {
       setValidate(true);
       return;
     } else if (e.currentTarget.innerText === "FINISH") {
-      addProtein(e);
+      addLipid(e);
       return;
     }
 
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
 
-  const opensRingOptions = [
-    {
-      displayName: "Unknown",
-      value: 2
-    },
-    {
-      displayName: "Yes",
-      value: 1
-    },
-    {
-      displayName: "No",
-      value: 0
-    }
-  ];
-
   const handleChange = e => {
-    setValidate(false);
+    setDisableReset(true);
 
     const name = e.target.name;
     const newValue = e.target.value;
 
-    setProtein({ [name]: newValue });
+    if (name === "mass" && newValue === "") {
+      setInvalidMass(true);
+    } else if (name === "mass" && newValue !== "") {
+      setInvalidMass(false);
+    }
+
+    if (name === "inChiSequence" || name === "name") {
+      setValidate(false);
+    }
+
+    setLipid({ [name]: newValue });
   };
 
   const handleBack = () => {
     setShowErrorSummary(false);
-    setValidate(false);
 
     var stepDecrement = 1;
 
-    if (activeStep === 1) {
-      setValidate(false);
-    }
+    setValidate(false);
+
     if (activeStep === 2) {
-      if (protein.selectedProtein === "Unknown") {
+      if (lipid.selectedLipid === "Unknown") {
         stepDecrement += 1;
       }
     }
@@ -143,87 +163,76 @@ const AddProtein = props => {
   };
 
   const handleSelect = e => {
+    setDisableReset(true);
     const newValue = e.target.value;
-    setProtein({ ...proteinInitialState, ...{ selectedProtein: newValue } });
+    setLipid({ ...lipidInitialState, ...{ selectedLipid: newValue } });
   };
 
   function getSteps() {
-    return ["Select the Protein Type", "Type Specific Protein Info", "Generic Protein Info", "Review and Add"];
-  }
-  function addPublication() {
-    let publications = protein.publications;
-    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
-
-    if (!pubmedExists) {
-      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
-    } else {
-      setNewPubMedId("");
-    }
-
-    function addPublicationSuccess(response) {
-      response.json().then(responseJson => {
-        setShowErrorSummary(false);
-        setProtein({
-          publications: protein.publications.concat([responseJson])
-        });
-        setNewPubMedId("");
-      });
-    }
-
-    function addPublicationError(response) {
-      response.text().then(resp => {
-        if (resp) {
-          setPageErrorsJson(JSON.parse(resp));
-        } else {
-          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
-        }
-        setShowErrorSummary(true);
-      });
-    }
+    return ["Select the Lipid Type", "Type Specific Lipid Info", "Generic Lipid Info", "Review and Add"];
   }
 
-  function getSequenceFromUniprot(uniprotId) {
+  function populateLinkerDetails(pubChemId) {
     setShowLoading(true);
     wsCall(
-      "getsequencefromuniprot",
+      "linkerfrompubchem",
       "GET",
-      [uniprotId],
+      [pubChemId],
       true,
       null,
-      getSequenceFromUniprotSuccess,
-      getSequenceFromUniprotError,
-      { Accept: "text/plain" }
+      populateLinkerDetailsSuccess,
+      populateLinkerDetailsError
     );
 
-    function getSequenceFromUniprotSuccess(response) {
-      response.text().then(sequence => {
-        setProtein({
-          sequence: sequence
+    function populateLinkerDetailsSuccess(response) {
+      response.json().then(responseJson => {
+        setLipid({
+          type: responseJson.type,
+          pubChemId: responseJson.pubChemId,
+          classification: responseJson.classification,
+          inChiKey: responseJson.inChiKey,
+          inChiSequence: responseJson.inChiSequence,
+          iupacName: responseJson.iupacName,
+          name: responseJson.iupacName,
+          imageURL: responseJson.imageURL,
+          molecularFormula: responseJson.molecularFormula,
+          isomericSmiles: responseJson.isomericSmiles,
+          canonicalSmiles: responseJson.smiles,
+          mass: responseJson.mass,
+          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`]
         });
+
+        setShowErrorSummary(false);
+        setValidate(false);
+        setDisablePubChemFields(true);
       });
+
+      setDisablePubChemFields(true);
       setShowLoading(false);
-      setValidatedSpecificDetails(false);
     }
 
-    function getSequenceFromUniprotError(response) {
-      response.text().then(function(text) {
-        return text ? setPageErrorMessage(JSON.parse(text)) : "";
+    function populateLinkerDetailsError(response) {
+      debugger;
+      response.json().then(resp => {
+        debugger;
+        console.log(resp);
+        setPageErrorsJson(resp);
+        setShowErrorSummary(true);
       });
-
       setShowLoading(false);
     }
   }
 
   function deletePublication(id, wscall) {
-    const publications = protein.publications;
+    const publications = lipid.publications;
     const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
-    setProtein({ publications: publications });
+    setLipid({ publications: publications });
   }
 
   function addURL() {
-    var listUrls = protein.urls;
+    var listUrls = lipid.urls;
     var urlEntered = csvToArray(newURL)[0];
     const urlExists = listUrls.find(i => i === urlEntered);
 
@@ -236,7 +245,7 @@ const AddProtein = props => {
         setInvalidUrls(false);
       }
 
-      setProtein({ urls: listUrls });
+      setLipid({ urls: listUrls });
     }
     setNewURL("");
   }
@@ -244,8 +253,8 @@ const AddProtein = props => {
   const urlWidget = enableDelete => {
     return (
       <>
-        {protein.urls && protein.urls.length > 0
-          ? protein.urls.map((url, index) => {
+        {lipid.urls && lipid.urls.length > 0
+          ? lipid.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
                   <Col md={10}>
@@ -266,9 +275,9 @@ const AddProtein = props => {
                         title="Delete Url"
                         className="caution-color table-btn"
                         onClick={() => {
-                          const listUrls = protein.urls;
+                          const listUrls = lipid.urls;
                           listUrls.splice(index, 1);
-                          setProtein({ urls: listUrls });
+                          setLipid({ urls: listUrls });
                         }}
                       />
                     </Col>
@@ -281,6 +290,59 @@ const AddProtein = props => {
     );
   };
 
+  const opensRingOptions = [
+    {
+      displayName: "Unknown",
+      value: 2
+    },
+    {
+      displayName: "Yes",
+      value: 1
+    },
+    {
+      displayName: "No",
+      value: 0
+    }
+  ];
+
+  function clearPubChemFields() {
+    setDisablePubChemFields(false);
+    setShowErrorSummary(false);
+    setPageErrorsJson({});
+  }
+
+  function addPublication() {
+    let publications = lipid.publications;
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
+
+    if (!pubmedExists) {
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
+    } else {
+      setNewPubMedId("");
+    }
+
+    function addPublicationSuccess(response) {
+      response.json().then(responseJson => {
+        setShowErrorSummary(false);
+        setLipid({
+          publications: lipid.publications.concat([responseJson])
+        });
+        setNewPubMedId("");
+      });
+    }
+
+    function addPublicationError(response) {
+      response.text().then(resp => {
+        if (resp) {
+          setPageErrorsJson(JSON.parse(resp));
+        } else {
+          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
+        }
+        setShowErrorSummary(true);
+      });
+    }
+  }
+
   function getStepContent(stepIndex, validate) {
     switch (stepIndex) {
       case 0:
@@ -292,9 +354,9 @@ const AddProtein = props => {
                   type="radio"
                   value="SequenceDefined"
                   onChange={handleSelect}
-                  checked={protein.selectedProtein === "SequenceDefined"}
+                  checked={lipid.selectedLipid === "SequenceDefined"}
                 />
-                {displayNames.protein.SEQUENCE}
+                {displayNames.lipid.SEQUENCE}
               </FormCheck.Label>
             </FormCheck>
 
@@ -304,79 +366,122 @@ const AddProtein = props => {
                   type="radio"
                   value="Unknown"
                   onChange={handleSelect}
-                  checked={protein.selectedProtein === "Unknown"}
+                  checked={lipid.selectedLipid === "Unknown"}
                 />
-                {displayNames.protein.UNKNOWN}
+                {displayNames.lipid.UNKNOWN}
               </FormCheck.Label>
             </FormCheck>
           </Form>
         );
       case 1:
-        if (activeStep === 1 && protein.selectedProtein !== "Unknown") {
+        if (activeStep === 1 && lipid.selectedLipid !== "Unknown") {
           return (
             <>
-              <Form.Group as={Row} controlId="uniProtId">
-                <FormLabel label="UniProt Id" />
-                <Col md={4}>
-                  <Form.Control
-                    type="text"
-                    name="uniProtId"
-                    placeholder="UniProt Id"
-                    value={protein.uniProtId}
-                    onChange={handleChange}
-                    maxLength={100}
-                  />
-                </Col>
-                {protein.uniProtId !== "" && (
-                  <Button
-                    variant="contained"
-                    onClick={() => getSequenceFromUniprot(encodeURIComponent(protein.uniProtId.trim()))}
-                    className="get-btn "
-                  >
-                    Get Sequence from Uniprot
-                  </Button>
-                )}
-              </Form.Group>
-              <Form.Group as={Row} controlId="pdbIds">
-                <FormLabel label="PDB Ids" />
-                <Col md={4}>
-                  <Form.Control
-                    type="text"
-                    name="pdbIds"
-                    placeholder="PDB Ids separated by ';'"
-                    value={protein.pdbIds.join(";")}
-                    onChange={e =>
-                      setProtein({
-                        pdbIds: csvToArray(e.target.value)
-                      })
-                    }
-                    maxLength={100}
-                  />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Row} controlId="sequence">
-                <FormLabel label="Sequence" className="required-asterik" />
-                <Col md={6}>
-                  <Form.Control
-                    as="textarea"
-                    rows="15"
-                    name="sequence"
-                    placeholder="Sequence"
-                    value={protein.sequence}
-                    onChange={handleChange}
-                    className="sequence-text-area"
-                    isInvalid={validatedSpecificDetails && (protein.sequence === "" || sequenceError !== "")}
-                    spellCheck="false"
-                    maxLength={10000}
-                  />
-                  {protein.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
-                  {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
-                </Col>
-              </Form.Group>
+              <Form className="radioform1">
+                <>
+                  <Form.Group as={Row} controlId="pubChemId">
+                    <FormLabel label="PubChem Compound CID" />
+                    <Col md={4}>
+                      <Form.Control
+                        type="number"
+                        name="pubChemId"
+                        placeholder="PubChem Compound CID"
+                        value={lipid.pubChemId}
+                        onChange={handleChange}
+                        disabled={disablePubChemFields}
+                        onKeyDown={e => {
+                          if (e.key.length === 1) {
+                            if (e.key !== "v" && e.key !== "V") {
+                              isValidNumber(e);
+                            }
+                          }
+                        }}
+                        maxLength={12}
+                        onInput={e => {
+                          numberLengthCheck(e);
+                        }}
+                      />
+                    </Col>
+                    {lipid.pubChemId !== "" && !disablePubChemFields && (
+                      <Button
+                        variant="contained"
+                        onClick={() => populateLinkerDetails(encodeURIComponent(lipid.pubChemId.trim()))}
+                        className="get-btn "
+                      >
+                        Get Details from PubChem
+                      </Button>
+                    )}
+                  </Form.Group>
+
+                  {Object.keys(lipidFields).map(key => {
+                    return (
+                      // eslint-disable-next-line react/jsx-key
+                      <Form.Group as={Row} controlId={key} key={key}>
+                        <FormLabel
+                          label={lipidFields[key].label}
+                          className={key === "inChiSequence" ? "required-asterik" : ""}
+                        />
+                        <Col md={4}>
+                          <Form.Control
+                            as={lipidFields[key].type === "textarea" ? "textarea" : "input"}
+                            type={key === "mass" ? "number" : "string"}
+                            rows="4"
+                            name={key}
+                            placeholder={lipidFields[key].label}
+                            value={lipid[key] ? lipid[key] : undefined}
+                            onChange={handleChange}
+                            disabled={disablePubChemFields}
+                            maxLength={lipidFields[key].length}
+                            // pattern={key === "mass" ? "/^d+/" : ""}
+                            onKeyDown={
+                              key === "mass"
+                                ? e => {
+                                    isValidNumber(e);
+                                  }
+                                : e => {}
+                            }
+                            isInvalid={key === "mass" ? invalidMass : key === "inChiSequence" ? validate : ""}
+                            required={key === "inChiSequence" ? true : false}
+                          />
+
+                          {lipidFields[key].enableCharacterCounter && (
+                            <span className="character-counter">
+                              {lipid[key] && lipid[key].length > 0 ? lipid[key].length : ""}/{lipidFields[key].length}
+                            </span>
+                          )}
+                          <Feedback message={`${lipidFields[key].label} is Invalid`} />
+                        </Col>
+                        {(key === "inChiKey" || key === "canonicalSmiles") &&
+                          lipid[key] !== "" &&
+                          !disablePubChemFields && (
+                            <Button
+                              variant="contained"
+                              onClick={() => populateLinkerDetails(encodeURIComponent(lipid[key].trim()))}
+                              className="get-btn "
+                            >
+                              Get Details from PubChem
+                            </Button>
+                          )}
+                      </Form.Group>
+                    );
+                  })}
+                  <Form.Group as={Row}>
+                    <Col md={{ span: 2, offset: 5 }}>
+                      <Button
+                        variant="contained"
+                        disabled={!disableReset}
+                        onClick={clearPubChemFields}
+                        className="stepper-button"
+                      >
+                        Reset
+                      </Button>
+                    </Col>
+                  </Form.Group>
+                </>
+              </Form>
             </>
           );
         }
-
       case 2:
         if (activeStep === 2) {
           return (
@@ -389,7 +494,7 @@ const AddProtein = props => {
                       type="text"
                       name="name"
                       placeholder="name"
-                      value={protein.name}
+                      value={lipid.name}
                       onChange={handleChange}
                       isInValid={validate}
                       maxLength={100}
@@ -407,12 +512,12 @@ const AddProtein = props => {
                       rows={4}
                       name="comment"
                       placeholder="Comments"
-                      value={protein.comment}
+                      value={lipid.comment}
                       onChange={handleChange}
                       maxLength={2000}
                     />
                     <span className="character-counter">
-                      {protein.comment && protein.comment.length > 0 ? protein.comment.length : ""}
+                      {lipid.comment && lipid.comment.length > 0 ? lipid.comment.length : ""}
                       /2000
                     </span>
                   </Col>
@@ -423,8 +528,8 @@ const AddProtein = props => {
                   <Col md={4}>
                     <MultiToggle
                       options={opensRingOptions}
-                      selectedOption={protein.opensRing}
-                      onSelectOption={value => setProtein({ opensRing: value })}
+                      selectedOption={lipid.opensRing}
+                      onSelectOption={value => setLipid({ opensRing: value })}
                     />
                   </Col>
                 </Form.Group>
@@ -432,7 +537,7 @@ const AddProtein = props => {
                 <Form.Group as={Row} controlId="publications">
                   <FormLabel label="Publications" />
                   <Col md={4}>
-                    {protein.publications.map((pub, index) => {
+                    {lipid.publications.map((pub, index) => {
                       return (
                         <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
                       );
@@ -499,8 +604,14 @@ const AddProtein = props => {
         return (
           <Form className="radioform2">
             {Object.keys(reviewFields).map(key =>
-              (key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
-              protein.selectedProtein === "Unknown" ? (
+              (key === "pubChemId" ||
+                key === "inChiKey" ||
+                key === "inChiSequence" ||
+                key === "iupacName" ||
+                key === "molecularFormula" ||
+                key === "canonicalSmiles" ||
+                key === "isomericSmiles") &&
+              lipid.selectedLipid === "Unknown" ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
@@ -513,12 +624,12 @@ const AddProtein = props => {
                       placeholder={"-"}
                       value={
                         key === "opensRing"
-                          ? protein[key] === 2
+                          ? lipid[key] === 2
                             ? "Unknown"
-                            : protein[key] === 1
+                            : lipid[key] === 1
                             ? "Yes"
                             : "No"
-                          : protein[key]
+                          : lipid[key]
                       }
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}
@@ -531,8 +642,8 @@ const AddProtein = props => {
             <Form.Group as={Row} controlId="publications">
               <FormLabel label="Publications" />
               <Col md={4}>
-                {protein.publications && protein.publications.length > 0
-                  ? protein.publications.map(pub => {
+                {lipid.publications && lipid.publications.length > 0
+                  ? lipid.publications.map(pub => {
                       return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
                     })
                   : ""}
@@ -542,8 +653,8 @@ const AddProtein = props => {
             <Form.Group as={Row} controlId="urls">
               <FormLabel label="Urls" />
               <Col md={4}>
-                {protein.urls && protein.urls.length > 0 ? (
-                  protein.urls.map((url, index) => {
+                {lipid.urls && lipid.urls.length > 0 ? (
+                  lipid.urls.map((url, index) => {
                     return (
                       <div style={{ marginTop: "8px" }} key={index}>
                         <Link
@@ -584,20 +695,28 @@ const AddProtein = props => {
     );
   }
 
-  function addProtein(e) {
-    var proteinObj = {
-      type: "PROTEIN_LINKER",
-      name: protein.name,
-      comment: protein.comment,
-      opensRing: protein.opensRing,
-      publications: protein.publications,
-      urls: protein.urls,
-      sequence: protein.sequence
+  function addLipid(e) {
+    var lipidObj = {
+      type: "SMALLMOLECULE_LINKER",
+      name: lipid.name,
+      pubChemId: lipid.pubChemId,
+      classification: lipid.classification,
+      inChiKey: lipid.inChiKey,
+      inChiSequence: lipid.inChiSequence,
+      iupacName: lipid.iupacName,
+      mass: lipid.mass,
+      molecularFormula: lipid.molecularFormula,
+      smiles: lipid.canonicalSmiles,
+      isomericSmiles: lipid.isomericSmiles,
+      comment: lipid.comment,
+      opensRing: lipid.opensRing,
+      publications: lipid.publications,
+      urls: lipid.urls
     };
 
-    wsCall("addlinker", "POST", null, true, proteinObj, response => history.push("/proteins"), addProteinFailure);
+    wsCall("addlinker", "POST", null, true, lipidObj, response => history.push("/lipids"), addLipidFailure);
 
-    function addProteinFailure(response) {
+    function addLipidFailure(response) {
       response.json().then(parsedJson => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
@@ -606,18 +725,18 @@ const AddProtein = props => {
   }
 
   const isStepSkipped = step => {
-    return protein.selectedProtein === "Unknown" && step === 1 && activeStep === 2;
+    return lipid.selectedLipid === "Unknown" && step === 1 && activeStep === 2;
   };
 
   return (
     <>
       <Helmet>
-        <title>{head.addProtein.title}</title>
-        {getMeta(head.addProtein)}
+        <title>{head.addLipid.title}</title>
+        {getMeta(head.addLipid)}
       </Helmet>
 
       <div className="page-container">
-        <Title title="Add Protein to Repository" />
+        <Title title="Add Lipid to Repository" />
         <Stepper activeStep={activeStep}>
           {steps.map((label, index) => {
             const stepProps = {};
@@ -638,7 +757,7 @@ const AddProtein = props => {
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="proteins"
+            form="lipids"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
           />
@@ -657,6 +776,6 @@ const AddProtein = props => {
   );
 };
 
-AddProtein.propTypes = {};
+AddLipid.propTypes = {};
 
-export { AddProtein };
+export { AddLipid };

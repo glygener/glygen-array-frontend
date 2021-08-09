@@ -192,6 +192,38 @@
       }
     ]
   },
+
+  "lipids": {
+    "title": "My Lipids",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "addLipid": {
+    "title": "Add Lipid",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding lipids to Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Lipids, Sequence Based, Unknown, Name, Sequence, Linker, UniProtID, PDB IDs"
+      }
+    ]
+  },
+  "editLipid": {
+    "title": "Edit Lipid",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
   "linkers": {
     "title": "My Linkers",
     "meta": [
@@ -216,6 +248,37 @@
   },
   "editLinker": {
     "title": "Edit Linker",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "othermolecules": {
+    "title": "Other Molecules",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Browse my molecules repository"
+      }
+    ]
+  },
+  "addOtherMolecule": {
+    "title": "Add Other Molecule",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Adding other molecules to my Glygen Array repository"
+      },
+      {
+        "name": "keywords",
+        "content": "Linkers, Molecule"
+      }
+    ]
+  },
+  "editOtherMolecule": {
+    "title": "Edit Other Molecule",
     "meta": [
       {
         "name": "",

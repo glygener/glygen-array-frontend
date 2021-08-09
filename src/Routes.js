@@ -62,6 +62,10 @@ import { GlycanSearch } from "./containers/GlycanSearch";
 import { SubmitterSearch } from "./containers/SubmitterSearch";
 import { Proteins } from "./containers/Proteins";
 import { AddProtein } from "./containers/AddProtein";
+import { Lipids } from "./containers/Lipids";
+import { AddLipid } from "./containers/AddLipid";
+import { AddOtherMolecule } from "./containers/AddOtherMolecule";
+import { OtherMolecules } from "./containers/OtherMolecules";
 
 const Routes = props => {
   const routes = [
@@ -211,6 +215,23 @@ const Routes = props => {
       sidebar: () => getSidemenu("molecules")
     },
 
+    /*  lipids */
+    {
+      path: "/lipids/editlipid/:lipidId",
+      main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/lipids/addlipid",
+      main: () => <AddLipid authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/lipids",
+      main: () => <Lipids authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+
     /*  linkers */
     {
       path: "/linkers/editlinker/:linkerId",
@@ -226,6 +247,24 @@ const Routes = props => {
     {
       path: "/linkers",
       main: () => <Linkers authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+
+    /*  other molecules */
+    {
+      path: "/othermolecules/editothermolecule/:othermoleculeId",
+      exact: true,
+      main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/othermolecules/addothermolecule",
+      main: () => <AddOtherMolecule authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/othermolecules",
+      main: () => <OtherMolecules authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
 

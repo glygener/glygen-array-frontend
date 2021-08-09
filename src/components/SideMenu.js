@@ -27,7 +27,7 @@ const SideMenu = props => {
 
   const classes = useStyles();
 
-  const chemicalEntity = ["/glycans/?", "/peptides/?", "/proteins/?", "/lipids/?", "/linkers/?", "/others/?"];
+  const chemicalEntity = ["/glycans/?", "/peptides/?", "/proteins/?", "/lipids/?", "/linkers/?", "/othermolecules/?"];
   const chemicalEntityLabels = ["Glycan", "Peptide", "Protein", "Lipid", "Linker", "Other"];
 
   const slidePages = ["/features/?", "/blocklayouts/?", "/slidelayouts/?", "/slides/?"];

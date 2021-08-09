@@ -22,7 +22,14 @@
     "UNKNOWN": "Unknown protein"
   },
 
+  "lipid": {
+    "SEQUENCE": "Sequence defined lipid",
+    "UNKNOWN": "Unknown lipid"
+  },
+
   "linker": {
+    "SEQUENCE": "Sequence defined linker",
+    "UNKNOWN": "Unknown linker",
     "LINKER": "Linker",
     "PUBCHEM_ID": "PubChem Id",
     "STRUCTURE": "Structure Image",
@@ -48,5 +55,9 @@
   },
   "slidelayout": {
     "SLIDE_LAYOUT": "Slide Layout"
+  },
+
+  "pubchem": {
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/"
   }
 }

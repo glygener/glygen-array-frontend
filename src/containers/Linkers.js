@@ -52,23 +52,6 @@ const Linkers = props => {
               minWidth: 50
             },
             {
-              Header: "Type",
-              accessor: "type",
-              Cell: row => displayNames.linker[row.value]
-            },
-            {
-              Header: "Classification",
-              accessor: "classification",
-              Cell: row =>
-                row.value ? (
-                  <a href={row.value.uri} target="_blank" rel="noopener noreferrer" title={row.value.classification}>
-                    {row.value.classification}
-                  </a>
-                ) : (
-                  ""
-                )
-            },
-            {
               Header: displayNames.linker.STRUCTURE,
               accessor: "imageURL",
               // eslint-disable-next-line react/prop-types
@@ -80,16 +63,6 @@ const Linkers = props => {
               accessor: "mass",
               // eslint-disable-next-line react/prop-types
               Cell: row => (row.value ? parseFloat(row.value).toFixed(4) : ""),
-              minWidth: 70
-            },
-            {
-              Header: displayNames.linker.INCHIKEY,
-              accessor: "inChiKey",
-              minWidth: 150
-            },
-            {
-              Header: "Sequence",
-              accessor: "sequence",
               minWidth: 70
             }
           ]}

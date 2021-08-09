@@ -15,7 +15,7 @@ import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
-import "../containers/AddGlycan.css";
+import "../containers/AddLinker.css";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -137,8 +137,9 @@ const AddPeptide = props => {
   };
 
   function getSteps() {
-    return ["Select the Peptide Type", "Type Specific Peptide Info", "Generic peptide Info", "Review and Add"];
+    return ["Select the Peptide Type", "Type Specific Peptide Info", "Generic Peptide Info", "Review and Add"];
   }
+
   function addPublication() {
     let publications = peptide.publications;
     let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));

@@ -1,49 +1,57 @@
-import React, { useEffect, useState, useReducer } from "react";
-import "../containers/AddLinker.css";
-import PropTypes from "prop-types";
-import Helmet from "react-helmet";
-import { Stepper, StepLabel, Step, Typography, Button, Link } from "@material-ui/core";
-import { Form, Row, Col, FormCheck } from "react-bootstrap";
+/* eslint-disable no-fallthrough */
+import React, { useReducer, useState, useEffect } from "react";
+import { Form, FormCheck, Row, Col } from "react-bootstrap";
 import { FormLabel, Feedback, Title } from "../components/FormControls";
-import MultiToggle from "react-multi-toggle";
 import { wsCall } from "../utils/wsUtils";
-import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import Helmet from "react-helmet";
+import { head, getMeta } from "../utils/head";
+import { ErrorSummary } from "../components/ErrorSummary";
+import displayNames from "../appData/displayNames";
+import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
-import { head, getMeta } from "../utils/head";
-import { useHistory } from "react-router-dom";
-import { ErrorSummary } from "../components/ErrorSummary";
-import { validateSequence } from "../utils/sequence";
-import displayNames from "../appData/displayNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import MultiToggle from "react-multi-toggle";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
+import "../containers/AddLinker.css";
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    width: "90%"
+  },
+  backButton: {
+    marginRight: theme.spacing(1)
+  },
+  instructions: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+  }
+}));
 
 const AddLinker = props => {
   useEffect(props.authCheckAgent, []);
 
+  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
-  const [classifications, setClassifications] = useState([]);
-  const [disableClassification, setDisableClassification] = useState(false);
-  const [disablePubChemFields, setDisablePubChemFields] = useState(false);
-  const [disableReset, setDisableReset] = useState(false);
-  const [showLoading, setShowLoading] = useState(false);
-  const [newPubMedId, setNewPubMedId] = useState("");
-  const [validatedSpecificDetails, setValidatedSpecificDetails] = useState(false);
-  const [invalidUrls, setInvalidUrls] = useState(false);
+  const [validate, setValidate] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
-  const [sequenceError, setSequenceError] = useState("");
-  const [newURL, setNewURL] = useState("");
-  const history = useHistory();
+  const [showLoading, setShowLoading] = useState(false);
+  const [invalidUrls, setInvalidUrls] = useState(false);
   const [invalidMass, setInvalidMass] = useState(false);
+  const [disablePubChemFields, setDisablePubChemFields] = useState(false);
+  const [newURL, setNewURL] = useState("");
+  const [disableReset, setDisableReset] = useState(false);
+  const [newPubMedId, setNewPubMedId] = useState("");
+  const history = useHistory();
 
-  const pubchemUrl = "https://pubchem.ncbi.nlm.nih.gov/compound/";
-
-  const linkerAddInitState = {
+  const linkerInitialState = {
+    selectedLinker: "SequenceDefined",
+    name: "",
+    comment: "",
     pubChemId: "",
-    uniProtId: "",
-    pdbIds: [],
-    classification: null,
     inChiKey: "",
     inChiSequence: "",
     iupacName: "",
@@ -51,25 +59,17 @@ const AddLinker = props => {
     molecularFormula: "",
     canonicalSmiles: "",
     isomericSmiles: "",
-    name: "",
-    comment: "",
-    description: "",
-    mass: "",
-    sequence: "",
-    opensRing: 2,
     publications: [],
+    opensRing: 2,
     urls: []
   };
 
-  const [linkerAddState, setLinkerAddState] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
-    ...linkerAddInitState,
-    ...{ type: "SMALLMOLECULE_LINKER" }
-  });
+  const reducer = (state, newState) => ({ ...state, ...newState });
+
+  const [linker, setLinker] = useReducer(reducer, linkerInitialState);
 
   const reviewFields = {
-    type: { label: "Linker Type", type: "text" },
     pubChemId: { label: "PubChem Compound CID", type: "number", length: 12 },
-    classification: { label: "Classification", type: "text" },
     inChiKey: { label: "InChI Key", type: "text" },
     inChiSequence: { label: "InChI", type: "textarea" },
     iupacName: { label: "IUPAC Name", type: "text" },
@@ -78,23 +78,12 @@ const AddLinker = props => {
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
     comment: { label: "Comments", type: "textarea", length: 10000 },
-    description: { label: "Description", type: "textarea", length: 250 },
-    mass: { label: "Mass", type: "number" },
-    uniProtId: { label: "UniProt Id", type: "text", length: 100 },
-    pdbIds: { label: "PDB Ids", type: "text" },
-    sequence: { label: "Sequence", type: "textarea" },
     opensRing: { label: "Opens Ring", type: "text" }
   };
 
-  const steps = ["Select Linker Type", "Type Specific Linker Info", "Generic Linker Info", "Review and Add"];
+  const steps = getSteps();
 
-  const linkerTypes = {
-    SMALLMOLECULE_LINKER: displayNames.linker.SMALLMOLECULE_LINKER,
-    PROTEIN_LINKER: displayNames.linker.PROTEIN_LINKER,
-    PEPTIDE_LINKER: displayNames.linker.PEPTIDE_LINKER
-  };
-
-  const smLinkerPubChemFields = {
+  const linkerFields = {
     inChiKey: { label: displayNames.linker.INCHIKEY, type: "text", length: 27 },
     inChiSequence: {
       label: displayNames.linker.INCHI_SEQUENCE,
@@ -109,29 +98,39 @@ const AddLinker = props => {
     canonicalSmiles: { label: displayNames.linker.CANONICAL_SMILES, type: "text", length: 10000 }
   };
 
-  const commonFields = {
-    name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comments", type: "textarea", length: 2000, enableCharacterCounter: true },
-    description: { label: "Description", type: "textarea", length: 250, enableCharacterCounter: true }
-  };
+  const handleNext = e => {
+    setValidate(false);
+    var stepIncrement = 1;
 
-  const opensRingOptions = [
-    {
-      displayName: "Unknown",
-      value: 2
-    },
-    {
-      displayName: "Yes",
-      value: 1
-    },
-    {
-      displayName: "No",
-      value: 0
+    if (activeStep === 0 && linker.selectedLinker === "Unknown") {
+      stepIncrement += 1;
+    } else if (activeStep === 1) {
+      if (linker.inChiSequence === "") {
+        setValidate(true);
+        return;
+      }
+
+      if (!disablePubChemFields) {
+        if (linker.pubChemId !== "") {
+          populateLinkerDetails(encodeURIComponent(linker.pubChemId.trim()));
+        } else if (linker.inChiKey) {
+          populateLinkerDetails(encodeURIComponent(linker.inChiKey.trim()));
+        }
+      }
+    } else if (activeStep === 2 && linker.name === "") {
+      setValidate(true);
+      return;
+    } else if (e.currentTarget.innerText === "FINISH") {
+      addLinker(e);
+      return;
     }
-  ];
+
+    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+  };
 
   const handleChange = e => {
     setDisableReset(true);
+
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -141,89 +140,121 @@ const AddLinker = props => {
       setInvalidMass(false);
     }
 
-    setLinkerAddState({ [name]: newValue });
-  };
-
-  const handleTypeSelect = e => {
-    setDisableReset(true);
-    const newValue = e.target.value;
-    setLinkerAddState({ ...linkerAddInitState, ...{ type: newValue } });
-    setDisableClassification(false);
-    setDisablePubChemFields(false);
-  };
-
-  const handleClassSelect = e => {
-    const select = e.target;
-    const chebiIdValue = select.value;
-    const classificationValue = select.options[select.selectedIndex].text;
-    setLinkerAddState({
-      classification: {
-        chebiId: chebiIdValue,
-        classification: classificationValue
-      }
-    });
-    setDisableReset(true);
-  };
-
-  const handleNext = () => {
-    if (activeStep === 0) {
-      populateClassifications();
-      setValidatedSpecificDetails(false);
-    } else if (activeStep === 1) {
-      setValidatedSpecificDetails(true);
-      if (
-        linkerAddState.type === "SMALLMOLECULE_LINKER" &&
-        (linkerAddState.classification == null || linkerAddState.classification.chebiId === "0")
-      ) {
-        return;
-      }
-      if (
-        (linkerAddState.type === "PROTEIN_LINKER" || linkerAddState.type === "PEPTIDE_LINKER") &&
-        linkerAddState.sequence === ""
-      ) {
-        return;
-      } else {
-        if (!invalidMass) {
-          if (!disablePubChemFields) {
-            if (linkerAddState.pubChemId !== "") {
-              populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId.trim()));
-            } else if (linkerAddState.inChiKey) {
-              populateLinkerDetails(encodeURIComponent(linkerAddState.inChiKey.trim()));
-            }
-          }
-
-          var seqError = validateSequence(linkerAddState.type, linkerAddState.sequence);
-          setSequenceError(seqError);
-          if (seqError !== "") {
-            return;
-          }
-        } else {
-          return;
-        }
-      }
-    } else if (activeStep === 2) {
-      if (invalidUrls) {
-        return;
-      }
-      linkerAddState.urls && linkerAddState.urls.length > 0 && removeEmptyElementsAtEnd(linkerAddState.urls);
-      linkerAddState.pdbIds && linkerAddState.pdbIds.length > 0 && removeEmptyElementsAtEnd(linkerAddState.pdbIds);
-    } else if (activeStep === 3) {
-      addLinker();
-      return;
+    if (name === "inChiSequence" || name === "name") {
+      setValidate(false);
     }
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+
+    setLinker({ [name]: newValue });
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
     setShowErrorSummary(false);
+
+    var stepDecrement = 1;
+
+    setValidate(false);
+
+    if (activeStep === 2) {
+      if (linker.selectedLinker === "Unknown") {
+        stepDecrement += 1;
+      }
+    }
+    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
   };
+
+  const handleSelect = e => {
+    setDisableReset(true);
+    const newValue = e.target.value;
+    setLinker({ ...linkerInitialState, ...{ selectedLinker: newValue } });
+  };
+
+  function getSteps() {
+    return ["Select the Linker Type", "Type Specific Linker Info", "Generic Linker Info", "Review and Add"];
+  }
+
+  function populateLinkerDetails(pubChemId) {
+    setShowLoading(true);
+    wsCall(
+      "linkerfrompubchem",
+      "GET",
+      [pubChemId],
+      true,
+      null,
+      populateLinkerDetailsSuccess,
+      populateLinkerDetailsError
+    );
+
+    function populateLinkerDetailsSuccess(response) {
+      response.json().then(responseJson => {
+        setLinker({
+          type: responseJson.type,
+          pubChemId: responseJson.pubChemId,
+          classification: responseJson.classification,
+          inChiKey: responseJson.inChiKey,
+          inChiSequence: responseJson.inChiSequence,
+          iupacName: responseJson.iupacName,
+          name: responseJson.iupacName,
+          imageURL: responseJson.imageURL,
+          molecularFormula: responseJson.molecularFormula,
+          isomericSmiles: responseJson.isomericSmiles,
+          canonicalSmiles: responseJson.smiles,
+          mass: responseJson.mass,
+          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`]
+        });
+
+        setShowErrorSummary(false);
+        setValidate(false);
+        setDisablePubChemFields(true);
+      });
+
+      setDisablePubChemFields(true);
+      setShowLoading(false);
+    }
+
+    function populateLinkerDetailsError(response) {
+      debugger;
+      response.json().then(resp => {
+        debugger;
+        console.log(resp);
+        setPageErrorsJson(resp);
+        setShowErrorSummary(true);
+      });
+      setShowLoading(false);
+    }
+  }
+
+  function deletePublication(id, wscall) {
+    const publications = linker.publications;
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
+    const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
+    publications.splice(pubDeleteIndex, 1);
+    setLinker({ publications: publications });
+  }
+
+  function addURL() {
+    var listUrls = linker.urls;
+    var urlEntered = csvToArray(newURL)[0];
+    const urlExists = listUrls.find(i => i === urlEntered);
+
+    if (!urlExists) {
+      if (urlEntered !== "" && !isValidURL(urlEntered)) {
+        setInvalidUrls(true);
+        return;
+      } else {
+        listUrls.push(urlEntered);
+        setInvalidUrls(false);
+      }
+
+      setLinker({ urls: listUrls });
+    }
+    setNewURL("");
+  }
 
   const urlWidget = enableDelete => {
     return (
       <>
-        {linkerAddState.urls && linkerAddState.urls.length > 0
-          ? linkerAddState.urls.map((url, index) => {
+        {linker.urls && linker.urls.length > 0
+          ? linker.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
                   <Col md={10}>
@@ -244,9 +275,9 @@ const AddLinker = props => {
                         title="Delete Url"
                         className="caution-color table-btn"
                         onClick={() => {
-                          const listUrls = linkerAddState.urls;
+                          const listUrls = linker.urls;
                           listUrls.splice(index, 1);
-                          setLinkerAddState({ urls: listUrls });
+                          setLinker({ urls: listUrls });
                         }}
                       />
                     </Col>
@@ -259,149 +290,29 @@ const AddLinker = props => {
     );
   };
 
-  function deletePublication(id, wscall) {
-    const publications = linkerAddState.publications;
-    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
-    const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
-    publications.splice(pubDeleteIndex, 1);
-    setLinkerAddState({ publications: publications });
-  }
-
-  function addURL() {
-    var listUrls = linkerAddState.urls;
-    var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find(i => i === urlEntered);
-
-    if (!urlExists) {
-      if (urlEntered !== "" && !isValidURL(urlEntered)) {
-        setInvalidUrls(true);
-        return;
-      } else {
-        listUrls.push(urlEntered);
-        setInvalidUrls(false);
-      }
-
-      setLinkerAddState({ urls: listUrls });
+  const opensRingOptions = [
+    {
+      displayName: "Unknown",
+      value: 2
+    },
+    {
+      displayName: "Yes",
+      value: 1
+    },
+    {
+      displayName: "No",
+      value: 0
     }
-    setNewURL("");
-  }
+  ];
 
-  function populateClassifications() {
-    wsCall(
-      "linkerclassifications",
-      "GET",
-      null,
-      true,
-      null,
-      populateClassificationsSuccess,
-      populateClassificationsError
-    );
-
-    function populateClassificationsSuccess(response) {
-      response.json().then(responseJson => {
-        var classificationSelectOption = {
-          chebiId: undefined,
-          classification: "Select Classification"
-        };
-        responseJson.splice(0, 0, classificationSelectOption);
-        setClassifications(responseJson);
-        setLinkerAddState({ classification: null });
-      });
-    }
-
-    function populateClassificationsError() {
-      console.log("Classification fetch error");
-    }
-  }
-
-  function populateLinkerDetails(pubChemId) {
-    setShowLoading(true);
-    wsCall(
-      "linkerfrompubchem",
-      "GET",
-      [pubChemId],
-      true,
-      null,
-      populateLinkerDetailsSuccess,
-      populateLinkerDetailsError
-    );
-
-    function populateLinkerDetailsSuccess(response) {
-      debugger;
-      response.json().then(responseJson => {
-        setLinkerAddState({
-          type: responseJson.type,
-          pubChemId: responseJson.pubChemId,
-          classification: responseJson.classification,
-          inChiKey: responseJson.inChiKey,
-          inChiSequence: responseJson.inChiSequence,
-          iupacName: responseJson.iupacName,
-          name: responseJson.iupacName,
-          imageURL: responseJson.imageURL,
-          molecularFormula: responseJson.molecularFormula,
-          isomericSmiles: responseJson.isomericSmiles,
-          canonicalSmiles: responseJson.smiles,
-          mass: responseJson.mass,
-          urls: [`${pubchemUrl}${responseJson.pubChemId}`]
-        });
-
-        if (responseJson.classification) {
-          setClassifications([responseJson.classification]);
-          setDisableClassification(true);
-        }
-        setDisablePubChemFields(true);
-      });
-
-      setDisablePubChemFields(true);
-      setShowLoading(false);
-    }
-
-    function populateLinkerDetailsError(response) {
-      debugger;
-      response.json().then(resp => {
-        debugger;
-        console.log(resp);
-        setPageErrorsJson(resp);
-        setShowErrorSummary(true);
-      });
-      setShowLoading(false);
-    }
-  }
-
-  function getSequenceFromUniprot(uniprotId) {
-    setShowLoading(true);
-    wsCall(
-      "getsequencefromuniprot",
-      "GET",
-      [uniprotId],
-      true,
-      null,
-      getSequenceFromUniprotSuccess,
-      getSequenceFromUniprotError,
-      { Accept: "text/plain" }
-    );
-
-    function getSequenceFromUniprotSuccess(response) {
-      response.text().then(sequence => {
-        setLinkerAddState({
-          sequence: sequence
-        });
-      });
-      setShowLoading(false);
-      setValidatedSpecificDetails(false);
-    }
-
-    function getSequenceFromUniprotError(response) {
-      response.text().then(function(text) {
-        return text ? setPageErrorMessage(JSON.parse(text)) : "";
-      });
-
-      setShowLoading(false);
-    }
+  function clearPubChemFields() {
+    setDisablePubChemFields(false);
+    setShowErrorSummary(false);
+    setPageErrorsJson({});
   }
 
   function addPublication() {
-    let publications = linkerAddState.publications;
+    let publications = linker.publications;
     let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
@@ -413,8 +324,8 @@ const AddLinker = props => {
     function addPublicationSuccess(response) {
       response.json().then(responseJson => {
         setShowErrorSummary(false);
-        setLinkerAddState({
-          publications: linkerAddState.publications.concat([responseJson])
+        setLinker({
+          publications: linker.publications.concat([responseJson])
         });
         setNewPubMedId("");
       });
@@ -432,165 +343,41 @@ const AddLinker = props => {
     }
   }
 
-  function addLinker() {
-    var linkerObj = {
-      type: linkerAddState.type,
-      name: linkerAddState.name,
-      comment: linkerAddState.comment,
-      description: linkerAddState.description,
-      opensRing: linkerAddState.opensRing,
-      publications: linkerAddState.publications,
-      urls: linkerAddState.urls
-    };
-
-    if (linkerAddState.type === "SMALLMOLECULE_LINKER") {
-      linkerObj.pubChemId = linkerAddState.pubChemId;
-      linkerObj.classification = linkerAddState.classification;
-      linkerObj.inChiKey = linkerAddState.inChiKey;
-      linkerObj.inChiSequence = linkerAddState.inChiSequence;
-      linkerObj.iupacName = linkerAddState.iupacName;
-      linkerObj.mass = linkerAddState.mass;
-      linkerObj.molecularFormula = linkerAddState.molecularFormula;
-      linkerObj.smiles = linkerAddState.canonicalSmiles;
-      linkerObj.isomericSmiles = linkerAddState.isomericSmiles;
-    } else if (linkerAddState.type === "PROTEIN_LINKER") {
-      linkerObj.uniProtId = linkerAddState.uniProtId;
-      linkerObj.pdbIds = linkerAddState.pdbIds;
-      linkerObj.sequence = linkerAddState.sequence;
-    } else {
-      linkerObj.sequence = linkerAddState.sequence;
-    }
-
-    wsCall("addlinker", "POST", null, true, linkerObj, addLinkerSuccess, addLinkerError);
-
-    function addLinkerSuccess() {
-      history.push("/linkers");
-    }
-
-    function addLinkerError(response) {
-      response.json().then(responseJson => {
-        console.log(responseJson);
-        setPageErrorsJson(responseJson);
-        setShowErrorSummary(true);
-      });
-    }
-  }
-
-  function removeEmptyElementsAtEnd(arr) {
-    if (arr.length > 0 && arr[arr.length - 1] === "") {
-      arr.pop();
-    }
-  }
-
-  function getReviewDisplay(field, value) {
-    switch (field) {
-      case "type":
-        return linkerTypes[value];
-      case "classification":
-        return value ? value.classification : "-";
-      case "opensRing":
-        return value === 2 ? "Unknown" : value === 1 ? "Yes" : "No";
-      case "pdbIds":
-        return value.join(", ");
-      default:
-        return [value];
-    }
-  }
-
-  function clearPubChemFields() {
-    setLinkerAddState({ ...linkerAddInitState, ...{ type: "SMALLMOLECULE_LINKER" } });
-
-    populateClassifications();
-    setDisableClassification(false);
-    setDisablePubChemFields(false);
-    setShowErrorSummary(false);
-    setDisableReset(false);
-    setPageErrorsJson({});
-    setValidatedSpecificDetails(false);
-  }
-
-  return (
-    <>
-      <Helmet>
-        <title>{head.addLinker.title}</title>
-        {getMeta(head.addLinker)}
-      </Helmet>
-      <div className="page-container">
-        <Title title="Add Linker to Repository" />
-
-        <Stepper activeStep={activeStep}>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <div>
-          <div>
-            <div className="button-div text-center">
-              <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-                Back
-              </Button>
-              <Button variant="contained" onClick={handleNext} className="stepper-button">
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
-            </div>
-
-            {showErrorSummary === true && (
-              <ErrorSummary
-                show={showErrorSummary}
-                form="linkers"
-                errorMessage={pageErrorMessage}
-                errorJson={pageErrorsJson}
-              />
-            )}
-
-            <Typography component={"span"} variant={"body2"}>
-              {getStepContent(activeStep)}
-            </Typography>
-            <div className="button-div text-center">
-              <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-                Back
-              </Button>
-              <Button variant="contained" onClick={handleNext} className="stepper-button">
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Loading show={showLoading} />
-    </>
-  );
-
-  function getStepContent(stepIndex) {
+  function getStepContent(stepIndex, validate) {
     switch (stepIndex) {
       case 0:
         return (
           <Form className="radioform">
-            {Object.keys(linkerTypes).map(key => {
-              return (
-                <FormCheck key={key} className="line-break-2">
-                  <FormCheck.Label>
-                    <FormCheck.Input
-                      type="radio"
-                      value={key}
-                      onChange={handleTypeSelect}
-                      checked={linkerAddState.type === key}
-                    />
-                    {linkerTypes[key]}
-                  </FormCheck.Label>
-                </FormCheck>
-              );
-            })}
+            <FormCheck className="line-break-1">
+              <FormCheck.Label>
+                <FormCheck.Input
+                  type="radio"
+                  value="SequenceDefined"
+                  onChange={handleSelect}
+                  checked={linker.selectedLinker === "SequenceDefined"}
+                />
+                {displayNames.linker.SEQUENCE}
+              </FormCheck.Label>
+            </FormCheck>
+
+            <FormCheck>
+              <FormCheck.Label>
+                <FormCheck.Input
+                  type="radio"
+                  value="Unknown"
+                  onChange={handleSelect}
+                  checked={linker.selectedLinker === "Unknown"}
+                />
+                {displayNames.linker.UNKNOWN}
+              </FormCheck.Label>
+            </FormCheck>
           </Form>
         );
       case 1:
-        return (
-          <>
-            <Form className="radioform1">
-              {linkerAddState.type === "SMALLMOLECULE_LINKER" && (
+        if (activeStep === 1 && linker.selectedLinker !== "Unknown") {
+          return (
+            <>
+              <Form className="radioform1">
                 <>
                   <Form.Group as={Row} controlId="pubChemId">
                     <FormLabel label="PubChem Compound CID" />
@@ -599,7 +386,7 @@ const AddLinker = props => {
                         type="number"
                         name="pubChemId"
                         placeholder="PubChem Compound CID"
-                        value={linkerAddState.pubChemId}
+                        value={linker.pubChemId}
                         onChange={handleChange}
                         disabled={disablePubChemFields}
                         onKeyDown={e => {
@@ -615,61 +402,36 @@ const AddLinker = props => {
                         }}
                       />
                     </Col>
-                    {linkerAddState.pubChemId !== "" && !disablePubChemFields && (
+                    {linker.pubChemId !== "" && !disablePubChemFields && (
                       <Button
                         variant="contained"
-                        onClick={() => populateLinkerDetails(encodeURIComponent(linkerAddState.pubChemId.trim()))}
+                        onClick={() => populateLinkerDetails(encodeURIComponent(linker.pubChemId.trim()))}
                         className="get-btn "
                       >
                         Get Details from PubChem
                       </Button>
                     )}
                   </Form.Group>
-                  <Form.Group as={Row} controlId="classification">
-                    <FormLabel
-                      label="Classification"
-                      {...(!disablePubChemFields && { className: "required-asterik" })}
-                    />
-                    <Col md={4}>
-                      <Form.Control
-                        as="select"
-                        name="classification"
-                        placeholder="classification"
-                        value={linkerAddState.classification ? linkerAddState.classification.chebiId : 0}
-                        onChange={handleClassSelect}
-                        disabled={disableClassification}
-                        isInvalid={
-                          validatedSpecificDetails &&
-                          (linkerAddState.classification == null || linkerAddState.classification.chebiId === "0")
-                        }
-                      >
-                        {classifications.map((option, index) => {
-                          return (
-                            <option key={index} value={option.chebiId || 0}>
-                              {option.classification}
-                            </option>
-                          );
-                        })}
-                      </Form.Control>
-                      <Feedback message="Classification is required"></Feedback>
-                    </Col>
-                  </Form.Group>
-                  {Object.keys(smLinkerPubChemFields).map(key => {
+
+                  {Object.keys(linkerFields).map(key => {
                     return (
                       // eslint-disable-next-line react/jsx-key
                       <Form.Group as={Row} controlId={key} key={key}>
-                        <FormLabel label={smLinkerPubChemFields[key].label} />
+                        <FormLabel
+                          label={linkerFields[key].label}
+                          className={key === "inChiSequence" ? "required-asterik" : ""}
+                        />
                         <Col md={4}>
                           <Form.Control
-                            as={smLinkerPubChemFields[key].type === "textarea" ? "textarea" : "input"}
+                            as={linkerFields[key].type === "textarea" ? "textarea" : "input"}
                             type={key === "mass" ? "number" : "string"}
                             rows="4"
                             name={key}
-                            placeholder={smLinkerPubChemFields[key].label}
-                            value={linkerAddState[key] ? linkerAddState[key] : undefined}
+                            placeholder={linkerFields[key].label}
+                            value={linker[key] ? linker[key] : undefined}
                             onChange={handleChange}
                             disabled={disablePubChemFields}
-                            maxLength={smLinkerPubChemFields[key].length}
+                            maxLength={linkerFields[key].length}
                             // pattern={key === "mass" ? "/^d+/" : ""}
                             onKeyDown={
                               key === "mass"
@@ -678,23 +440,24 @@ const AddLinker = props => {
                                   }
                                 : e => {}
                             }
-                            isInvalid={key === "mass" ? invalidMass : ""}
+                            isInvalid={key === "mass" ? invalidMass : key === "inChiSequence" ? validate : ""}
+                            required={key === "inChiSequence" ? true : false}
                           />
 
-                          {smLinkerPubChemFields[key].enableCharacterCounter && (
+                          {linkerFields[key].enableCharacterCounter && (
                             <span className="character-counter">
-                              {linkerAddState[key] && linkerAddState[key].length > 0 ? linkerAddState[key].length : ""}/
-                              {smLinkerPubChemFields[key].length}
+                              {linker[key] && linker[key].length > 0 ? linker[key].length : ""}/
+                              {linkerFields[key].length}
                             </span>
                           )}
-                          <Feedback message={`${smLinkerPubChemFields[key].label} is Invalid`} />
+                          <Feedback message={`${linkerFields[key].label} is Invalid`} />
                         </Col>
                         {(key === "inChiKey" || key === "canonicalSmiles") &&
-                          linkerAddState[key] !== "" &&
+                          linker[key] !== "" &&
                           !disablePubChemFields && (
                             <Button
                               variant="contained"
-                              onClick={() => populateLinkerDetails(encodeURIComponent(linkerAddState[key].trim()))}
+                              onClick={() => populateLinkerDetails(encodeURIComponent(linker[key].trim()))}
                               className="get-btn "
                             >
                               Get Details from PubChem
@@ -716,205 +479,140 @@ const AddLinker = props => {
                     </Col>
                   </Form.Group>
                 </>
-              )}
-              {linkerAddState.type === "PROTEIN_LINKER" && (
-                <>
-                  <Form.Group as={Row} controlId="uniProtId">
-                    <FormLabel label="UniProt Id" />
-                    <Col md={4}>
-                      <Form.Control
-                        type="text"
-                        name="uniProtId"
-                        placeholder="UniProt Id"
-                        value={linkerAddState.uniProtId}
-                        onChange={handleChange}
-                        maxLength={100}
-                      />
-                    </Col>
-                    {linkerAddState.uniProtId !== "" && (
-                      <Button
-                        variant="contained"
-                        onClick={() => getSequenceFromUniprot(encodeURIComponent(linkerAddState.uniProtId.trim()))}
-                        className="get-btn "
-                      >
-                        Get Sequence from Uniprot
-                      </Button>
-                    )}
-                  </Form.Group>
-                  <Form.Group as={Row} controlId="pdbIds">
-                    <FormLabel label="PDB Ids" />
-                    <Col md={4}>
-                      <Form.Control
-                        type="text"
-                        name="pdbIds"
-                        placeholder="PDB Ids separated by ';'"
-                        value={linkerAddState.pdbIds.join(";")}
-                        onChange={e =>
-                          setLinkerAddState({
-                            pdbIds: csvToArray(e.target.value)
-                          })
-                        }
-                        maxLength={100}
-                      />
-                    </Col>
-                  </Form.Group>
-                  <Form.Group as={Row} controlId="sequence">
-                    <FormLabel label="Sequence" className="required-asterik" />
-                    <Col md={6}>
-                      <Form.Control
-                        as="textarea"
-                        rows="15"
-                        name="sequence"
-                        placeholder="Sequence"
-                        value={linkerAddState.sequence}
-                        onChange={handleChange}
-                        className="sequence-text-area"
-                        isInvalid={validatedSpecificDetails && (linkerAddState.sequence === "" || sequenceError !== "")}
-                        spellCheck="false"
-                        maxLength={10000}
-                      />
-                      {linkerAddState.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
-                      {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
-                    </Col>
-                  </Form.Group>
-                </>
-              )}
-
-              {linkerAddState.type === "PEPTIDE_LINKER" && (
-                <>
-                  <Form.Group as={Row} controlId="sequence">
-                    <FormLabel label="Sequence" className="required-asterik" />
-                    <Col md={6}>
-                      <Form.Control
-                        as="textarea"
-                        rows="15"
-                        name="sequence"
-                        placeholder="Sequence"
-                        value={linkerAddState.sequence}
-                        onChange={handleChange}
-                        className="sequence-text-area"
-                        isInvalid={validatedSpecificDetails && (linkerAddState.sequence === "" || sequenceError !== "")}
-                        spellCheck="false"
-                        maxLength={10000}
-                      />
-                      {linkerAddState.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
-                      {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
-                    </Col>
-                  </Form.Group>
-                </>
-              )}
-            </Form>
-          </>
-        );
+              </Form>
+            </>
+          );
+        }
       case 2:
-        return (
-          <>
-            <Form className="radioform2">
-              {Object.keys(commonFields).map(key => {
-                return (
-                  // eslint-disable-next-line react/jsx-key
-                  <Form.Group as={Row} controlId={key} key={key}>
-                    <FormLabel label={commonFields[key].label} />
-                    <Col md={4}>
-                      <Form.Control
-                        as={commonFields[key].type === "textarea" ? "textarea" : "input"}
-                        rows="4"
-                        name={key}
-                        placeholder={commonFields[key].label}
-                        value={linkerAddState[key]}
-                        onChange={handleChange}
-                        maxLength={commonFields[key].length}
-                      />
-                      {commonFields[key].enableCharacterCounter && (
-                        <span className="character-counter">
-                          {linkerAddState[key] && linkerAddState[key].length > 0 ? linkerAddState[key].length : ""}/
-                          {commonFields[key].length}
-                        </span>
-                      )}
-                    </Col>
-                  </Form.Group>
-                );
-              })}
-              <Form.Group as={Row} controlId="opensRing">
-                <FormLabel label={displayNames.linker.OPENS_RING} />
-                <Col md={4}>
-                  <MultiToggle
-                    options={opensRingOptions}
-                    selectedOption={linkerAddState.opensRing}
-                    onSelectOption={value => setLinkerAddState({ opensRing: value })}
-                  />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Row} controlId="publications">
-                <FormLabel label="Publications" />
-                <Col md={4}>
-                  {linkerAddState.publications.map((pub, index) => {
-                    return <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />;
-                  })}
-                  <Row>
-                    <Col md={10}>
-                      <Form.Control
-                        type="number"
-                        name="publication"
-                        placeholder="Enter a Pubmed ID and click +"
-                        value={newPubMedId}
-                        onChange={e => setNewPubMedId(e.target.value)}
-                        maxLength={100}
-                        onKeyDown={e => {
-                          isValidNumber(e);
-                        }}
-                        onInput={e => {
-                          numberLengthCheck(e);
-                        }}
-                      />
-                    </Col>
-                    <Col md={1}>
-                      <Button variant="contained" onClick={addPublication} className="add-button">
-                        +
-                      </Button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Form.Group>
-              <Form.Group as={Row} controlId="urls">
-                <FormLabel label="URLs" />
-                <Col md={4}>
-                  {urlWidget(true)}
-                  <Row>
-                    <Col md={10}>
-                      <Form.Control
-                        as="input"
-                        name="urls"
-                        placeholder="Enter URL and click +"
-                        value={newURL}
-                        onChange={e => {
-                          setNewURL(e.target.value);
-                          setInvalidUrls(false);
-                        }}
-                        isInvalid={invalidUrls}
-                      />
-                      <Feedback message="Please check the url entered" />
-                    </Col>
-                    <Col md={1}>
-                      <Button variant="contained" onClick={addURL} className="add-button">
-                        +
-                      </Button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Form.Group>
-            </Form>
-          </>
-        );
+        if (activeStep === 2) {
+          return (
+            <>
+              <Form className="radioform2" validated={validate}>
+                <Form.Group as={Row} controlId="name">
+                  <FormLabel label="Name" className="required-asterik" />
+                  <Col md={4}>
+                    <Form.Control
+                      type="text"
+                      name="name"
+                      placeholder="name"
+                      value={linker.name}
+                      onChange={handleChange}
+                      isInValid={validate}
+                      maxLength={100}
+                      required
+                    />
+                    <Feedback message={"Name is required"} />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="comments">
+                  <FormLabel label="Comments" />
+                  <Col md={4}>
+                    <Form.Control
+                      as="textarea"
+                      rows={4}
+                      name="comment"
+                      placeholder="Comments"
+                      value={linker.comment}
+                      onChange={handleChange}
+                      maxLength={2000}
+                    />
+                    <span className="character-counter">
+                      {linker.comment && linker.comment.length > 0 ? linker.comment.length : ""}
+                      /2000
+                    </span>
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="opensRing">
+                  <FormLabel label={displayNames.linker.OPENS_RING} />
+                  <Col md={4}>
+                    <MultiToggle
+                      options={opensRingOptions}
+                      selectedOption={linker.opensRing}
+                      onSelectOption={value => setLinker({ opensRing: value })}
+                    />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="publications">
+                  <FormLabel label="Publications" />
+                  <Col md={4}>
+                    {linker.publications.map((pub, index) => {
+                      return (
+                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
+                      );
+                    })}
+                    <Row>
+                      <Col md={10}>
+                        <Form.Control
+                          type="number"
+                          name="publication"
+                          placeholder="Enter a Pubmed ID and click +"
+                          value={newPubMedId}
+                          onChange={e => setNewPubMedId(e.target.value)}
+                          maxLength={100}
+                          onKeyDown={e => {
+                            isValidNumber(e);
+                          }}
+                          onInput={e => {
+                            numberLengthCheck(e);
+                          }}
+                        />
+                      </Col>
+                      <Col md={1}>
+                        <Button variant="contained" onClick={addPublication} className="add-button">
+                          +
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="urls">
+                  <FormLabel label="URLs" />
+                  <Col md={4}>
+                    {urlWidget(true)}
+                    <Row>
+                      <Col md={10}>
+                        <Form.Control
+                          as="input"
+                          name="urls"
+                          placeholder="Enter URL and click +"
+                          value={newURL}
+                          onChange={e => {
+                            setNewURL(e.target.value);
+                            setInvalidUrls(false);
+                          }}
+                          maxLength={2048}
+                          isInvalid={invalidUrls}
+                        />
+                        <Feedback message="Please check the url entered" />
+                      </Col>
+                      <Col md={1}>
+                        <Button variant="contained" onClick={addURL} className="add-button">
+                          +
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Form.Group>
+              </Form>
+            </>
+          );
+        }
       case 3:
         return (
           <Form className="radioform2">
             {Object.keys(reviewFields).map(key =>
-              // eslint-disable-next-line react/jsx-key
-              linkerAddState.type === "SMALLMOLECULE_LINKER" &&
-              (reviewFields[key].label === "UniProt Id" ||
-                reviewFields[key].label === "PDB Ids" ||
-                reviewFields[key].label === "Sequence") ? (
+              (key === "pubChemId" ||
+                key === "inChiKey" ||
+                key === "inChiSequence" ||
+                key === "iupacName" ||
+                key === "molecularFormula" ||
+                key === "canonicalSmiles" ||
+                key === "isomericSmiles") &&
+              linker.selectedLinker === "Unknown" ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
@@ -925,7 +623,15 @@ const AddLinker = props => {
                       rows={key === "sequence" ? "15" : "4"}
                       name={key}
                       placeholder={"-"}
-                      value={getReviewDisplay(key, linkerAddState[key])}
+                      value={
+                        key === "opensRing"
+                          ? linker[key] === 2
+                            ? "Unknown"
+                            : linker[key] === 1
+                            ? "Yes"
+                            : "No"
+                          : linker[key]
+                      }
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}
                     />
@@ -933,21 +639,23 @@ const AddLinker = props => {
                 </Form.Group>
               )
             )}
+
             <Form.Group as={Row} controlId="publications">
               <FormLabel label="Publications" />
               <Col md={4}>
-                {linkerAddState.publications && linkerAddState.publications.length > 0
-                  ? linkerAddState.publications.map(pub => {
+                {linker.publications && linker.publications.length > 0
+                  ? linker.publications.map(pub => {
                       return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
                     })
                   : ""}
               </Col>
             </Form.Group>
+
             <Form.Group as={Row} controlId="urls">
               <FormLabel label="Urls" />
               <Col md={4}>
-                {linkerAddState.urls && linkerAddState.urls.length > 0 ? (
-                  linkerAddState.urls.map((url, index) => {
+                {linker.urls && linker.urls.length > 0 ? (
+                  linker.urls.map((url, index) => {
                     return (
                       <div style={{ marginTop: "8px" }} key={index}>
                         <Link
@@ -969,14 +677,106 @@ const AddLinker = props => {
             </Form.Group>
           </Form>
         );
+
       default:
         return "Unknown stepIndex";
     }
   }
+
+  function getNavigationButtons(className) {
+    return (
+      <div className={className}>
+        <Button disabled={activeStep === 0} onClick={handleBack} className="stepper-button">
+          Back
+        </Button>
+        <Button variant="contained" className="stepper-button" onClick={handleNext}>
+          {activeStep === steps.length - 1 ? "Finish" : "Next"}
+        </Button>
+      </div>
+    );
+  }
+
+  function addLinker(e) {
+    var linkerObj = {
+      type: "SMALLMOLECULE_LINKER",
+      name: linker.name,
+      pubChemId: linker.pubChemId,
+      classification: linker.classification,
+      inChiKey: linker.inChiKey,
+      inChiSequence: linker.inChiSequence,
+      iupacName: linker.iupacName,
+      mass: linker.mass,
+      molecularFormula: linker.molecularFormula,
+      smiles: linker.canonicalSmiles,
+      isomericSmiles: linker.isomericSmiles,
+      comment: linker.comment,
+      opensRing: linker.opensRing,
+      publications: linker.publications,
+      urls: linker.urls
+    };
+
+    wsCall("addlinker", "POST", null, true, linkerObj, response => history.push("/linkers"), addLinkerFailure);
+
+    function addLinkerFailure(response) {
+      response.json().then(parsedJson => {
+        setPageErrorsJson(parsedJson);
+        setShowErrorSummary(true);
+      });
+    }
+  }
+
+  const isStepSkipped = step => {
+    return linker.selectedLinker === "Unknown" && step === 1 && activeStep === 2;
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>{head.addLinker.title}</title>
+        {getMeta(head.addLinker)}
+      </Helmet>
+
+      <div className="page-container">
+        <Title title="Add Linker to Repository" />
+        <Stepper activeStep={activeStep}>
+          {steps.map((label, index) => {
+            const stepProps = {};
+            const labelProps = {};
+            if (isStepSkipped(index)) {
+              labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
+              stepProps.completed = false;
+            }
+            return (
+              <Step key={label} {...stepProps}>
+                <StepLabel {...labelProps}>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+        {getNavigationButtons("button - div text-center")}
+        &nbsp; &nbsp;
+        {showErrorSummary === true && (
+          <ErrorSummary
+            show={showErrorSummary}
+            form="linkers"
+            errorJson={pageErrorsJson}
+            errorMessage={pageErrorMessage}
+          />
+        )}
+        <div>
+          <div>
+            <Typography className={classes.instructions} component={"span"} variant={"body2"}>
+              {getStepContent(activeStep, validate)}
+            </Typography>
+            {getNavigationButtons("button-div line-break-1 text-center")}
+          </div>
+        </div>
+      </div>
+      <Loading show={showLoading} />
+    </>
+  );
 };
 
-AddLinker.propTypes = {
-  authCheckAgent: PropTypes.func
-};
+AddLinker.propTypes = {};
 
 export { AddLinker };
