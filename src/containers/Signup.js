@@ -74,11 +74,13 @@ const Signup = () => {
                     required
                     maxLength={100}
                     className={"custom-text-fields"}
-                    isInvalid={userInput.firstName.length < 100}
                   />
-                  <Form.Label className={"label required-asterik"}>First name</Form.Label>
+                  <Form.Label className={"label required-asterik"}>First name</Form.Label>  
+                  <Feedback message="Please enter first name." />{/* {userInput.firstName && userInput.firstName.length > 100 ? (
+                    <Feedback message="Entry is too long - max length is 100." maxLength={true} />
+                  ) : (
                   <Feedback message="Please enter first name." />
-                  <Feedback message="Entry is too long - max length is 100." maxLength={true} />
+                  )} */}
                 </Form.Group>
               </Col>
               <Col md={6}>
