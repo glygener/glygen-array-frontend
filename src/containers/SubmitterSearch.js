@@ -12,7 +12,7 @@ import { Title } from "../components/FormControls";
 import { Container } from "react-bootstrap";
 
 const SubmitterSearch = (props) => {
-  useEffect(props.authCheckAgent, []);
+  // useEffect(props.authCheckAgent, []);
 
   return (
     <>

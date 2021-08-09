@@ -340,11 +340,20 @@ input[type]:not(:-ms-input-placeholder) + label {
   transition: ease-in-out 0.5s !important;
   width: 270px;
 }
-.gg-btn-outline:hover {
+.gg-btn-outline:hover,
+.gg-reg-btn-outline:hover  {
   color: #fff !important;
   background-color: var(--gg-blue) !important;
   border-color: var(--gg-blue) !important;
 }
+.gg-reg-btn-outline {
+  color: var(--gg-blue) !important;
+  background-color: #fff !important;
+  border-color: var(--gg-blue) !important;
+  -webkit-transition: all 0.5s !important;
+  transition: ease-in-out 0.5s !important;
+}
+
 .gg-btn-outline-white {
   text-decoration: none !important;
   color: #fff !important;

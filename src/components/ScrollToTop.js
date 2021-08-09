@@ -33,7 +33,7 @@ export default function ScrollToTop() {
     <div className="scroll-to-top">
       {isVisible && (
         <div onClick={scrollToTop}>
-          <Button className="gg-btn-outline">
+          <Button className="gg-reg-btn-outline">
             {/* <VerticalAlignTopIcon fontSize="large" /> */}
             <BiArrowToTop fontSize="40px" />
           </Button>

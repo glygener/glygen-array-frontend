@@ -79,7 +79,7 @@ const Routes = props => {
     {
       path: "/submitterSearch",
       exact: true,
-      main: () => <SubmitterSearch authCheckAgent={props.authCheckAgent} />,
+      main: () => <SubmitterSearch />,
       sidebar: () => ""
     },
     {

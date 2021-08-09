@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
-import "./Search.css";
+import "../css/Search.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -10,11 +10,11 @@ import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 import { Tab, Tabs, Container } from "react-bootstrap";
-import GlycanGeneralSearch from "../components/GlycanGeneralSearch";
+import GlycanAdvancedSearch from "../components/search/GlycanAdvancedSearch";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 
-const GlycanSearch = props => {
+const GlycanSearch = (props) => {
   function searchGlycan() {
     wsCall(
       "searchglycans",
@@ -28,26 +28,26 @@ const GlycanSearch = props => {
         structure: {
           format: "GlycoCT",
           reducingEnd: true,
-          sequence: "test"
+          sequence: "test",
         },
         substructure: {
           format: "GlycoCT",
           reducingEnd: true,
-          sequence: "test"
-        }
+          sequence: "test",
+        },
       },
       glycanSearchSuccess,
       glycanSearchFailure
     );
 
     function glycanSearchSuccess(response) {
-      response.json().then(resp => {
+      response.json().then((resp) => {
         console.log(resp);
       });
     }
 
     function glycanSearchFailure(response) {
-      response.json().then(resp => {
+      response.json().then((resp) => {
         console.log(resp);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
@@ -104,7 +104,7 @@ const GlycanSearch = props => {
               <div style={{ paddingBottom: "20px" }}></div>
               <Container className="tab-content-border">
                 {/* {initData && ( */}
-                <GlycanGeneralSearch />
+                <GlycanAdvancedSearch />
                 {/* searchGlycanAdvClick={searchGlycanAdvClick}
                   inputValue={glyAdvSearchData}
                   initData={initData}
@@ -113,7 +113,11 @@ const GlycanSearch = props => {
                 {/* )} */}
               </Container>
             </Tab>
-            <Tab eventKey="Structure-Search" className="tab-content-padding" title="Structure Search">
+            <Tab
+              eventKey="Structure-Search"
+              className="tab-content-padding"
+              title="Structure Search"
+            >
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
                 <p>Structure Search is coming soon</p>
@@ -127,7 +131,11 @@ const GlycanSearch = props => {
                 )} */}
               </Container>
             </Tab>
-            <Tab eventKey="Substructure-Search" title="Substructure Search" className="tab-content-padding">
+            <Tab
+              eventKey="Substructure-Search"
+              title="Substructure Search"
+              className="tab-content-padding"
+            >
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
                 <p>Substructure Search is coming soon</p>
@@ -153,7 +161,7 @@ const GlycanSearch = props => {
 };
 
 GlycanSearch.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
 };
 
 export { GlycanSearch };
