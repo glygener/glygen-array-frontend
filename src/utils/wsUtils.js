@@ -312,12 +312,12 @@ export function getWsUrl(ws) {
       return ws_base_user + "/listusernames";
     case "searchglycans":
       return ws_base_public_search + "/searchGlycans";
-
+      case "searchglycansbystructure":
+        return ws_base_public_search + "/searchGlycansByStructure";
     default:
       return ws_base_user;
   }
 }
-
 /**
  *
  * @param {String} ws The webservice to request

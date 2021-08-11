@@ -299,3 +299,53 @@ export function numberLengthCheck(e) {
     e.target.value = e.target.value.slice(0, e.target.maxLength);
   }
 }
+/**
+ * Function to sort dropdown.
+ * @param {object} a input value.
+ * @param {object} b input value.
+ **/
+ export function sortDropdown(a, b) {
+  if (a.name < b.name) {
+    return -1;
+  } else if (b.name < a.name) {
+    return 1;
+  }
+  return 0;
+}
+/**
+ * Function to sort based on order.
+ * @param {object} a input value.
+ * @param {object} b input value.
+ **/
+export function sortDropdownIgnoreCase(a, b) {
+  if (a.name.toLowerCase() < b.name.toLowerCase()) {
+    return -1;
+  } else if (b.name.toLowerCase() < a.name.toLowerCase()) {
+    return 1;
+  }
+  return 0;
+}
+
+/**
+ * Function to sort based on order.
+ * @param {object} a input value.
+ * @param {object} b input value.
+ **/
+export function sortIgnoreCase(a, b) {
+  if (a.toLowerCase() > b.toLowerCase()) {
+    return 1;
+  }
+  if (b.toLowerCase() > a.toLowerCase()) {
+    return -1;
+  }
+  return 0;
+}
+
+/**
+ * Function to sort based on order.
+ * @param {object} a input value.
+ * @param {object} b input value.
+ **/
+export function sortByOrder(a, b) {
+  return a.order - b.order;
+}

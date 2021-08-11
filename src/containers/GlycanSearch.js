@@ -11,6 +11,7 @@ import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 import { Tab, Tabs, Container } from "react-bootstrap";
 import GlycanAdvancedSearch from "../components/search/GlycanAdvancedSearch";
+import GlycanStructureSearch from "../components/search/GlycanStructureSearch";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 
@@ -99,7 +100,7 @@ const GlycanSearch = (props) => {
             unmountOnExit={true}
             // onSelect={(key) => setGlyActTabKey(key)}
           >
-            <Tab eventKey="General" className="tab-content-padding" title="General">
+            <Tab eventKey="General" className="pt-2" title="General">
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <div style={{ paddingBottom: "20px" }}></div>
               <Container className="tab-content-border">
@@ -120,15 +121,7 @@ const GlycanSearch = (props) => {
             >
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
-                <p>Structure Search is coming soon</p>
-                {/* {initData && (
-                  <GlycanAdvancedSearch
-                    searchGlycanAdvClick={searchGlycanAdvClick}
-                    inputValue={glyAdvSearchData}
-                    initData={initData}
-                    setGlyAdvSearchData={setGlyAdvSearchData}
-                  />
-                )} */}
+                <GlycanStructureSearch />
               </Container>
             </Tab>
             <Tab
@@ -139,18 +132,6 @@ const GlycanSearch = (props) => {
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
                 <p>Substructure Search is coming soon</p>
-                {/* {initData.composition && (
-                  <CompositionSearchControl
-                    compositionInitMap={initData.composition}
-                    inputValue={glyCompData}
-                    setInputValue={glyCompChange}
-                    searchGlycanCompClick={searchGlycanCompClick}
-                    getSelectionValue={getSelectionValue}
-                    setCompSearchDisabled={setCompSearchDisabled}
-                    compSearchDisabled={compSearchDisabled}
-                    step={1}
-                  />
-                )} */}
               </Container>
             </Tab>
           </Tabs>

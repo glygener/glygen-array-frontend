@@ -25,5 +25,69 @@
         }
      ]
     }
+  },
+  "structure_search": {
+    "tabTitle": "Structure Search",
+    "sequence": {
+      "length": 10000,
+      "errorText": "Entry is too long - max length is 10,000.",
+      "placeholder": "Enter single or multiple comma-separated GlyTouCan Accession(s) ID",
+      "tooltip": {
+        "title": "Glycan ID",
+        "text": "Unique accessions assigned to the registered glycan structures in GlyTouCan database. You can search Glycan ID by single or multiple comma-separated GlyTouCan Accession(s) or Cross Reference(s) ID.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      },
+      "examples": [
+        {
+          "orderID": 100,
+          "example": {
+            "name": "Example",
+            "id": "G17689DH"
+          },
+          "explore": {
+            "id": "GlyTouCan Accession",
+            "url": "https://glytoucan.org/Structures"
+          }
+        }
+     ]
+    },
+    "sequence_type": {
+      "errorText": "This field is required.",
+      "placeholdeNamer": "Select sequence type",
+      "tooltip": {
+        "title": "Sequence Type",
+        "text": "Unique accessions assigned to the registered glycan structures in GlyTouCan database. You can search Glycan ID by single or multiple comma-separated GlyTouCan Accession(s) or Cross Reference(s) ID.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      }
+    }
+  },
+  "sub_structure_search": {
+    "tabTitle": "Structure Search",
+    "glycan_id": {
+      "length": 10000,
+      "errorText": "Entry is too long - max length is 10,000.",
+      "placeholder": "Enter single or multiple comma-separated GlyTouCan Accession(s) ID",
+      "tooltip": {
+        "title": "Glycan ID",
+        "text": "Unique accessions assigned to the registered glycan structures in GlyTouCan database. You can search Glycan ID by single or multiple comma-separated GlyTouCan Accession(s) or Cross Reference(s) ID.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      },
+      "examples": [
+        {
+          "orderID": 100,
+          "example": {
+            "name": "Example",
+            "id": "G17689DH"
+          },
+          "explore": {
+            "id": "GlyTouCan Accession",
+            "url": "https://glytoucan.org/Structures"
+          }
+        }
+     ]
+    }
   }
 }
