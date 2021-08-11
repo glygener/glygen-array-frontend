@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import PropTypes from "prop-types";
 import { Row } from "react-bootstrap";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "react-bootstrap/Button";
@@ -9,15 +8,14 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import "../../css/Search.css";
 import glycanSearchData from "../../appData/glycanSearch";
 import HelpTooltip from "../tooltip/HelpTooltip";
-import Tooltip from "@material-ui/core/Tooltip";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { HelpToolTip } from "../../components/HelpToolTip";
 
 export default function GlycanSubstructureSearch(props) {
-  
   let structureSearch = glycanSearchData.structure_search;
 
   const [inputIdlist, setInputIdlist] = useState("");
@@ -25,21 +23,15 @@ export default function GlycanSubstructureSearch(props) {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
-  function searchStructure(structure, sequence, sequenceFormat) {
+  function searchSubstructure(sequenceFormat, sequence, reducingEnd) {
+    console.log(sequence, sequenceFormat, reducingEnd);
     wsCall(
       "searchglycansbysubstructure",
       "POST",
-      null,
+      { sequenceFormat },
+      { reducingEnd },
       false,
       sequence,
-      sequenceFormat,
-      {
-        structure: {
-          format: "GlycoCT",
-          reducingEnd: true,
-          structure,
-        },
-      },
       glycanSearchSuccess,
       glycanSearchFailure
     );
@@ -60,42 +52,41 @@ export default function GlycanSubstructureSearch(props) {
     }
   }
 
- 
-/**
- * Function to clear input field values.
- **/
- const clearStructure = () => {};
- const searchGlycanStrClick = () => {
-   let input_Idlist = inputIdlist
-  if (input_Idlist) {
-    input_Idlist = input_Idlist.trim();
-    input_Idlist = input_Idlist.replace(/\u200B/g, "");
-    input_Idlist = input_Idlist.replace(/\u2011/g, "-");
-    input_Idlist = input_Idlist.replace(/\s+/g, ",");
-    input_Idlist = input_Idlist.replace(/,+/g, ",");
-    var index = input_Idlist.lastIndexOf(",");
-    if (index > -1 && index + 1 === input_Idlist.length) {
-      input_Idlist = input_Idlist.substr(0, index);
+  /**
+   * Function to clear input field values.
+   **/
+  const clearStructure = () => {};
+  const searchGlycanStrClick = () => {
+    let input_Idlist = inputIdlist;
+    if (input_Idlist) {
+      input_Idlist = input_Idlist.trim();
+      input_Idlist = input_Idlist.replace(/\u200B/g, "");
+      input_Idlist = input_Idlist.replace(/\u2011/g, "-");
+      input_Idlist = input_Idlist.replace(/\s+/g, ",");
+      input_Idlist = input_Idlist.replace(/,+/g, ",");
+      var index = input_Idlist.lastIndexOf(",");
+      if (index > -1 && index + 1 === input_Idlist.length) {
+        input_Idlist = input_Idlist.substr(0, index);
+      }
     }
-  }
-  searchStructure(input_Idlist)
-};
-/**
+    searchSubstructure(input_Idlist);
+  };
+  /**
    * Function to set recordtype (molecule) name value.
    * @param {string} value - input recordtype (molecule) name value.
    **/
- const searchSubstructureOnChange = (value) => {}
- 
+  const searchSubstructureOnChange = (value) => {};
+
   return (
     <>
-     {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="searchglycansbysubstructure"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
-          />
-        )}
+      {showErrorSummary === true && (
+        <ErrorSummary
+          show={showErrorSummary}
+          form="searchglycansbysubstructure"
+          errorJson={pageErrorsJson}
+          errorMessage={pageErrorMessage}
+        />
+      )}
       <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center">
         {/* Buttons Top */}
         <Grid item xs={12} sm={10}>
@@ -110,18 +101,17 @@ export default function GlycanSubstructureSearch(props) {
         </Grid>
         {/* Sequence Type */}
         <Grid item xs={12} sm={10} md={10} className="pt-3">
-          <FormControl fullWidth variant="outlined"
+          <FormControl
+            fullWidth
+            variant="outlined"
             // error={isInputTouched.recordTypeInput && !moleculeValidated}
           >
             <Typography className={"search-lbl"} gutterBottom>
-              
-              <HelpTooltip
-               title={structureSearch.sequence_type.tooltip.title}
-               text={structureSearch.sequence_type.tooltip.text}
-               urlText={structureSearch.sequence_type.tooltip.urlText}
-               url={structureSearch.sequence_type.tooltip.url}
+              <HelpToolTip
+                title={structureSearch.sequence_type.tooltip.title}
+                text={structureSearch.sequence_type.tooltip.text}
               />
-             Sequence Type
+              Sequence Type
             </Typography>
             <SelectControl
               // placeholderId={structureSearch.sequence_type.placeholder}
@@ -134,19 +124,16 @@ export default function GlycanSubstructureSearch(props) {
               // }}
               // menu={structureSearch.glycan_identifier.subsumption}
               required={true}
-            /> 
+            />
           </FormControl>
-          
         </Grid>
         {/* Sequence */}
         <Grid item xs={12} sm={10} md={10} className="pt-3">
           <FormControl fullWidth variant="outlined">
             <Typography className={"search-lbl"} gutterBottom>
-              <HelpTooltip
+              <HelpToolTip
                 title={structureSearch.sequence.tooltip.title}
                 text={structureSearch.sequence.tooltip.text}
-                urlText={structureSearch.sequence.tooltip.urlText}
-                url={structureSearch.sequence.tooltip.url}
               />
               Sequence
             </Typography>
@@ -156,18 +143,16 @@ export default function GlycanSubstructureSearch(props) {
               required={true}
               placeholder={structureSearch.sequence.placeholder}
               value={inputIdlist}
-              onChange={e => setInputIdlist(e.target.value)}
+              onChange={(e) => setInputIdlist(e.target.value)}
               // error={isInputTouched.idListInput}
             ></OutlinedInput>
           </FormControl>
         </Grid>
-      
-       
-          {/* <FormControlLabel
+
+        {/* <FormControlLabel
             control={<Checkbox checked={gilad} onChange={handleChange} name="Reducing_end" />}
             label="Reducing end"
           /> */}
-       
       </Grid>
     </>
   );

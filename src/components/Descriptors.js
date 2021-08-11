@@ -182,7 +182,7 @@ const Descriptors = props => {
           <Col md={6} className="font-awesome-color " style={{ textAlign: "left" }}>
             <span>
               <HelpToolTip
-                name={simpleDescriptorTitle}
+                title={simpleDescriptorTitle}
                 text={"Add Some text Here"}
                 helpIcon="gg-helpicon-detail"
               ></HelpToolTip>

@@ -15,7 +15,7 @@ const GridForm = props => {
       <Card.Header style={{ height: "65px" }}>
         <Row>
           <Col md={6} className="font-awesome-color " style={{ textAlign: "left" }}>
-            <span>{<HelpToolTip name={"Grid Form"} text={"Form to Add Layout"} helpIcon="gg-helpicon-detail" />}</span>
+            <span>{<HelpToolTip title={"Grid Form"} text={"Form to Add Layout"} helpIcon="gg-helpicon-detail" />}</span>
             <span className="descriptor-header"> {`Form Details`}</span>
           </Col>
 

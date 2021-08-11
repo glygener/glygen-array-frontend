@@ -4,21 +4,22 @@ import { Tooltip } from "@material-ui/core";
 import HelpOutline from "@material-ui/icons/HelpOutline";
 import "../components/HelpToolTip.css";
 
-const HelpToolTip = props => {
-  const { name, url, text } = props;
+const HelpToolTip = (props) => {
+  const { title, url, text } = props;
 
   return (
     <Tooltip
       disableTouchListener
       interactive
+      arrow
       placement={"bottom-start"}
       classes={{
-        tooltip: "gg-tooltip"
+        tooltip: "gg-tooltip",
       }}
       title={
         <>
           <h5>
-            <strong>{name + ":"}</strong>
+            <strong>{title + ":"}</strong>
           </h5>
           {text}
           <br />
@@ -36,9 +37,9 @@ const HelpToolTip = props => {
 };
 
 HelpToolTip.propTypes = {
-  name: PropTypes.string,
+  title: PropTypes.string,
   url: PropTypes.string,
-  text: PropTypes.string
+  text: PropTypes.string,
 };
 
 export { HelpToolTip };
