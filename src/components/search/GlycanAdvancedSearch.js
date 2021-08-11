@@ -1,32 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import PropTypes from "prop-types";
 import { Row } from "react-bootstrap";
-import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "react-bootstrap/Button";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import "../../App.css";
-import "../../css/Search.css";
 import glycanSearchData from "../../appData/glycanSearch";
 import RangeInputSlider from "./RangeInputSlider";
-import HelpTooltip from "../tooltip/HelpTooltip";
-import Tooltip from "@material-ui/core/Tooltip";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
-// import searchGlycan from "../../containers/GlycanSearch"
+import { HelpToolTip } from "../../components/HelpToolTip";
+import "../../css/Search.css";
 
+const getCommaSeparatedValues = (value) => {
+  if (typeof value !== "string") return "";
 
-export default function GlycanAdvancedSearch(props) {
+  value = value.trim();
+  value = value.replace(/\u200B/g, "");
+  value = value.replace(/\u2011/g, "-");
+  value = value.replace(/\s+/g, ",");
+  value = value.replace(/,+/g, ",");
+  var index = value.lastIndexOf(",");
+  if (index > -1 && index + 1 === value.length) {
+    value = value.substr(0, index);
+  }
 
-  let advancedSearch = glycanSearchData.advanced_search;
-  const [inputIdlist, setInputIdlist] = useState("");
+  return value;
+};
+
+const advancedSearch = glycanSearchData.advanced_search;
+const GlycanAdvancedSearch = (props) => {
+  const [glycanIds, setGlycanIds] = useState("");
+  const [massRange, setMassRange] = useState([1, 10000]);
+  const [massSliderValue, setMassSliderValue] = useState([1, 10000]);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
-  function searchGlycan(glytoucanIds) {
+  const searchGlycan = (glytoucanIds, minMass, maxMass) => {
     wsCall(
       "searchglycans",
       "POST",
@@ -34,76 +45,48 @@ export default function GlycanAdvancedSearch(props) {
       false,
       {
         glytoucanIds: [glytoucanIds],
-        maxMass: 10000,
-        minMass: 1,
+        maxMass,
+        minMass,
       },
       glycanSearchSuccess,
       glycanSearchFailure
     );
+  };
 
-    function glycanSearchSuccess(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-      });
-    }
+  const glycanSearchSuccess = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+    });
+  };
 
-    function glycanSearchFailure(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-        setPageErrorsJson(resp);
-        setShowErrorSummary(true);
-        setPageErrorMessage("");
-      });
-    }
-  }
+  const glycanSearchFailure = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+      setPageErrorsJson(resp);
+      setShowErrorSummary(true);
+      setPageErrorMessage("");
+    });
+  };
 
- 
-/**
- * Function to clear input field values.
- **/
- const clearGlycan = () => {};
- const searchGlycanAdvClick = () => {
-   let input_Idlist = inputIdlist
-  if (input_Idlist) {
-    input_Idlist = input_Idlist.trim();
-    input_Idlist = input_Idlist.replace(/\u200B/g, "");
-    input_Idlist = input_Idlist.replace(/\u2011/g, "-");
-    input_Idlist = input_Idlist.replace(/\s+/g, ",");
-    input_Idlist = input_Idlist.replace(/,+/g, ",");
-    var index = input_Idlist.lastIndexOf(",");
-    if (index > -1 && index + 1 === input_Idlist.length) {
-      input_Idlist = input_Idlist.substr(0, index);
-    }
-  }
- searchGlycan(input_Idlist)
-};
-  /**
-   * Function to set min, max mass values.
-   * @param {array} inputMass - input mass values.
-   **/
-   function glyMassInputChange(inputMass) {
-    props.setGlyAdvSearchData({ glyMassInput: inputMass });
-  }
-    /**
-   * Function to set min, max mass values based on slider position.
-   * @param {array} inputMass - input mass values.
-   **/
-     function glyMassSliderChange(inputMass) {
-      props.setGlyAdvSearchData({ glyMass: inputMass });
-    }
+  const clearGlycan = () => {};
 
+  const searchGlycanAdvClick = () => {
+    const _glycanIds = getCommaSeparatedValues(glycanIds);
+
+    searchGlycan(_glycanIds, parseInt(massSliderValue[0]), parseInt(massSliderValue[1]));
+  };
 
   return (
     <>
-     {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="glycansearch"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
-          />
-        )}
-      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center">
+      {showErrorSummary === true && (
+        <ErrorSummary
+          show={showErrorSummary}
+          form="glycansearch"
+          errorJson={pageErrorsJson}
+          errorMessage={pageErrorMessage}
+        />
+      )}
+      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center" className="mb-4">
         {/* Buttons Top */}
         <Grid item xs={12} sm={10}>
           <Row className="gg-align-center">
@@ -120,11 +103,9 @@ export default function GlycanAdvancedSearch(props) {
         <Grid item xs={12} sm={10} md={10} className="pt-3">
           <FormControl fullWidth variant="outlined">
             <Typography className={"search-lbl"} gutterBottom>
-              <HelpTooltip
+              <HelpToolTip
                 title={advancedSearch.glycan_id.tooltip.title}
                 text={advancedSearch.glycan_id.tooltip.text}
-                urlText={advancedSearch.glycan_id.tooltip.urlText}
-                url={advancedSearch.glycan_id.tooltip.url}
               />
               Glycan ID
             </Typography>
@@ -133,35 +114,33 @@ export default function GlycanAdvancedSearch(props) {
               multiline
               required={true}
               placeholder={advancedSearch.glycan_id.placeholder}
-              value={inputIdlist}
-              onChange={e => setInputIdlist(e.target.value)}
-              // error={isInputTouched.idListInput}
+              value={glycanIds}
+              onChange={(e) => setGlycanIds(e.target.value)}
             ></OutlinedInput>
           </FormControl>
         </Grid>
-      {/* Monoisotopic Mass */}
-      <Grid item xs={12} sm={10}>
+        {/* Monoisotopic Mass */}
+        <Grid item xs={12} sm={10}>
           <FormControl fullWidth>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} sm={12}>
                 <Typography className={"search-lbl"} gutterBottom>
-                  {/* <HelpTooltip
-                    title={commonGlycanData.mass.tooltip.title}
-                    text={commonGlycanData.mass.tooltip.text}
+                  <HelpToolTip
+                    title={advancedSearch.mass.tooltip.title}
+                    text={advancedSearch.mass.tooltip.text}
                   />
-                  {commonGlycanData.mass.name} */}
                   Monoisotopic Mass
                 </Typography>
-                {/* <RangeInputSlider
-                  step={10}
-                  min={props.inputValue.glyMassRange[0]}
-                  max={props.inputValue.glyMassRange[1]}
-                  inputClass="gly-rng-input"
-                  inputValue={props.inputValue.glyMassInput}
-                  setInputValue={glyMassInputChange}
-                  inputValueSlider={props.inputValue.glyMass}
-                  setSliderInputValue={glyMassSliderChange}
-                /> */}
+                <RangeInputSlider
+                  step={1}
+                  min={1}
+                  max={10000}
+                  inputValueSlider={massSliderValue}
+                  inputClass=""
+                  setSliderInputValue={setMassSliderValue}
+                  inputValue={massRange}
+                  setInputValue={setMassRange}
+                />
               </Grid>
             </Grid>
           </FormControl>
@@ -169,4 +148,6 @@ export default function GlycanAdvancedSearch(props) {
       </Grid>
     </>
   );
-}
+};
+
+export default GlycanAdvancedSearch;
