@@ -13,10 +13,10 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
-// import searchGlycan from "../../containers/GlycanSearch"
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-
-export default function GlycanStructureSearch(props) {
+export default function GlycanSubstructureSearch(props) {
   
   let structureSearch = glycanSearchData.structure_search;
 
@@ -27,7 +27,7 @@ export default function GlycanStructureSearch(props) {
 
   function searchStructure(structure, sequence, sequenceFormat) {
     wsCall(
-      "searchglycansbystructure",
+      "searchglycansbysubstructure",
       "POST",
       null,
       false,
@@ -84,14 +84,14 @@ export default function GlycanStructureSearch(props) {
    * Function to set recordtype (molecule) name value.
    * @param {string} value - input recordtype (molecule) name value.
    **/
- const searchStructureOnChange = (value) => {}
+ const searchSubstructureOnChange = (value) => {}
  
   return (
     <>
      {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="searchglycansbystructure"
+            form="searchglycansbysubstructure"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
           />
@@ -104,7 +104,7 @@ export default function GlycanStructureSearch(props) {
               Clear Fields
             </Button>
             <Button className="gg-btn-blue" onClick={searchGlycanStrClick}>
-              Search Structure
+              Search Substructure
             </Button>
           </Row>
         </Grid>
@@ -127,8 +127,8 @@ export default function GlycanStructureSearch(props) {
               // placeholderId={structureSearch.sequence_type.placeholder}
               placeholder={structureSearch.sequence_type.placeholder}
               inputValue={structureSearch.recordType}
-              setInputValue={searchStructureOnChange}
-              Value={searchStructureOnChange}
+              setInputValue={searchSubstructureOnChange}
+              Value={searchSubstructureOnChange}
               // onBlur={() => {
               //   setInputTouched({ recordTypeInput: true });
               // }}
@@ -162,6 +162,12 @@ export default function GlycanStructureSearch(props) {
           </FormControl>
         </Grid>
       
+       
+          {/* <FormControlLabel
+            control={<Checkbox checked={gilad} onChange={handleChange} name="Reducing_end" />}
+            label="Reducing end"
+          /> */}
+       
       </Grid>
     </>
   );

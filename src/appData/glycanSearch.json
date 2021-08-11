@@ -54,7 +54,7 @@
     },
     "sequence_type": {
       "errorText": "This field is required.",
-      "placeholdeNamer": "Select sequence type",
+      "placeholder": "Select sequence type",
       "tooltip": {
         "title": "Sequence Type",
         "text": "Unique accessions assigned to the registered glycan structures in GlyTouCan database. You can search Glycan ID by single or multiple comma-separated GlyTouCan Accession(s) or Cross Reference(s) ID.",

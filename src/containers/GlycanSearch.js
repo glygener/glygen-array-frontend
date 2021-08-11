@@ -12,6 +12,7 @@ import { Title } from "../components/FormControls";
 import { Tab, Tabs, Container } from "react-bootstrap";
 import GlycanAdvancedSearch from "../components/search/GlycanAdvancedSearch";
 import GlycanStructureSearch from "../components/search/GlycanStructureSearch";
+import GlycanSubstructureSearch from "../components/search/GlycanSubstructureSearch";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 
@@ -131,7 +132,7 @@ const GlycanSearch = (props) => {
             >
               {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
-                <p>Substructure Search is coming soon</p>
+               <GlycanSubstructureSearch />
               </Container>
             </Tab>
           </Tabs>

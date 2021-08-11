@@ -314,6 +314,9 @@ export function getWsUrl(ws) {
       return ws_base_public_search + "/searchGlycans";
       case "searchglycansbystructure":
         return ws_base_public_search + "/searchGlycansByStructure";
+        case "searchglycansbysubstructure":
+          return ws_base_public_search + "/searchGlycansBySubstructure";
+         
     default:
       return ws_base_user;
   }
