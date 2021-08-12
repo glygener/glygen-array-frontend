@@ -12,7 +12,7 @@ import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { HelpToolTip } from "../../components/HelpToolTip";
+import { HelpToolTip } from "../tooltip/HelpToolTip";
 import { withStyles } from "@material-ui/core/styles";
 
 const BlueCheckbox = withStyles({

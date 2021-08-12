@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import "../components/Descriptors.css";
 import { Feedback } from "./FormControls";
-import { HelpToolTip } from "./HelpToolTip";
+import { HelpToolTip } from "./tooltip/HelpToolTip";
 import { Form, Col, Row, Accordion, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { ScrollTo } from "react-scroll-to";

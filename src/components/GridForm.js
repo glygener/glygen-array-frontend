@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../components/GridForm.css";
-import { HelpToolTip } from "./HelpToolTip";
+import { HelpToolTip } from "./tooltip/HelpToolTip";
 import { FormLabel, Feedback } from "./FormControls";
 import { Form, Row, Col, Button, Accordion, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

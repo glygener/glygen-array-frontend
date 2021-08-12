@@ -9,7 +9,7 @@ import glycanSearchData from "../../appData/glycanSearch";
 import RangeInputSlider from "./RangeInputSlider";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
-import { HelpToolTip } from "../../components/HelpToolTip";
+import { HelpToolTip } from "../tooltip/HelpToolTip";
 import "../../css/Search.css";
 
 const getCommaSeparatedValues = (value) => {

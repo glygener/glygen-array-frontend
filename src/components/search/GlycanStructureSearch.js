@@ -10,7 +10,7 @@ import glycanSearchData from "../../appData/glycanSearch";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
-import { HelpToolTip } from "../../components/HelpToolTip";
+import { HelpToolTip } from "../tooltip/HelpToolTip";
 
 const getCommaSeparatedValues = (value) => {
   if (typeof value !== "string") return "";
