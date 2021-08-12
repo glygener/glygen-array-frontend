@@ -85,7 +85,7 @@ export default function GlycanStructureSearch(props) {
           errorMessage={pageErrorMessage}
         />
       )}
-      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center">
+      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center" className="mb-4">
         {/* Buttons Top */}
         <Grid item xs={12} sm={10}>
           <Row className="gg-align-center">
@@ -117,6 +117,7 @@ export default function GlycanStructureSearch(props) {
               inputValue={structureSearch.recordType}
               setInputValue={searchStructureOnChange}
               Value={searchStructureOnChange}
+              menu={structureSearch.sequence_type.options}
               required={true}
             />
           </FormControl>

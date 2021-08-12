@@ -7,21 +7,41 @@ import Button from "react-bootstrap/Button";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import "../../css/Search.css";
 import glycanSearchData from "../../appData/glycanSearch";
-import HelpTooltip from "../tooltip/HelpTooltip";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { HelpToolTip } from "../../components/HelpToolTip";
+import { withStyles } from "@material-ui/core/styles";
+
+const BlueCheckbox = withStyles({
+  root: {
+    color: "#979797",
+    "&$checked": {
+      color: "#2f78b7",
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
 
 export default function GlycanSubstructureSearch(props) {
   let structureSearch = glycanSearchData.structure_search;
+  let subStructureSearch = glycanSearchData.sub_structure_search;
 
   const [inputIdlist, setInputIdlist] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
+  const [reducingEnd, setReducingEnd] = useState({
+    reducingEnd: false,
+  });
+
+  const handleChange = (event) => {
+    setReducingEnd({ ...reducingEnd, [event.target.name]: event.target.checked });
+  };
+
+  const { reducingend } = reducingEnd;
 
   function searchSubstructure(sequenceFormat, sequence, reducingEnd) {
     console.log(sequence, sequenceFormat, reducingEnd);
@@ -119,10 +139,7 @@ export default function GlycanSubstructureSearch(props) {
               inputValue={structureSearch.recordType}
               setInputValue={searchSubstructureOnChange}
               Value={searchSubstructureOnChange}
-              // onBlur={() => {
-              //   setInputTouched({ recordTypeInput: true });
-              // }}
-              // menu={structureSearch.glycan_identifier.subsumption}
+              menu={subStructureSearch.sequence_type.options}
               required={true}
             />
           </FormControl>
@@ -150,9 +167,22 @@ export default function GlycanSubstructureSearch(props) {
         </Grid>
 
         {/* <FormControlLabel
-            control={<Checkbox checked={gilad} onChange={handleChange} name="Reducing_end" />}
+            control={<Checkbox checked={gilad} onChange={handleChange} name="gilad" />}
             label="Reducing end"
           /> */}
+        <Grid item xs={12} sm={10} md={10} className="pt-3">
+          <FormControlLabel
+            control={
+              <BlueCheckbox
+                name="reducingEnd"
+                checked={reducingend}
+                onChange={handleChange}
+                size="large"
+              />
+            }
+            label="Reducing end"
+          />
+        </Grid>
       </Grid>
     </>
   );

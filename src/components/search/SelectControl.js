@@ -32,7 +32,7 @@ export default function SelectControl(props) {
         defaultValue={props.defaultValue}
         MenuProps={{ disablePortal: true }}
         classes={{
-          root: props.rootClass ? props.rootClass : "select-menu-adv"
+          root: props.rootClass ? props.rootClass : "select-menu-adv",
         }}
         labelWidth={props.labelWidth}
       >
@@ -43,16 +43,14 @@ export default function SelectControl(props) {
             name={props.placeholderName}
           >
             {props.placeholder}
-          </MenuItem>
+           </MenuItem>
         )}
         {props.menu &&
-          props.menu
-            .sort(props.sortFunction ? props.sortFunction : sortDropdown)
-            .map(item => (
-              <MenuItem key={item.id} value={item.id} name={item.name}>
-                {item.name}
-              </MenuItem>
-            ))}
+          props.menu.sort(props.sortFunction ? props.sortFunction : sortDropdown).map((item) => (
+            <MenuItem key={item.id} value={item.id} name={item.name}>
+              {item.name}
+            </MenuItem>
+          ))}
       </Select>
     </>
   );
@@ -70,5 +68,5 @@ SelectControl.propTypes = {
   defaultValue: PropTypes.string,
   menu: PropTypes.array,
   setInputValue: PropTypes.func,
-  sortFunction: PropTypes.func
+  sortFunction: PropTypes.func,
 };

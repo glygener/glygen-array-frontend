@@ -86,7 +86,7 @@ const GlycanAdvancedSearch = (props) => {
           errorMessage={pageErrorMessage}
         />
       )}
-      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center" className="mb-4">
+      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center" className="mb-5">
         {/* Buttons Top */}
         <Grid item xs={12} sm={10}>
           <Row className="gg-align-center">
@@ -120,7 +120,7 @@ const GlycanAdvancedSearch = (props) => {
           </FormControl>
         </Grid>
         {/* Monoisotopic Mass */}
-        <Grid item xs={12} sm={10}>
+        <Grid item xs={12} sm={10} className="pt-3">
           <FormControl fullWidth>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} sm={12}>
