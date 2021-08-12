@@ -11,19 +11,33 @@ import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
 import { HelpToolTip } from "../../components/HelpToolTip";
-// import searchGlycan from "../../containers/GlycanSearch"
+
+const getCommaSeparatedValues = (value) => {
+  if (typeof value !== "string") return "";
+
+  value = value.trim();
+  value = value.replace(/\u200B/g, "");
+  value = value.replace(/\u2011/g, "-");
+  value = value.replace(/\s+/g, ",");
+  value = value.replace(/,+/g, ",");
+  var index = value.lastIndexOf(",");
+  if (index > -1 && index + 1 === value.length) {
+    value = value.substr(0, index);
+  }
+
+  return value;
+};
+
+const structureSearch = glycanSearchData.structure_search;
 
 export default function GlycanStructureSearch(props) {
-  let structureSearch = glycanSearchData.structure_search;
-
   const [sequence, setSequence] = useState("");
   const [sequenceFormat, setSequenceFormat] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
-  function searchStructure(sequenceFormat, sequence) {
-    console.log(sequence, sequenceFormat);
+  const searchGlycan = (sequence, sequenceFormat) => {
     wsCall(
       "searchglycansbystructure",
       "POST",
@@ -33,41 +47,29 @@ export default function GlycanStructureSearch(props) {
       glycanSearchSuccess,
       glycanSearchFailure
     );
+  };
 
-    function glycanSearchSuccess(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-      });
-    }
+  const glycanSearchSuccess = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+    });
+  };
 
-    function glycanSearchFailure(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-        setPageErrorsJson(resp);
-        setShowErrorSummary(true);
-        setPageErrorMessage("");
-      });
-    }
-  }
+  const glycanSearchFailure = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+      setPageErrorsJson(resp);
+      setShowErrorSummary(true);
+      setPageErrorMessage("");
+    });
+  };
 
   /**
    * Function to clear input field values.
    **/
   const clearStructure = () => {};
   const searchGlycanStrClick = () => {
-    let input_Idlist = sequence;
-    if (input_Idlist) {
-      input_Idlist = input_Idlist.trim();
-      input_Idlist = input_Idlist.replace(/\u200B/g, "");
-      input_Idlist = input_Idlist.replace(/\u2011/g, "-");
-      input_Idlist = input_Idlist.replace(/\s+/g, ",");
-      input_Idlist = input_Idlist.replace(/,+/g, ",");
-      var index = input_Idlist.lastIndexOf(",");
-      if (index > -1 && index + 1 === input_Idlist.length) {
-        input_Idlist = input_Idlist.substr(0, index);
-      }
-    }
-    searchStructure("Wurcs", input_Idlist);
+    searchGlycan(sequence, sequenceFormat);
   };
   /**
    * Function to set recordtype (molecule) name value.
@@ -112,10 +114,10 @@ export default function GlycanStructureSearch(props) {
               Sequence Type
             </Typography>
             <SelectControl
-              // placeholderId={structureSearch.sequence_type.placeholder}
+              placeholderId={structureSearch.sequence_type.placeholderId}
               placeholder={structureSearch.sequence_type.placeholder}
-              inputValue={structureSearch.recordType}
-              setInputValue={searchStructureOnChange}
+              inputValue={sequenceFormat}
+              setInputValue={setSequenceFormat}
               Value={searchStructureOnChange}
               menu={structureSearch.sequence_type.options}
               required={true}
@@ -135,6 +137,7 @@ export default function GlycanStructureSearch(props) {
             <OutlinedInput
               fullWidth
               multiline
+              rows="3"
               required={true}
               placeholder={structureSearch.sequence.placeholder}
               value={sequence}

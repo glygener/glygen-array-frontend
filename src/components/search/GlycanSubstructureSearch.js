@@ -25,71 +25,128 @@ const BlueCheckbox = withStyles({
   checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
-export default function GlycanSubstructureSearch(props) {
-  let structureSearch = glycanSearchData.structure_search;
-  let subStructureSearch = glycanSearchData.sub_structure_search;
+const getCommaSeparatedValues = (value) => {
+  if (typeof value !== "string") return "";
 
-  const [inputIdlist, setInputIdlist] = useState("");
+  value = value.trim();
+  value = value.replace(/\u200B/g, "");
+  value = value.replace(/\u2011/g, "-");
+  value = value.replace(/\s+/g, ",");
+  value = value.replace(/,+/g, ",");
+  var index = value.lastIndexOf(",");
+  if (index > -1 && index + 1 === value.length) {
+    value = value.substr(0, index);
+  }
+
+  return value;
+};
+
+const structureSearch = glycanSearchData.structure_search;
+const subStructureSearch = glycanSearchData.sub_structure_search;
+
+export default function GlycanSubstructureSearch(props) {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
-  const [reducingEnd, setReducingEnd] = useState({
-    reducingEnd: false,
+
+  const [inputValues, setInputValues] = React.useReducer(
+    (state, payload) => ({ ...state, ...payload }),
+    {
+      sequence: "",
+      sequenceFormat: "",
+      reducingEnd: false,
+    }
+  );
+
+  const [touched, setTouched] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
+    sequence: false,
+    sequenceFormat: false,
   });
 
-  const handleChange = (event) => {
-    setReducingEnd({ ...reducingEnd, [event.target.name]: event.target.checked });
+  const [errors, setErrors] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
+    sequence: false,
+    sequenceFormat: false,
+  });
+
+  const validate = {
+    sequence: () => {
+      if (inputValues.sequence === "") {
+        setErrors({ sequence: true });
+      } else {
+        setErrors({ sequence: false });
+      }
+    },
+    sequenceFormat: () => {
+      if (inputValues.sequenceFormat === "") {
+        setErrors({ sequenceFormat: true });
+      } else {
+        setErrors({ sequenceFormat: false });
+      }
+    },
   };
 
-  const { reducingend } = reducingEnd;
+  React.useEffect(() => {
+    validate.sequence();
+  }, [inputValues.sequence]);
 
-  function searchSubstructure(sequenceFormat, sequence, reducingEnd) {
-    console.log(sequence, sequenceFormat, reducingEnd);
+  React.useEffect(() => {
+    validate.sequenceFormat();
+  }, [inputValues.sequenceFormat]);
+
+  const isValid = () =>
+    Object.values(touched).some((touched) => touched === true) &&
+    Object.values(errors).every((error) => error === false);
+
+  const searchSubstructure = (sequence, sequenceFormat, reducingEnd) => {
     wsCall(
       "searchglycansbysubstructure",
       "POST",
-      { sequenceFormat },
-      { reducingEnd },
+      { sequenceFormat, reducingEnd },
       false,
       sequence,
       glycanSearchSuccess,
       glycanSearchFailure
     );
+  };
 
-    function glycanSearchSuccess(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-      });
-    }
+  const glycanSearchSuccess = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+    });
+  };
 
-    function glycanSearchFailure(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-        setPageErrorsJson(resp);
-        setShowErrorSummary(true);
-        setPageErrorMessage("");
-      });
-    }
-  }
+  const glycanSearchFailure = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+      setPageErrorsJson(resp);
+      setShowErrorSummary(true);
+      setPageErrorMessage("");
+    });
+  };
 
   /**
    * Function to clear input field values.
    **/
-  const clearStructure = () => {};
+  const clearStructure = () => {
+    setInputValues({
+      sequence: "",
+      sequenceFormat: "",
+      reducingEnd: false,
+    });
+    setTouched({
+      sequence: false,
+      sequenceFormat: false,
+    });
+
+    setErrors({
+      sequence: false,
+      sequenceFormat: false,
+    });
+  };
+
   const searchGlycanStrClick = () => {
-    let input_Idlist = inputIdlist;
-    if (input_Idlist) {
-      input_Idlist = input_Idlist.trim();
-      input_Idlist = input_Idlist.replace(/\u200B/g, "");
-      input_Idlist = input_Idlist.replace(/\u2011/g, "-");
-      input_Idlist = input_Idlist.replace(/\s+/g, ",");
-      input_Idlist = input_Idlist.replace(/,+/g, ",");
-      var index = input_Idlist.lastIndexOf(",");
-      if (index > -1 && index + 1 === input_Idlist.length) {
-        input_Idlist = input_Idlist.substr(0, index);
-      }
-    }
-    searchSubstructure(input_Idlist);
+    const { sequence, sequenceFormat, reducingEnd } = inputValues;
+    searchSubstructure(sequence, sequenceFormat, reducingEnd);
   };
   /**
    * Function to set recordtype (molecule) name value.
@@ -114,7 +171,7 @@ export default function GlycanSubstructureSearch(props) {
             <Button className="gg-btn-outline gg-mr-40" onClick={clearStructure}>
               Clear Fields
             </Button>
-            <Button className="gg-btn-blue" onClick={searchGlycanStrClick}>
+            <Button className="gg-btn-blue" disabled={!isValid()} onClick={searchGlycanStrClick}>
               Search Substructure
             </Button>
           </Row>
@@ -134,14 +191,18 @@ export default function GlycanSubstructureSearch(props) {
               Sequence Type
             </Typography>
             <SelectControl
-              // placeholderId={structureSearch.sequence_type.placeholder}
+              placeholderId={structureSearch.sequence_type.placeholderId}
               placeholder={structureSearch.sequence_type.placeholder}
-              inputValue={structureSearch.recordType}
-              setInputValue={searchSubstructureOnChange}
-              Value={searchSubstructureOnChange}
+              inputValue={inputValues.sequenceFormat}
+              setInputValue={(value) => setInputValues({ sequenceFormat: value })}
               menu={subStructureSearch.sequence_type.options}
+              error={touched.sequenceFormat && errors.sequenceFormat}
+              onBlur={() => setTouched({ sequenceFormat: true })}
               required={true}
             />
+            {touched.sequenceFormat && errors.sequenceFormat && (
+              <p>This is sequence format error</p>
+            )}
           </FormControl>
         </Grid>
         {/* Sequence */}
@@ -157,12 +218,16 @@ export default function GlycanSubstructureSearch(props) {
             <OutlinedInput
               fullWidth
               multiline
+              rows="3"
               required={true}
               placeholder={structureSearch.sequence.placeholder}
-              value={inputIdlist}
-              onChange={(e) => setInputIdlist(e.target.value)}
+              value={inputValues.sequence}
+              onBlur={() => setTouched({ sequence: true })}
+              error={touched.sequence && errors.sequence}
+              onChange={(e) => setInputValues({ sequence: e.target.value })}
               // error={isInputTouched.idListInput}
             ></OutlinedInput>
+            {touched.sequence && errors.sequence && <p>This is sequence error</p>}
           </FormControl>
         </Grid>
 
@@ -175,8 +240,8 @@ export default function GlycanSubstructureSearch(props) {
             control={
               <BlueCheckbox
                 name="reducingEnd"
-                checked={reducingend}
-                onChange={handleChange}
+                checked={inputValues.reducingEnd}
+                onChange={(e) => setInputValues({ reducingEnd: e.target.checked })}
                 size="large"
               />
             }
