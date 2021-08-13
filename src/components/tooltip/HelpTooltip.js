@@ -3,6 +3,7 @@ import { PropTypes } from "prop-types";
 import { Tooltip } from "@material-ui/core";
 import HelpOutline from "@material-ui/icons/HelpOutline";
 import "../../css/HelpToolTip.css";
+// Changed file name from HelpTooltip to HelpToolTip
 
 const HelpToolTip = (props) => {
   const { title, url, text } = props;
