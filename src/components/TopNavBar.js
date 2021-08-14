@@ -11,7 +11,7 @@ import { FaUser } from "react-icons/fa";
 import { FaUserPlus } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-const TopNavBar = props => {
+const TopNavBar = (props) => {
   const location = useLocation();
   return (
     <React.Fragment>
@@ -39,7 +39,8 @@ const TopNavBar = props => {
               </LinkContainer>
               <NavDropdown
                 className={
-                  location.pathname.includes("/glycanSearch") || location.pathname === "/submitterSearch"
+                  location.pathname.includes("/glycanSearch") ||
+                  location.pathname === "/submitterSearch"
                     ? "gg-dropdown-navbar gg-dropdown-navbar-active"
                     : "gg-dropdown-navbar gg-ml-10"
                 }
@@ -52,6 +53,9 @@ const TopNavBar = props => {
                 </NavDropdown.Item>
                 <NavDropdown.Item className="gg-nav-link" as={NavLink} to="/submitterSearch" exact>
                   By Submitter
+                </NavDropdown.Item>
+                <NavDropdown.Item className="gg-nav-link" as={NavLink} to="/glycanList" exact>
+                  Glycan List
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>

@@ -286,6 +286,18 @@ input[type]:not(:-ms-input-placeholder) + label {
   font-weight: 500;
   background-color: cadetblue;
 }
+.rt-resizable-header-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: rgb(75, 133, 182);
+  color: white;
+  font-weight: 500;
+  padding-left: 15px;
+}
 
 .MuiCard-root {
   border-radius: 8px !important;
@@ -476,3 +488,21 @@ input[type="number"] {
   position: inherit !important;
   margin-right: 5px !important;
 }
+
+/* =========================================
+                Glycan List Summary
+  ============================================ */
+  .summary-panel {
+    width: 50% !important;
+    margin: 0 auto !important;
+  }
+  .panelHeadBgr {
+    background: #f0f0f0 !important;
+  }
+  .panelHeadBgr h3{
+    margin: 0 auto;
+  }
+  .panelHeadText {
+    color: #1d9901 !important;
+    position: relative;
+  }

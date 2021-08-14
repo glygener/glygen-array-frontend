@@ -14,6 +14,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import { withStyles } from "@material-ui/core/styles";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const BlueCheckbox = withStyles({
   root: {
@@ -70,7 +71,7 @@ export default function GlycanSubstructureSearch(props) {
 
   const validate = {
     sequence: () => {
-      if (inputValues.sequence === "") {
+      if (inputValues.sequence === "" || inputValues.sequence.length > 10000) {
         setErrors({ sequence: true });
       } else {
         setErrors({ sequence: false });
@@ -201,7 +202,9 @@ export default function GlycanSubstructureSearch(props) {
               required={true}
             />
             {touched.sequenceFormat && errors.sequenceFormat && (
-              <p>This is sequence format error</p>
+              <FormHelperText className={"error-text"} error>
+                This field is required.
+              </FormHelperText>
             )}
           </FormControl>
         </Grid>
@@ -224,10 +227,22 @@ export default function GlycanSubstructureSearch(props) {
               value={inputValues.sequence}
               onBlur={() => setTouched({ sequence: true })}
               error={touched.sequence && errors.sequence}
-              onChange={(e) => setInputValues({ sequence: e.target.value })}
+              onChange={(e) => {
+                setTouched({ sequence: true });
+                setInputValues({ sequence: e.target.value });
+              }}
               // error={isInputTouched.idListInput}
             ></OutlinedInput>
-            {touched.sequence && errors.sequence && <p>This is sequence error</p>}
+            {touched.sequence && inputValues.sequence.length === 0 && (
+              <FormHelperText className={"error-text"} error>
+                This field is required.
+              </FormHelperText>
+            )}
+            {touched.sequence && inputValues.sequence.length > 10000 && (
+              <FormHelperText className={"error-text"} error>
+                Entry is too long - max length is 10,000.
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
 
