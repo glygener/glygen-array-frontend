@@ -11,6 +11,7 @@ import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const getCommaSeparatedValues = (value) => {
   if (typeof value !== "string") return "";
@@ -31,13 +32,62 @@ const getCommaSeparatedValues = (value) => {
 const structureSearch = glycanSearchData.structure_search;
 
 export default function GlycanStructureSearch(props) {
-  const [sequence, setSequence] = useState("");
-  const [sequenceFormat, setSequenceFormat] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
-  const searchGlycan = (sequence, sequenceFormat) => {
+  const [inputValues, setInputValues] = React.useReducer(
+    (state, payload) => ({ ...state, ...payload }),
+    {
+      sequence: "",
+      sequenceFormat: "",
+      reducingEnd: false,
+    }
+  );
+
+  const [touched, setTouched] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
+    sequence: false,
+    sequenceFormat: false,
+  });
+
+  const [errors, setErrors] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
+    sequence: false,
+    sequenceFormat: false,
+  });
+
+  const validate = {
+    sequence: () => {
+      if (
+        inputValues.sequence === "" ||
+        inputValues.sequence.length > structureSearch.sequence.length
+      ) {
+        setErrors({ sequence: true });
+      } else {
+        setErrors({ sequence: false });
+      }
+    },
+    sequenceFormat: () => {
+      if (inputValues.sequenceFormat === "") {
+        setErrors({ sequenceFormat: true });
+      } else {
+        setErrors({ sequenceFormat: false });
+      }
+    },
+  };
+
+  React.useEffect(() => {
+    validate.sequence();
+  }, [inputValues.sequence]);
+
+  React.useEffect(() => {
+    validate.sequenceFormat();
+  }, [inputValues.sequenceFormat]);
+
+  const isValid = () =>
+    Object.values(touched).some((touched) => touched === true) &&
+    Object.values(errors).every((error) => error === false);
+
+  const searchStructure = (sequence, sequenceFormat) => {
     wsCall(
       "searchglycansbystructure",
       "POST",
@@ -67,10 +117,28 @@ export default function GlycanStructureSearch(props) {
   /**
    * Function to clear input field values.
    **/
-  const clearStructure = () => {};
-  const searchGlycanStrClick = () => {
-    searchGlycan(sequence, sequenceFormat);
+  const clearStructure = () => {
+    setInputValues({
+      sequence: "",
+      sequenceFormat: "",
+      reducingEnd: false,
+    });
+    setTouched({
+      sequence: false,
+      sequenceFormat: false,
+    });
+
+    setErrors({
+      sequence: false,
+      sequenceFormat: false,
+    });
   };
+
+  const searchGlycanStrClick = () => {
+    const { sequence, sequenceFormat } = inputValues;
+    searchStructure(sequence, sequenceFormat);
+  };
+
   /**
    * Function to set recordtype (molecule) name value.
    * @param {string} value - input recordtype (molecule) name value.
@@ -94,7 +162,7 @@ export default function GlycanStructureSearch(props) {
             <Button className="gg-btn-outline gg-mr-40" onClick={clearStructure}>
               Clear Fields
             </Button>
-            <Button className="gg-btn-blue" onClick={searchGlycanStrClick}>
+            <Button className="gg-btn-blue" disabled={!isValid()} onClick={searchGlycanStrClick}>
               Search Structure
             </Button>
           </Row>
@@ -116,12 +184,16 @@ export default function GlycanStructureSearch(props) {
             <SelectControl
               placeholderId={structureSearch.sequence_type.placeholderId}
               placeholder={structureSearch.sequence_type.placeholder}
-              inputValue={sequenceFormat}
-              setInputValue={setSequenceFormat}
-              Value={searchStructureOnChange}
+              inputValue={inputValues.sequenceFormat}
+              setInputValue={(value) => setInputValues({ sequenceFormat: value })}
               menu={structureSearch.sequence_type.options}
+              error={touched.sequenceFormat && errors.sequenceFormat}
+              onBlur={() => setTouched({ sequenceFormat: true })}
               required={true}
             />
+            {touched.sequenceFormat && errors.sequenceFormat && (
+              <FormHelperText error>{structureSearch.sequence_type.requiredText}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         {/* Sequence */}
@@ -140,10 +212,20 @@ export default function GlycanStructureSearch(props) {
               rows="3"
               required={true}
               placeholder={structureSearch.sequence.placeholder}
-              value={sequence}
-              onChange={(e) => setSequence(e.target.value)}
-              // error={isInputTouched.idListInput}
+              value={inputValues.sequence}
+              onBlur={() => setTouched({ sequence: true })}
+              error={touched.sequence && errors.sequence}
+              onChange={(e) => {
+                setTouched({ sequence: true });
+                setInputValues({ sequence: e.target.value });
+              }}
             ></OutlinedInput>
+            {touched.sequence && inputValues.sequence.length === 0 && (
+              <FormHelperText error>{structureSearch.sequence.requiredText}</FormHelperText>
+            )}
+            {touched.sequence && inputValues.sequence.length > structureSearch.sequence.length && (
+              <FormHelperText error>{structureSearch.sequence.errorText}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
       </Grid>

@@ -44,7 +44,7 @@ const GlycanAdvancedSearch = (props) => {
       null,
       false,
       {
-        glytoucanIds: [glytoucanIds],
+        glytoucanIds,
         maxMass,
         minMass,
       },
@@ -71,8 +71,8 @@ const GlycanAdvancedSearch = (props) => {
   const clearGlycan = () => {};
 
   const searchGlycanAdvClick = () => {
-    const _glycanIds = getCommaSeparatedValues(glycanIds);
-
+    let _glycanIds = getCommaSeparatedValues(glycanIds);
+    _glycanIds = _glycanIds.split(",");
     searchGlycan(_glycanIds, parseInt(massSliderValue[0]), parseInt(massSliderValue[1]));
   };
 

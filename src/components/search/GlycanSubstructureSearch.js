@@ -71,7 +71,10 @@ export default function GlycanSubstructureSearch(props) {
 
   const validate = {
     sequence: () => {
-      if (inputValues.sequence === "" || inputValues.sequence.length > 10000) {
+      if (
+        inputValues.sequence === "" ||
+        inputValues.sequence.length > subStructureSearch.sequence.length
+      ) {
         setErrors({ sequence: true });
       } else {
         setErrors({ sequence: false });
@@ -149,6 +152,7 @@ export default function GlycanSubstructureSearch(props) {
     const { sequence, sequenceFormat, reducingEnd } = inputValues;
     searchSubstructure(sequence, sequenceFormat, reducingEnd);
   };
+
   /**
    * Function to set recordtype (molecule) name value.
    * @param {string} value - input recordtype (molecule) name value.
@@ -192,8 +196,8 @@ export default function GlycanSubstructureSearch(props) {
               Sequence Type
             </Typography>
             <SelectControl
-              placeholderId={structureSearch.sequence_type.placeholderId}
-              placeholder={structureSearch.sequence_type.placeholder}
+              placeholderId={subStructureSearch.sequence_type.placeholderId}
+              placeholder={subStructureSearch.sequence_type.placeholder}
               inputValue={inputValues.sequenceFormat}
               setInputValue={(value) => setInputValues({ sequenceFormat: value })}
               menu={subStructureSearch.sequence_type.options}
@@ -202,9 +206,7 @@ export default function GlycanSubstructureSearch(props) {
               required={true}
             />
             {touched.sequenceFormat && errors.sequenceFormat && (
-              <FormHelperText className={"error-text"} error>
-                This field is required.
-              </FormHelperText>
+              <FormHelperText error>{subStructureSearch.sequence_type.requiredText}</FormHelperText>
             )}
           </FormControl>
         </Grid>
@@ -231,18 +233,14 @@ export default function GlycanSubstructureSearch(props) {
                 setTouched({ sequence: true });
                 setInputValues({ sequence: e.target.value });
               }}
-              // error={isInputTouched.idListInput}
-            ></OutlinedInput>
+             ></OutlinedInput>
             {touched.sequence && inputValues.sequence.length === 0 && (
-              <FormHelperText className={"error-text"} error>
-                This field is required.
-              </FormHelperText>
+              <FormHelperText error>{subStructureSearch.sequence.requiredText}</FormHelperText>
             )}
-            {touched.sequence && inputValues.sequence.length > 10000 && (
-              <FormHelperText className={"error-text"} error>
-                Entry is too long - max length is 10,000.
-              </FormHelperText>
-            )}
+            {touched.sequence &&
+              inputValues.sequence.length > subStructureSearch.sequence.length && (
+                <FormHelperText error>{subStructureSearch.sequence.errorText}</FormHelperText>
+              )}
           </FormControl>
         </Grid>
 

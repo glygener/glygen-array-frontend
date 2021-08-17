@@ -4,6 +4,7 @@
     "glycan_id": {
       "length": 10000,
       "errorText": "Entry is too long - max length is 10,000.",
+      "requiredText": "This field is required.",
       "placeholder": "Enter single or multiple comma-separated GlyTouCan Accession(s) ID",
       "tooltip": {
         "title": "Glycan ID",
@@ -40,6 +41,7 @@
     "sequence": {
       "length": 10000,
       "errorText": "Entry is too long - max length is 10,000.",
+      "requiredText": "This field is required.",
       "placeholder": "Enter single or multiple comma-separated sequence",
       "tooltip": {
         "title": "Sequence",
@@ -62,7 +64,7 @@
      ]
     },
     "sequence_type": {
-      "errorText": "This field is required.",
+      "requiredText": "This field is required.",
       "placeholder": "Select sequence type",
       "placeholderId": "",
       "tooltip": {
@@ -93,8 +95,33 @@
   },
   "sub_structure_search": {
     "tabTitle": "Substructure Search",
+    "sequence": {
+      "length": 10000,
+      "errorText": "Entry is too long - max length is 10,000.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter single or multiple comma-separated sequence",
+      "tooltip": {
+        "title": "Sequence",
+        "text": "Sequence description.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      },
+      "examples": [
+        {
+          "orderID": 100,
+          "example": {
+            "name": "Example",
+            "id": "G17689DH"
+          },
+          "explore": {
+            "id": "GlyTouCan Accession",
+            "url": "https://glytoucan.org/Structures"
+          }
+        }
+     ]
+    },
     "sequence_type": {
-      "errorText": "This field is required.",
+      "requiredText": "This field is required.",
       "placeholder": "Select sequence type",
       "placeholderId": "",
       "tooltip": {
