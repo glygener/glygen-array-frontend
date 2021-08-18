@@ -42,7 +42,7 @@
       "length": 10000,
       "errorText": "Entry is too long - max length is 10,000.",
       "requiredText": "This field is required.",
-      "placeholder": "Enter single or multiple comma-separated sequence",
+      "placeholder": "Enter the sequence",
       "tooltip": {
         "title": "Sequence",
         "text": "Sequence description.",
@@ -99,7 +99,7 @@
       "length": 10000,
       "errorText": "Entry is too long - max length is 10,000.",
       "requiredText": "This field is required.",
-      "placeholder": "Enter single or multiple comma-separated sequence",
+      "placeholder": "Enter the sequence",
       "tooltip": {
         "title": "Sequence",
         "text": "Sequence description.",

@@ -27,22 +27,6 @@ const BlueCheckbox = withStyles({
   checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
-const getCommaSeparatedValues = (value) => {
-  if (typeof value !== "string") return "";
-
-  value = value.trim();
-  value = value.replace(/\u200B/g, "");
-  value = value.replace(/\u2011/g, "-");
-  value = value.replace(/\s+/g, ",");
-  value = value.replace(/,+/g, ",");
-  var index = value.lastIndexOf(",");
-  if (index > -1 && index + 1 === value.length) {
-    value = value.substr(0, index);
-  }
-
-  return value;
-};
-
 const structureSearch = glycanSearchData.structure_search;
 const subStructureSearch = glycanSearchData.sub_structure_search;
 
@@ -154,12 +138,6 @@ export default function GlycanSubstructureSearch(props) {
     searchSubstructure(sequence, sequenceFormat, reducingEnd);
   };
 
-  /**
-   * Function to set recordtype (molecule) name value.
-   * @param {string} value - input recordtype (molecule) name value.
-   **/
-  const searchSubstructureOnChange = (value) => {};
-
   return (
     <>
       {showErrorSummary === true && (
@@ -187,7 +165,6 @@ export default function GlycanSubstructureSearch(props) {
           <FormControl
             fullWidth
             variant="outlined"
-            // error={isInputTouched.recordTypeInput && !moleculeValidated}
           >
             <Typography className={"search-lbl"} gutterBottom>
               <HelpToolTip
@@ -245,10 +222,6 @@ export default function GlycanSubstructureSearch(props) {
           </FormControl>
         </Grid>
 
-        {/* <FormControlLabel
-            control={<Checkbox checked={gilad} onChange={handleChange} name="gilad" />}
-            label="Reducing end"
-          /> */}
         <Grid item xs={12} sm={10} md={10} className="pt-3">
           <FormControlLabel
             control={

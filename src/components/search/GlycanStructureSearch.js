@@ -14,21 +14,6 @@ import SelectControl from "./SelectControl";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
-const getCommaSeparatedValues = (value) => {
-  if (typeof value !== "string") return "";
-
-  value = value.trim();
-  value = value.replace(/\u200B/g, "");
-  value = value.replace(/\u2011/g, "-");
-  value = value.replace(/\s+/g, ",");
-  value = value.replace(/,+/g, ",");
-  var index = value.lastIndexOf(",");
-  if (index > -1 && index + 1 === value.length) {
-    value = value.substr(0, index);
-  }
-
-  return value;
-};
 
 const structureSearch = glycanSearchData.structure_search;
 
@@ -43,7 +28,6 @@ export default function GlycanStructureSearch(props) {
     {
       sequence: "",
       sequenceFormat: "",
-      reducingEnd: false,
     }
   );
 
@@ -122,7 +106,6 @@ export default function GlycanStructureSearch(props) {
     setInputValues({
       sequence: "",
       sequenceFormat: "",
-      reducingEnd: false,
     });
     setTouched({
       sequence: false,
@@ -137,7 +120,6 @@ export default function GlycanStructureSearch(props) {
 
   const searchGlycanStrClick = () => {
     let { sequence, sequenceFormat } = inputValues;
-    sequence = getCommaSeparatedValues(inputValues.sequence);
     searchStructure(sequence, sequenceFormat);
   };
 
@@ -168,7 +150,6 @@ export default function GlycanStructureSearch(props) {
           <FormControl
             fullWidth
             variant="outlined"
-            // error={isInputTouched.recordTypeInput && !moleculeValidated}
           >
             <Typography className={"search-lbl"} gutterBottom>
               <HelpToolTip

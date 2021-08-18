@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router"; 
+import { useHistory } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import { Row } from "react-bootstrap";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "react-bootstrap/Button";
@@ -32,13 +33,20 @@ const getCommaSeparatedValues = (value) => {
 
 const advancedSearch = glycanSearchData.advanced_search;
 const GlycanAdvancedSearch = (props) => {
-  const history = useHistory() 
-  const [glycanIds, setGlycanIds] = useState("");
-  const [massRange, setMassRange] = useState([1, 10000]);
-  const [massSliderValue, setMassSliderValue] = useState([1, 10000]);
+  const history = useHistory();
+
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
+
+  const [inputValues, setInputValues] = React.useReducer(
+    (state, payload) => ({ ...state, ...payload }),
+    {
+      glytoucanIds: "",
+      massRange: [1, 10000],
+      massRangeInput: ["1", "10000"],
+    }
+  );
 
   const searchGlycan = (glytoucanIds, minMass, maxMass) => {
     wsCall(
@@ -57,8 +65,7 @@ const GlycanAdvancedSearch = (props) => {
   };
 
   const glycanSearchSuccess = (response) => {
-    response.text()
-    .then(searchId => history.push("glycanList/" + searchId))
+    response.text().then((searchId) => history.push("glycanList/" + searchId));
   };
 
   const glycanSearchFailure = (response) => {
@@ -70,12 +77,26 @@ const GlycanAdvancedSearch = (props) => {
     });
   };
 
-  const clearGlycan = () => {};
+  const clearGlycan = () => {
+    setInputValues({
+      glytoucanIds: "",
+      massRange: [1, 10000],
+      massRangeInput: [1, 10000],
+    });
+  };
 
   const searchGlycanAdvClick = () => {
-    let _glycanIds = getCommaSeparatedValues(glycanIds);
-    _glycanIds = _glycanIds.split(",");
-    searchGlycan(_glycanIds, parseInt(massSliderValue[0]), parseInt(massSliderValue[1]));
+    const { glytoucanIds, massRange } = inputValues;
+
+    let _glytoucanIds = getCommaSeparatedValues(glytoucanIds);
+
+    if (_glytoucanIds) {
+      _glytoucanIds = _glytoucanIds.split(",");
+    } else {
+      _glytoucanIds = [];
+    }
+
+    searchGlycan(_glytoucanIds, massRange[0], massRange[1]);
   };
 
   return (
@@ -88,7 +109,13 @@ const GlycanAdvancedSearch = (props) => {
           errorMessage={pageErrorMessage}
         />
       )}
-      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center" className="mb-5">
+      <Grid
+        container
+        style={{ margin: "0  auto" }}
+        spacing={3}
+        justify="center"
+        className="mb-5"
+      >
         {/* Buttons Top */}
         <Grid item xs={12} sm={10}>
           <Row className="gg-align-center">
@@ -114,11 +141,16 @@ const GlycanAdvancedSearch = (props) => {
             <OutlinedInput
               fullWidth
               multiline
-              required={true}
+              rows="3"
+              // required={true}
+              error={inputValues.glytoucanIds.length > advancedSearch.glycan_id.length}
               placeholder={advancedSearch.glycan_id.placeholder}
-              value={glycanIds}
-              onChange={(e) => setGlycanIds(e.target.value)}
+              value={inputValues.glytoucanIds}
+              onChange={(e) => setInputValues({ glytoucanIds: e.target.value })}
             ></OutlinedInput>
+            {inputValues.glytoucanIds.length > advancedSearch.glycan_id.length && (
+              <FormHelperText error>{advancedSearch.glycan_id.errorText}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         {/* Monoisotopic Mass */}
@@ -137,11 +169,14 @@ const GlycanAdvancedSearch = (props) => {
                   step={1}
                   min={1}
                   max={10000}
-                  inputValueSlider={massSliderValue}
-                  inputClass=""
-                  setSliderInputValue={setMassSliderValue}
-                  inputValue={massRange}
-                  setInputValue={setMassRange}
+                  inputValueSlider={inputValues.massRange}
+                  setSliderInputValue={(value) =>
+                    setInputValues({ massRange: value })
+                  }
+                  inputValue={inputValues.massRangeInput}
+                  setInputValue={(value) =>
+                    setInputValues({ massRangeInput: value })
+                  }
                 />
               </Grid>
             </Grid>
