@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
 import { useParams } from "react-router-dom";
 import Container from "@material-ui/core/Container";
@@ -11,9 +11,11 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
 import { PublicListDataset } from "../public/PublicListDataset";
 import { Card } from "react-bootstrap";
+import { SearchTable } from "../components/search/SearchTable";
+import { StructureImage } from "../components/StructureImage";
 
 const GlycanList = (props) => {
-  let { id } = useParams();
+  const {searchId} = useParams();
 
   const [query, setQuery] = useState([]);
   const [timestamp, setTimeStamp] = useState();
@@ -23,40 +25,16 @@ const GlycanList = (props) => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
-  const listGlycans = (glytoucanIds, minMass, maxMass) => {
-    wsCall(
-      "listglycansforsearch",
-      "GET",
-      // null,
-      false,
-      {
-        glytoucanIds: [glytoucanIds],
-        maxMass,
-        minMass,
-      },
-      glycanSearchSuccess,
-      glycanSearchFailure
-    );
-  };
 
-  const glycanSearchSuccess = (response) => {
-    response.json().then((resp) => {
-      console.log(resp);
-    });
-  };
-
-  const glycanSearchFailure = (response) => {
-    response.json().then((resp) => {
-      console.log(resp);
-      setPageErrorsJson(resp);
-      setShowErrorSummary(true);
-      setPageErrorMessage("");
-    });
-  };
 
   // const handleModifySearch = () => {
   //   props.history.push(routeConstants.idMapping + id);
   // };
+
+  // useEffect(() => {
+  //   // listGlycans(["G69411IG"], 1, 10000);
+  //   listGlycans();
+  // }, []);
 
   return (
     <>
@@ -88,9 +66,55 @@ const GlycanList = (props) => {
         <section>Table</section>
         <Grid container style={{ marginTop: "32px" }}>
           <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
-            {/* <Card>
-              <PublicListDataset />
-            </Card> */}
+            <Card>
+              <SearchTable
+                columns={[
+                  {
+                    Header: "GlyTouCan ID",
+                    accessor: "glytoucanId",
+                  },
+
+                  {
+                    Header: "Structure Image",
+                    accessor: "cartoon",
+                    sortable: false,
+                    // eslint-disable-next-line react/prop-types
+                    Cell: (row) => (
+                      <StructureImage
+                        base64={row.original.glycan.cartoon}
+                      ></StructureImage>
+                    ),
+                    // minWidth: 300,
+                  },
+                  {
+                    Header: "Mass",
+                    accessor: "mass",
+                    // // eslint-disable-next-line react/prop-types
+                    // Cell: (row) =>
+                    //   row.value ? parseFloat(row.value).toFixed(4) : "",
+                  },
+                  {
+                    Header: "Dataset Count",
+                    accessor: "datasetCount",
+                  },
+                ]}
+                defaultPageSize={10}
+                // defaultSortColumn="id"
+                showCommentsButton={false}
+                showDeleteButton={false}
+                showSearchBox
+                showEditButton={false}
+                // commentsRefColumn="description"
+                fetchWS="listglycansforsearch"
+                // deleteWS="glycandelete"
+                // editUrl="glycans/editglycan"
+                keyColumn="searchId"
+                showRowsInfo
+                infoRowsText="Glycans"
+                // searchId="1.0mass2000.0981980773glytoucan"
+                searchId={searchId}
+              />
+            </Card>
           </Grid>
         </Grid>
       </Container>

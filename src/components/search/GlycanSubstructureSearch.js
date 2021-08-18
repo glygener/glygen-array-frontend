@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router"; 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Row } from "react-bootstrap";
@@ -46,6 +47,7 @@ const structureSearch = glycanSearchData.structure_search;
 const subStructureSearch = glycanSearchData.sub_structure_search;
 
 export default function GlycanSubstructureSearch(props) {
+  const history = useHistory() 
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -114,9 +116,8 @@ export default function GlycanSubstructureSearch(props) {
   };
 
   const glycanSearchSuccess = (response) => {
-    response.json().then((resp) => {
-      console.log(resp);
-    });
+    response.text()
+    .then(searchId => history.push("glycanList/" + searchId))
   };
 
   const glycanSearchFailure = (response) => {

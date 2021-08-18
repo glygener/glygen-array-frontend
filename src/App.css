@@ -280,12 +280,12 @@ input[type]:not(:-ms-input-placeholder) + label {
   border: 1px solid #dee2e6;
 }
 
-.table-header {
+/* .table-header {
   color: white;
   font-size: large;
   font-weight: 500;
   background-color: cadetblue;
-}
+} */
 .rt-resizable-header-content {
   overflow: hidden;
   text-overflow: ellipsis;

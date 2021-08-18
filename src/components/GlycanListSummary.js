@@ -33,9 +33,17 @@ function getDateTime() {
 
 const GlycanListSummary = (props) => {
   const title = "Glycan Search Summary";
-  const { onModifySearch, timestamp } = props;
-
+  const { data, onModifySearch, timestamp, searchId } = props;
   const executionTime = timestamp ? getDateTime(timestamp) : "";
+
+  const {
+    glytoucanIds,
+    maxMass,
+    minMass,
+    sequenceFormat,
+    sequence,
+    reducingEnd,
+  }=data;
 
   return (
     <>
@@ -47,22 +55,40 @@ const GlycanListSummary = (props) => {
           <Card.Text>
             <strong>Performed on: {executionTime}</strong>
           </Card.Text>
+            {/* glycan mass
+            {mass && mass.min && (
+                <Row className="summary-table-col">
+                  <Col align="right" xs={6} sm={6} md={6} lg={6}>
+                    {glycanStrings.mass.name}:
+                  </Col>
+                  <Col align="left" xs={6} sm={6} md={6} lg={6}>
+                    {mass.min}&#8209;{mass.max}&nbsp;Da&nbsp;({mass_type})
+                  </Col>
+                </Row>
+              )} */}
+              {searchId && searchId === "sups" && <>{"search text"}</>}
+              {/* glytoucanIds */}
+              {glytoucanIds & (
           <Row className="summary-table-col">
             <Col align="right" xs={6} sm={6} md={6} lg={6}>
-              Label ID:
+              GlyTouCan ID:
             </Col>
             <Col align="left" xs={6} sm={6} md={6} lg={6}>
-              data
+            {glytoucanIds}
             </Col>
           </Row>
+           )}
+           {/* mass */}
+           {minMass & (
           <Row className="summary-table-col">
             <Col align="right" xs={6} sm={6} md={6} lg={6}>
-              Label ID:
+              Mass:
             </Col>
             <Col align="left" xs={6} sm={6} md={6} lg={6}>
-              data
+              {minMass}&#8209;{maxMass}
             </Col>
           </Row>
+           )}
           <div className="pt-3">
             <Button
               type="button"

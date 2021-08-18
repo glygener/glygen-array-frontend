@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router"; 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Row } from "react-bootstrap";
@@ -32,6 +33,7 @@ const getCommaSeparatedValues = (value) => {
 const structureSearch = glycanSearchData.structure_search;
 
 export default function GlycanStructureSearch(props) {
+  const history = useHistory() 
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -100,9 +102,8 @@ export default function GlycanStructureSearch(props) {
   };
 
   const glycanSearchSuccess = (response) => {
-    response.json().then((resp) => {
-      console.log(resp);
-    });
+    response.text()
+    .then(searchId => history.push("glycanList/" + searchId))
   };
 
   const glycanSearchFailure = (response) => {
@@ -135,15 +136,10 @@ export default function GlycanStructureSearch(props) {
   };
 
   const searchGlycanStrClick = () => {
-    const { sequence, sequenceFormat } = inputValues;
+    let { sequence, sequenceFormat } = inputValues;
+    sequence = getCommaSeparatedValues(inputValues.sequence);
     searchStructure(sequence, sequenceFormat);
   };
-
-  /**
-   * Function to set recordtype (molecule) name value.
-   * @param {string} value - input recordtype (molecule) name value.
-   **/
-  const searchStructureOnChange = (value) => {};
 
   return (
     <>

@@ -90,7 +90,7 @@ const Routes = (props) => {
       sidebar: () => "",
     },
     {
-      path: "/glycanList",
+      path: "/glycanList/:searchId",
       exact: true,
       main: () => <GlycanList />,
       sidebar: () => "",

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router"; 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Row } from "react-bootstrap";
@@ -11,6 +12,7 @@ import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import "../../css/Search.css";
+import { SubscriptionsOutlined } from "@material-ui/icons";
 
 const getCommaSeparatedValues = (value) => {
   if (typeof value !== "string") return "";
@@ -30,6 +32,7 @@ const getCommaSeparatedValues = (value) => {
 
 const advancedSearch = glycanSearchData.advanced_search;
 const GlycanAdvancedSearch = (props) => {
+  const history = useHistory() 
   const [glycanIds, setGlycanIds] = useState("");
   const [massRange, setMassRange] = useState([1, 10000]);
   const [massSliderValue, setMassSliderValue] = useState([1, 10000]);
@@ -54,9 +57,8 @@ const GlycanAdvancedSearch = (props) => {
   };
 
   const glycanSearchSuccess = (response) => {
-    response.json().then((resp) => {
-      console.log(resp);
-    });
+    response.text()
+    .then(searchId => history.push("glycanList/" + searchId))
   };
 
   const glycanSearchFailure = (response) => {
