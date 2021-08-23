@@ -42,7 +42,8 @@ const OtherMolecules = props => {
           showSearchBox
           showEditButton
           commentsRefColumn="description"
-          fetchWS="peptidelist"
+          fetchWS="listmoleculesbytype"
+          paramTypeValue={"OTHER"}
           deleteWS="peptidedelete"
           editUrl="peptides/editpeptide"
           keyColumn="id"

@@ -504,7 +504,7 @@ const AddPeptide = props => {
 
   function addPeptide(e) {
     var peptideObj = {
-      type: "PEPTIDE_LINKER",
+      type: "PEPTIDE",
       name: peptide.name,
       comment: peptide.comment,
       opensRing: peptide.opensRing,

@@ -51,6 +51,7 @@ const AddLipid = props => {
     selectedLipid: "SequenceDefined",
     name: "",
     comment: "",
+    mass: "",
     pubChemId: "",
     inChiKey: "",
     inChiSequence: "",
@@ -82,21 +83,6 @@ const AddLipid = props => {
   };
 
   const steps = getSteps();
-
-  const lipidFields = {
-    inChiKey: { label: displayNames.linker.INCHIKEY, type: "text", length: 27 },
-    inChiSequence: {
-      label: displayNames.linker.INCHI_SEQUENCE,
-      type: "textarea",
-      length: 10000,
-      enableCharacterCounter: true
-    },
-    iupacName: { label: "IUPAC Name", type: "text", length: 2000 },
-    mass: { label: "Mass", type: "number" },
-    molecularFormula: { label: "Molecular Formula", type: "text", length: 256 },
-    isomericSmiles: { label: displayNames.linker.ISOMERIC_SMILES, type: "text", length: 10000 },
-    canonicalSmiles: { label: displayNames.linker.CANONICAL_SMILES, type: "text", length: 10000 }
-  };
 
   const handleNext = e => {
     setValidate(false);
@@ -164,6 +150,8 @@ const AddLipid = props => {
 
   const handleSelect = e => {
     setDisableReset(true);
+    setDisablePubChemFields(false);
+
     const newValue = e.target.value;
     setLipid({ ...lipidInitialState, ...{ selectedLipid: newValue } });
   };
@@ -204,7 +192,7 @@ const AddLipid = props => {
 
         setShowErrorSummary(false);
         setValidate(false);
-        setDisablePubChemFields(true);
+        // setDisablePubChemFields(true);
       });
 
       setDisablePubChemFields(true);
@@ -307,6 +295,7 @@ const AddLipid = props => {
 
   function clearPubChemFields() {
     setDisablePubChemFields(false);
+    setLipid({ ...lipidInitialState, ...{ selectedLipid: lipid.selectedLipid } });
     setShowErrorSummary(false);
     setPageErrorsJson({});
   }
@@ -342,6 +331,146 @@ const AddLipid = props => {
       });
     }
   }
+
+  const getStep2 = () => {
+    return (
+      <>
+        <Form.Group as={Row} controlId={"inChiKey"}>
+          <FormLabel label={displayNames.linker.INCHIKEY} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"inChiKey"}
+              placeholder={displayNames.linker.INCHIKEY}
+              value={lipid.inChiKey}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={27}
+            />
+            <Feedback message={`${displayNames.linker.INCHIKEY} is Invalid`} />
+          </Col>
+          {lipid.inChiKey !== "" && !disablePubChemFields && (
+            <Button
+              variant="contained"
+              onClick={() => populateLinkerDetails(encodeURIComponent(lipid.inChiKey && lipid.inChiKey.trim()))}
+              className="get-btn "
+            >
+              Get Details from PubChem
+            </Button>
+          )}
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"inChiSequence"}>
+          <FormLabel label={displayNames.linker.INCHI_SEQUENCE} className={"required-asterik"} />
+          <Col md={4}>
+            <Form.Control
+              as={"textarea"}
+              rows="4"
+              name={"inChiSequence"}
+              placeholder={displayNames.linker.INCHI_SEQUENCE}
+              value={lipid.inChiSequence}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={10000}
+              isInvalid={validate}
+              required
+            />
+            <span className="character-counter">
+              {lipid.inChiSequence && lipid.inChiSequence.length > 0 ? lipid.inChiSequence.length : ""}/10000
+            </span>
+            <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"iupacName"}>
+          <FormLabel label={"IUPAC Name"} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"iupacName"}
+              placeholder={"iupacName"}
+              value={lipid.iupacName}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={2000}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId={"Mass"}>
+          <FormLabel label={"Mass"} />
+          <Col md={4}>
+            <Form.Control
+              type={"number"}
+              name={"mass"}
+              placeholder={"Mass"}
+              value={lipid.mass}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              onKeyDown={e => isValidNumber(e)}
+              isInvalid={invalidMass}
+            />
+            <Feedback message={`Mass is Invalid`} />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"Molecular Formula"}>
+          <FormLabel label={"Molecular Formula"} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"molecularFormula"}
+              placeholder={"molecular formula"}
+              value={lipid.molecularFormula}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={256}
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"isomericSmiles"}>
+          <FormLabel label={displayNames.linker.ISOMERIC_SMILES} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"isomericSmiles"}
+              placeholder={"isomeric smiles"}
+              value={lipid.isomericSmiles}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={10000}
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"canonicalSmiles"}>
+          <FormLabel label={displayNames.linker.CANONICAL_SMILES} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"canonicalSmiles"}
+              placeholder={"canonical smiles"}
+              value={lipid.canonicalSmiles}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={10000}
+            />
+          </Col>
+          {lipid.canonicalSmiles !== "" && !disablePubChemFields && (
+            <Button
+              variant="contained"
+              onClick={() =>
+                populateLinkerDetails(encodeURIComponent(lipid.canonicalSmiles && lipid.canonicalSmiles.trim()))
+              }
+              className="get-btn "
+            >
+              Get Details from PubChem
+            </Button>
+          )}
+        </Form.Group>
+      </>
+    );
+  };
 
   function getStepContent(stepIndex, validate) {
     switch (stepIndex) {
@@ -413,58 +542,8 @@ const AddLipid = props => {
                     )}
                   </Form.Group>
 
-                  {Object.keys(lipidFields).map(key => {
-                    return (
-                      // eslint-disable-next-line react/jsx-key
-                      <Form.Group as={Row} controlId={key} key={key}>
-                        <FormLabel
-                          label={lipidFields[key].label}
-                          className={key === "inChiSequence" ? "required-asterik" : ""}
-                        />
-                        <Col md={4}>
-                          <Form.Control
-                            as={lipidFields[key].type === "textarea" ? "textarea" : "input"}
-                            type={key === "mass" ? "number" : "string"}
-                            rows="4"
-                            name={key}
-                            placeholder={lipidFields[key].label}
-                            value={lipid[key] ? lipid[key] : undefined}
-                            onChange={handleChange}
-                            disabled={disablePubChemFields}
-                            maxLength={lipidFields[key].length}
-                            // pattern={key === "mass" ? "/^d+/" : ""}
-                            onKeyDown={
-                              key === "mass"
-                                ? e => {
-                                    isValidNumber(e);
-                                  }
-                                : e => {}
-                            }
-                            isInvalid={key === "mass" ? invalidMass : key === "inChiSequence" ? validate : ""}
-                            required={key === "inChiSequence" ? true : false}
-                          />
+                  {getStep2()}
 
-                          {lipidFields[key].enableCharacterCounter && (
-                            <span className="character-counter">
-                              {lipid[key] && lipid[key].length > 0 ? lipid[key].length : ""}/{lipidFields[key].length}
-                            </span>
-                          )}
-                          <Feedback message={`${lipidFields[key].label} is Invalid`} />
-                        </Col>
-                        {(key === "inChiKey" || key === "canonicalSmiles") &&
-                          lipid[key] !== "" &&
-                          !disablePubChemFields && (
-                            <Button
-                              variant="contained"
-                              onClick={() => populateLinkerDetails(encodeURIComponent(lipid[key].trim()))}
-                              className="get-btn "
-                            >
-                              Get Details from PubChem
-                            </Button>
-                          )}
-                      </Form.Group>
-                    );
-                  })}
                   <Form.Group as={Row}>
                     <Col md={{ span: 2, offset: 5 }}>
                       <Button
@@ -697,7 +776,7 @@ const AddLipid = props => {
 
   function addLipid(e) {
     var lipidObj = {
-      type: "SMALLMOLECULE_LINKER",
+      type: "LIPID",
       name: lipid.name,
       pubChemId: lipid.pubChemId,
       classification: lipid.classification,

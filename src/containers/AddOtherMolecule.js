@@ -288,7 +288,7 @@ const AddOtherMolecule = props => {
 
     if (e.currentTarget.checkValidity() === true) {
       var othermoleculeObj = {
-        type: "OTHER_MOLECULE",
+        type: "OTHER",
         name: othermolecule.name,
         comment: othermolecule.comment,
         opensRing: othermolecule.opensRing,

@@ -81,11 +81,11 @@ const GlygenTable = props => {
           <OverlayTrigger
             key={index}
             trigger="click"
-            placement="left"
+            placement="top"
             rootClose
             overlay={
               <Popover>
-                <Popover.Title as="h3" style={{ marginTop: "-70px" }}>
+                <Popover.Title as="h3">
                   Comments for {props.commentsRefColumn}: {row.original[props.commentsRefColumn]}
                 </Popover.Title>
                 <Popover.Content>{row.value}</Popover.Content>
@@ -212,7 +212,7 @@ const GlygenTable = props => {
         <input
           key={index}
           type="button"
-          onClick={() => props.selectButtonHandler(row.original)}
+          onClick={() => props.selectButtonHandler(row.original, props.isModal)}
           value={props.selectButtonHeader || "Select"}
         />
       )
@@ -285,15 +285,7 @@ const GlygenTable = props => {
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
                   <Form.Check
                     type="checkbox"
-                    label={
-                      <span
-                        style={{
-                          backgroundColor: props.onlyMyLinkersGlycansCheckBoxLabel.includes("glycans") ? "#fff" : ""
-                        }}
-                      >
-                        {props.onlyMyLinkersGlycansCheckBoxLabel}
-                      </span>
-                    }
+                    label={props.onlyMyLinkersGlycansCheckBoxLabel}
                     onChange={props.handleChangeForOnlyMyLinkersGlycans}
                   />
                 </Form.Group>
@@ -359,7 +351,8 @@ const GlygenTable = props => {
                 sortBy: sortColumn,
                 order: sortOrder,
                 loadAll: false, //only useful for features, blocks and slides
-                filter: searchFilter !== "" ? searchFilter : ""
+                filter: searchFilter !== "" ? searchFilter : "",
+                type: props.paramTypeValue
               },
               true,
               null,
@@ -508,7 +501,9 @@ GlygenTable.propTypes = {
   showOnlyMyLinkersOrGlycansCheckBox: PropTypes.bool,
   handleChangeForOnlyMyLinkersGlycans: PropTypes.func,
   onlyMyLinkersGlycans: PropTypes.bool,
-  onlyMyLinkersGlycansCheckBoxLabel: PropTypes.string
+  onlyMyLinkersGlycansCheckBoxLabel: PropTypes.string,
+  isModal: PropTypes.bool,
+  paramTypeValue: PropTypes.string
 };
 
 GlygenTable.defaultProps = {

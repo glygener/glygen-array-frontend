@@ -36,7 +36,7 @@ const Proteins = props => {
             },
             {
               Header: "UniProtID",
-              accessor: "uniProtID"
+              accessor: "uniProtId"
             }
           ]}
           defaultPageSize={10}
@@ -46,7 +46,8 @@ const Proteins = props => {
           showSearchBox
           showEditButton
           commentsRefColumn="description"
-          fetchWS="peptidelist"
+          fetchWS="listmoleculesbytype"
+          paramTypeValue={"PROTEIN"}
           deleteWS="peptidedelete"
           editUrl="peptides/editpeptide"
           keyColumn="id"

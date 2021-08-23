@@ -46,7 +46,8 @@ const Peptides = props => {
           showSearchBox
           showEditButton
           commentsRefColumn="description"
-          fetchWS="peptidelist"
+          fetchWS="listmoleculesbytype"
+          paramTypeValue={"PEPTIDE"}
           deleteWS="peptidedelete"
           editUrl="peptides/editpeptide"
           keyColumn="id"

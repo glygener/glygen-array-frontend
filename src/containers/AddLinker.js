@@ -56,6 +56,7 @@ const AddLinker = props => {
     inChiSequence: "",
     iupacName: "",
     imageURL: "",
+    mass: "",
     molecularFormula: "",
     canonicalSmiles: "",
     isomericSmiles: "",
@@ -82,21 +83,6 @@ const AddLinker = props => {
   };
 
   const steps = getSteps();
-
-  const linkerFields = {
-    inChiKey: { label: displayNames.linker.INCHIKEY, type: "text", length: 27 },
-    inChiSequence: {
-      label: displayNames.linker.INCHI_SEQUENCE,
-      type: "textarea",
-      length: 10000,
-      enableCharacterCounter: true
-    },
-    iupacName: { label: "IUPAC Name", type: "text", length: 2000 },
-    mass: { label: "Mass", type: "number" },
-    molecularFormula: { label: "Molecular Formula", type: "text", length: 256 },
-    isomericSmiles: { label: displayNames.linker.ISOMERIC_SMILES, type: "text", length: 10000 },
-    canonicalSmiles: { label: displayNames.linker.CANONICAL_SMILES, type: "text", length: 10000 }
-  };
 
   const handleNext = e => {
     setValidate(false);
@@ -164,6 +150,7 @@ const AddLinker = props => {
 
   const handleSelect = e => {
     setDisableReset(true);
+    setDisablePubChemFields(false);
     const newValue = e.target.value;
     setLinker({ ...linkerInitialState, ...{ selectedLinker: newValue } });
   };
@@ -306,6 +293,7 @@ const AddLinker = props => {
   ];
 
   function clearPubChemFields() {
+    setLinker({ ...linkerInitialState, ...{ selectedLinker: linker.selectedLinker } });
     setDisablePubChemFields(false);
     setShowErrorSummary(false);
     setPageErrorsJson({});
@@ -342,6 +330,146 @@ const AddLinker = props => {
       });
     }
   }
+
+  const getStep2 = () => {
+    return (
+      <>
+        <Form.Group as={Row} controlId={"inChiKey"}>
+          <FormLabel label={displayNames.linker.INCHIKEY} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"inChiKey"}
+              placeholder={displayNames.linker.INCHIKEY}
+              value={linker.inChiKey}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={27}
+            />
+            <Feedback message={`${displayNames.linker.INCHIKEY} is Invalid`} />
+          </Col>
+          {linker.inChiKey !== "" && !disablePubChemFields && (
+            <Button
+              variant="contained"
+              onClick={() => populateLinkerDetails(encodeURIComponent(linker.inChiKey && linker.inChiKey.trim()))}
+              className="get-btn "
+            >
+              Get Details from PubChem
+            </Button>
+          )}
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"inChiSequence"}>
+          <FormLabel label={displayNames.linker.INCHI_SEQUENCE} className={"required-asterik"} />
+          <Col md={4}>
+            <Form.Control
+              as={"textarea"}
+              rows="4"
+              name={"inChiSequence"}
+              placeholder={displayNames.linker.INCHI_SEQUENCE}
+              value={linker.inChiSequence}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={10000}
+              isInvalid={validate}
+              required
+            />
+            <span className="character-counter">
+              {linker.inChiSequence && linker.inChiSequence.length > 0 ? linker.inChiSequence.length : ""}/10000
+            </span>
+            <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"iupacName"}>
+          <FormLabel label={"IUPAC Name"} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"iupacName"}
+              placeholder={"iupacName"}
+              value={linker.iupacName}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={2000}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId={"Mass"}>
+          <FormLabel label={"Mass"} />
+          <Col md={4}>
+            <Form.Control
+              type={"number"}
+              name={"mass"}
+              placeholder={"Mass"}
+              value={linker.mass}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              onKeyDown={e => isValidNumber(e)}
+              isInvalid={invalidMass}
+            />
+            <Feedback message={`Mass is Invalid`} />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"Molecular Formula"}>
+          <FormLabel label={"Molecular Formula"} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"molecularFormula"}
+              placeholder={"molecular formula"}
+              value={linker.molecularFormula}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={256}
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"isomericSmiles"}>
+          <FormLabel label={displayNames.linker.ISOMERIC_SMILES} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"isomericSmiles"}
+              placeholder={"isomeric smiles"}
+              value={linker.isomericSmiles}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={10000}
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"canonicalSmiles"}>
+          <FormLabel label={displayNames.linker.CANONICAL_SMILES} />
+          <Col md={4}>
+            <Form.Control
+              type={"text"}
+              name={"canonicalSmiles"}
+              placeholder={"canonical smiles"}
+              value={linker.canonicalSmiles}
+              onChange={handleChange}
+              disabled={disablePubChemFields}
+              maxLength={10000}
+            />
+          </Col>
+          {linker.canonicalSmiles !== "" && !disablePubChemFields && (
+            <Button
+              variant="contained"
+              onClick={() =>
+                populateLinkerDetails(encodeURIComponent(linker.canonicalSmiles && linker.canonicalSmiles.trim()))
+              }
+              className="get-btn "
+            >
+              Get Details from PubChem
+            </Button>
+          )}
+        </Form.Group>
+      </>
+    );
+  };
 
   function getStepContent(stepIndex, validate) {
     switch (stepIndex) {
@@ -413,59 +541,8 @@ const AddLinker = props => {
                     )}
                   </Form.Group>
 
-                  {Object.keys(linkerFields).map(key => {
-                    return (
-                      // eslint-disable-next-line react/jsx-key
-                      <Form.Group as={Row} controlId={key} key={key}>
-                        <FormLabel
-                          label={linkerFields[key].label}
-                          className={key === "inChiSequence" ? "required-asterik" : ""}
-                        />
-                        <Col md={4}>
-                          <Form.Control
-                            as={linkerFields[key].type === "textarea" ? "textarea" : "input"}
-                            type={key === "mass" ? "number" : "string"}
-                            rows="4"
-                            name={key}
-                            placeholder={linkerFields[key].label}
-                            value={linker[key] ? linker[key] : undefined}
-                            onChange={handleChange}
-                            disabled={disablePubChemFields}
-                            maxLength={linkerFields[key].length}
-                            // pattern={key === "mass" ? "/^d+/" : ""}
-                            onKeyDown={
-                              key === "mass"
-                                ? e => {
-                                    isValidNumber(e);
-                                  }
-                                : e => {}
-                            }
-                            isInvalid={key === "mass" ? invalidMass : key === "inChiSequence" ? validate : ""}
-                            required={key === "inChiSequence" ? true : false}
-                          />
+                  {getStep2()}
 
-                          {linkerFields[key].enableCharacterCounter && (
-                            <span className="character-counter">
-                              {linker[key] && linker[key].length > 0 ? linker[key].length : ""}/
-                              {linkerFields[key].length}
-                            </span>
-                          )}
-                          <Feedback message={`${linkerFields[key].label} is Invalid`} />
-                        </Col>
-                        {(key === "inChiKey" || key === "canonicalSmiles") &&
-                          linker[key] !== "" &&
-                          !disablePubChemFields && (
-                            <Button
-                              variant="contained"
-                              onClick={() => populateLinkerDetails(encodeURIComponent(linker[key].trim()))}
-                              className="get-btn "
-                            >
-                              Get Details from PubChem
-                            </Button>
-                          )}
-                      </Form.Group>
-                    );
-                  })}
                   <Form.Group as={Row}>
                     <Col md={{ span: 2, offset: 5 }}>
                       <Button
@@ -698,7 +775,7 @@ const AddLinker = props => {
 
   function addLinker(e) {
     var linkerObj = {
-      type: "SMALLMOLECULE_LINKER",
+      type: "SMALLMOLECULE",
       name: linker.name,
       pubChemId: linker.pubChemId,
       classification: linker.classification,

@@ -467,10 +467,10 @@ const AddFeatureToBlock = props => {
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
-                showCommentsButton={false}
-                showDeleteButton={false}
-                showEditButton={false}
-                showCheckboxColumn={true}
+                showCommentsButton
+                showDeleteButton
+                showEditButton
+                showCheckboxColumn
                 commentsRefColumn="description"
                 fetchWS="featurelist"
                 deleteWS=""

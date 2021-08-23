@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { Col } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
+import displayNames from "../appData/displayNames";
 import { StructureImage } from "../components/StructureImage";
 
 const Lipids = props => {
@@ -37,15 +38,15 @@ const Lipids = props => {
             },
             {
               Header: "PubChem ID",
-              accessor: "pubChemid"
+              accessor: "pubChemId"
             },
             {
-              Header: "Structure Image",
-              accessor: "cartoon",
+              Header: displayNames.linker.STRUCTURE,
+              accessor: "imageURL",
               sortable: false,
               // eslint-disable-next-line react/prop-types
-              Cell: row => <StructureImage base64={row.value} />,
-              minWidth: 300
+              Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
+              minWidth: 150
             },
             {
               Header: "Mass",
@@ -61,7 +62,8 @@ const Lipids = props => {
           showSearchBox
           showEditButton
           commentsRefColumn="description"
-          fetchWS="peptidelist"
+          fetchWS="listmoleculesbytype"
+          paramTypeValue={"LIPID"}
           deleteWS="lipiddelete"
           editUrl="lipids/editlipid"
           keyColumn="id"

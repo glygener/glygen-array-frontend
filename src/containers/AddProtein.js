@@ -586,7 +586,7 @@ const AddProtein = props => {
 
   function addProtein(e) {
     var proteinObj = {
-      type: "PROTEIN_LINKER",
+      type: "PROTEIN",
       name: protein.name,
       comment: protein.comment,
       opensRing: protein.opensRing,

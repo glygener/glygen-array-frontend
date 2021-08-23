@@ -71,8 +71,10 @@ const Linkers = props => {
           showDeleteButton
           showEditButton
           showSearchBox
-          commentsRefColumn="pubChemId"
-          fetchWS="linkerlist"
+          commentsRefColumn="description"
+          // fetchWS="linkerlist"
+          fetchWS="listmoleculesbytype"
+          paramTypeValue={"SMALLMOLECULE"}
           deleteWS="linkerdelete"
           editUrl="linkers/editlinker"
           keyColumn="id"
