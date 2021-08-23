@@ -17,7 +17,7 @@ import { wsCall } from "../utils/wsUtils";
 import { useHistory } from "react-router-dom";
 import { FeatureMetaData } from "../containers/FeatureMetaData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AddFeatureGlycoTypes } from "./AddFeatureGlycoTypes";
+// import { AddFeatureGlycoTypes } from "./AddFeatureGlycoTypes";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -659,22 +659,21 @@ const AddFeature = props => {
         return;
 
       case 3:
-        return featureAddState.type === "GLYCO_LIPID" ? (
-          getCase2ForGlycoLipid()
-        ) : (
-          <AddFeatureGlycoTypes
-            showGlycanPicker={showGlycanPicker}
-            showLinkerPicker={showLinkerPicker}
-            setShowLinkerPicker={setShowLinkerPicker}
-            setShowGlycanPicker={setShowGlycanPicker}
-            getTableforLinkers={getTableforLinkers}
-            getGlycanTabletoSelect={getGlycanTabletoSelect}
-            glycoProteinPepTideListStep4={glycoProteinPepTideListStep4}
-            setGlycoProteinPepTideListStep4={setGlycoProteinPepTideListStep4}
-            setPosition={setPosition}
-            deleteRow={deleteRowGlycoTypes}
-          />
-        );
+        return featureAddState.type === "GLYCO_LIPID"
+          ? getCase2ForGlycoLipid()
+          : // <AddFeatureGlycoTypes
+            //   showGlycanPicker={showGlycanPicker}
+            //   showLinkerPicker={showLinkerPicker}
+            //   setShowLinkerPicker={setShowLinkerPicker}
+            //   setShowGlycanPicker={setShowGlycanPicker}
+            //   getTableforLinkers={getTableforLinkers}
+            //   getGlycanTabletoSelect={getGlycanTabletoSelect}
+            //   glycoProteinPepTideListStep4={glycoProteinPepTideListStep4}
+            //   setGlycoProteinPepTideListStep4={setGlycoProteinPepTideListStep4}
+            //   setPosition={setPosition}
+            //   deleteRow={deleteRowGlycoTypes}
+            // />
+            "";
       case 4:
         return getMetadata();
       case 5:
