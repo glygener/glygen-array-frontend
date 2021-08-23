@@ -58,7 +58,7 @@ import { AddGrant } from "./containers/AddGrant";
 import { AddMultipleGlycans } from "./containers/AddMultipleGlycans";
 import { Peptides } from "./containers/Peptides";
 import { AddPeptide } from "./containers/AddPeptide";
-import { GlycanSearch } from "./containers/GlycanSearch";
+import { GlycanSearch } from "./public/GlycanSearch";
 import { SubmitterSearch } from "./containers/SubmitterSearch";
 import { Proteins } from "./containers/Proteins";
 import { AddProtein } from "./containers/AddProtein";
@@ -66,7 +66,7 @@ import { Lipids } from "./containers/Lipids";
 import { AddLipid } from "./containers/AddLipid";
 import { AddOtherMolecule } from "./containers/AddOtherMolecule";
 import { OtherMolecules } from "./containers/OtherMolecules";
-import GlycanList from "./containers/GlycanList";
+import GlycanList from "./public/GlycanList";
 
 const Routes = (props) => {
   const routes = [

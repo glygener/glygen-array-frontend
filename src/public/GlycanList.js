@@ -9,7 +9,7 @@ import GlycanListSummary from "../components/GlycanListSummary";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
-import { PublicListDataset } from "../public/PublicListDataset";
+import { PublicListDataset } from "./PublicListDataset";
 import { Card } from "react-bootstrap";
 import { SearchTable } from "../components/search/SearchTable";
 import { StructureImage } from "../components/StructureImage";
