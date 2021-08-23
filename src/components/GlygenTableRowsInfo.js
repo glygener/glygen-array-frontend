@@ -6,15 +6,19 @@ const GlygenTableRowsInfo = props => {
   var rowMax = rowMin + Math.min(props.pageSize, props.currentRows) - 1;
 
   return (
-    <span className="-rowInfo">
-      {"Showing "}
-      <span className="-rowMin">{rowMin}</span>
-      {" - "}
-      <span className="-rowMax">{rowMax}</span>
-      {" of "}
-      <span className="-rowCount">{props.totalRows}</span>
-      {" total " + (props.infoRowsText || "rows")}
-    </span>
+   <div className="table-rows-info">
+    <strong>
+      <span className="-rowInfo">
+        {"Showing "}
+        <span className="-rowMin">{rowMin}</span>
+        {" - "}
+        <span className="-rowMax">{rowMax}</span>
+        {" of "}
+        <span className="-rowCount">{props.totalRows}</span>
+        {" total " + (props.infoRowsText || "rows")}
+      </span>
+      </strong>
+    </div>
   );
 };
 

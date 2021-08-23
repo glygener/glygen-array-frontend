@@ -62,18 +62,20 @@ const GlycanList = (props) => {
             />
           )}
         </section>
-
-        <section>Table</section>
         <Grid container style={{ marginTop: "32px" }}>
           <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
             <Card>
               <SearchTable
                 columns={[
                   {
+                    Header: "Glycan ID",
+                    accessor: "id"
+                  },
+                  {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
+                    sortable: true,
                   },
-
                   {
                     Header: "Structure Image",
                     accessor: "cartoon",
@@ -90,8 +92,8 @@ const GlycanList = (props) => {
                     Header: "Mass",
                     accessor: "mass",
                     // // eslint-disable-next-line react/prop-types
-                    // Cell: (row) =>
-                    //   row.value ? parseFloat(row.value).toFixed(4) : "",
+                   Cell: (row) =>
+                    row.value ? parseFloat(row.value).toFixed(2) : "",
                   },
                   {
                     Header: "Dataset Count",
@@ -99,10 +101,10 @@ const GlycanList = (props) => {
                   },
                 ]}
                 defaultPageSize={10}
-                // defaultSortColumn="id"
+                defaultSortColumn="searchId"
                 showCommentsButton={false}
                 showDeleteButton={false}
-                showSearchBox
+                // showSearchBox
                 showEditButton={false}
                 // commentsRefColumn="description"
                 fetchWS="listglycansforsearch"

@@ -41,3 +41,7 @@
 .ReactTable {
   background-color: #fff !important;
 }
+.table-rows-info {
+  padding: 15px;
+  margin-left: 10px;
+}

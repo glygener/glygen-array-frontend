@@ -296,7 +296,7 @@ const SearchTable = (props) => {
       {props.showRowsInfo && (
         <>
           <Row>
-            <Col md={{ span: 3, offset: 4 }}>
+           <Col>
               <GlygenTableRowsInfo
                 currentPage={tableElement.state ? tableElement.state.page : 0}
                 pageSize={tableElement.state ? tableElement.state.pageSize : 0}
@@ -305,7 +305,7 @@ const SearchTable = (props) => {
                 infoRowsText={props.infoRowsText}
                 show={props.showRowsInfo}
               />
-            </Col>
+            </Col> 
 
             {props.showOnlyMyLinkersOrGlycansCheckBox && (
               <Col
