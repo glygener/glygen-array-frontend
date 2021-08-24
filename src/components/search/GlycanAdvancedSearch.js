@@ -78,10 +78,11 @@ const GlycanAdvancedSearch = (props) => {
   };
 
   const clearGlycan = () => {
+    setShowErrorSummary(false)
     setInputValues({
       glytoucanIds: "",
       massRange: [1, 10000],
-      massRangeInput: [1, 10000],
+      massRangeInput: ["1", "10000"],
     });
   };
 

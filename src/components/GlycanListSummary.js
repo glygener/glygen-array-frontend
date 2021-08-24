@@ -33,17 +33,10 @@ function getDateTime() {
 
 const GlycanListSummary = (props) => {
   const title = "Glycan Search Summary";
-  const { data, onModifySearch, timestamp, searchId } = props;
-  const executionTime = timestamp ? getDateTime(timestamp) : "";
+  const { data, onModifySearch } = props;
+  const executionTime = getDateTime();
 
-  const {
-    glytoucanIds,
-    maxMass,
-    minMass,
-    sequenceFormat,
-    sequence,
-    reducingEnd,
-  }=data;
+  const { glytoucanIds, maxMass, minMass, structure } = data;
 
   return (
     <>
@@ -55,40 +48,64 @@ const GlycanListSummary = (props) => {
           <Card.Text>
             <strong>Performed on: {executionTime}</strong>
           </Card.Text>
-            {/* glycan mass
-            {mass && mass.min && (
-                <Row className="summary-table-col">
-                  <Col align="right" xs={6} sm={6} md={6} lg={6}>
-                    {glycanStrings.mass.name}:
-                  </Col>
-                  <Col align="left" xs={6} sm={6} md={6} lg={6}>
-                    {mass.min}&#8209;{mass.max}&nbsp;Da&nbsp;({mass_type})
-                  </Col>
-                </Row>
-              )} */}
-              {searchId && searchId === "sups" && <>{"search text"}</>}
-              {/* glytoucanIds */}
-              {glytoucanIds & (
-          <Row className="summary-table-col">
-            <Col align="right" xs={6} sm={6} md={6} lg={6}>
-              GlyTouCan ID:
-            </Col>
-            <Col align="left" xs={6} sm={6} md={6} lg={6}>
-            {glytoucanIds}
-            </Col>
-          </Row>
-           )}
-           {/* mass */}
-           {minMass & (
-          <Row className="summary-table-col">
-            <Col align="right" xs={6} sm={6} md={6} lg={6}>
-              Mass:
-            </Col>
-            <Col align="left" xs={6} sm={6} md={6} lg={6}>
-              {minMass}&#8209;{maxMass}
-            </Col>
-          </Row>
-           )}
+
+          {/* glytoucanIds */}
+          {glytoucanIds && glytoucanIds.length > 0 && (
+            <Row className="summary-table-col">
+              <Col align="right" xs={6} sm={6} md={6} lg={6}>
+                GlyTouCan ID:
+              </Col>
+              <Col align="left" xs={6} sm={6} md={6} lg={6}>
+                {glytoucanIds.join(", ")}
+              </Col>
+            </Row>
+          )}
+
+          {/* mass */}
+          {minMass && maxMass && (
+            <Row className="summary-table-col">
+              <Col align="right" xs={6} sm={6} md={6} lg={6}>
+                Mass:
+              </Col>
+              <Col align="left" xs={6} sm={6} md={6} lg={6}>
+                {minMass}&#8209;{maxMass}
+              </Col>
+            </Row>
+          )}
+
+          {/* sequenceFormat */}
+          {structure && structure.format && (
+            <Row className="summary-table-col">
+              <Col align="right" xs={6} sm={6} md={6} lg={6}>
+                Sequence format:
+              </Col>
+              <Col align="left" xs={6} sm={6} md={6} lg={6}>
+                {structure.format}
+              </Col>
+            </Row>
+          )}
+          {/* sequence */}
+          {structure && structure.sequence && (
+            <Row className="summary-table-col">
+              <Col align="right" xs={6} sm={6} md={6} lg={6}>
+                Sequence:
+              </Col>
+              <Col align="left" xs={6} sm={6} md={6} lg={6}>
+                {structure.sequence}
+              </Col>
+            </Row>
+          )}
+          {/* reducingEnd */}
+          {structure && structure.reducingEnd && (
+            <Row className="summary-table-col">
+              <Col align="right" xs={6} sm={6} md={6} lg={6}>
+                Reducing end:
+              </Col>
+              <Col align="left" xs={6} sm={6} md={6} lg={6}>
+                {structure.reducingEnd ? "True" : "False"}
+              </Col>
+            </Row>
+          )}
           <div className="pt-3">
             <Button
               type="button"

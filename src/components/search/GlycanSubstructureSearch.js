@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router"; 
+import { useHistory } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Row } from "react-bootstrap";
@@ -31,7 +31,7 @@ const structureSearch = glycanSearchData.structure_search;
 const subStructureSearch = glycanSearchData.sub_structure_search;
 
 export default function GlycanSubstructureSearch(props) {
-  const history = useHistory() 
+  const history = useHistory();
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -100,8 +100,7 @@ export default function GlycanSubstructureSearch(props) {
   };
 
   const glycanSearchSuccess = (response) => {
-    response.text()
-    .then(searchId => history.push("glycanList/" + searchId))
+    response.text().then((searchId) => history.push("glycanList/" + searchId));
   };
 
   const glycanSearchFailure = (response) => {
@@ -117,6 +116,7 @@ export default function GlycanSubstructureSearch(props) {
    * Function to clear input field values.
    **/
   const clearStructure = () => {
+    setShowErrorSummary(false);
     setInputValues({
       sequence: "",
       sequenceFormat: "",
@@ -162,10 +162,7 @@ export default function GlycanSubstructureSearch(props) {
         </Grid>
         {/* Sequence Type */}
         <Grid item xs={12} sm={10} md={10} className="pt-3">
-          <FormControl
-            fullWidth
-            variant="outlined"
-          >
+          <FormControl fullWidth variant="outlined">
             <Typography className={"search-lbl"} gutterBottom>
               <HelpToolTip
                 title={structureSearch.sequence_type.tooltip.title}
@@ -211,7 +208,7 @@ export default function GlycanSubstructureSearch(props) {
                 setTouched({ sequence: true });
                 setInputValues({ sequence: e.target.value });
               }}
-             ></OutlinedInput>
+            ></OutlinedInput>
             {touched.sequence && inputValues.sequence.length === 0 && (
               <FormHelperText error>{subStructureSearch.sequence.requiredText}</FormHelperText>
             )}

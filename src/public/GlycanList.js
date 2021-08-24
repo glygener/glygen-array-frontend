@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
+import { useHistory } from "react-router";
 import { useParams } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 // import PageLoader from "../components/load/PageLoader";
@@ -15,9 +16,11 @@ import { SearchTable } from "../components/search/SearchTable";
 import { StructureImage } from "../components/StructureImage";
 
 const GlycanList = (props) => {
-  const {searchId} = useParams();
+  const { searchId } = useParams();
+  let { id } = useParams();
+  const history = useHistory();
 
-  const [query, setQuery] = useState([]);
+  const [query, setQuery] = useState(null);
   const [timestamp, setTimeStamp] = useState();
   const [totalSize, setTotalSize] = useState();
 
@@ -25,16 +28,39 @@ const GlycanList = (props) => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
+  const handleModifySearch = () => {
+    //  response.json().then((data) => setQuery(data.input));
+    // history.push("glycanSearch/" + id);
+  };
 
+  useEffect(() => {
+    wsCall(
+      "listglycansforsearch",
+      "GET",
+      {
+        offset: 0,
+        limit: 0,
+        searchId,
+      },
+      true,
+      null,
+      glycanSearchSuccess,
+      glycanSearchFailure
+    );
+  }, []);
 
-  // const handleModifySearch = () => {
-  //   props.history.push(routeConstants.idMapping + id);
-  // };
+  const glycanSearchSuccess = (response) => {
+    response.json().then((data) => setQuery(data.input));
+  };
 
-  // useEffect(() => {
-  //   // listGlycans(["G69411IG"], 1, 10000);
-  //   listGlycans();
-  // }, []);
+  const glycanSearchFailure = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+      setPageErrorsJson(resp);
+      setShowErrorSummary(true);
+      setPageErrorMessage("");
+    });
+  };
 
   return (
     <>
@@ -56,9 +82,9 @@ const GlycanList = (props) => {
           {query && (
             <GlycanListSummary
               data={query}
-              totalSize={totalSize}
               timestamp={timestamp}
-              // onModifySearch={handleModifySearch}
+              onModifySearch={handleModifySearch}
+              searchId={searchId}
             />
           )}
         </section>
@@ -69,7 +95,7 @@ const GlycanList = (props) => {
                 columns={[
                   {
                     Header: "Glycan ID",
-                    accessor: "id"
+                    accessor: "id",
                   },
                   {
                     Header: "GlyTouCan ID",
@@ -82,9 +108,7 @@ const GlycanList = (props) => {
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
                     Cell: (row) => (
-                      <StructureImage
-                        base64={row.original.glycan.cartoon}
-                      ></StructureImage>
+                      <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
                     ),
                     // minWidth: 300,
                   },
@@ -92,8 +116,7 @@ const GlycanList = (props) => {
                     Header: "Mass",
                     accessor: "mass",
                     // // eslint-disable-next-line react/prop-types
-                   Cell: (row) =>
-                    row.value ? parseFloat(row.value).toFixed(2) : "",
+                    Cell: (row) => (row.value ? parseFloat(row.value).toFixed(2) : ""),
                   },
                   {
                     Header: "Dataset Count",
