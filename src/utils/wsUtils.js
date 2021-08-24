@@ -286,6 +286,10 @@ export function getWsUrl(ws) {
       return ws_base_public + "/getDataProcessingSoftware";
     case "getlistintensities":
       return ws_base_public + "/listIntensityData";
+    case "getglycanpublic":
+      return ws_base_public + "/getglycan";
+    case "getdatasetforglycan":
+      return ws_base_public + "/getdatasetforglycan";
     case "deleteslide":
       return ws_base_array + "/deleteslide";
     case "publicfiledownload":
@@ -325,6 +329,7 @@ export function getWsUrl(ws) {
       return ws_base_user;
   }
 }
+
 /**
  *
  * @param {String} ws The webservice to request
@@ -336,12 +341,21 @@ export function getWsUrl(ws) {
  * @param {Function} errorFunction Callback to invoke on error
  * @param {Object} headers Headers object. If not passed, will set both Accept and Content-Type headers to application/json
  */
-export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFunction, errorFunction, headers) {
+export async function wsCall(
+  ws,
+  httpMethod,
+  wsParams,
+  useToken,
+  body,
+  successFunction,
+  errorFunction,
+  headers
+) {
   var url = getWsUrl(ws) + getWsParamString(wsParams);
   if (!headers) {
     headers = {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
   }
 
@@ -362,14 +376,14 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
           // mode: "no-cors", // 'cors' by default
           method: httpMethod,
           headers: headers,
-          body: body
+          body: body,
         })
       : await trackPromise(
           fetch(url, {
             // mode: "no-cors", // 'cors' by default
             method: httpMethod,
             headers: headers,
-            body: body
+            body: body,
           })
         );
 
@@ -406,7 +420,7 @@ function getWsParamString(wsParams) {
 
 function getUrlString(params) {
   var paramString = "";
-  params.forEach(function(val) {
+  params.forEach(function (val) {
     paramString += "/" + val;
   });
   return paramString;
@@ -415,7 +429,7 @@ function getUrlString(params) {
 function getQueryString(params) {
   var paramString = "";
   var firstParam = true;
-  Object.keys(params).forEach(function(key) {
+  Object.keys(params).forEach(function (key) {
     if (firstParam) {
       paramString += "?" + key + "=" + params[key];
       firstParam = false;

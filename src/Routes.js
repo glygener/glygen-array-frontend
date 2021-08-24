@@ -59,7 +59,7 @@ import { AddMultipleGlycans } from "./containers/AddMultipleGlycans";
 import { Peptides } from "./containers/Peptides";
 import { AddPeptide } from "./containers/AddPeptide";
 import { GlycanSearch } from "./public/GlycanSearch";
-import { SubmitterSearch } from "./containers/SubmitterSearch";
+import { SubmitterSearch } from "./public/SubmitterSearch";
 import { Proteins } from "./containers/Proteins";
 import { AddProtein } from "./containers/AddProtein";
 import { Lipids } from "./containers/Lipids";
@@ -67,6 +67,7 @@ import { AddLipid } from "./containers/AddLipid";
 import { AddOtherMolecule } from "./containers/AddOtherMolecule";
 import { OtherMolecules } from "./containers/OtherMolecules";
 import GlycanList from "./public/GlycanList";
+import GlycanDetail from "./public/GlycanDetail";
 
 const Routes = (props) => {
   const routes = [
@@ -95,7 +96,12 @@ const Routes = (props) => {
       main: () => <GlycanList />,
       sidebar: () => "",
     },
-
+    {
+      path: "/glycanDetail",
+      exact: true,
+      main: () => <GlycanDetail />,
+      sidebar: () => "",
+    },
     {
       path: "/data/dataset/:datasetId",
       main: () => <PublicDataset {...props} />,

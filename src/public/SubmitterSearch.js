@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useEffect } from "react";
 import { GlygenTable } from "../components/GlygenTable";
-import "./Contribute.css";
+// import "../Contribute.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -22,7 +22,7 @@ const SubmitterSearch = (props) => {
       </Helmet> */}
 
       <Container maxWidth="md">
-        <Title title="Submittter" />
+        <Title title="Submitter" />
         <div className="card-page-sm">
           <p>Is coming soon</p>
         </div>
@@ -32,7 +32,7 @@ const SubmitterSearch = (props) => {
 };
 
 SubmitterSearch.propTypes = {
-  authCheckAgent: PropTypes.func,
+  // authCheckAgent: PropTypes.func,
 };
 
 export { SubmitterSearch };

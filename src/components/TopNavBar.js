@@ -54,6 +54,9 @@ const TopNavBar = (props) => {
                 <NavDropdown.Item className="gg-nav-link" as={NavLink} to="/submitterSearch" exact>
                   By Submitter
                 </NavDropdown.Item>
+                <NavDropdown.Item className="gg-nav-link" as={NavLink} to="/glycanDetail" exact>
+                  Glycan Detail
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Col>

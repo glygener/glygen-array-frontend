@@ -279,7 +279,9 @@ input[type]:not(:-ms-input-placeholder) + label {
 .table th {
   border: 1px solid #dee2e6;
 }
-
+/* ========================================
+              Header 
+==========================================*/
 /* .table-header {
   color: white;
   font-size: large;
@@ -297,6 +299,20 @@ input[type]:not(:-ms-input-placeholder) + label {
   color: white;
   font-weight: 500;
   padding-left: 15px;
+}
+
+.gg-green {
+  color: var(--gg-green) !important;
+}
+
+.arrow-btn,
+.arrow-btn:focus,
+.arrow-btn :active {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  outline: 0 !important;
+  background-color: transparent !important;
 }
 
 .MuiCard-root {
