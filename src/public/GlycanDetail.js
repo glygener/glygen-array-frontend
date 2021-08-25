@@ -3,7 +3,7 @@ import Helmet from "react-helmet";
 import { useParams, useHistory } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Link } from "react-router-dom";
-// import LineTooltip from "../components/tooltip/LineTooltip";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
@@ -143,7 +143,9 @@ const GlycanList = (props) => {
                 <div>
                   {/* image */}
                   {glycanData && glycanData.cartoon && (
-                    <StructureImage base64={glycanData.cartoon}></StructureImage>
+                    <div className="mt-2 mb-2">
+                      <StructureImage base64={glycanData.cartoon}></StructureImage>
+                    </div>
                   )}
 
                   {/* glycanID */}
@@ -199,7 +201,9 @@ const GlycanList = (props) => {
                     Header: "Glycan ID",
                     accessor: "id",
                     Cell: (row) => (
-                      <Link to={"/data/dataset/" + row.original.id}>{row.original.id}</Link>
+                      <LineTooltip text="View Dataset Details">
+                        <Link to={"/data/dataset/" + row.original.id}>{row.original.id}</Link>
+                      </LineTooltip>
                     ),
                   },
                   {

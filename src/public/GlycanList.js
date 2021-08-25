@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 // import PageLoader from "../components/load/PageLoader";
 import GlycanListSummary from "../components/GlycanListSummary";
-// import LineTooltip from "../components/tooltip/LineTooltip";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
@@ -18,7 +18,7 @@ const GlycanList = (props) => {
 
   const [query, setQuery] = useState(null);
   const [timestamp, setTimeStamp] = useState();
-  
+
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -92,7 +92,9 @@ const GlycanList = (props) => {
                     Header: "Glycan ID",
                     accessor: "id",
                     Cell: (row) => (
-                      <Link to={`/glycanDetail/${row.original.id}`}>{row.original.id}</Link>
+                      <LineTooltip text="View Glycan Details">
+                        <Link to={`/glycanDetail/${row.original.id}`}>{row.original.id}</Link>
+                      </LineTooltip>
                     ),
                   },
                   {
