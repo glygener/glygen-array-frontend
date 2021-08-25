@@ -1,45 +1,67 @@
 import React, { useState, useEffect, useReducer } from "react";
 import Helmet from "react-helmet";
-import { useHistory } from "react-router";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import Container from "@material-ui/core/Container";
-// import PageLoader from "../components/load/PageLoader";
 import { Link } from "react-router-dom";
 // import LineTooltip from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
-import { Card, Row, Col } from "react-bootstrap";
-import { SearchTable } from "../components/search/SearchTable";
+import { Card } from "react-bootstrap";
 import { StructureImage } from "../components/StructureImage";
 import Button from "react-bootstrap/Button";
 import { Title } from "../components/FormControls";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
+import { GlycanDetailTable } from "../components/search/GlycanDetailTable";
+
+function getDateTime(date) {
+  var now = new Date(date);
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDate();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var second = now.getSeconds();
+
+  if (month.toString().length === 1) {
+    month = "0" + month;
+  }
+  if (day.toString().length === 1) {
+    day = "0" + day;
+  }
+  if (hour.toString().length === 1) {
+    hour = "0" + hour;
+  }
+  if (minute.toString().length === 1) {
+    minute = "0" + minute;
+  }
+  if (second.toString().length === 1) {
+    second = "0" + second;
+  }
+  var dateTime = year + "/" + month + "/" + day + " " + hour + ":" + minute + ":" + second;
+  return dateTime;
+}
 
 const GlycanList = (props) => {
-  const { searchId } = useParams();
-  let { id } = useParams();
+  const { glycanId } = useParams();
   const history = useHistory();
 
-  const [query, setQuery] = useState(null);
+  const [glycanData, setGlycanData] = useState(null);
 
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
+  const [collapsed, setCollapsed] = useReducer((state, newState) => ({ ...state, ...newState }), {
+    general: true,
+  });
 
   useEffect(() => {
     wsCall(
-      // getdatasetforglycan
       "getglycanpublic",
       "GET",
-      {
-        offset: 0,
-        limit: 0,
-        searchId,
-        // glycanId
-      },
+      [glycanId],
       true,
       null,
       glycanSearchSuccess,
@@ -48,7 +70,7 @@ const GlycanList = (props) => {
   }, []);
 
   const glycanSearchSuccess = (response) => {
-    response.json().then((data) => setQuery(data.input));
+    response.json().then((data) => setGlycanData(data));
   };
 
   const glycanSearchFailure = (response) => {
@@ -59,16 +81,12 @@ const GlycanList = (props) => {
       setPageErrorMessage("");
     });
   };
-  const [collapsed, setCollapsed] = useReducer((state, newState) => ({ ...state, ...newState }), {
-    general: true,
-  });
 
   function toggleCollapse(name, value) {
     setCollapsed({ [name]: !value });
   }
   const expandIcon = <ExpandMoreIcon fontSize="large" />;
   const closeIcon = <ExpandLessIcon fontSize="large" />;
-  // const { glytoucanIds, maxMass, minMass, description, dateCreated } = props;
 
   return (
     <>
@@ -84,10 +102,9 @@ const GlycanList = (props) => {
           <Button
             type="button"
             className="gg-btn-blue"
-            // onClick={() => history.push("/glycanList")}
-            // onClick={() => {
-            //   props.history.goBack();
-            // }}
+            onClick={() => {
+              history.goBack();
+            }}
           >
             Back
           </Button>
@@ -96,7 +113,7 @@ const GlycanList = (props) => {
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="listglycansforsearch"
+            form="getglycanpublic"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
           />
@@ -124,45 +141,50 @@ const GlycanList = (props) => {
             <Accordion.Collapse eventKey="0">
               <Card.Body>
                 <div>
-                  <div>
-                    {/* <StructureImage base64={row.original.glycan.cartoon}></StructureImage> */}
-                    <img
-                      className="img-cartoon"
-                      // src={getGlycanImageUrl(glytoucan.glytoucan_ac)}
-                      alt="Glycan img"
-                    />
-                  </div>
-                  <div>
-                    <strong>Glycan ID: </strong>
-                    {id}
-                  </div>
+                  {/* image */}
+                  {glycanData && glycanData.cartoon && (
+                    <StructureImage base64={glycanData.cartoon}></StructureImage>
+                  )}
+
+                  {/* glycanID */}
+                  {glycanData && glycanData.id && (
+                    <div>
+                      <strong>Glycan ID: </strong>
+                      {glycanData.id}
+                    </div>
+                  )}
+
                   {/* glytoucanIds */}
-                  {/* {glytoucanIds && glytoucanIds.length > 0 && ( */}
-                  <div>
-                    <strong>GlyTouCan ID: </strong>
-                    {/* {glytoucanIds.join(", ")} */}
-                  </div>
-                  {/* )} */}
+                  {glycanData && glycanData.glytoucanId && (
+                    <div>
+                      <strong>GlyTouCan ID: </strong>
+                      {glycanData.glytoucanId}
+                    </div>
+                  )}
+
                   {/* mass */}
-                  {/* {minMass && maxMass && ( */}
-                  <div>
-                    <strong>Mass: </strong>
-                    {/* {minMass}&#8209;{maxMass} */}
-                  </div>
+                  {glycanData && glycanData.mass && (
+                    <div>
+                      <strong>Mass: </strong>
+                      {parseInt(glycanData.mass).toFixed(2)}
+                    </div>
+                  )}
+
                   {/* Description */}
-                  {/* {description && description.length > 0 && ( */}
-                  <div>
-                    <strong>Description: </strong>
-                    {/* {description} */}
-                  </div>
-                  {/* )} */}
+                  {glycanData && glycanData.description && (
+                    <div>
+                      <strong>Description: </strong>
+                      {glycanData.description}
+                    </div>
+                  )}
+
                   {/* Creation date/user */}
-                  {/* {dateCreated && dateCreated.length > 0 && ( */}
-                  <div>
-                    <strong>Creation date/user: </strong>
-                    {/* {dateCreated} */}
-                  </div>
-                  {/* )} */}
+                  {glycanData && glycanData.dateCreated && (
+                    <div>
+                      <strong>Creation date/user: </strong>
+                      {getDateTime(glycanData.dateCreated)}
+                    </div>
+                  )}
                 </div>
               </Card.Body>
             </Accordion.Collapse>
@@ -171,12 +193,14 @@ const GlycanList = (props) => {
         <Grid container style={{ marginTop: "32px" }}>
           <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
             <Card>
-              <SearchTable
+              <GlycanDetailTable
                 columns={[
                   {
                     Header: "Glycan ID",
                     accessor: "id",
-                    Cell: (row) => <Link to={"/data/dataset" + row.id}>{row.id}</Link>,
+                    Cell: (row) => (
+                      <Link to={"/data/dataset/" + row.original.id}>{row.original.id}</Link>
+                    ),
                   },
                   {
                     Header: "Dataset",
@@ -193,23 +217,19 @@ const GlycanList = (props) => {
                   {
                     Header: "Published Date",
                     accessor: "dateCreated",
+                    Cell: (row) => <>{getDateTime(row.original.dateCreated)}</>,
                   },
                 ]}
                 defaultPageSize={10}
-                defaultSortColumn="searchId"
+                defaultSortColumn="id"
                 showCommentsButton={false}
                 showDeleteButton={false}
-                // showSearchBox
                 showEditButton={false}
-                // commentsRefColumn="description"
-                fetchWS="listglycansforsearch"
-                // deleteWS="glycandelete"
-                // editUrl="glycans/editglycan"
-                keyColumn="searchId"
+                fetchWS="getdatasetforglycan"
+                keyColumn="id"
                 showRowsInfo
                 infoRowsText="Glycans"
-                // searchId="1.0mass2000.0981980773glytoucan"
-                searchId={searchId}
+                glycanId={glycanId}
               />
             </Card>
           </Grid>

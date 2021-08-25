@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { useHistory } from "react-router";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 // import PageLoader from "../components/load/PageLoader";
 import GlycanListSummary from "../components/GlycanListSummary";
-// import { Link } from "react-router-dom";
 // import LineTooltip from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
-import { PublicListDataset } from "./PublicListDataset";
 import { Card } from "react-bootstrap";
 import { SearchTable } from "../components/search/SearchTable";
 import { StructureImage } from "../components/StructureImage";
@@ -18,12 +15,10 @@ import { StructureImage } from "../components/StructureImage";
 const GlycanList = (props) => {
   const { searchId } = useParams();
   let { id } = useParams();
-  const history = useHistory();
 
   const [query, setQuery] = useState(null);
   const [timestamp, setTimeStamp] = useState();
-  const [totalSize, setTotalSize] = useState();
-
+  
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -96,6 +91,9 @@ const GlycanList = (props) => {
                   {
                     Header: "Glycan ID",
                     accessor: "id",
+                    Cell: (row) => (
+                      <Link to={`/glycanDetail/${row.original.id}`}>{row.original.id}</Link>
+                    ),
                   },
                   {
                     Header: "GlyTouCan ID",
@@ -110,7 +108,6 @@ const GlycanList = (props) => {
                     Cell: (row) => (
                       <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
                     ),
-                    // minWidth: 300,
                   },
                   {
                     Header: "Mass",
@@ -127,16 +124,11 @@ const GlycanList = (props) => {
                 defaultSortColumn="searchId"
                 showCommentsButton={false}
                 showDeleteButton={false}
-                // showSearchBox
                 showEditButton={false}
-                // commentsRefColumn="description"
                 fetchWS="listglycansforsearch"
-                // deleteWS="glycandelete"
-                // editUrl="glycans/editglycan"
                 keyColumn="searchId"
                 showRowsInfo
                 infoRowsText="Glycans"
-                // searchId="1.0mass2000.0981980773glytoucan"
                 searchId={searchId}
               />
             </Card>
