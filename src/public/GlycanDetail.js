@@ -96,7 +96,13 @@ const GlycanList = (props) => {
       </Helmet> */}
 
       <Container maxWidth="lg" className="gg-container">
-        <Title title="Details for Glycan" />
+        <div className="content-box-md text-center horizontal-heading">
+          <h1 className="page-heading">
+            <span>Details for Glycan </span>{" "}
+            <strong>{glycanData && glycanData.id && <> {glycanData.id}</>}</strong>
+          </h1>
+        </div>
+
         {/* {props.history && props.history.length > 1 && ( */}
         <div className="text-right gg-download-btn-width pb-3">
           <Button
@@ -172,19 +178,19 @@ const GlycanList = (props) => {
                     </div>
                   )}
 
-                  {/* Description */}
-                  {glycanData && glycanData.description && (
-                    <div>
-                      <strong>Description: </strong>
-                      {glycanData.description}
-                    </div>
-                  )}
-
                   {/* Creation date/user */}
                   {glycanData && glycanData.dateCreated && (
                     <div>
                       <strong>Creation date/user: </strong>
                       {getDateTime(glycanData.dateCreated)}
+                    </div>
+                  )}
+
+                  {/* Description */}
+                  {glycanData && glycanData.description && (
+                    <div>
+                      <strong>Description: </strong>
+                      {glycanData.description}
                     </div>
                   )}
                 </div>
@@ -213,6 +219,7 @@ const GlycanList = (props) => {
                   {
                     Header: "Sample",
                     accessor: "sample.name",
+                    minWidth: 300,
                   },
                   {
                     Header: "Owner",
@@ -221,6 +228,7 @@ const GlycanList = (props) => {
                   {
                     Header: "Published Date",
                     accessor: "dateCreated",
+                    minWidth: 150,
                     Cell: (row) => <>{getDateTime(row.original.dateCreated)}</>,
                   },
                 ]}

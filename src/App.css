@@ -40,6 +40,13 @@ hr {
   text-align: center;
   font-weight: 700;
 }
+.horizontal-heading h1 {
+  font-size: 38px;
+  /* font-weight: 100; */
+  font-weight: 300;
+  line-height: 45px;
+  text-transform: capitalize;
+}
 /* =========================================
                 Content Boxes
 ============================================ */

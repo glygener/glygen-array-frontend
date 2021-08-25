@@ -45,3 +45,9 @@
   padding: 15px;
   margin-left: 10px;
 }
+.ReactTable .rt-tbody .rt-td {
+  border-right: 1px solid #ced2d6 !important;
+}
+.ReactTable .rt-th, .ReactTable .rt-td {
+  padding: 10px 15px;
+}
