@@ -14,14 +14,9 @@
       },
       "examples": [
         {
-          "orderID": 100,
           "example": {
             "name": "Example",
-            "id": "G17689DH"
-          },
-          "explore": {
-            "id": "GlyTouCan Accession",
-            "url": "https://glytoucan.org/Structures"
+            "id": "G43981RC"
           }
         }
      ]
@@ -42,7 +37,7 @@
       "length": 10000,
       "errorText": "Entry is too long - max length is 10,000.",
       "requiredText": "This field is required.",
-      "placeholder": "Enter the sequence",
+      "placeholder": "Enter the sequence \nExample: WURCS=2.0/4,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a2112h-1b_1-5]/1-1-2-3-1-4-3/a4-b1_b4-c1_c3-d1_c6-g1_d2-e1_e4-f1",
       "tooltip": {
         "title": "Sequence",
         "text": "Sequence description.",
@@ -99,7 +94,7 @@
       "length": 10000,
       "errorText": "Entry is too long - max length is 10,000.",
       "requiredText": "This field is required.",
-      "placeholder": "Enter the sequence",
+      "placeholder": "Enter the sequence \nExample: WURCS=2.0/4,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a2112h-1b_1-5]/1-1-2-3-1-4-3/a4-b1_b4-c1_c3-d1_c6-g1_d2-e1_e4-f1",
       "tooltip": {
         "title": "Sequence",
         "text": "Sequence description.",

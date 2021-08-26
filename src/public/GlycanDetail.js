@@ -150,7 +150,10 @@ const GlycanList = (props) => {
                   {/* image */}
                   {glycanData && glycanData.cartoon && (
                     <div className="mt-2 mb-2">
-                      <StructureImage base64={glycanData.cartoon}></StructureImage>
+                      <StructureImage
+                        style={{ minWidth: "30%" }}
+                        base64={glycanData.cartoon}
+                      ></StructureImage>
                     </div>
                   )}
 
@@ -204,7 +207,7 @@ const GlycanList = (props) => {
               <GlycanDetailTable
                 columns={[
                   {
-                    Header: "Glycan ID",
+                    Header: "Dataset ID",
                     accessor: "id",
                     Cell: (row) => (
                       <LineTooltip text="View Dataset Details">
@@ -215,11 +218,22 @@ const GlycanList = (props) => {
                   {
                     Header: "Dataset",
                     accessor: "name",
+                    minWidth: 150,
+                    Cell: (row) => (
+                      <LineTooltip text={row.original.name}>
+                        <span>{row.original.name}</span>
+                      </LineTooltip>
+                    ),
                   },
                   {
                     Header: "Sample",
                     accessor: "sample.name",
                     minWidth: 300,
+                    Cell: (row) => (
+                      <LineTooltip text={row.original.sample.name}>
+                        <span>{row.original.sample.name}</span>
+                      </LineTooltip>
+                    ),
                   },
                   {
                     Header: "Owner",

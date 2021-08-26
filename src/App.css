@@ -529,3 +529,27 @@ input[type="number"] {
     color: #1d9901 !important;
     position: relative;
   }
+
+  /* =========================================
+                Link Button
+============================================ */
+
+.lnk-btn {
+  text-decoration: none !important;
+  color: var(--gg-blue) !important;
+  border-width: 0 !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  vertical-align: inherit !important;
+}
+
+.lnk-btn:hover {
+  color: var(--gg-dark-hover) !important;
+}
+
+.lnk-btn:disabled:hover,
+.lnk-btn:disabled {
+  pointer-events: auto !important;
+  cursor: no-drop !important;
+  color: var(--gg-blue) !important;
+}

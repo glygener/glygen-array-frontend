@@ -13,7 +13,7 @@ import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import "../../css/Search.css";
-import { SubscriptionsOutlined } from "@material-ui/icons";
+import ExampleExploreControl from "../ExampleExploreControl";
 
 const getCommaSeparatedValues = (value) => {
   if (typeof value !== "string") return "";
@@ -68,6 +68,14 @@ const GlycanAdvancedSearch = (props) => {
     response.text().then((searchId) => history.push("glycanList/" + searchId));
   };
 
+  /**
+   * Function to set glycan id value.
+   * @param {string} glycanSearchSuccess - input glycan id value.
+   **/
+  function funcSetInputValues(glycanSearchSuccess) {
+    setInputValues({ glytoucanIds: glycanSearchSuccess });
+  }
+
   const glycanSearchFailure = (response) => {
     response.json().then((resp) => {
       console.log(resp);
@@ -78,7 +86,7 @@ const GlycanAdvancedSearch = (props) => {
   };
 
   const clearGlycan = () => {
-    setShowErrorSummary(false)
+    setShowErrorSummary(false);
     setInputValues({
       glytoucanIds: "",
       massRange: [1, 10000],
@@ -110,13 +118,7 @@ const GlycanAdvancedSearch = (props) => {
           errorMessage={pageErrorMessage}
         />
       )}
-      <Grid
-        container
-        style={{ margin: "0  auto" }}
-        spacing={3}
-        justify="center"
-        className="mb-5"
-      >
+      <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center" className="mb-5">
         {/* Buttons Top */}
         <Grid item xs={12} sm={10}>
           <Row className="gg-align-center">
@@ -137,7 +139,7 @@ const GlycanAdvancedSearch = (props) => {
                 title={advancedSearch.glycan_id.tooltip.title}
                 text={advancedSearch.glycan_id.tooltip.text}
               />
-              Glycan ID
+              GlyTouCan ID
             </Typography>
             <OutlinedInput
               fullWidth
@@ -152,6 +154,10 @@ const GlycanAdvancedSearch = (props) => {
             {inputValues.glytoucanIds.length > advancedSearch.glycan_id.length && (
               <FormHelperText error>{advancedSearch.glycan_id.errorText}</FormHelperText>
             )}
+            <ExampleExploreControl
+              setInputValue={funcSetInputValues}
+              inputValue={advancedSearch.glycan_id.examples}
+            />
           </FormControl>
         </Grid>
         {/* Monoisotopic Mass */}
@@ -171,13 +177,9 @@ const GlycanAdvancedSearch = (props) => {
                   min={1}
                   max={10000}
                   inputValueSlider={inputValues.massRange}
-                  setSliderInputValue={(value) =>
-                    setInputValues({ massRange: value })
-                  }
+                  setSliderInputValue={(value) => setInputValues({ massRange: value })}
                   inputValue={inputValues.massRangeInput}
-                  setInputValue={(value) =>
-                    setInputValues({ massRangeInput: value })
-                  }
+                  setInputValue={(value) => setInputValues({ massRangeInput: value })}
                 />
               </Grid>
             </Grid>
