@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
+import { head, getMeta } from "../utils/head";
 import { useParams, Link, useHistory } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import GlycanListSummary from "../components/GlycanListSummary";
@@ -57,10 +58,10 @@ const GlycanList = (props) => {
 
   return (
     <>
-      {/* <Helmet>
-        <title>{head.glycans.title}</title>
-        {getMeta(head.glycans)}
-      </Helmet> */}
+      <Helmet>
+        <title>{head.glycanList.title}</title>
+        {getMeta(head.glycanList)}
+      </Helmet>
 
       <Container maxWidth="xl" className="gg-container">
         {showErrorSummary === true && (

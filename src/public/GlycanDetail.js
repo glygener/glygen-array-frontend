@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import Helmet from "react-helmet";
+import { getMetaID, getTitle } from "../utils/head";
 import { useParams, useHistory } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Link } from "react-router-dom";
@@ -89,10 +90,12 @@ const GlycanList = (props) => {
 
   return (
     <>
-      {/* <Helmet>
-        <title>{head.glycans.title}</title>
-        {getMeta(head.glycans)}
-      </Helmet> */}
+      <Helmet>
+        {getTitle("glycanDetail", {
+          glytoucanID: glycanData && glycanData.id ? glycanData.id : "",
+        })}
+        {getMetaID("glycanDetail")}
+      </Helmet>
 
       <Container maxWidth="lg" className="gg-container">
         <div className="content-box-md text-center horizontal-heading">

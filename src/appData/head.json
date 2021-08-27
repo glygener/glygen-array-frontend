@@ -99,6 +99,45 @@
       }
     ]
   },
+  "glycanSearch": {
+    "title": "Glycan Search | Search for Glycan Structures",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Search for glycan structures based on their GlyTouCan accession, monoisotopic mass, sequence type and sequence."
+      },
+      {
+        "name": "keywords",
+        "content": "glycan, glycan search, GlyTouCan accession, monoisotopic mass, sequence type and sequence."
+      }
+    ]
+  },
+  "glycanList": {
+    "title": "Glycan List | Summary of Your Glycan Search",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Results of a glycan structure search - a list of glycans conforming to the query parameters. Select the GlyTouCan Accession from the list."
+      },
+      {
+        "name": "keywords",
+        "content": "glycan, structure, collection, GlyTouCan Accession, Image of Glycan Structure, Monoisotopic Mass (Da)."
+      }
+    ]
+  },
+  "glycanDetail": {
+    "title": "Glycan Details | Details for #glytoucanID",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Detailed information about selected glycan and its associated metadata."
+      },
+      {
+        "name": "keywords",
+        "content": "glycan, structure, meta data, general, Glycan ID, GlyTouCan ID, Mass, Creation date, the user."
+      }
+    ]
+  },
   "glycans": {
     "title": "My Glycans",
     "meta": [

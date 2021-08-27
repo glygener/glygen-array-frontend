@@ -31,8 +31,4 @@ const SubmitterSearch = (props) => {
   );
 };
 
-SubmitterSearch.propTypes = {
-  // authCheckAgent: PropTypes.func,
-};
-
 export { SubmitterSearch };

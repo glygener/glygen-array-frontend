@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import "../css/Search.css";
 import Helmet from "react-helmet";
-import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
@@ -63,10 +62,10 @@ const GlycanSearch = (props) => {
 
   return (
     <>
-      {/* <Helmet>
-        <title>{head.glycans.title}</title>
-        {getMeta(head.glycans)}
-      </Helmet> */}
+      <Helmet>
+        <title>{head.glycanSearch.title}</title>
+        {getMeta(head.glycanSearch)}
+      </Helmet>
 
       <div className="lander">
         {showErrorSummary === true && (
@@ -113,10 +112,6 @@ const GlycanSearch = (props) => {
       </div>
     </>
   );
-};
-
-GlycanSearch.propTypes = {
-  authCheckAgent: PropTypes.func,
 };
 
 export { GlycanSearch };
