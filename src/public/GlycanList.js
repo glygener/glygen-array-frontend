@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useHistory } from "react-router-dom";
 import Container from "@material-ui/core/Container";
-// import PageLoader from "../components/load/PageLoader";
 import GlycanListSummary from "../components/GlycanListSummary";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
@@ -14,7 +13,7 @@ import { StructureImage } from "../components/StructureImage";
 
 const GlycanList = (props) => {
   const { searchId } = useParams();
-  let { id } = useParams();
+  const history = useHistory();
 
   const [query, setQuery] = useState(null);
   const [timestamp, setTimeStamp] = useState();
@@ -24,8 +23,7 @@ const GlycanList = (props) => {
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
   const handleModifySearch = () => {
-    //  response.json().then((data) => setQuery(data.input));
-    // history.push("glycanSearch/" + id);
+    history.push("/glycanSearch/" + searchId);
   };
 
   useEffect(() => {
@@ -34,7 +32,7 @@ const GlycanList = (props) => {
       "GET",
       {
         offset: 0,
-        limit: 0,
+        limit: 1,
         searchId,
       },
       true,
@@ -42,7 +40,7 @@ const GlycanList = (props) => {
       glycanSearchSuccess,
       glycanSearchFailure
     );
-  }, []);
+  }, [searchId]);
 
   const glycanSearchSuccess = (response) => {
     response.json().then((data) => setQuery(data.input));

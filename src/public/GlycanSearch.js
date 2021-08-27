@@ -1,12 +1,9 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from "react";
-import { GlygenTable } from "../components/GlygenTable";
 import "../css/Search.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { Col } from "react-bootstrap";
-import { StructureImage } from "../components/StructureImage";
+import { useParams } from "react-router-dom";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 import { Tab, Tabs, Container } from "react-bootstrap";
@@ -17,50 +14,52 @@ import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 
 const GlycanSearch = (props) => {
-  function searchGlycan() {
-    wsCall(
-      "searchglycans",
-      "POST",
-      null,
-      false,
-      {
-        glytoucanIds: "test",
-        maxMass: 0,
-        minMass: 0,
-        structure: {
-          format: "GlycoCT",
-          reducingEnd: true,
-          sequence: "test",
-        },
-        substructure: {
-          format: "GlycoCT",
-          reducingEnd: true,
-          sequence: "test",
-        },
-      },
-      glycanSearchSuccess,
-      glycanSearchFailure
-    );
+  const { searchId } = useParams();
 
-    function glycanSearchSuccess(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-      });
-    }
-
-    function glycanSearchFailure(response) {
-      response.json().then((resp) => {
-        console.log(resp);
-        setPageErrorsJson(resp);
-        setShowErrorSummary(true);
-        setPageErrorMessage("");
-      });
-    }
-  }
-
+  const [currentTab, setCurrentTab] = useState("general");
+  const [inputValue, setInputValue] = useState(null);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
+
+  useEffect(() => {
+    if (searchId) {
+      wsCall(
+        "listglycansforsearch",
+        "GET",
+        {
+          offset: 0,
+          limit: 1,
+          searchId,
+        },
+        true,
+        null,
+        glycanSearchSuccess,
+        glycanSearchFailure
+      );
+    }
+  }, [searchId]);
+
+  const glycanSearchSuccess = (response) => {
+    response.json().then((data) => {
+      const tabMaps = {
+        MASS: "general",
+        STRUCTURE: "structure",
+        SUBSTRUCTURE: "substructure",
+      };
+      setCurrentTab(tabMaps[data.type]);
+      setInputValue(data.input);
+    });
+  };
+
+  const glycanSearchFailure = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+      setPageErrorsJson(resp);
+      setShowErrorSummary(true);
+      setPageErrorMessage("");
+    });
+  };
 
   return (
     <>
@@ -68,11 +67,6 @@ const GlycanSearch = (props) => {
         <title>{head.glycans.title}</title>
         {getMeta(head.glycans)}
       </Helmet> */}
-
-      {/* <div className="page-container5">
-        <Title title="Glycan Search" />
-        <p className={"page-description5"}>Is coming soon</p>
-      </div> */}
 
       <div className="lander">
         {showErrorSummary === true && (
@@ -85,54 +79,33 @@ const GlycanSearch = (props) => {
         )}
 
         <Container>
-          {/* <PageLoader pageLoading={pageLoading} />
-          <DialogAlert
-            alertInput={alertDialogInput}
-            setOpen={(input) => {
-              setAlertDialogInput({ show: input });
-            }}
-          /> */}
           <Title title="Glycan Search" />
           <Tabs
-            defaultActiveKey="General"
+            defaultActiveKey="general"
             transition={false}
-            // activeKey={glyActTabKey}
+            activeKey={currentTab}
             mountOnEnter={true}
             unmountOnExit={true}
-            // onSelect={(key) => setGlyActTabKey(key)}
+            onSelect={(key) => setCurrentTab(key)}
           >
-            <Tab eventKey="General" className="pt-2" title="General">
-              {/* <TextAlert alertInput={alertTextInput} /> */}
+            <Tab eventKey="general" className="pt-2" title="General">
               <div style={{ paddingBottom: "20px" }}></div>
               <Container className="tab-content-border">
-                {/* {initData && ( */}
-                <GlycanAdvancedSearch />
-                {/* searchGlycanAdvClick={searchGlycanAdvClick}
-                  inputValue={glyAdvSearchData}
-                  initData={initData}
-                  setGlyAdvSearchData={setGlyAdvSearchData} */}
-
-                {/* )} */}
+                <GlycanAdvancedSearch inputValue={inputValue} />
               </Container>
             </Tab>
-            <Tab
-              eventKey="Structure-Search"
-              className="tab-content-padding"
-              title="Structure Search"
-            >
-              {/* <TextAlert alertInput={alertTextInput} /> */}
+            <Tab eventKey="structure" className="tab-content-padding" title="Structure Search">
               <Container className="tab-content-border">
-                <GlycanStructureSearch />
+                <GlycanStructureSearch inputValue={inputValue} />
               </Container>
             </Tab>
             <Tab
-              eventKey="Substructure-Search"
+              eventKey="substructure"
               title="Substructure Search"
               className="tab-content-padding"
             >
-              {/* <TextAlert alertInput={alertTextInput} /> */}
               <Container className="tab-content-border">
-               <GlycanSubstructureSearch />
+                <GlycanSubstructureSearch inputValue={inputValue} />
               </Container>
             </Tab>
           </Tabs>

@@ -91,6 +91,12 @@ const Routes = (props) => {
       sidebar: () => "",
     },
     {
+      path: "/glycanSearch/:searchId",
+      exact: true,
+      main: () => <GlycanSearch />,
+      sidebar: () => "",
+    },
+    {
       path: "/glycanList/:searchId",
       exact: true,
       main: () => <GlycanList />,
@@ -113,6 +119,7 @@ const Routes = (props) => {
       main: () => <PublicData />,
       sidebar: () => "",
     },
+    
     {
       path: "/login",
       sidebar: () => "",

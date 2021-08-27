@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -22,7 +22,7 @@ export default function GlycanStructureSearch(props) {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
-  const [inputValues, setInputValues] = React.useReducer(
+  const [inputValue, setInputValue] = React.useReducer(
     (state, payload) => ({ ...state, ...payload }),
     {
       sequence: "",
@@ -43,8 +43,8 @@ export default function GlycanStructureSearch(props) {
   const validate = {
     sequence: () => {
       if (
-        inputValues.sequence === "" ||
-        inputValues.sequence.length > structureSearch.sequence.length
+        inputValue.sequence === "" ||
+        inputValue.sequence.length > structureSearch.sequence.length
       ) {
         setErrors({ sequence: true });
       } else {
@@ -52,7 +52,7 @@ export default function GlycanStructureSearch(props) {
       }
     },
     sequenceFormat: () => {
-      if (inputValues.sequenceFormat === "") {
+      if (inputValue.sequenceFormat === "") {
         setErrors({ sequenceFormat: true });
       } else {
         setErrors({ sequenceFormat: false });
@@ -62,11 +62,11 @@ export default function GlycanStructureSearch(props) {
 
   React.useEffect(() => {
     validate.sequence();
-  }, [inputValues.sequence]);
+  }, [inputValue.sequence]);
 
   React.useEffect(() => {
     validate.sequenceFormat();
-  }, [inputValues.sequenceFormat]);
+  }, [inputValue.sequenceFormat]);
 
   const isValid = () =>
     Object.values(touched).some((touched) => touched === true) &&
@@ -85,7 +85,7 @@ export default function GlycanStructureSearch(props) {
   };
 
   const glycanSearchSuccess = (response) => {
-    response.text().then((searchId) => history.push("glycanList/" + searchId));
+    response.text().then((searchId) => history.push("/glycanList/" + searchId));
   };
 
   const glycanSearchFailure = (response) => {
@@ -102,7 +102,7 @@ export default function GlycanStructureSearch(props) {
    **/
   const clearStructure = () => {
     setShowErrorSummary(false);
-    setInputValues({
+    setInputValue({
       sequence: "",
       sequenceFormat: "",
     });
@@ -118,9 +118,22 @@ export default function GlycanStructureSearch(props) {
   };
 
   const searchGlycanStrClick = () => {
-    let { sequence, sequenceFormat } = inputValues;
+    let { sequence, sequenceFormat } = inputValue;
     searchStructure(sequence, sequenceFormat);
   };
+
+  useEffect(() => {
+    if (props.inputValue && props.inputValue.structure) {
+      setInputValue({
+        sequence: props.inputValue.structure.sequence,
+        sequenceFormat: props.inputValue.structure.format,
+      });
+      setTouched({
+        sequence: true,
+        sequenceFormat: true,
+      });
+    }
+  }, [props.inputValue]);
 
   return (
     <>
@@ -157,8 +170,8 @@ export default function GlycanStructureSearch(props) {
             <SelectControl
               placeholderId={structureSearch.sequence_type.placeholderId}
               placeholder={structureSearch.sequence_type.placeholder}
-              inputValue={inputValues.sequenceFormat}
-              setInputValue={(value) => setInputValues({ sequenceFormat: value })}
+              inputValue={inputValue.sequenceFormat}
+              setInputValue={(value) => setInputValue({ sequenceFormat: value })}
               menu={structureSearch.sequence_type.options}
               error={touched.sequenceFormat && errors.sequenceFormat}
               onBlur={() => setTouched({ sequenceFormat: true })}
@@ -185,18 +198,18 @@ export default function GlycanStructureSearch(props) {
               rows="3"
               required={true}
               placeholder={structureSearch.sequence.placeholder}
-              value={inputValues.sequence}
+              value={inputValue.sequence}
               onBlur={() => setTouched({ sequence: true })}
               error={touched.sequence && errors.sequence}
               onChange={(e) => {
                 setTouched({ sequence: true });
-                setInputValues({ sequence: e.target.value });
+                setInputValue({ sequence: e.target.value });
               }}
             ></OutlinedInput>
-            {touched.sequence && inputValues.sequence.length === 0 && (
+            {touched.sequence && inputValue.sequence.length === 0 && (
               <FormHelperText error>{structureSearch.sequence.requiredText}</FormHelperText>
             )}
-            {touched.sequence && inputValues.sequence.length > structureSearch.sequence.length && (
+            {touched.sequence && inputValue.sequence.length > structureSearch.sequence.length && (
               <FormHelperText error>{structureSearch.sequence.errorText}</FormHelperText>
             )}
           </FormControl>

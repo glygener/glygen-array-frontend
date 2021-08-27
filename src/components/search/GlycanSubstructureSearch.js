@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -36,7 +36,7 @@ export default function GlycanSubstructureSearch(props) {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
 
-  const [inputValues, setInputValues] = React.useReducer(
+  const [inputValue, setInputValue] = React.useReducer(
     (state, payload) => ({ ...state, ...payload }),
     {
       sequence: "",
@@ -58,8 +58,8 @@ export default function GlycanSubstructureSearch(props) {
   const validate = {
     sequence: () => {
       if (
-        inputValues.sequence === "" ||
-        inputValues.sequence.length > subStructureSearch.sequence.length
+        inputValue.sequence === "" ||
+        inputValue.sequence.length > subStructureSearch.sequence.length
       ) {
         setErrors({ sequence: true });
       } else {
@@ -67,7 +67,7 @@ export default function GlycanSubstructureSearch(props) {
       }
     },
     sequenceFormat: () => {
-      if (inputValues.sequenceFormat === "") {
+      if (inputValue.sequenceFormat === "") {
         setErrors({ sequenceFormat: true });
       } else {
         setErrors({ sequenceFormat: false });
@@ -77,11 +77,11 @@ export default function GlycanSubstructureSearch(props) {
 
   React.useEffect(() => {
     validate.sequence();
-  }, [inputValues.sequence]);
+  }, [inputValue.sequence]);
 
   React.useEffect(() => {
     validate.sequenceFormat();
-  }, [inputValues.sequenceFormat]);
+  }, [inputValue.sequenceFormat]);
 
   const isValid = () =>
     Object.values(touched).some((touched) => touched === true) &&
@@ -100,7 +100,7 @@ export default function GlycanSubstructureSearch(props) {
   };
 
   const glycanSearchSuccess = (response) => {
-    response.text().then((searchId) => history.push("glycanList/" + searchId));
+    response.text().then((searchId) => history.push("/glycanList/" + searchId));
   };
 
   const glycanSearchFailure = (response) => {
@@ -117,7 +117,7 @@ export default function GlycanSubstructureSearch(props) {
    **/
   const clearStructure = () => {
     setShowErrorSummary(false);
-    setInputValues({
+    setInputValue({
       sequence: "",
       sequenceFormat: "",
       reducingEnd: false,
@@ -134,9 +134,24 @@ export default function GlycanSubstructureSearch(props) {
   };
 
   const searchGlycanStrClick = () => {
-    const { sequence, sequenceFormat, reducingEnd } = inputValues;
+    const { sequence, sequenceFormat, reducingEnd } = inputValue;
     searchSubstructure(sequence, sequenceFormat, reducingEnd);
   };
+
+  useEffect(() => {
+    if (props.inputValue && props.inputValue.structure) {
+      setInputValue({
+        sequence: props.inputValue.structure.sequence,
+        sequenceFormat: props.inputValue.structure.format,
+        reducingEnd: props.inputValue.structure.reducingEnd,
+      });
+      setTouched({
+        sequence: true,
+        sequenceFormat: true,
+        reducingEnd: true,
+      });
+    }
+  }, [props.inputValue]);
 
   return (
     <>
@@ -173,8 +188,8 @@ export default function GlycanSubstructureSearch(props) {
             <SelectControl
               placeholderId={subStructureSearch.sequence_type.placeholderId}
               placeholder={subStructureSearch.sequence_type.placeholder}
-              inputValue={inputValues.sequenceFormat}
-              setInputValue={(value) => setInputValues({ sequenceFormat: value })}
+              inputValue={inputValue.sequenceFormat}
+              setInputValue={(value) => setInputValue({ sequenceFormat: value })}
               menu={subStructureSearch.sequence_type.options}
               error={touched.sequenceFormat && errors.sequenceFormat}
               onBlur={() => setTouched({ sequenceFormat: true })}
@@ -201,19 +216,19 @@ export default function GlycanSubstructureSearch(props) {
               rows="3"
               required={true}
               placeholder={structureSearch.sequence.placeholder}
-              value={inputValues.sequence}
+              value={inputValue.sequence}
               onBlur={() => setTouched({ sequence: true })}
               error={touched.sequence && errors.sequence}
               onChange={(e) => {
                 setTouched({ sequence: true });
-                setInputValues({ sequence: e.target.value });
+                setInputValue({ sequence: e.target.value });
               }}
             ></OutlinedInput>
-            {touched.sequence && inputValues.sequence.length === 0 && (
+            {touched.sequence && inputValue.sequence.length === 0 && (
               <FormHelperText error>{subStructureSearch.sequence.requiredText}</FormHelperText>
             )}
             {touched.sequence &&
-              inputValues.sequence.length > subStructureSearch.sequence.length && (
+              inputValue.sequence.length > subStructureSearch.sequence.length && (
                 <FormHelperText error>{subStructureSearch.sequence.errorText}</FormHelperText>
               )}
           </FormControl>
@@ -224,8 +239,8 @@ export default function GlycanSubstructureSearch(props) {
             control={
               <BlueCheckbox
                 name="reducingEnd"
-                checked={inputValues.reducingEnd}
-                onChange={(e) => setInputValues({ reducingEnd: e.target.checked })}
+                checked={inputValue.reducingEnd}
+                onChange={(e) => setInputValue({ reducingEnd: e.target.checked })}
                 size="large"
               />
             }

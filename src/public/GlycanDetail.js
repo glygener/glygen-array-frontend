@@ -10,7 +10,6 @@ import Grid from "@material-ui/core/Grid";
 import { Card } from "react-bootstrap";
 import { StructureImage } from "../components/StructureImage";
 import Button from "react-bootstrap/Button";
-import { Title } from "../components/FormControls";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
@@ -103,7 +102,6 @@ const GlycanList = (props) => {
           </h1>
         </div>
 
-        {/* {props.history && props.history.length > 1 && ( */}
         <div className="text-right gg-download-btn-width pb-3">
           <Button
             type="button"
@@ -115,7 +113,6 @@ const GlycanList = (props) => {
             Back
           </Button>
         </div>
-        {/* )} */}
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
@@ -151,7 +148,7 @@ const GlycanList = (props) => {
                   {glycanData && glycanData.cartoon && (
                     <div className="mt-2 mb-2">
                       <StructureImage
-                        style={{ minWidth: "30%" }}
+                        style={{ minWidth: "20%" }}
                         base64={glycanData.cartoon}
                       ></StructureImage>
                     </div>
