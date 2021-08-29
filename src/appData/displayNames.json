@@ -37,7 +37,6 @@
     "INCHI_SEQUENCE": "InchI",
     "CANONICAL_SMILES": "Canonical SMILES",
     "ISOMERIC_SMILES": "Isomeric SMILES",
-    "OPENS_RING": "Opens Ring",
     "SMALLMOLECULE_LINKER": "Small Molecule",
     "PEPTIDE_LINKER": "Peptide",
     "PROTEIN_LINKER": "Protein"

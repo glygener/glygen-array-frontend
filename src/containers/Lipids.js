@@ -12,7 +12,11 @@ import displayNames from "../appData/displayNames";
 import { StructureImage } from "../components/StructureImage";
 
 const Lipids = props => {
-  useEffect(props.authCheckAgent, []);
+  useEffect(() => {
+    if (props.authCheckAgent) {
+      props.authCheckAgent();
+    }
+  }, []);
 
   return (
     <>
@@ -58,17 +62,27 @@ const Lipids = props => {
           defaultPageSize={10}
           defaultSortColumn="id"
           showCommentsButton
-          showDeleteButton
           showSearchBox
-          showEditButton
           commentsRefColumn="description"
-          fetchWS="listmoleculesbytype"
-          paramTypeValue={"LIPID"}
           deleteWS="lipiddelete"
           editUrl="lipids/editlipid"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Lipids"
+          showDeleteButton={props.showDeleteButton}
+          showEditButton={props.showEditButton}
+          fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
+          paramTypeValue={"LIPID"}
+          isModal={props.isModal}
+          selectButtonHeader={props.selectButtonHeader ? "Select" : ""}
+          showSelectButton={props.showSelectButton}
+          selectButtonHandler={props.selectButtonHandler}
+          showOnlyMyLinkersOrGlycansCheckBox={props.showOnlyMyLinkersOrGlycansCheckBox}
+          handleChangeForOnlyMyLinkersGlycans={props.handleChangeForOnlyMyLinkersGlycans}
+          onlyMyLinkersGlycans={props.onlyMyLinkersGlycans}
+          onlyMyLinkersGlycansCheckBoxLabel={
+            props.onlyMyLinkersGlycansCheckBoxLabel ? props.onlyMyLinkersGlycansCheckBoxLabel : ""
+          }
         />
       </div>
     </>

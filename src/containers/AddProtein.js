@@ -10,12 +10,12 @@ import displayNames from "../appData/displayNames";
 import { validateSequence } from "../utils/sequence";
 import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
-import MultiToggle from "react-multi-toggle";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
+import { Source } from "../components/Source";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,6 +36,7 @@ const AddProtein = props => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
+  const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
@@ -50,13 +51,15 @@ const AddProtein = props => {
   const proteinInitialState = {
     selectedProtein: "SequenceDefined",
     name: "",
-    sequence: "",
+    sequence: "AISGNHPLWTWWPVLTPDLCMLALSGPPHWGLEYQAPYSSPPGPPCCSGSSGSSAGCSRD",
     comment: "",
     uniProtId: "",
     pdbIds: [],
     publications: [],
-    opensRing: 2,
-    urls: []
+    urls: [],
+    commercialandNonCommercial: "notSpecified",
+    commercial: { vendor: "", catalogueNumber: "", batchId: "" },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -66,9 +69,42 @@ const AddProtein = props => {
     name: { label: "Name", type: "text", length: 100 },
     sequence: { label: "Sequence", type: "textarea" },
     comment: { label: "Comments", type: "textarea", length: 10000 },
-    opensRing: { label: "Opens Ring", type: "text" },
     uniProtId: { label: "UniProt Id", type: "text", length: 100 },
-    pdbIds: { label: "PDB Ids", type: "text" }
+    pdbIds: { label: "PDB Ids", type: "text" },
+    vendor: { label: "Vendor", type: "text" },
+    catalogueNumber: { label: "Catalogue Number", type: "text" },
+    commercialBatchId: { label: "Batch Id", type: "text" },
+    providerLab: { label: "Provider Lab", type: "text" },
+    nonCommercialBatchId: { label: "Batch Id", type: "text" },
+    method: { label: "Method", type: "text" },
+    sourceComment: { label: "Source Comments", type: "text" }
+  };
+
+  const sourceSelection = e => {
+    const newValue = e.target.value;
+    setProtein({ commercialandNonCommercial: newValue });
+  };
+
+  const sourceChange = e => {
+    const name = e.target.name;
+    const newValue = e.target.value;
+
+    if (protein.commercialandNonCommercial === "commercial") {
+      if (name === "vendor") {
+        setValidatedCommNonComm(false);
+      }
+      let comm = protein.commercial;
+      comm[name] = newValue;
+      setProtein({ [protein.commercial]: comm });
+    } else {
+      if (name === "providerLab") {
+        setValidatedCommNonComm(false);
+      }
+
+      let nonComm = protein.nonCommercial;
+      nonComm[name] = newValue;
+      setProtein({ [protein.nonCommercial]: nonComm });
+    }
   };
 
   const steps = getSteps();
@@ -90,9 +126,25 @@ const AddProtein = props => {
           return;
         }
       }
-    } else if (activeStep === 2 && protein.name === "") {
-      setValidate(true);
-      return;
+    } else if (activeStep === 2) {
+      let count = 0;
+
+      if (protein.name === "") {
+        setValidate(true);
+        count++;
+      }
+
+      if (
+        (protein.commercialandNonCommercial === "commercial" && protein.commercial.vendor === "") ||
+        (protein.commercialandNonCommercial === "nonCommercial" && protein.nonCommercial.providerLab === "")
+      ) {
+        setValidatedCommNonComm(true);
+        count++;
+      }
+
+      if (count > 0) {
+        return;
+      }
     } else if (e.currentTarget.innerText === "FINISH") {
       addProtein(e);
       return;
@@ -100,21 +152,6 @@ const AddProtein = props => {
 
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
-
-  const opensRingOptions = [
-    {
-      displayName: "Unknown",
-      value: 2
-    },
-    {
-      displayName: "Yes",
-      value: 1
-    },
-    {
-      displayName: "No",
-      value: 0
-    }
-  ];
 
   const handleChange = e => {
     setValidate(false);
@@ -381,7 +418,7 @@ const AddProtein = props => {
         if (activeStep === 2) {
           return (
             <>
-              <Form className="radioform2" validated={validate}>
+              <Form className="radioform2" validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
                   <FormLabel label="Name" className="required-asterik" />
                   <Col md={4}>
@@ -391,14 +428,13 @@ const AddProtein = props => {
                       placeholder="name"
                       value={protein.name}
                       onChange={handleChange}
-                      isInValid={validate}
+                      isInvalid={validate}
                       maxLength={100}
                       required
                     />
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="comments">
                   <FormLabel label="Comments" />
                   <Col md={4}>
@@ -417,18 +453,6 @@ const AddProtein = props => {
                     </span>
                   </Col>
                 </Form.Group>
-
-                <Form.Group as={Row} controlId="opensRing">
-                  <FormLabel label={displayNames.linker.OPENS_RING} />
-                  <Col md={4}>
-                    <MultiToggle
-                      options={opensRingOptions}
-                      selectedOption={protein.opensRing}
-                      onSelectOption={value => setProtein({ opensRing: value })}
-                    />
-                  </Col>
-                </Form.Group>
-
                 <Form.Group as={Row} controlId="publications">
                   <FormLabel label="Publications" />
                   <Col md={4}>
@@ -462,7 +486,6 @@ const AddProtein = props => {
                     </Row>
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="urls">
                   <FormLabel label="URLs" />
                   <Col md={4}>
@@ -491,6 +514,62 @@ const AddProtein = props => {
                     </Row>
                   </Col>
                 </Form.Group>
+                <Row>
+                  <FormLabel label="Source" />
+
+                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"commercial"}
+                        label={"Commercial"}
+                        onChange={sourceSelection}
+                        checked={protein.commercialandNonCommercial === "commercial"}
+                      />
+                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        label={"Non Commercial"}
+                        value={"nonCommercial"}
+                        onChange={sourceSelection}
+                        checked={protein.commercialandNonCommercial === "nonCommercial"}
+                      />
+                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"notSpecified"}
+                        label={"Not Specified"}
+                        onChange={sourceSelection}
+                        checked={protein.commercialandNonCommercial === "notSpecified"}
+                      />
+                      {"Not Specified"}
+                    </Form.Check.Label>
+                  </Col>
+                </Row>
+                &nbsp;&nbsp;&nbsp;
+                {protein.commercialandNonCommercial === "commercial" ? (
+                  <Source
+                    isCommercial
+                    commercial={protein.commercial}
+                    validate={validatedCommNonComm}
+                    sourceChange={sourceChange}
+                  />
+                ) : (
+                  protein.commercialandNonCommercial === "nonCommercial" && (
+                    <Source
+                      isNonCommercial
+                      nonCommercial={protein.nonCommercial}
+                      validate={validatedCommNonComm}
+                      sourceChange={sourceChange}
+                    />
+                  )
+                )}
               </Form>
             </>
           );
@@ -499,8 +578,23 @@ const AddProtein = props => {
         return (
           <Form className="radioform2">
             {Object.keys(reviewFields).map(key =>
-              (key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
-              protein.selectedProtein === "Unknown" ? (
+              ((key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
+                protein.selectedProtein === "Unknown") ||
+              (protein.commercialandNonCommercial !== "commercial" &&
+                (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
+              (protein.commercialandNonCommercial !== "nonCommercial" &&
+                (key === "providerLab" ||
+                  key === "method" ||
+                  key === "nonCommercialBatchId" ||
+                  key === "sourceComment")) ||
+              (protein.commercialandNonCommercial === "notSpecified" &&
+                (key === "vendor" ||
+                  key === "catalogueNumber" ||
+                  key === "commercialBatchId" ||
+                  key === "nonCommercialBatchId" ||
+                  key === "providerLab" ||
+                  key === "method" ||
+                  key === "sourceComment")) ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
@@ -511,15 +605,7 @@ const AddProtein = props => {
                       rows={key === "sequence" ? "15" : "4"}
                       name={key}
                       placeholder={"-"}
-                      value={
-                        key === "opensRing"
-                          ? protein[key] === 2
-                            ? "Unknown"
-                            : protein[key] === 1
-                            ? "Yes"
-                            : "No"
-                          : protein[key]
-                      }
+                      value={protein[key]}
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}
                     />
@@ -585,14 +671,31 @@ const AddProtein = props => {
   }
 
   function addProtein(e) {
+    var source = {
+      type: "NOTRECORDED"
+    };
+
+    if (protein.commercialandNonCommercial === "commercial") {
+      source.type = "COMMERCIAL";
+      source.vendor = protein.commercial.vendor;
+      source.catalogueNumber = protein.commercial.catalogueNumber;
+      source.batchId = protein.commercial.batchId;
+    } else if (protein.commercialandNonCommercial === "nonCommercial") {
+      source.type = "NONCOMMERCIAL";
+      source.batchId = protein.commercial.batchId;
+      source.providerLab = protein.nonCommercial.providerLab;
+      source.method = protein.nonCommercial.method;
+      source.comment = protein.nonCommercial.sourceComment;
+    }
+
     var proteinObj = {
       type: "PROTEIN",
       name: protein.name,
       comment: protein.comment,
-      opensRing: protein.opensRing,
       publications: protein.publications,
       urls: protein.urls,
-      sequence: protein.sequence
+      sequence: protein.sequence,
+      source: source
     };
 
     wsCall("addlinker", "POST", null, true, proteinObj, response => history.push("/proteins"), addProteinFailure);

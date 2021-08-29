@@ -10,7 +10,11 @@ import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 
 const Peptides = props => {
-  useEffect(props.authCheckAgent, []);
+  useEffect(() => {
+    if (props.authCheckAgent) {
+      props.authCheckAgent();
+    }
+  }, []);
 
   return (
     <>
@@ -42,17 +46,27 @@ const Peptides = props => {
           defaultPageSize={10}
           defaultSortColumn="id"
           showCommentsButton
-          showDeleteButton
           showSearchBox
-          showEditButton
           commentsRefColumn="description"
-          fetchWS="listmoleculesbytype"
-          paramTypeValue={"PEPTIDE"}
           deleteWS="peptidedelete"
           editUrl="peptides/editpeptide"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Peptides"
+          showDeleteButton={props.showDeleteButton}
+          showEditButton={props.showEditButton}
+          fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
+          paramTypeValue={"PEPTIDE"}
+          isModal={props.isModal}
+          selectButtonHeader={props.selectButtonHeader ? "Select" : ""}
+          showSelectButton={props.showSelectButton}
+          selectButtonHandler={props.selectButtonHandler}
+          showOnlyMyLinkersOrGlycansCheckBox={props.showOnlyMyLinkersOrGlycansCheckBox}
+          handleChangeForOnlyMyLinkersGlycans={props.handleChangeForOnlyMyLinkersGlycans}
+          onlyMyLinkersGlycans={props.onlyMyLinkersGlycans}
+          onlyMyLinkersGlycansCheckBoxLabel={
+            props.onlyMyLinkersGlycansCheckBoxLabel ? props.onlyMyLinkersGlycansCheckBoxLabel : ""
+          }
         />
       </div>
     </>

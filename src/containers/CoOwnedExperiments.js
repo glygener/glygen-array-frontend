@@ -14,6 +14,7 @@ const CoOwnedExperiments = () => {
             Header: "Id",
             accessor: "id"
           },
+          { Header: "Public ID", accessor: "publicId" },
           {
             Header: "Name",
             accessor: "name"

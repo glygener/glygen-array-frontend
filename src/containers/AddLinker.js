@@ -11,10 +11,10 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MultiToggle from "react-multi-toggle";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
+import { Source } from "../components/Source";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,6 +45,7 @@ const AddLinker = props => {
   const [newURL, setNewURL] = useState("");
   const [disableReset, setDisableReset] = useState(false);
   const [newPubMedId, setNewPubMedId] = useState("");
+  const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
   const history = useHistory();
 
   const linkerInitialState = {
@@ -61,8 +62,10 @@ const AddLinker = props => {
     canonicalSmiles: "",
     isomericSmiles: "",
     publications: [],
-    opensRing: 2,
-    urls: []
+    urls: [],
+    commercialandNonCommercial: "notSpecified",
+    commercial: { vendor: "", catalogueNumber: "", batchId: "" },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -78,8 +81,34 @@ const AddLinker = props => {
     canonicalSmiles: { label: "Canonical SMILES", type: "text" },
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comments", type: "textarea", length: 10000 },
-    opensRing: { label: "Opens Ring", type: "text" }
+    comment: { label: "Comments", type: "textarea", length: 10000 }
+  };
+
+  const sourceSelection = e => {
+    const newValue = e.target.value;
+    setLinker({ commercialandNonCommercial: newValue });
+  };
+
+  const sourceChange = e => {
+    const name = e.target.name;
+    const newValue = e.target.value;
+
+    if (linker.commercialandNonCommercial === "commercial") {
+      if (name === "vendor") {
+        setValidatedCommNonComm(false);
+      }
+      let comm = linker.commercial;
+      comm[name] = newValue;
+      setLinker({ [linker.commercial]: comm });
+    } else {
+      if (name === "providerLab") {
+        setValidatedCommNonComm(false);
+      }
+
+      let nonComm = linker.nonCommercial;
+      nonComm[name] = newValue;
+      setLinker({ [linker.nonCommercial]: nonComm });
+    }
   };
 
   const steps = getSteps();
@@ -103,9 +132,25 @@ const AddLinker = props => {
           populateLinkerDetails(encodeURIComponent(linker.inChiKey.trim()));
         }
       }
-    } else if (activeStep === 2 && linker.name === "") {
-      setValidate(true);
-      return;
+    } else if (activeStep === 2) {
+      let count = 0;
+
+      if (linker.name === "") {
+        setValidate(true);
+        count++;
+      }
+
+      if (
+        (linker.commercialandNonCommercial === "commercial" && linker.commercial.vendor === "") ||
+        (linker.commercialandNonCommercial === "nonCommercial" && linker.nonCommercial.providerLab === "")
+      ) {
+        setValidatedCommNonComm(true);
+        count++;
+      }
+
+      if (count > 0) {
+        return;
+      }
     } else if (e.currentTarget.innerText === "FINISH") {
       addLinker(e);
       return;
@@ -199,10 +244,7 @@ const AddLinker = props => {
     }
 
     function populateLinkerDetailsError(response) {
-      debugger;
       response.json().then(resp => {
-        debugger;
-        console.log(resp);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
       });
@@ -276,21 +318,6 @@ const AddLinker = props => {
       </>
     );
   };
-
-  const opensRingOptions = [
-    {
-      displayName: "Unknown",
-      value: 2
-    },
-    {
-      displayName: "Yes",
-      value: 1
-    },
-    {
-      displayName: "No",
-      value: 0
-    }
-  ];
 
   function clearPubChemFields() {
     setLinker({ ...linkerInitialState, ...{ selectedLinker: linker.selectedLinker } });
@@ -564,7 +591,7 @@ const AddLinker = props => {
         if (activeStep === 2) {
           return (
             <>
-              <Form className="radioform2" validated={validate}>
+              <Form className="radioform2" validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
                   <FormLabel label="Name" className="required-asterik" />
                   <Col md={4}>
@@ -581,7 +608,6 @@ const AddLinker = props => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="comments">
                   <FormLabel label="Comments" />
                   <Col md={4}>
@@ -600,18 +626,6 @@ const AddLinker = props => {
                     </span>
                   </Col>
                 </Form.Group>
-
-                <Form.Group as={Row} controlId="opensRing">
-                  <FormLabel label={displayNames.linker.OPENS_RING} />
-                  <Col md={4}>
-                    <MultiToggle
-                      options={opensRingOptions}
-                      selectedOption={linker.opensRing}
-                      onSelectOption={value => setLinker({ opensRing: value })}
-                    />
-                  </Col>
-                </Form.Group>
-
                 <Form.Group as={Row} controlId="publications">
                   <FormLabel label="Publications" />
                   <Col md={4}>
@@ -645,7 +659,6 @@ const AddLinker = props => {
                     </Row>
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="urls">
                   <FormLabel label="URLs" />
                   <Col md={4}>
@@ -674,6 +687,62 @@ const AddLinker = props => {
                     </Row>
                   </Col>
                 </Form.Group>
+                <Row>
+                  <FormLabel label="Source" />
+
+                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"commercial"}
+                        label={"Commercial"}
+                        onChange={sourceSelection}
+                        checked={linker.commercialandNonCommercial === "commercial"}
+                      />
+                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        label={"Non Commercial"}
+                        value={"nonCommercial"}
+                        onChange={sourceSelection}
+                        checked={linker.commercialandNonCommercial === "nonCommercial"}
+                      />
+                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"notSpecified"}
+                        label={"Not Specified"}
+                        onChange={sourceSelection}
+                        checked={linker.commercialandNonCommercial === "notSpecified"}
+                      />
+                      {"Not Specified"}
+                    </Form.Check.Label>
+                  </Col>
+                </Row>
+                &nbsp;&nbsp;&nbsp;
+                {linker.commercialandNonCommercial === "commercial" ? (
+                  <Source
+                    isCommercial
+                    commercial={linker.commercial}
+                    validate={validatedCommNonComm}
+                    sourceChange={sourceChange}
+                  />
+                ) : (
+                  linker.commercialandNonCommercial === "nonCommercial" && (
+                    <Source
+                      isNonCommercial
+                      nonCommercial={linker.nonCommercial}
+                      validate={validatedCommNonComm}
+                      sourceChange={sourceChange}
+                    />
+                  )
+                )}
               </Form>
             </>
           );
@@ -682,14 +751,29 @@ const AddLinker = props => {
         return (
           <Form className="radioform2">
             {Object.keys(reviewFields).map(key =>
-              (key === "pubChemId" ||
+              ((key === "pubChemId" ||
                 key === "inChiKey" ||
                 key === "inChiSequence" ||
                 key === "iupacName" ||
                 key === "molecularFormula" ||
                 key === "canonicalSmiles" ||
                 key === "isomericSmiles") &&
-              linker.selectedLinker === "Unknown" ? (
+                linker.selectedLinker === "Unknown") ||
+              (linker.commercialandNonCommercial !== "commercial" &&
+                (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
+              (linker.commercialandNonCommercial !== "nonCommercial" &&
+                (key === "providerLab" ||
+                  key === "method" ||
+                  key === "nonCommercialBatchId" ||
+                  key === "sourceComment")) ||
+              (linker.commercialandNonCommercial === "notSpecified" &&
+                (key === "vendor" ||
+                  key === "catalogueNumber" ||
+                  key === "commercialBatchId" ||
+                  key === "nonCommercialBatchId" ||
+                  key === "providerLab" ||
+                  key === "method" ||
+                  key === "sourceComment")) ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
@@ -700,15 +784,7 @@ const AddLinker = props => {
                       rows={key === "sequence" ? "15" : "4"}
                       name={key}
                       placeholder={"-"}
-                      value={
-                        key === "opensRing"
-                          ? linker[key] === 2
-                            ? "Unknown"
-                            : linker[key] === 1
-                            ? "Yes"
-                            : "No"
-                          : linker[key]
-                      }
+                      value={linker[key]}
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}
                     />
@@ -774,6 +850,23 @@ const AddLinker = props => {
   }
 
   function addLinker(e) {
+    var source = {
+      type: "NOTRECORDED"
+    };
+
+    if (linker.commercialandNonCommercial === "commercial") {
+      source.type = "COMMERCIAL";
+      source.vendor = linker.commercial.vendor;
+      source.catalogueNumber = linker.commercial.catalogueNumber;
+      source.batchId = linker.commercial.batchId;
+    } else if (linker.commercialandNonCommercial === "nonCommercial") {
+      source.type = "NONCOMMERCIAL";
+      source.batchId = linker.commercial.batchId;
+      source.providerLab = linker.nonCommercial.providerLab;
+      source.method = linker.nonCommercial.method;
+      source.comment = linker.nonCommercial.sourceComment;
+    }
+
     var linkerObj = {
       type: "SMALLMOLECULE",
       name: linker.name,
@@ -787,9 +880,9 @@ const AddLinker = props => {
       smiles: linker.canonicalSmiles,
       isomericSmiles: linker.isomericSmiles,
       comment: linker.comment,
-      opensRing: linker.opensRing,
       publications: linker.publications,
-      urls: linker.urls
+      urls: linker.urls,
+      source: source
     };
 
     wsCall("addlinker", "POST", null, true, linkerObj, response => history.push("/linkers"), addLinkerFailure);

@@ -10,12 +10,12 @@ import displayNames from "../appData/displayNames";
 import { validateSequence } from "../utils/sequence";
 import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
-import MultiToggle from "react-multi-toggle";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
+import { Source } from "../components/Source";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,6 +36,7 @@ const AddPeptide = props => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
+  const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
@@ -51,9 +52,11 @@ const AddPeptide = props => {
     selectedPeptide: "SequenceDefined",
     name: "",
     sequence: "",
-    opensRing: 2,
     publications: [],
-    urls: []
+    urls: [],
+    commercialandNonCommercial: "notSpecified",
+    commercial: { vendor: "", catalogueNumber: "", batchId: "" },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -62,8 +65,34 @@ const AddPeptide = props => {
   const reviewFields = {
     name: { label: "Name", type: "text", length: 100 },
     sequence: { label: "Sequence", type: "textarea" },
-    comment: { label: "Comments", type: "textarea", length: 10000 },
-    opensRing: { label: "Opens Ring", type: "text" }
+    comment: { label: "Comments", type: "textarea", length: 10000 }
+  };
+
+  const sourceSelection = e => {
+    const newValue = e.target.value;
+    setPeptide({ commercialandNonCommercial: newValue });
+  };
+
+  const sourceChange = e => {
+    const name = e.target.name;
+    const newValue = e.target.value;
+
+    if (peptide.commercialandNonCommercial === "commercial") {
+      if (name === "vendor") {
+        setValidatedCommNonComm(false);
+      }
+      let comm = peptide.commercial;
+      comm[name] = newValue;
+      setPeptide({ [peptide.commercial]: comm });
+    } else {
+      if (name === "providerLab") {
+        setValidatedCommNonComm(false);
+      }
+
+      let nonComm = peptide.nonCommercial;
+      nonComm[name] = newValue;
+      setPeptide({ [peptide.nonCommercial]: nonComm });
+    }
   };
 
   const steps = getSteps();
@@ -85,9 +114,25 @@ const AddPeptide = props => {
           return;
         }
       }
-    } else if (activeStep === 2 && peptide.name === "") {
-      setValidate(true);
-      return;
+    } else if (activeStep === 2) {
+      let count = 0;
+
+      if (peptide.name === "") {
+        setValidate(true);
+        count++;
+      }
+
+      if (
+        (peptide.commercialandNonCommercial === "commercial" && peptide.commercial.vendor === "") ||
+        (peptide.commercialandNonCommercial === "nonCommercial" && peptide.nonCommercial.providerLab === "")
+      ) {
+        setValidatedCommNonComm(true);
+        count++;
+      }
+
+      if (count > 0) {
+        return;
+      }
     } else if (e.currentTarget.innerText === "FINISH") {
       addPeptide(e);
       return;
@@ -95,21 +140,6 @@ const AddPeptide = props => {
 
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
-
-  const opensRingOptions = [
-    {
-      displayName: "Unknown",
-      value: 2
-    },
-    {
-      displayName: "Yes",
-      value: 1
-    },
-    {
-      displayName: "No",
-      value: 0
-    }
-  ];
 
   const handleChange = e => {
     const name = e.target.name;
@@ -300,7 +330,7 @@ const AddPeptide = props => {
         if (activeStep === 2) {
           return (
             <>
-              <Form className="radioform2" validated={validate}>
+              <Form className="radioform2" validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
                   <FormLabel label="Name" className="required-asterik" />
                   <Col md={4}>
@@ -317,7 +347,6 @@ const AddPeptide = props => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="comments">
                   <FormLabel label="Comments" />
                   <Col md={4}>
@@ -336,18 +365,6 @@ const AddPeptide = props => {
                     </span>
                   </Col>
                 </Form.Group>
-
-                <Form.Group as={Row} controlId="opensRing">
-                  <FormLabel label={displayNames.linker.OPENS_RING} />
-                  <Col md={4}>
-                    <MultiToggle
-                      options={opensRingOptions}
-                      selectedOption={peptide.opensRing}
-                      onSelectOption={value => setPeptide({ opensRing: value })}
-                    />
-                  </Col>
-                </Form.Group>
-
                 <Form.Group as={Row} controlId="publications">
                   <FormLabel label="Publications" />
                   <Col md={4}>
@@ -381,7 +398,6 @@ const AddPeptide = props => {
                     </Row>
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="urls">
                   <FormLabel label="URLs" />
                   <Col md={4}>
@@ -410,6 +426,61 @@ const AddPeptide = props => {
                     </Row>
                   </Col>
                 </Form.Group>
+                <Row>
+                  <FormLabel label="Source" />
+                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"commercial"}
+                        label={"Commercial"}
+                        onChange={sourceSelection}
+                        checked={peptide.commercialandNonCommercial === "commercial"}
+                      />
+                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        label={"Non Commercial"}
+                        value={"nonCommercial"}
+                        onChange={sourceSelection}
+                        checked={peptide.commercialandNonCommercial === "nonCommercial"}
+                      />
+                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"notSpecified"}
+                        label={"Not Specified"}
+                        onChange={sourceSelection}
+                        checked={peptide.commercialandNonCommercial === "notSpecified"}
+                      />
+                      {"Not Specified"}
+                    </Form.Check.Label>
+                  </Col>
+                </Row>
+                &nbsp;&nbsp;&nbsp;
+                {peptide.commercialandNonCommercial === "commercial" ? (
+                  <Source
+                    isCommercial
+                    commercial={peptide.commercial}
+                    validate={validatedCommNonComm}
+                    sourceChange={sourceChange}
+                  />
+                ) : (
+                  peptide.commercialandNonCommercial === "nonCommercial" && (
+                    <Source
+                      isNonCommercial
+                      nonCommercial={peptide.nonCommercial}
+                      validate={validatedCommNonComm}
+                      sourceChange={sourceChange}
+                    />
+                  )
+                )}
               </Form>
             </>
           );
@@ -429,15 +500,7 @@ const AddPeptide = props => {
                       rows={key === "sequence" ? "15" : "4"}
                       name={key}
                       placeholder={"-"}
-                      value={
-                        key === "opensRing"
-                          ? peptide[key] === 2
-                            ? "Unknown"
-                            : peptide[key] === 1
-                            ? "Yes"
-                            : "No"
-                          : peptide[key]
-                      }
+                      value={peptide[key]}
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}
                     />
@@ -503,14 +566,33 @@ const AddPeptide = props => {
   }
 
   function addPeptide(e) {
+    setShowLoading(true);
+
+    var source = {
+      type: "NOTRECORDED"
+    };
+
+    if (peptide.commercialandNonCommercial === "commercial") {
+      source.type = "COMMERCIAL";
+      source.vendor = peptide.commercial.vendor;
+      source.catalogueNumber = peptide.commercial.catalogueNumber;
+      source.batchId = peptide.commercial.batchId;
+    } else if (peptide.commercialandNonCommercial === "nonCommercial") {
+      source.type = "NONCOMMERCIAL";
+      source.batchId = peptide.commercial.batchId;
+      source.providerLab = peptide.nonCommercial.providerLab;
+      source.method = peptide.nonCommercial.method;
+      source.comment = peptide.nonCommercial.sourceComment;
+    }
+
     var peptideObj = {
       type: "PEPTIDE",
       name: peptide.name,
       comment: peptide.comment,
-      opensRing: peptide.opensRing,
       publications: peptide.publications,
       urls: peptide.urls,
-      sequence: peptide.sequence
+      sequence: peptide.sequence,
+      source: source
     };
 
     wsCall("addlinker", "POST", null, true, peptideObj, response => history.push("/peptides"), addPeptideFailure);
@@ -519,6 +601,7 @@ const AddPeptide = props => {
       response.json().then(parsedJson => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
+        setShowLoading(false);
       });
     }
   }

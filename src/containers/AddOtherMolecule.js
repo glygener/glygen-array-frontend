@@ -6,15 +6,14 @@ import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { ErrorSummary } from "../components/ErrorSummary";
-import displayNames from "../appData/displayNames";
 import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
-import MultiToggle from "react-multi-toggle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PublicationCard } from "../components/PublicationCard";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
+import { Source } from "../components/Source";
 
 const AddOtherMolecule = props => {
   useEffect(props.authCheckAgent, []);
@@ -25,24 +24,54 @@ const AddOtherMolecule = props => {
   const [showLoading, setShowLoading] = useState(false);
   const [newPubMedId, setNewPubMedId] = useState("");
   const [invalidUrls, setInvalidUrls] = useState(false);
-  const [validated, setValidated] = useState(false);
+  const [validate, setValidate] = useState(false);
   const [newURL, setNewURL] = useState("");
+  const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
   const history = useHistory();
 
   const othermoleculeInitialState = {
     selectedOtherMolecule: "SequenceDefined",
     name: "",
     comment: "",
-    opensRing: 2,
     publications: [],
-    urls: []
+    urls: [],
+    commercialandNonCommercial: "notSpecified",
+    commercial: { vendor: "", catalogueNumber: "", batchId: "" },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
-  const [othermolecule, setOtherMolecule] = useReducer(reducer, othermoleculeInitialState);
+  const [otherMolecule, setOtherMolecule] = useReducer(reducer, othermoleculeInitialState);
+
+  const sourceSelection = e => {
+    const newValue = e.target.value;
+    setOtherMolecule({ commercialandNonCommercial: newValue });
+  };
+
+  const sourceChange = e => {
+    const name = e.target.name;
+    const newValue = e.target.value;
+
+    if (otherMolecule.commercialandNonCommercial === "commercial") {
+      if (name === "vendor") {
+        setValidatedCommNonComm(false);
+      }
+      let comm = otherMolecule.commercial;
+      comm[name] = newValue;
+      setOtherMolecule({ [otherMolecule.commercial]: comm });
+    } else {
+      if (name === "providerLab") {
+        setValidatedCommNonComm(false);
+      }
+
+      let nonComm = otherMolecule.nonCommercial;
+      nonComm[name] = newValue;
+      setOtherMolecule({ [otherMolecule.nonCommercial]: nonComm });
+    }
+  };
 
   const handleChange = e => {
-    setValidated(false);
+    setValidate(false);
 
     const name = e.target.name;
     const newValue = e.target.value;
@@ -50,23 +79,8 @@ const AddOtherMolecule = props => {
     setOtherMolecule({ [name]: newValue });
   };
 
-  const opensRingOptions = [
-    {
-      displayName: "Unknown",
-      value: 2
-    },
-    {
-      displayName: "Yes",
-      value: 1
-    },
-    {
-      displayName: "No",
-      value: 0
-    }
-  ];
-
   function addPublication() {
-    let publications = othermolecule.publications;
+    let publications = otherMolecule.publications;
     let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
@@ -79,7 +93,7 @@ const AddOtherMolecule = props => {
       response.json().then(responseJson => {
         setShowErrorSummary(false);
         setOtherMolecule({
-          publications: othermolecule.publications.concat([responseJson])
+          publications: otherMolecule.publications.concat([responseJson])
         });
         setNewPubMedId("");
       });
@@ -98,7 +112,7 @@ const AddOtherMolecule = props => {
   }
 
   function deletePublication(id, wscall) {
-    const publications = othermolecule.publications;
+    const publications = otherMolecule.publications;
     const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
@@ -106,7 +120,7 @@ const AddOtherMolecule = props => {
   }
 
   function addURL() {
-    var listUrls = othermolecule.urls;
+    var listUrls = otherMolecule.urls;
     var urlEntered = csvToArray(newURL)[0];
     const urlExists = listUrls.find(i => i === urlEntered);
 
@@ -127,8 +141,8 @@ const AddOtherMolecule = props => {
   const urlWidget = enableDelete => {
     return (
       <>
-        {othermolecule.urls && othermolecule.urls.length > 0
-          ? othermolecule.urls.map((url, index) => {
+        {otherMolecule.urls && otherMolecule.urls.length > 0
+          ? otherMolecule.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
                   <Col md={10}>
@@ -149,7 +163,7 @@ const AddOtherMolecule = props => {
                         title="Delete Url"
                         className="caution-color table-btn"
                         onClick={() => {
-                          const listUrls = othermolecule.urls;
+                          const listUrls = otherMolecule.urls;
                           listUrls.splice(index, 1);
                           setOtherMolecule({ urls: listUrls });
                         }}
@@ -167,7 +181,12 @@ const AddOtherMolecule = props => {
   function getStepContent() {
     return (
       <>
-        <Form className="radioform2" noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+        <Form
+          className="radioform2"
+          noValidate
+          validated={validate && validatedCommNonComm}
+          onSubmit={e => handleSubmit(e)}
+        >
           <Form.Group as={Row} controlId="name">
             <FormLabel label="Name" className="required-asterik" />
             <Col md={4}>
@@ -175,16 +194,15 @@ const AddOtherMolecule = props => {
                 type="text"
                 name="name"
                 placeholder="name"
-                value={othermolecule.name}
+                value={otherMolecule.name}
                 onChange={handleChange}
-                isInvalid={validated}
+                isInvalid={validate}
                 maxLength={100}
                 required
               />
               <Feedback message={"Name is required"} />
             </Col>
           </Form.Group>
-
           <Form.Group as={Row} controlId="comments">
             <FormLabel label="Comments" />
             <Col md={4}>
@@ -193,32 +211,20 @@ const AddOtherMolecule = props => {
                 rows={4}
                 name="comment"
                 placeholder="Comments"
-                value={othermolecule.comment}
+                value={otherMolecule.comment}
                 onChange={handleChange}
                 maxLength={2000}
               />
               <span className="character-counter">
-                {othermolecule.comment && othermolecule.comment.length > 0 ? othermolecule.comment.length : ""}
+                {otherMolecule.comment && otherMolecule.comment.length > 0 ? otherMolecule.comment.length : ""}
                 /2000
               </span>
             </Col>
           </Form.Group>
-
-          <Form.Group as={Row} controlId="opensRing">
-            <FormLabel label={displayNames.linker.OPENS_RING} />
-            <Col md={4}>
-              <MultiToggle
-                options={opensRingOptions}
-                selectedOption={othermolecule.opensRing}
-                onSelectOption={value => setOtherMolecule({ opensRing: value })}
-              />
-            </Col>
-          </Form.Group>
-
           <Form.Group as={Row} controlId="publications">
             <FormLabel label="Publications" />
             <Col md={4}>
-              {othermolecule.publications.map((pub, index) => {
+              {otherMolecule.publications.map((pub, index) => {
                 return <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />;
               })}
               <Row>
@@ -246,7 +252,6 @@ const AddOtherMolecule = props => {
               </Row>
             </Col>
           </Form.Group>
-
           <Form.Group as={Row} controlId="urls">
             <FormLabel label="URLs" />
             <Col md={4}>
@@ -275,6 +280,62 @@ const AddOtherMolecule = props => {
               </Row>
             </Col>
           </Form.Group>
+          <Row>
+            <FormLabel label="Source" />
+
+            <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
+              <Form.Check.Label>
+                <Form.Check.Input
+                  type="radio"
+                  value={"commercial"}
+                  label={"Commercial"}
+                  onChange={sourceSelection}
+                  checked={otherMolecule.commercialandNonCommercial === "commercial"}
+                />
+                {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+              </Form.Check.Label>
+              &nbsp;&nbsp; &nbsp;&nbsp;
+              <Form.Check.Label>
+                <Form.Check.Input
+                  type="radio"
+                  label={"Non Commercial"}
+                  value={"nonCommercial"}
+                  onChange={sourceSelection}
+                  checked={otherMolecule.commercialandNonCommercial === "nonCommercial"}
+                />
+                {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+              </Form.Check.Label>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <Form.Check.Label>
+                <Form.Check.Input
+                  type="radio"
+                  value={"notSpecified"}
+                  label={"Not Specified"}
+                  onChange={sourceSelection}
+                  checked={otherMolecule.commercialandNonCommercial === "notSpecified"}
+                />
+                {"Not Specified"}
+              </Form.Check.Label>
+            </Col>
+          </Row>
+          &nbsp;&nbsp;&nbsp;
+          {otherMolecule.commercialandNonCommercial === "commercial" ? (
+            <Source
+              isCommercial
+              commercial={otherMolecule.commercial}
+              validate={validatedCommNonComm}
+              sourceChange={sourceChange}
+            />
+          ) : (
+            otherMolecule.commercialandNonCommercial === "nonCommercial" && (
+              <Source
+                isNonCommercial
+                nonCommercial={otherMolecule.nonCommercial}
+                validate={validatedCommNonComm}
+                sourceChange={sourceChange}
+              />
+            )
+          )}
           <FormButton className="line-break-1" type="submit" label="Submit" />
           <LinkButton to="/linkers" label="Cancel" />
         </Form>
@@ -283,17 +344,41 @@ const AddOtherMolecule = props => {
   }
 
   function handleSubmit(e) {
-    debugger;
-    setValidated(true);
+    setValidate(true);
 
-    if (e.currentTarget.checkValidity() === true) {
+    var source = {
+      type: "NOTRECORDED"
+    };
+
+    if (otherMolecule.commercialandNonCommercial === "commercial") {
+      if (otherMolecule.commercial.vendor === "") {
+        setValidatedCommNonComm(true);
+      }
+
+      source.type = "COMMERCIAL";
+      source.vendor = otherMolecule.commercial.vendor;
+      source.catalogueNumber = otherMolecule.commercial.catalogueNumber;
+      source.batchId = otherMolecule.commercial.batchId;
+    } else if (otherMolecule.commercialandNonCommercial === "nonCommercial") {
+      if (otherMolecule.nonCommercial.providerLab === "") {
+        setValidatedCommNonComm(true);
+      }
+
+      source.type = "NONCOMMERCIAL";
+      source.batchId = otherMolecule.commercial.batchId;
+      source.providerLab = otherMolecule.nonCommercial.providerLab;
+      source.method = otherMolecule.nonCommercial.method;
+      source.comment = otherMolecule.nonCommercial.sourceComment;
+    }
+
+    if (e.currentTarget.checkValidity() === true && !validatedCommNonComm) {
       var othermoleculeObj = {
         type: "OTHER",
-        name: othermolecule.name,
-        comment: othermolecule.comment,
-        opensRing: othermolecule.opensRing,
-        publications: othermolecule.publications,
-        urls: othermolecule.urls
+        name: otherMolecule.name,
+        comment: otherMolecule.comment,
+        publications: otherMolecule.publications,
+        urls: otherMolecule.urls,
+        source: source
       };
 
       wsCall(
@@ -305,8 +390,6 @@ const AddOtherMolecule = props => {
         response => history.push("/othermolecules"),
         addOtherMoleculeFailure
       );
-    } else {
-      e.preventDefault();
     }
 
     function addOtherMoleculeFailure(response) {
@@ -315,6 +398,8 @@ const AddOtherMolecule = props => {
         setShowErrorSummary(true);
       });
     }
+
+    e.preventDefault();
   }
 
   return (

@@ -12,7 +12,11 @@ import displayNames from "../appData/displayNames";
 import { Title } from "../components/FormControls";
 
 const Linkers = props => {
-  useEffect(props.authCheckAgent, []);
+  useEffect(() => {
+    if (props.authCheckAgent) {
+      props.authCheckAgent();
+    }
+  }, []);
 
   return (
     <>
@@ -68,18 +72,27 @@ const Linkers = props => {
           ]}
           defaultPageSize={10}
           showCommentsButton
-          showDeleteButton
-          showEditButton
           showSearchBox
           commentsRefColumn="description"
-          // fetchWS="linkerlist"
-          fetchWS="listmoleculesbytype"
-          paramTypeValue={"SMALLMOLECULE"}
           deleteWS="linkerdelete"
           editUrl="linkers/editlinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Linkers"
+          showDeleteButton={props.showDeleteButton}
+          showEditButton={props.showEditButton}
+          fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
+          paramTypeValue={"SMALLMOLECULE"}
+          isModal={props.isModal}
+          selectButtonHeader={props.selectButtonHeader ? "Select" : ""}
+          showSelectButton={props.showSelectButton}
+          selectButtonHandler={props.selectButtonHandler}
+          showOnlyMyLinkersOrGlycansCheckBox={props.showOnlyMyLinkersOrGlycansCheckBox}
+          handleChangeForOnlyMyLinkersGlycans={props.handleChangeForOnlyMyLinkersGlycans}
+          onlyMyLinkersGlycans={props.onlyMyLinkersGlycans}
+          onlyMyLinkersGlycansCheckBoxLabel={
+            props.onlyMyLinkersGlycansCheckBoxLabel ? props.onlyMyLinkersGlycansCheckBoxLabel : ""
+          }
         />
       </div>
     </>

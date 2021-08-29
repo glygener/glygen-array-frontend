@@ -11,10 +11,10 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MultiToggle from "react-multi-toggle";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
+import { Source } from "../components/Source";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,6 +35,7 @@ const AddLipid = props => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
+  const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
@@ -61,8 +62,10 @@ const AddLipid = props => {
     canonicalSmiles: "",
     isomericSmiles: "",
     publications: [],
-    opensRing: 2,
-    urls: []
+    urls: [],
+    commercialandNonCommercial: "notSpecified",
+    commercial: { vendor: "", catalogueNumber: "", batchId: "" },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -78,8 +81,34 @@ const AddLipid = props => {
     canonicalSmiles: { label: "Canonical SMILES", type: "text" },
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comments", type: "textarea", length: 10000 },
-    opensRing: { label: "Opens Ring", type: "text" }
+    comment: { label: "Comments", type: "textarea", length: 10000 }
+  };
+
+  const sourceSelection = e => {
+    const newValue = e.target.value;
+    setLipid({ commercialandNonCommercial: newValue });
+  };
+
+  const sourceChange = e => {
+    const name = e.target.name;
+    const newValue = e.target.value;
+
+    if (lipid.commercialandNonCommercial === "commercial") {
+      if (name === "vendor") {
+        setValidatedCommNonComm(false);
+      }
+      let comm = lipid.commercial;
+      comm[name] = newValue;
+      setLipid({ [lipid.commercial]: comm });
+    } else {
+      if (name === "providerLab") {
+        setValidatedCommNonComm(false);
+      }
+
+      let nonComm = lipid.nonCommercial;
+      nonComm[name] = newValue;
+      setLipid({ [lipid.nonCommercial]: nonComm });
+    }
   };
 
   const steps = getSteps();
@@ -103,9 +132,25 @@ const AddLipid = props => {
           populateLinkerDetails(encodeURIComponent(lipid.inChiKey.trim()));
         }
       }
-    } else if (activeStep === 2 && lipid.name === "") {
-      setValidate(true);
-      return;
+    } else if (activeStep === 2) {
+      let count = 0;
+
+      if (lipid.name === "") {
+        setValidate(true);
+        count++;
+      }
+
+      if (
+        (lipid.commercialandNonCommercial === "commercial" && lipid.commercial.vendor === "") ||
+        (lipid.commercialandNonCommercial === "nonCommercial" && lipid.nonCommercial.providerLab === "")
+      ) {
+        setValidatedCommNonComm(true);
+        count++;
+      }
+
+      if (count > 0) {
+        return;
+      }
     } else if (e.currentTarget.innerText === "FINISH") {
       addLipid(e);
       return;
@@ -200,10 +245,7 @@ const AddLipid = props => {
     }
 
     function populateLinkerDetailsError(response) {
-      debugger;
       response.json().then(resp => {
-        debugger;
-        console.log(resp);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
       });
@@ -277,21 +319,6 @@ const AddLipid = props => {
       </>
     );
   };
-
-  const opensRingOptions = [
-    {
-      displayName: "Unknown",
-      value: 2
-    },
-    {
-      displayName: "Yes",
-      value: 1
-    },
-    {
-      displayName: "No",
-      value: 0
-    }
-  ];
 
   function clearPubChemFields() {
     setDisablePubChemFields(false);
@@ -565,7 +592,7 @@ const AddLipid = props => {
         if (activeStep === 2) {
           return (
             <>
-              <Form className="radioform2" validated={validate}>
+              <Form className="radioform2" validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
                   <FormLabel label="Name" className="required-asterik" />
                   <Col md={4}>
@@ -582,7 +609,6 @@ const AddLipid = props => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="comments">
                   <FormLabel label="Comments" />
                   <Col md={4}>
@@ -601,18 +627,6 @@ const AddLipid = props => {
                     </span>
                   </Col>
                 </Form.Group>
-
-                <Form.Group as={Row} controlId="opensRing">
-                  <FormLabel label={displayNames.linker.OPENS_RING} />
-                  <Col md={4}>
-                    <MultiToggle
-                      options={opensRingOptions}
-                      selectedOption={lipid.opensRing}
-                      onSelectOption={value => setLipid({ opensRing: value })}
-                    />
-                  </Col>
-                </Form.Group>
-
                 <Form.Group as={Row} controlId="publications">
                   <FormLabel label="Publications" />
                   <Col md={4}>
@@ -646,7 +660,6 @@ const AddLipid = props => {
                     </Row>
                   </Col>
                 </Form.Group>
-
                 <Form.Group as={Row} controlId="urls">
                   <FormLabel label="URLs" />
                   <Col md={4}>
@@ -675,6 +688,62 @@ const AddLipid = props => {
                     </Row>
                   </Col>
                 </Form.Group>
+                <Row>
+                  <FormLabel label="Source" />
+
+                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"commercial"}
+                        label={"Commercial"}
+                        onChange={sourceSelection}
+                        checked={lipid.commercialandNonCommercial === "commercial"}
+                      />
+                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        label={"Non Commercial"}
+                        value={"nonCommercial"}
+                        onChange={sourceSelection}
+                        checked={lipid.commercialandNonCommercial === "nonCommercial"}
+                      />
+                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Form.Check.Label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Form.Check.Label>
+                      <Form.Check.Input
+                        type="radio"
+                        value={"notSpecified"}
+                        label={"Not Specified"}
+                        onChange={sourceSelection}
+                        checked={lipid.commercialandNonCommercial === "notSpecified"}
+                      />
+                      {"Not Specified"}
+                    </Form.Check.Label>
+                  </Col>
+                </Row>
+                &nbsp;&nbsp;&nbsp;
+                {lipid.commercialandNonCommercial === "commercial" ? (
+                  <Source
+                    isCommercial
+                    commercial={lipid.commercial}
+                    validate={validatedCommNonComm}
+                    sourceChange={sourceChange}
+                  />
+                ) : (
+                  lipid.commercialandNonCommercial === "nonCommercial" && (
+                    <Source
+                      isNonCommercial
+                      nonCommercial={lipid.nonCommercial}
+                      validate={validatedCommNonComm}
+                      sourceChange={sourceChange}
+                    />
+                  )
+                )}
               </Form>
             </>
           );
@@ -683,14 +752,29 @@ const AddLipid = props => {
         return (
           <Form className="radioform2">
             {Object.keys(reviewFields).map(key =>
-              (key === "pubChemId" ||
+              ((key === "pubChemId" ||
                 key === "inChiKey" ||
                 key === "inChiSequence" ||
                 key === "iupacName" ||
                 key === "molecularFormula" ||
                 key === "canonicalSmiles" ||
                 key === "isomericSmiles") &&
-              lipid.selectedLipid === "Unknown" ? (
+                lipid.selectedLipid === "Unknown") ||
+              (lipid.commercialandNonCommercial !== "commercial" &&
+                (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
+              (lipid.commercialandNonCommercial !== "nonCommercial" &&
+                (key === "providerLab" ||
+                  key === "method" ||
+                  key === "nonCommercialBatchId" ||
+                  key === "sourceComment")) ||
+              (lipid.commercialandNonCommercial === "notSpecified" &&
+                (key === "vendor" ||
+                  key === "catalogueNumber" ||
+                  key === "commercialBatchId" ||
+                  key === "nonCommercialBatchId" ||
+                  key === "providerLab" ||
+                  key === "method" ||
+                  key === "sourceComment")) ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
@@ -701,15 +785,7 @@ const AddLipid = props => {
                       rows={key === "sequence" ? "15" : "4"}
                       name={key}
                       placeholder={"-"}
-                      value={
-                        key === "opensRing"
-                          ? lipid[key] === 2
-                            ? "Unknown"
-                            : lipid[key] === 1
-                            ? "Yes"
-                            : "No"
-                          : lipid[key]
-                      }
+                      value={lipid[key]}
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}
                     />
@@ -775,6 +851,23 @@ const AddLipid = props => {
   }
 
   function addLipid(e) {
+    var source = {
+      type: "NOTRECORDED"
+    };
+
+    if (lipid.commercialandNonCommercial === "commercial") {
+      source.type = "COMMERCIAL";
+      source.vendor = lipid.commercial.vendor;
+      source.catalogueNumber = lipid.commercial.catalogueNumber;
+      source.batchId = lipid.commercial.batchId;
+    } else if (lipid.commercialandNonCommercial === "nonCommercial") {
+      source.type = "NONCOMMERCIAL";
+      source.batchId = lipid.commercial.batchId;
+      source.providerLab = lipid.nonCommercial.providerLab;
+      source.method = lipid.nonCommercial.method;
+      source.comment = lipid.nonCommercial.sourceComment;
+    }
+
     var lipidObj = {
       type: "LIPID",
       name: lipid.name,
@@ -788,9 +881,9 @@ const AddLipid = props => {
       smiles: lipid.canonicalSmiles,
       isomericSmiles: lipid.isomericSmiles,
       comment: lipid.comment,
-      opensRing: lipid.opensRing,
       publications: lipid.publications,
-      urls: lipid.urls
+      urls: lipid.urls,
+      source: source
     };
 
     wsCall("addlinker", "POST", null, true, lipidObj, response => history.push("/lipids"), addLipidFailure);

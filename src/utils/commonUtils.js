@@ -287,7 +287,6 @@ const alphabets = [
 ];
 
 export function isValidNumber(e) {
-  debugger;
   if (includes(alphabets, e.key)) {
     e.preventDefault();
     e.stopPropagation();
@@ -304,7 +303,7 @@ export function numberLengthCheck(e) {
  * @param {object} a input value.
  * @param {object} b input value.
  **/
- export function sortDropdown(a, b) {
+export function sortDropdown(a, b) {
   if (a.name < b.name) {
     return -1;
   } else if (b.name < a.name) {
