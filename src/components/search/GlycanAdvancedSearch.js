@@ -111,6 +111,7 @@ const GlycanAdvancedSearch = (props) => {
       setInputValue({
         glytoucanIds: props.inputValue.glytoucanIds ? props.inputValue.glytoucanIds.join(", ") : "",
         massRange: [props.inputValue.minMass, props.inputValue.maxMass],
+        massRangeInput: [String(props.inputValue.minMass), String(props.inputValue.maxMass)],
       });
     }
   }, [props.inputValue]);
