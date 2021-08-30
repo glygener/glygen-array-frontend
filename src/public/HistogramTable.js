@@ -52,14 +52,17 @@ const HistogramTable = props => {
           columns={[
             {
               Header: () => <div className={"table-header"}>{"GlycanId / GlytoucanId"}</div>,
-              accessor: "feature.glycans[0].id",
-              Cell: (row, index) => (
-                <div key={index}>
-                  {row.original.feature.glycans[0].glytoucanId
-                    ? row.original.feature.glycans[0].glytoucanId
-                    : row.original.feature.glycans[0].id}
-                </div>
-              )
+              accessor: "feature.glycans[0].glycan.id",
+              Cell: (row, index) => {
+                debugger;
+                return (
+                  <div key={index}>
+                    {row.original.feature.glycans[0].glycan.glytoucanId
+                      ? row.original.feature.glycans[0].glycan.glytoucanId
+                      : row.original.feature.glycans[0].glycan.id}
+                  </div>
+                );
+              }
             },
             {
               Header: () => <div className={"table-header"}>{"Linker Name"}</div>,
@@ -111,7 +114,7 @@ const HistogramTable = props => {
               accessor: "cartoon",
               Cell: row => (
                 <div style={{ height: "100px" }}>
-                  <StructureImage base64={row.original.feature.glycans[0].cartoon} />
+                  <StructureImage base64={row.original.feature.glycans[0].glycan.cartoon} />
                 </div>
               ),
               minWidth: 300

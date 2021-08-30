@@ -23,7 +23,6 @@ const EditLinker = props => {
   const [linkerDetails, setLinkerDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
     name: "",
     description: "",
-    internalId: "",
     inChiKey: "",
     type: "",
     mass: "",
@@ -92,19 +91,6 @@ const EditLinker = props => {
                 required
               />
               <Feedback message="Please Enter Linker Name." />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Internal Id" />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                placeholder="internalId"
-                name="internalId"
-                defaultValue={linkerDetails.internalId}
-                onChange={handleChange}
-              />
             </Col>
           </Form.Group>
 

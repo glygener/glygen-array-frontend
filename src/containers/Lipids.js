@@ -29,11 +29,9 @@ const Lipids = props => {
         <Title title="Lipids" />
 
         <Col className={"col-link-button"}>
-          {props.showOnlyMyLinkersOrGlycansCheckBox && (
-            <Link to="/lipids/addlipid" className="link-button" style={{ width: "150px" }}>
-              Add Lipid
-            </Link>
-          )}
+          <Link to="/lipids/addlipid" className="link-button" style={{ width: "150px" }}>
+            Add Lipid
+          </Link>
         </Col>
 
         <GlygenTable
