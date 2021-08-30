@@ -290,19 +290,18 @@ const Signup = () => {
     }
   }
 
-  function checkUsernameSuccess() {
-    // setShowErrorSummary(false);
-  }
+  function checkUsernameSuccess() {}
 
   function checkUsernameFailure(response) {
-    // var errorList = [];
     if (!response.ok) {
       if (response.status === 500) {
         setPageErrorMessage("Internal Server Error - Please try again.");
         setShowErrorSummary(true);
       } else if (response.status === 409) {
-        setPageErrorMessage("The username is already in use. Please choose a different username.");
-        setShowErrorSummary(true);
+        response.json().then(resp => {
+          setPageErrorsJson(resp);
+          setShowErrorSummary(true);
+        });
       }
     }
   }

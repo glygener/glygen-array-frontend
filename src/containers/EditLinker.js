@@ -22,7 +22,8 @@ const EditLinker = props => {
 
   const [linkerDetails, setLinkerDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
     name: "",
-    comment: "",
+    description: "",
+    internalId: "",
     inChiKey: "",
     type: "",
     mass: "",
@@ -42,18 +43,21 @@ const EditLinker = props => {
     }
 
     wsCall("getlinker", "GET", [linkerId], true, null, getLinkerSuccess, getLinkerFailure);
-  }, [props]);
+  }, [linkerId, props]);
 
   function getLinkerSuccess(response) {
     response.json().then(parsedJson => {
       setLinkerDetails(parsedJson);
-      console.log(parsedJson);
     });
   }
 
   function getLinkerFailure(response) {
-    setValidated(false);
-    console.log(response);
+    response.json().then(parsedJson => {
+      setValidated(false);
+      setPageErrorsJson(parsedJson);
+      setPageErrorMessage("");
+      setShowErrorSummary(true);
+    });
   }
 
   return (
@@ -64,7 +68,7 @@ const EditLinker = props => {
       </Helmet>
 
       <div className="page-container">
-        <Title title="Edit Linker" />
+        <Title title="Edit Molecule" />
 
         {showErrorSummary === true && (
           <ErrorSummary
@@ -90,42 +94,61 @@ const EditLinker = props => {
               <Feedback message="Please Enter Linker Name." />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="comment">
-            <FormLabel label="comment" />
+
+          <Form.Group as={Row} controlId="name">
+            <FormLabel label="Internal Id" />
             <Col md={4}>
               <Form.Control
-                as="textarea"
-                placeholder="comment"
-                name="comment"
-                defaultValue={linkerDetails.comment}
+                type="text"
+                placeholder="internalId"
+                name="internalId"
+                defaultValue={linkerDetails.internalId}
                 onChange={handleChange}
               />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="inChiKey">
-            <FormLabel label="InChI Key" />
+
+          <Form.Group as={Row} controlId="comment">
+            <FormLabel label="Comment" />
             <Col md={4}>
-              <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.inChiKey} />
+              <Form.Control
+                as="textarea"
+                placeholder="comment"
+                name="description"
+                defaultValue={linkerDetails.description}
+                onChange={handleChange}
+              />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="linkerType">
             <FormLabel label="Type" />
             <Col md={4}>
               <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.type} />
             </Col>
           </Form.Group>
+
+          {/*  <Form.Group as={Row} controlId="inChiKey">
+            <FormLabel label="InChI Key" />
+            <Col md={4}>
+              <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.inChiKey} />
+            </Col>
+          </Form.Group>
+
           <Form.Group as={Row} controlId="mass">
             <FormLabel label="Mass" />
             <Col md={4}>
               <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.mass} />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="mass">
             <FormLabel label="Structure Image" />
             <Col md={4} style={{ alignContent: "left" }}>
               <StructureImage imgUrl={linkerDetails.imageURL}></StructureImage>
             </Col>
-          </Form.Group>
+          </Form.Group> */}
+
           <FormButton className="line-break-1" type="submit" label="Submit" />
           <LinkButton to="/linkers" label="Cancel" />
         </Form>
@@ -135,6 +158,7 @@ const EditLinker = props => {
 
   function handleSubmit(e) {
     setValidated(true);
+    debugger;
 
     if (e.currentTarget.checkValidity()) {
       wsCall("updatelinker", "POST", null, true, linkerDetails, updateLinkerSuccess, updateLinkerFailure);
@@ -143,7 +167,22 @@ const EditLinker = props => {
   }
 
   function updateLinkerSuccess() {
-    history.push("/linkers");
+    debugger;
+    switch (linkerDetails.type) {
+      case "OTHER":
+        return history.push("/othermolecules");
+      case "LINKERS":
+        return history.push("/linkers");
+      case "LIPID":
+        return history.push("/lipids");
+      case "PROTEIN":
+        return history.push("/proteins");
+      case "PEPTIDE":
+        return history.push("/peptides");
+
+      default:
+        return history.push("/linkers");
+    }
   }
 
   function updateLinkerFailure(response) {

@@ -69,187 +69,187 @@ import { OtherMolecules } from "./containers/OtherMolecules";
 import GlycanList from "./public/GlycanList";
 import GlycanDetail from "./public/GlycanDetail";
 
-const Routes = (props) => {
+const Routes = props => {
   const routes = [
     {
       path: "/",
       exact: true,
       sidebar: () => "",
-      main: () => <Home />,
+      main: () => <Home />
     },
     /*  Public search */
     {
       path: "/submitterSearch",
       exact: true,
       main: () => <SubmitterSearch />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/glycanSearch",
       exact: true,
       main: () => <GlycanSearch />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/glycanSearch/:searchId",
       exact: true,
       main: () => <GlycanSearch />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/glycanList/:searchId",
       exact: true,
       main: () => <GlycanList />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/glycanDetail/:glycanId",
       exact: true,
       main: () => <GlycanDetail />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/data/dataset/:datasetId",
       main: () => <PublicDataset {...props} />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/data",
       exact: true,
       main: () => <PublicData />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
-    
+
     {
       path: "/login",
       sidebar: () => "",
-      main: () => <Login updateLogin={props.updateLogin} authCheckAgent={props.authCheckAgent} />,
+      main: () => <Login updateLogin={props.updateLogin} authCheckAgent={props.authCheckAgent} />
     },
     {
       path: "/signup",
       exact: true,
       main: () => <Signup />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/verifyToken",
       exact: true,
       main: () => <VerifyToken />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/emailConfirmation/:token",
       main: () => <EmailConfirmation />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/profile",
       exact: true,
       main: () => <Profile authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/changePassword",
       exact: true,
       main: () => <ChangePassword />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/changeEmail",
       exact: true,
       main: () => <ChangeEmail />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/forgotPassword",
       exact: true,
       main: () => <ForgotPassword />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/forgotUsername",
       exact: true,
       main: () => <ForgotUsername />,
-      sidebar: () => "",
+      sidebar: () => ""
     },
     {
       path: "/contribute",
       exact: true,
       main: () => <Contribute authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu(""),
+      sidebar: () => getSidemenu("")
     },
 
     /*  glycans */
     {
       path: "/glycans/editglycan/:glycanId",
       main: () => <EditGlycan authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/glycans/addglycan",
       main: () => <AddGlycan authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/glycans/addMultiple",
       main: () => <AddMultipleGlycans authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/glycans",
       main: () => <Glycans authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  peptides */
     {
-      path: "/peptides/editpeptide/:peptideId",
+      path: "/peptides/editlinker/:linkerId",
       main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/peptides/addpeptide",
       main: () => <AddPeptide authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/peptides",
       main: () => <Peptides authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  proteins */
     {
-      path: "/proteins/editprotein/:peptideId",
+      path: "/proteins/editlinker/:linkerId",
       main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/proteins/addprotein",
       main: () => <AddProtein authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/proteins",
       main: () => <Proteins authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  lipids */
     {
-      path: "/lipids/editlipid/:lipidId",
+      path: "/lipids/editlinker/:linkerId",
       main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/lipids/addlipid",
       main: () => <AddLipid authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/lipids",
       main: () => <Lipids authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  linkers */
@@ -257,52 +257,52 @@ const Routes = (props) => {
       path: "/linkers/editlinker/:linkerId",
       exact: true,
       main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/linkers/addlinker",
       main: () => <AddLinker authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/linkers",
       main: () => <Linkers authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  other molecules */
     {
-      path: "/othermolecules/editothermolecule/:othermoleculeId",
+      path: "/othermolecules/editlinker/:linkerId",
       exact: true,
       main: () => <EditLinker {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/othermolecules/addothermolecule",
       main: () => <AddOtherMolecule authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/othermolecules",
       main: () => <OtherMolecules authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
 
     /*  features */
     {
       path: "/features/editfeature/:featureId",
       main: () => <EditFeature {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/features/addfeature",
       main: () => <AddFeature authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
     {
       path: "/features",
       main: () => <Features authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules"),
+      sidebar: () => getSidemenu("molecules")
     },
 
     /* Block layouts */
@@ -310,18 +310,18 @@ const Routes = (props) => {
     {
       path: "/blocklayouts/editBlock/:blockLayoutId?",
       main: () => <AddBlockLayout {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/blocklayouts/addBlock",
       main: () => <AddBlockLayout authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/blocklayouts",
       exact: true,
       main: () => <BlockLayouts authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
 
     /* Slide layouts */
@@ -329,24 +329,24 @@ const Routes = (props) => {
     {
       path: "/slidelayouts/editSlide/:slideLayoutId?",
       main: () => <AddSlideLayout {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/slidelayouts/addSlide",
       main: () => <AddSlideLayout authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/slidelayouts/addMultiple",
       exact: true,
       main: () => <AddMultiSlideLayout authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/slidelayouts",
       exact: true,
       main: () => <SlideLayouts authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
 
     /* Slide */
@@ -354,41 +354,41 @@ const Routes = (props) => {
     {
       path: "/slide/editSlide/:slideId?",
       main: () => <AddSlide {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/slides/addSlide",
       main: () => <AddSlide authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/slides",
       exact: true,
       main: () => <Slides authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("slide"),
+      sidebar: () => getSidemenu("slide")
     },
 
     /* Sample */
     {
       path: "/samples/editSample/:sampleId?",
       main: () => <AddSample {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/samples/copySample/:sampleId?",
       main: () => <AddSample {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/samples/addSample",
       main: () => <AddSample authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/samples",
       exact: true,
       main: () => <Samples authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
 
     /* Printer */
@@ -396,23 +396,23 @@ const Routes = (props) => {
     {
       path: "/printers/editPrinter/:printerId?",
       main: () => <AddPrinter {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/printers/copyPrinter/:printerId?",
       main: () => <AddPrinter {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/printers/addPrinter",
       main: () => <AddPrinter authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/printers",
       exact: true,
       main: () => <Printers authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
 
     /* Image Processing */
@@ -420,69 +420,69 @@ const Routes = (props) => {
     {
       path: "/imageanalysis/editImageAnalysisMetadata/:imageAnalysisId?",
       main: () => <AddImageAnalysis {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/imageanalysis/copyImageAnalysisMetadata/:imageAnalysisId?",
       main: () => <AddImageAnalysis {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/imageanalysis/addImageMetadata",
       main: () => <AddImageAnalysis authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/imageanalysis",
       exact: true,
       main: () => <ImageAnalysis authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
 
     /* Scanner */
     {
       path: "/scanners/editScanner/:scannerId?",
       main: () => <AddScanner {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/scanners/copyScanner/:scannerId?",
       main: () => <AddScanner {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/scanners/addScanner",
       main: () => <AddScanner authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/scanners",
       exact: true,
       main: () => <Scanners authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
 
     /* Data Processing */
     {
       path: "/dataprocessing/editDataProcessing/:dataProcessingId?",
       main: () => <AddDataProcessing {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/dataprocessing/copyDataProcessing/:dataProcessingId?",
       main: () => <AddDataProcessing {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/dataprocessing/addDataProcessing",
       main: () => <AddDataProcessing authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/dataprocessing",
       exact: true,
       main: () => <DataProcessing authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
 
     /* slideMeta */
@@ -490,98 +490,98 @@ const Routes = (props) => {
     {
       path: "/listslidemeta/editSlideMeta/:slideMetaId?",
       main: () => <AddSlideMeta {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/listslidemeta/copySlideMeta/:slideMetaId?",
       main: () => <AddSlideMeta {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/listslidemeta/addSlideMeta",
       main: () => <AddSlideMeta authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/listslidemeta",
       exact: true,
       main: () => <SlideMeta authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     /* Assay */
     {
       path: "/assays/editAssay/:assayId?",
       main: () => <AddAssay {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/assays/copyAssay/:assayId?",
       main: () => <AddAssay {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/assays/addAssay",
       main: () => <AddAssay authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/assays",
       main: () => <Assay authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
 
     /* Spots */
     {
       path: "/spots/editSpot/:spotId?",
       main: () => <AddSpot {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/spots/copySpot/:spotId?",
       main: () => <AddSpot {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/spots/addSpot",
       main: () => <AddSpot authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
     {
       path: "/spots",
       main: () => <Spots authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("meta"),
+      sidebar: () => getSidemenu("meta")
     },
 
     /* experiment */
     {
       path: "/experiments/addExperiment/addGrant/:experimentId?",
       main: () => <AddGrant {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments/addRawData/:experimentId?",
       main: () => <AddRawData {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments/editExperiment/:experimentId?",
       main: () => <AddExperiment {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments/editExperiment/:experimentId?",
       main: () => <AddExperiment {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments/addExperiment",
       main: () => <AddExperiment authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/experiments",
       main: () => <Experiments authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
 
     /* rawdata */
@@ -589,19 +589,19 @@ const Routes = (props) => {
     {
       path: "/rawdata",
       main: () => <RawData authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
 
     /* Process Data */
     {
       path: "/uploadProcessedData/editProcessedData/:experimentId/:processedDataId",
       main: () => <AddProcessedData {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
     {
       path: "/uploadProcessedData/addUploadProcessedData/:experimentId?",
       main: () => <AddProcessedData {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
+      sidebar: () => getSidemenu("experiment")
     },
     // {
     //   path: "/addPublication/:experimentId?",
@@ -617,11 +617,11 @@ const Routes = (props) => {
     {
       path: "/errorProcessdata",
       main: () => <ErrorPage {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("experiment"),
-    },
+      sidebar: () => getSidemenu("experiment")
+    }
   ];
 
-  const getSidemenu = (menu) => {
+  const getSidemenu = menu => {
     return (
       <div className="sidenav">
         <SideMenu openMenu={menu} />
@@ -633,17 +633,13 @@ const Routes = (props) => {
     <>
       <Switch>
         {routes.map((element, index) => {
-          return (
-            <Route key={index} path={element.path} exact={element.exact} render={element.sidebar} />
-          );
+          return <Route key={index} path={element.path} exact={element.exact} render={element.sidebar} />;
         })}
       </Switch>
 
       <Switch>
         {routes.map((element, index) => {
-          return (
-            <Route key={index} path={element.path} exact={element.exact} render={element.main} />
-          );
+          return <Route key={index} path={element.path} exact={element.exact} render={element.main} />;
         })}
       </Switch>
     </>
@@ -652,7 +648,7 @@ const Routes = (props) => {
 
 Routes.propTypes = {
   authCheckAgent: PropTypes.func,
-  updateLogin: PropTypes.func,
+  updateLogin: PropTypes.func
 };
 
 export { Routes };

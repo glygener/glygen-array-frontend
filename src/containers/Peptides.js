@@ -48,13 +48,13 @@ const Peptides = props => {
           showCommentsButton
           showSearchBox
           commentsRefColumn="description"
-          deleteWS="peptidedelete"
-          editUrl="peptides/editpeptide"
+          deleteWS="linkerdelete"
+          editUrl="peptides/editlinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Peptides"
-          showDeleteButton={props.showDeleteButton}
-          showEditButton={props.showEditButton}
+          showDeleteButton={props.showDeleteButton ? props.showDeleteButton : true}
+          showEditButton={props.showEditButton ? props.showEditButton : true}
           fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
           paramTypeValue={"PEPTIDE"}
           isModal={props.isModal}

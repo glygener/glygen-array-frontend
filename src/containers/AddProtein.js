@@ -51,7 +51,7 @@ const AddProtein = props => {
   const proteinInitialState = {
     selectedProtein: "SequenceDefined",
     name: "",
-    sequence: "AISGNHPLWTWWPVLTPDLCMLALSGPPHWGLEYQAPYSSPPGPPCCSGSSGSSAGCSRD",
+    sequence: "",
     comment: "",
     uniProtId: "",
     pdbIds: [],

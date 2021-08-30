@@ -44,8 +44,8 @@ const OtherMolecules = props => {
           commentsRefColumn="description"
           fetchWS="listmoleculesbytype"
           paramTypeValue={"OTHER"}
-          deleteWS="peptidedelete"
-          editUrl="peptides/editpeptide"
+          deleteWS="linkerdelete"
+          editUrl="othermolecules/editlinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Peptides"

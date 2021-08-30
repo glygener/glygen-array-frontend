@@ -64,13 +64,13 @@ const Lipids = props => {
           showCommentsButton
           showSearchBox
           commentsRefColumn="description"
-          deleteWS="lipiddelete"
-          editUrl="lipids/editlipid"
+          deleteWS="linkerdelete"
+          editUrl="linkers/editlinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Lipids"
-          showDeleteButton={props.showDeleteButton}
-          showEditButton={props.showEditButton}
+          showDeleteButton={props.showDeleteButton ? props.showDeleteButton : true}
+          showEditButton={props.showEditButton ? props.showEditButton : true}
           fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
           paramTypeValue={"LIPID"}
           isModal={props.isModal}
