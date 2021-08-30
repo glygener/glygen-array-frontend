@@ -27,9 +27,11 @@ const Peptides = props => {
         <Title title="Peptides" />
 
         <Col className={"col-link-button"}>
-          <Link to="/peptides/addpeptide" className="link-button" style={{ width: "150px" }}>
-            Add Peptide
-          </Link>
+          {props.showOnlyMyLinkersOrGlycansCheckBox && (
+            <Link to="/peptides/addpeptide" className="link-button" style={{ width: "150px" }}>
+              Add Peptide
+            </Link>
+          )}
         </Col>
 
         <GlygenTable

@@ -15,8 +15,13 @@ import { StructureImage } from "../components/StructureImage";
 import { getAAPositionsFromSequence } from "../utils/sequence";
 import { wsCall } from "../utils/wsUtils";
 import { useHistory } from "react-router-dom";
-import { FeatureMetaData } from "../containers/FeatureMetaData";
+import { FeatureMetaData } from "./FeatureMetaData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Linkers } from "./Linkers";
+import { Peptides } from "./Peptides";
+import { Proteins } from "./Proteins";
+import { Lipids } from "./Lipids";
+
 // import { AddFeatureGlycoTypes } from "./AddFeatureGlycoTypes";
 
 const AddFeature = props => {
@@ -112,7 +117,12 @@ const AddFeature = props => {
   function getSteps(type) {
     switch (type) {
       case "LINKED_GLYCAN":
+      case "CONTROL":
+      case "NEGATIVE_CONTROL":
+      case "COMPOUND":
+      case "LANDING_LIGHT":
         return generalSteps;
+
       case "GLYCO_LIPID":
         return glycoLipidSteps;
       case "GLYCO_PEPTIDE":
@@ -120,13 +130,23 @@ const AddFeature = props => {
       case "GLYCO_PROTEIN":
         return glycoProteinSteps;
 
+      // case "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE":
+      // return glycoProteinSteps;
+
       default:
         return generalSteps;
     }
   }
 
   const isStepSkipped = step => {
-    return featureAddState.type !== "LINKED_GLYCAN" && step === 2 && activeStep === 3;
+    return (
+      (featureAddState.type === "CONTROL" ||
+        featureAddState.type === "NEGATIVE_CONTROL" ||
+        featureAddState.type === "COMPOUND" ||
+        featureAddState.type === "LANDING_LIGHT") &&
+      step === 2 &&
+      activeStep === 3
+    );
   };
 
   const handleNextLinker = () => {
@@ -147,10 +167,12 @@ const AddFeature = props => {
         }
       }
     } else if (activeStep === 2) {
-      if (featureAddState.glycans.length < 2) {
-        setErrorMessage("Glycan selection is required.");
-        setShowErrorSummary(true);
-        return;
+      if (featureAddState.type === "LINKED_GLYCAN") {
+        if (featureAddState.glycans.length < 2) {
+          setErrorMessage("Glycan selection is required.");
+          setShowErrorSummary(true);
+          return;
+        }
       }
     } else if (activeStep === 3) {
       setGenericInfoValidated(true);
@@ -167,21 +189,24 @@ const AddFeature = props => {
   const handleNextGlycoLipid = () => {
     var stepIncrement = 1;
     if (activeStep === 1) {
-      setLinkerValidated(true);
       if (featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") {
         if (featureAddState.linker && featureAddState.linker.id) {
           var isValidLinker = setupGlycanSelection(featureAddState.linker);
           setValidLinker(isValidLinker);
         } else {
+          setLinkerValidated(true);
           return;
         }
       }
     } else if (activeStep === 2) {
-      // if (featureAddState.lipid && !featureAddState.lipid.id) {
-      //   setErrorMessage("Lipid selection is required.");
-      //   setShowErrorSummary(true);
-      //   return;
-      // }
+      if (featureAddState.type === "GLYCO_LIPID") {
+        if (featureAddState.lipid && !featureAddState.lipid.id) {
+          // setErrorMessage("Lipid selection is required.");
+          // setShowErrorSummary(true);
+          setLinkerValidated(true);
+          return;
+        }
+      }
     } else if (activeStep === 3) {
       setGenericInfoValidated(true);
       if (!glycoLipidGlycanLinkerListStep4) {
@@ -251,6 +276,7 @@ const AddFeature = props => {
 
   const handleLipidSelect = lipid => {
     setFeatureAddState({ lipid: lipid });
+    setLinkerValidated(false);
     window.scrollTo({
       top: 0,
       left: 0,
@@ -294,7 +320,6 @@ const AddFeature = props => {
   };
 
   const checkSelection = row => {
-    debugger;
     if (featureAddState.glycans && featureAddState.glycans.length > 0) {
       rowSelected = [...featureAddState.glycans];
     }
@@ -357,6 +382,7 @@ const AddFeature = props => {
                     setFeatureAddState({
                       isLipidLinkedToSurfaceUsingLinker: e.target.value
                     });
+                    setLinkerValidated(false);
                   }}
                   checked={featureAddState.isLipidLinkedToSurfaceUsingLinker === glycoLipidOptionsPage1[key]}
                 />
@@ -387,89 +413,99 @@ const AddFeature = props => {
   const getTableforLinkers = isModal => {
     return (
       <>
-        <GlygenTable
-          columns={[
-            {
-              Header: "PubChem Id",
-              accessor: "pubChemId",
-              Cell: (row, index) =>
-                row.value ? (
-                  <a key={index} href={row.original.pubChemUrl} target="_blank" rel="noopener noreferrer">
-                    {row.value}
-                  </a>
-                ) : (
-                  ""
-                ),
-              minWidth: 70
-            },
-            {
-              Header: "Name",
-              accessor: "name",
-              minWidth: 50
-            },
-            {
-              Header: "Type",
-              accessor: "type"
-            },
-            {
-              Header: "Classification",
-              accessor: "classification",
-              Cell: (row, index) =>
-                row.value ? (
-                  <a
-                    key={index}
-                    href={row.value.uri}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={row.value.classification}
-                  >
-                    {row.value.classification}
-                  </a>
-                ) : (
-                  ""
-                )
-            },
-            {
-              Header: "Structure Image",
-              accessor: "imageURL",
-              Cell: (row, index) => <StructureImage key={index} imgUrl={row.value}></StructureImage>,
-              minWidth: 150
-            },
-            {
-              Header: "Mass",
-              accessor: "mass",
-              Cell: (row, index) => <div key={index}>{row.value ? parseFloat(row.value).toFixed(4) : ""}</div>,
-              minWidth: 70
-            },
-            {
-              Header: "InChiKey",
-              accessor: "inChiKey",
-              minWidth: 150
-            },
-            {
-              Header: "Sequence",
-              accessor: "sequence",
-              minWidth: 70
-            }
-          ]}
-          defaultPageSize={10}
-          defaultSortColumn="dateModified"
-          defaultSortOrder={0}
-          showCommentsButton
-          commentsRefColumn="pubChemId"
-          fetchWS={onlyMyLinkers ? "listalllinkers" : "linkerlist"}
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Linkers"
+        <Linkers
+          onlyMyLinkers={onlyMyLinkers}
           isModal={isModal}
-          showSearchBox
-          selectButtonHeader="Select"
+          selectButtonHeader={"Select"}
           showSelectButton
           selectButtonHandler={handleLinkerSelect}
           showOnlyMyLinkersOrGlycansCheckBox
           handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyLinkers(!onlyMyLinkers)}
           onlyMyLinkersGlycans={onlyMyLinkers}
           onlyMyLinkersGlycansCheckBoxLabel={"Show all available linkers"}
+        />
+      </>
+    );
+  };
+
+  const getTableforPeptides = isModal => {
+    return (
+      <>
+        <Peptides
+          onlyMyLinkers={onlyMyLinkers}
+          isModal={isModal}
+          selectButtonHeader={"Select"}
+          showSelectButton
+          selectButtonHandler={handlePeptideSelect}
+          showOnlyMyLinkersOrGlycansCheckBox
+          handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyLinkers(!onlyMyLinkers)}
+          onlyMyLinkersGlycans={onlyMyLinkers}
+          onlyMyLinkersGlycansCheckBoxLabel={"Show all available peptides"}
+        />
+      </>
+    );
+  };
+
+  const getTableforProteins = isModal => {
+    return (
+      <>
+        <Proteins
+          onlyMyLinkers={onlyMyLinkers}
+          isModal={isModal}
+          selectButtonHeader={"Select"}
+          showSelectButton
+          selectButtonHandler={handleProteinSelect}
+          showOnlyMyLinkersOrGlycansCheckBox
+          handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyLinkers(!onlyMyLinkers)}
+          onlyMyLinkersGlycans={onlyMyLinkers}
+          onlyMyLinkersGlycansCheckBoxLabel={"Show all available proteins"}
+        />
+      </>
+    );
+  };
+
+  const getTableforLipids = isModal => {
+    return (
+      <>
+        <Form className="radioform1">
+          <Form.Group as={Row} controlId="lipid">
+            <FormLabel label="Selected Lipid" />
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                name="lipid"
+                value={featureAddState.lipid.name}
+                disabled={true}
+                placeholder="No lipid selected"
+                isInvalid={linkerValidated}
+              />
+              <Feedback message="Please select a lipid from below"></Feedback>
+            </Col>
+          </Form.Group>
+
+          {featureAddState.lipid.imageURL && (
+            <Form.Group as={Row} controlId="lipidimage">
+              <Col md={{ span: 3, offset: 2 }}>
+                <FormLabel label={""} />
+              </Col>
+
+              <Col md={4}>
+                <StructureImage imgUrl={featureAddState.lipid.imageURL}></StructureImage>
+              </Col>
+            </Form.Group>
+          )}
+        </Form>
+
+        <Lipids
+          onlyMyLinkers={onlyMyLinkers}
+          isModal={isModal}
+          selectButtonHeader={"Select"}
+          showSelectButton
+          selectButtonHandler={handleLipidSelect}
+          showOnlyMyLinkersOrGlycansCheckBox
+          handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyLinkers(!onlyMyLinkers)}
+          onlyMyLinkersGlycans={onlyMyLinkers}
+          onlyMyLinkersGlycansCheckBoxLabel={"Show all available lipids"}
         />
       </>
     );
@@ -487,7 +523,7 @@ const AddFeature = props => {
       }
     ];
 
-    if (linker.type !== "SMALLMOLECULE_LINKER" && featureAddState.glycans.length === 0) {
+    if (linker.type !== "SMALLMOLECULE" && featureAddState.glycans.length === 0) {
       debugger;
       valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
       chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
@@ -650,14 +686,16 @@ const AddFeature = props => {
         return getCase1();
       case 2:
         if (featureAddState.type === "GLYCO_LIPID") {
-          return getLipidList();
+          return getTableforLipids(false);
         } else if (featureAddState.type === "GLYCO_PEPTIDE") {
-          return getPeptideList();
-        } else if (featureAddState.type === "GLYCO_PROTEIN") {
-          return getProteinList();
+          return getTableforPeptides(false);
+        } else if (
+          featureAddState.type === "GLYCO_PROTEIN" ||
+          featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+        ) {
+          return getTableforProteins(false);
         }
-        return;
-
+        break;
       case 3:
         return featureAddState.type === "GLYCO_LIPID"
           ? getCase2ForGlycoLipid()
@@ -697,17 +735,15 @@ const AddFeature = props => {
   function getStepContent(type, activeStep) {
     switch (type) {
       case "LINKED_GLYCAN":
+      case "CONTROL":
+      case "NEGATIVE_CONTROL":
+      case "COMPOUND":
+      case "LANDING_LIGHT":
         return getStepContentForLinkedGlycan(activeStep);
 
       case "GLYCO_LIPID":
-        return getStepContentForGlycoLipid(activeStep);
-
       case "GLYCO_PEPTIDE":
-        return getStepContentForGlycoLipid(activeStep);
-
       case "GLYCO_PROTEIN":
-        return getStepContentForGlycoLipid(activeStep);
-
       case "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE":
         return getStepContentForGlycoLipid(activeStep);
 
@@ -782,7 +818,13 @@ const AddFeature = props => {
         {((featureAddState.type === "GLYCO_LIPID" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PEPTIDE" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PROTEIN" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
-          featureAddState.type === "LINKED_GLYCAN") &&
+          (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
+            featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
+          featureAddState.type === "LINKED_GLYCAN" ||
+          featureAddState.type === "CONTROL" ||
+          featureAddState.type === "NEGATIVE_CONTROL" ||
+          featureAddState.type === "COMPOUND" ||
+          featureAddState.type === "LANDING_LIGHT") &&
           (linkerValidated || Object.keys(featureAddState.linker).length > 0) && (
             <Form className="radioform1">
               <Form.Group as={Row} controlId="name">
@@ -842,7 +884,11 @@ const AddFeature = props => {
         {((featureAddState.type === "GLYCO_LIPID" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PEPTIDE" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PROTEIN" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
-          featureAddState.type === "LINKED_GLYCAN") && (
+          featureAddState.type === "LINKED_GLYCAN" ||
+          featureAddState.type === "CONTROL" ||
+          featureAddState.type === "NEGATIVE_CONTROL" ||
+          featureAddState.type === "COMPOUND" ||
+          featureAddState.type === "LANDING_LIGHT") && (
           <Form className="form-container">{getTableforLinkers(false)}</Form>
         )}
       </>
@@ -872,7 +918,14 @@ const AddFeature = props => {
                     return row.original.linker ? (
                       row.original.linker
                     ) : (
-                      <Button onClick={() => setShowLinkerPicker(true)}>Add linker</Button>
+                      <Button
+                        style={{
+                          backgroundColor: "lightgray"
+                        }}
+                        onClick={() => setShowLinkerPicker(true)}
+                      >
+                        Add linker
+                      </Button>
                     );
                   },
                   minWidth: 150
@@ -1147,99 +1200,6 @@ const AddFeature = props => {
     );
   };
 
-  const getLipidList = () => {
-    return (
-      <>
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name",
-              minWidth: 50
-            },
-            {
-              Header: "Type",
-              accessor: "type"
-            },
-            {
-              Header: "Sequence",
-              accessor: "sequence",
-              minWidth: 70
-            }
-          ]}
-          defaultPageSize={10}
-          defaultSortOrder={0}
-          showCommentsButton
-          commentsRefColumn="description"
-          fetchWS={"lipidlist"}
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Lipids"
-          showSelectButton
-          showSearchBox
-          selectButtonHeader="Select"
-          selectButtonHandler={handleLipidSelect}
-        />
-      </>
-    );
-  };
-
-  const getPeptideList = () => {
-    return (
-      <>
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name",
-              minWidth: 50
-            }
-          ]}
-          defaultPageSize={10}
-          defaultSortOrder={0}
-          showCommentsButton
-          commentsRefColumn="description"
-          fetchWS={"peptidelist"}
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Peptides"
-          showSelectButton
-          showSearchBox
-          selectButtonHeader="Select"
-          selectButtonHandler={handlePeptideSelect}
-        />
-      </>
-    );
-  };
-
-  const getProteinList = () => {
-    return (
-      <>
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name",
-              minWidth: 50
-            }
-          ]}
-          defaultPageSize={10}
-          defaultSortOrder={0}
-          showCommentsButton
-          commentsRefColumn="description"
-          fetchWS={"proteinlist"}
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Proteins"
-          showSelectButton
-          showSearchBox
-          selectButtonHeader="Select"
-          selectButtonHandler={handleProteinSelect}
-        />
-      </>
-    );
-  };
-
   return (
     <>
       <Helmet>
@@ -1254,12 +1214,12 @@ const AddFeature = props => {
           {getSteps(featureAddState.type).map((label, index) => {
             const stepProps = {};
             const labelProps = {};
-            if (featureAddState.type === "LINKED_GLYCAN") {
-              if (isStepSkipped(index)) {
-                labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
-                stepProps.completed = false;
-              }
+
+            if (isStepSkipped(index)) {
+              labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
+              stepProps.completed = false;
             }
+
             return (
               <Step key={label} {...stepProps}>
                 <StepLabel {...labelProps}>{label}</StepLabel>
