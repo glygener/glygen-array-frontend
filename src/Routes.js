@@ -292,17 +292,17 @@ const Routes = props => {
     {
       path: "/features/editfeature/:featureId",
       main: () => <EditFeature {...props} authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules")
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/features/addfeature",
       main: () => <AddFeature authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules")
+      sidebar: () => getSidemenu("slide")
     },
     {
       path: "/features",
       main: () => <Features authCheckAgent={props.authCheckAgent} />,
-      sidebar: () => getSidemenu("molecules")
+      sidebar: () => getSidemenu("slide")
     },
 
     /* Block layouts */

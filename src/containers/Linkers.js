@@ -29,9 +29,11 @@ const Linkers = props => {
         <Title title="Linkers" />
 
         <Col className={"col-link-button"}>
-          <Link to="/linkers/addlinker" className="link-button" style={{ width: "150px" }}>
-            Add Linker
-          </Link>
+          {props.showOnlyMyLinkersOrGlycansCheckBox && (
+            <Link to="/linkers/addlinker" className="link-button" style={{ width: "150px" }}>
+              Add Linker
+            </Link>
+          )}
         </Col>
 
         <GlygenTable

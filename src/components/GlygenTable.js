@@ -419,7 +419,6 @@ const GlygenTable = props => {
   }
 
   function fetchError(response) {
-    console.log(response);
     response.json().then(response => {
       setPageErrorsJson(response);
     });
