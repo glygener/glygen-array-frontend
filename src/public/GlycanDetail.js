@@ -254,7 +254,7 @@ const GlycanList = (props) => {
                 fetchWS="getdatasetforglycan"
                 keyColumn="id"
                 showRowsInfo
-                infoRowsText="Glycans"
+                infoRowsText="Datasets"
                 glycanId={glycanId}
               />
             </Card>

@@ -99,7 +99,6 @@ const GlycanList = (props) => {
                   {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
-                    sortable: true,
                   },
                   {
                     Header: "Structure Image",
