@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import { Card } from "react-bootstrap";
 import { SearchTable } from "../components/search/SearchTable";
 import { StructureImage } from "../components/StructureImage";
+import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 
 const GlycanList = (props) => {
   const { searchId } = useParams();
@@ -99,15 +100,22 @@ const GlycanList = (props) => {
                   {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
+                    Cell: (row) => (row.value ? row.value : "N/A"),
                   },
                   {
                     Header: "Structure Image",
-                    accessor: "cartoon",
+                    // accessor: "cartoon",
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
-                    Cell: (row) => (
-                      <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
-                    ),
+                    // Cell: (row) => (
+                    //   <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
+                    // ),
+                    Cell: (row) =>
+                      row.original.glycan.cartoon ? (
+                        <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
+                      ) : (
+                        <StructureImage imgUrl={glygenNotFoundSmall}></StructureImage>
+                      ),
                   },
                   {
                     Header: "Mass",

@@ -5,14 +5,7 @@ import "react-table/react-table.css";
 import { wsCall } from "../../utils/wsUtils";
 import PropTypes from "prop-types";
 import "../GlygenTable.css";
-import {
-  OverlayTrigger,
-  Popover,
-  Form,
-  Col,
-  Row,
-  FormCheck,
-} from "react-bootstrap";
+import { OverlayTrigger, Popover, Form, Col, Row, FormCheck } from "react-bootstrap";
 import { ConfirmationModal } from "../ConfirmationModal";
 import { GlygenTableRowsInfo } from "../GlygenTableRowsInfo";
 import { ErrorSummary } from "../ErrorSummary";
@@ -95,8 +88,7 @@ const SearchTable = (props) => {
             overlay={
               <Popover>
                 <Popover.Title as="h3" style={{ marginTop: "-70px" }}>
-                  Comments for {props.commentsRefColumn}:{" "}
-                  {row.original[props.commentsRefColumn]}
+                  Comments for {props.commentsRefColumn}: {row.original[props.commentsRefColumn]}
                 </Popover.Title>
                 <Popover.Content>{row.value}</Popover.Content>
               </Popover>
@@ -137,9 +129,7 @@ const SearchTable = (props) => {
                 title="Edit"
                 className="table-btn edit-icon"
                 onClick={() =>
-                  history.push(
-                    "/" + props.editUrl + "/" + row.original[props.keyColumn]
-                  )
+                  history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])
                 }
               />
               &nbsp;
@@ -154,12 +144,7 @@ const SearchTable = (props) => {
                 size="xs"
                 title="Delete"
                 className="caution-color table-btn"
-                onClick={() =>
-                  deletePrompt(
-                    row.original[props.keyColumn],
-                    props.queryParamDelete
-                  )
-                }
+                onClick={() => deletePrompt(row.original[props.keyColumn], props.queryParamDelete)}
               />
               &nbsp;
             </>
@@ -177,12 +162,7 @@ const SearchTable = (props) => {
                 className="table-btn"
                 onClick={() =>
                   history.push(
-                    "/" +
-                      props.copyUrl +
-                      "/" +
-                      row.original[props.keyColumn] +
-                      "?" +
-                      props.copyPage
+                    "/" + props.copyUrl + "/" + row.original[props.keyColumn] + "?" + props.copyPage
                   )
                 }
               />
@@ -235,10 +215,7 @@ const SearchTable = (props) => {
 
   if (props.showSelectButton) {
     columnsToRender["singleSelectColumn"] = {
-      Header:
-        props.selectButtonHeader !== undefined
-          ? props.selectButtonHeader
-          : "Select",
+      Header: props.selectButtonHeader !== undefined ? props.selectButtonHeader : "Select",
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
         <input
@@ -296,7 +273,7 @@ const SearchTable = (props) => {
       {props.showRowsInfo && (
         <>
           <Row>
-           <Col>
+            <Col>
               <GlygenTableRowsInfo
                 currentPage={tableElement.state ? tableElement.state.page : 0}
                 pageSize={tableElement.state ? tableElement.state.pageSize : 0}
@@ -305,7 +282,7 @@ const SearchTable = (props) => {
                 infoRowsText={props.infoRowsText}
                 show={props.showRowsInfo}
               />
-            </Col> 
+            </Col>
 
             {props.showOnlyMyLinkersOrGlycansCheckBox && (
               <Col
@@ -320,12 +297,11 @@ const SearchTable = (props) => {
                     label={
                       <span
                         style={{
-                          backgroundColor:
-                            props.onlyMyLinkersGlycansCheckBoxLabel.includes(
-                              "glycans"
-                            )
-                              ? "#fff"
-                              : "",
+                          backgroundColor: props.onlyMyLinkersGlycansCheckBoxLabel.includes(
+                            "glycans"
+                          )
+                            ? "#fff"
+                            : "",
                         }}
                       >
                         {props.onlyMyLinkersGlycansCheckBoxLabel}
@@ -345,9 +321,7 @@ const SearchTable = (props) => {
                 }}
                 style={{
                   marginBottom: "10px",
-                  marginRight: props.showOnlyMyLinkersOrGlycansCheckBox
-                    ? "-50px"
-                    : "",
+                  marginRight: props.showOnlyMyLinkersOrGlycansCheckBox ? "-50px" : "",
                 }}
               >
                 <Form.Control
@@ -366,6 +340,14 @@ const SearchTable = (props) => {
       <ReactTable
         columns={Object.values(columnsToRender)}
         pageSizeOptions={[5, 10, 25, 50]}
+        minRows={0}
+        NoDataComponent={({ state, ...rest }) =>
+          !state?.loading ? (
+            <p className="pt-2 text-center">
+              <strong>No data available </strong>
+            </p>
+          ) : null
+        }
         defaultPageSize={props.defaultPageSize}
         data={props.data ? props.data : data}
         pages={pages}
@@ -390,10 +372,7 @@ const SearchTable = (props) => {
 
           if (props.fetchWS) {
             setShowLoading(true);
-            var sortColumn =
-              state.sorted.length > 0
-                ? state.sorted[0].id
-                : props.defaultSortColumn;
+            var sortColumn = state.sorted.length > 0 ? state.sorted[0].id : props.defaultSortColumn;
             var sortOrder =
               state.sorted.length > 0
                 ? state.sorted[0].desc === false
@@ -476,6 +455,9 @@ const SearchTable = (props) => {
       setData(responseJson.rows);
       setRows(responseJson.total);
       setPages(Math.ceil(responseJson.total / state.pageSize));
+      // setData([]);
+      // setRows(0);
+      // setPages(1);
       setShowLoading(false);
     });
   }

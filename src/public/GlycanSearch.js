@@ -84,7 +84,7 @@ const GlycanSearch = (props) => {
             transition={false}
             activeKey={currentTab}
             mountOnEnter={true}
-            unmountOnExit={true}
+            unmountOnExit={false}
             onSelect={(key) => setCurrentTab(key)}
           >
             <Tab eventKey="general" className="pt-2" title="General">
