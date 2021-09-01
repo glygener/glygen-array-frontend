@@ -105,7 +105,12 @@ const App = () => {
           <ScrollToTopBtn />
           {location &&
           location.pathname &&
-          (location.pathname === "/data" || location.pathname === "/") ? (
+          (location.pathname === "/data" ||
+            location.pathname === "/glycanSearch" ||
+            location.pathname === "/glycanList" ||
+            location.pathname === "/glycanDetail" ||
+            location.pathname === "/submitterSearch" ||
+            location.pathname === "/") ? (
             <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
           ) : (
             <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
