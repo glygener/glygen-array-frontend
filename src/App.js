@@ -136,6 +136,8 @@ const App = () => {
       "verifyToken",
       "submitterSearch",
       "glycanSearch",
+      "glycanList",
+      "glycanDetail",
     ];
     var pagename = getPageName(history);
 
