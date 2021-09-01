@@ -22,7 +22,7 @@ const FeatureMetaData = props => {
 
   useEffect(() => {
     wsCall("listtemplates", "GET", { type: "FEATURE" }, true, null, getListTemplatesSuccess, getListTemplatesFailure);
-  }, []);
+  }, [props]);
 
   const metaDetails = {
     name: "",
@@ -150,18 +150,13 @@ const FeatureMetaData = props => {
 
     var itemDescriptors = itemByType.descriptors;
     var itemToBeDeleted = itemDescriptors.find(i => i.id === id);
+    let itemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
 
-    if (!itemToBeDeleted.mandatory) {
-      itemToBeDeleted.isNewlyAddedNonMandatory = false;
-      itemToBeDeleted.isNewlyAdded = false;
-
+    if (!itemToBeDeleted.isHide) {
       const itemSubDescriptors = itemToBeDeleted.descriptors;
 
       itemSubDescriptors.forEach(d => {
-        if (d.id.startsWith("newly")) {
-          const newlyAddedsubGroupIndex = itemSubDescriptors.indexOf(d);
-          itemSubDescriptors.splice(newlyAddedsubGroupIndex, 1);
-        } else if (d.group) {
+        if (d.group) {
           var dg = d.descriptors;
           dg.forEach(sgd => {
             sgd.value = undefined;
@@ -170,37 +165,15 @@ const FeatureMetaData = props => {
           d.value = undefined;
         }
       });
-    } else {
-      var itemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
-      itemDescriptors.splice(itemToBeDeletedIndex, 1);
+
+      const elementUpdate = JSON.parse(JSON.stringify(itemToBeDeleted));
+      elementUpdate.isHide = true;
+
+      itemDescriptors[itemToBeDeletedIndex] = elementUpdate;
+    } else if (itemToBeDeleted.isHide) {
+      itemToBeDeleted.isHide = false;
     }
 
-    itemByType.descriptors = itemDescriptors;
-
-    sampleModelDelete[itemByTypeIndex] = itemByType;
-    setSampleModel(sampleModelDelete);
-
-    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
-  };
-
-  const handleSubGroupDelete = (group, id) => {
-    var sampleModelDelete;
-    var itemByType;
-    var itemByTypeIndex;
-
-    sampleModelDelete = [...sampleModel];
-    itemByType = sampleModelDelete.find(i => i.name === metaDataDetails.selectedtemplate);
-    itemByTypeIndex = sampleModelDelete.indexOf(itemByType);
-
-    var itemDescriptors = itemByType.descriptors;
-    const selectedGroup = itemDescriptors.find(i => i.id === group.id);
-    const selectedGroupIndex = itemDescriptors.indexOf(selectedGroup);
-
-    const itemToBeDeleted = selectedGroup.descriptors.find(i => i.id === id);
-    const itemToBeDeletedIndex = selectedGroup.descriptors.indexOf(itemToBeDeleted);
-    selectedGroup.descriptors.splice(itemToBeDeletedIndex, 1);
-
-    itemDescriptors[selectedGroupIndex] = selectedGroup;
     itemByType.descriptors = itemDescriptors;
 
     sampleModelDelete[itemByTypeIndex] = itemByType;
@@ -219,7 +192,6 @@ const FeatureMetaData = props => {
           handleChange={handleChangeMetaForm}
           handleDelete={handleDelete}
           // descriptorSubGroup={getDescriptorSubGroup}
-          handleSubGroupDelete={handleSubGroupDelete}
           handleUnitSelectionChange={handleChangeMetaForm}
         />
       </>
@@ -384,8 +356,6 @@ const FeatureMetaData = props => {
     var selectedItemByType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
 
     const nonXORgroups = selectedItemByType.descriptors.filter(i => i.group === true && !i.mandateGroup);
-
-    console.log(nonXORgroups);
 
     nonXORgroups.map(desc => {
       desc.descriptors.map(element => {

@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { Row, Col, Form } from "react-bootstrap";
 import Helmet from "react-helmet";
 import { FormLabel, Feedback, FormButton, Title, LinkButton } from "../components/FormControls";
-import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import { useHistory, useParams } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -23,10 +22,7 @@ const EditLinker = props => {
   const [linkerDetails, setLinkerDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
     name: "",
     description: "",
-    inChiKey: "",
-    type: "",
-    mass: "",
-    imageURL: ""
+    type: ""
   });
 
   const handleChange = e => {
@@ -86,7 +82,7 @@ const EditLinker = props => {
                 type="text"
                 placeholder="name"
                 name="name"
-                defaultValue={linkerDetails.name}
+                value={linkerDetails.name}
                 onChange={handleChange}
                 required
               />
@@ -101,7 +97,7 @@ const EditLinker = props => {
                 as="textarea"
                 placeholder="comment"
                 name="description"
-                defaultValue={linkerDetails.description}
+                value={linkerDetails.description}
                 onChange={handleChange}
               />
             </Col>
@@ -114,27 +110,6 @@ const EditLinker = props => {
             </Col>
           </Form.Group>
 
-          {/*  <Form.Group as={Row} controlId="inChiKey">
-            <FormLabel label="InChI Key" />
-            <Col md={4}>
-              <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.inChiKey} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="mass">
-            <FormLabel label="Mass" />
-            <Col md={4}>
-              <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.mass} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="mass">
-            <FormLabel label="Structure Image" />
-            <Col md={4} style={{ alignContent: "left" }}>
-              <StructureImage imgUrl={linkerDetails.imageURL}></StructureImage>
-            </Col>
-          </Form.Group> */}
-
           <FormButton className="line-break-1" type="submit" label="Submit" />
           <LinkButton to="/linkers" label="Cancel" />
         </Form>
@@ -144,7 +119,6 @@ const EditLinker = props => {
 
   function handleSubmit(e) {
     setValidated(true);
-    debugger;
 
     if (e.currentTarget.checkValidity()) {
       wsCall("updatelinker", "POST", null, true, linkerDetails, updateLinkerSuccess, updateLinkerFailure);

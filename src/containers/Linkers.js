@@ -25,7 +25,7 @@ const Linkers = props => {
         {getMeta(head.linkers)}
       </Helmet>
 
-      <div className="page-container">
+      <div className={!props.isImported ? "page-container" : ""}>
         <Title title="Linkers" />
 
         <Col className={"col-link-button"}>

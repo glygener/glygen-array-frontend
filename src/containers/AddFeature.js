@@ -167,7 +167,7 @@ const AddFeature = props => {
       }
     } else if (activeStep === 2) {
       if (featureAddState.type === "LINKED_GLYCAN") {
-        if (featureAddState.glycans.length < 2) {
+        if (featureAddState.glycans.length < 1) {
           setErrorMessage("Glycan selection is required.");
           setShowErrorSummary(true);
           return;
@@ -422,6 +422,7 @@ const AddFeature = props => {
           handleChangeForOnlyMyLinkersGlycans={() => setOnlyMyLinkers(!onlyMyLinkers)}
           onlyMyLinkersGlycans={onlyMyLinkers}
           onlyMyLinkersGlycansCheckBoxLabel={"Show all available linkers"}
+          isImported
         />
       </>
     );
@@ -515,28 +516,22 @@ const AddFeature = props => {
   }
 
   function setupGlycanSelection(linker) {
-    var valid = true; // all NORMAL features are initially valid
-    var chooseGlycanTableData = [
-      {
-        glycan: undefined
-      }
-    ];
-
-    if (linker.type !== "SMALLMOLECULE" && featureAddState.glycans.length === 0) {
-      debugger;
-      valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
-      chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
-      if (chooseGlycanTableData.length > 0) {
-        valid = true; //attachable position for glycan found
-        chooseGlycanTableData.forEach(e => (e["glycan"] = undefined));
-      }
-    }
-    featureAddState.glycans.length === 0 && setFeatureAddState({ glycans: chooseGlycanTableData });
-
-    // if (chooseGlycanTableData.length > 0 && featureAddState.glycans.length === 0) {
-    //   setFeatureAddState({ glycans: chooseGlycanTableData });
+    // var valid = true; // all NORMAL features are initially valid
+    // var chooseGlycanTableData = [
+    //   {
+    //     glycan: []
+    //   }
+    // ];
+    // if (linker.type !== "SMALLMOLECULE" && featureAddState.glycans.length === 0) {
+    //   valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
+    //   chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
+    //   if (chooseGlycanTableData.length > 0) {
+    //     valid = true; //attachable position for glycan found
+    //     chooseGlycanTableData.forEach(e => (e["glycan"] = undefined));
+    //   }
     // }
-    return valid;
+    // featureAddState.glycans.length === 0 && setFeatureAddState({ glycans: chooseGlycanTableData });
+    // return valid;
   }
 
   function displayGlycanPicker(index) {
@@ -577,8 +572,6 @@ const AddFeature = props => {
   }
 
   const handleGlycanSelect = glycan => {
-    // var pickedGlycans = featureAddState.glycans;
-    // pickedGlycans[glycanPickIndex].glycan = glycan;
     let glycansList = [];
     let glycoLipidGlycanLinkerList = [];
 
@@ -1106,21 +1099,25 @@ const AddFeature = props => {
               <Form.Control as="input" value={featureAddState.name} disabled />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="featureId">
             <FormLabel label="Feature Id" />
             <Col md={6}>
               <Form.Control as="input" value={featureAddState.featureId} disabled />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} controlId="linker">
             <FormLabel label="Linker Details:" />
           </Form.Group>
+
           <Form.Group as={Row} controlId="linkerName">
             <FormLabel label="Name" className="linker-field-label" />
             <Col md={6}>
               <Form.Control as="input" value={featureAddState.linker.name} disabled />
             </Col>
           </Form.Group>
+
           {featureAddState.linker.imageURL && (
             <Form.Group as={Row} controlId="name">
               <FormLabel label="Structure Image" className="linker-field-label" />
@@ -1129,6 +1126,7 @@ const AddFeature = props => {
               </Col>
             </Form.Group>
           )}
+
           {featureAddState.linker.sequence && (
             <Form.Group as={Row} controlId="sequence">
               <FormLabel label="Sequence" className="linker-field-label" />
@@ -1142,6 +1140,7 @@ const AddFeature = props => {
               </Col>
             </Form.Group>
           )}
+
           <Form.Group as={Row} controlId="glycan">
             <FormLabel label="Attached Glycan(s) Details:" />
           </Form.Group>
@@ -1165,21 +1164,24 @@ const AddFeature = props => {
                     {
                       Header: "Glytoucan Id",
                       accessor: "glycan",
-                      Cell: row => row.value && row.value.glytoucanId
+                      Cell: row => row.original && row.original.glytoucanId
                     },
                     {
                       Header: "Name",
                       accessor: "glycan",
-                      Cell: row => row.value && row.value.name
+                      Cell: row => row.original && row.original.name
                     },
                     {
                       Header: "Glycan",
                       accessor: "glycan",
                       // eslint-disable-next-line react/display-name
                       Cell: (row, index) =>
-                        row.value ? (
-                          row.value.cartoon ? (
-                            <StructureImage key={index} base64={row.value.cartoon}></StructureImage>
+                        //{
+                        // return <StructureImage key={index} base64={row.original.cartoon}></StructureImage>;
+                        // },
+                        row.original ? (
+                          row.original.cartoon ? (
+                            <StructureImage key={index} base64={row.original.cartoon}></StructureImage>
                           ) : (
                             "No Image"
                           )

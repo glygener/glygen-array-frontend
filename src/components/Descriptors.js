@@ -157,7 +157,7 @@ const Descriptors = props => {
               textAlign: "right"
             }}
           >
-            {descriptor.id.startsWith("newly") && (
+            {descriptor.id.startsWith("newly") && metaType !== "Feature" && (
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}
@@ -307,6 +307,7 @@ const Descriptors = props => {
             {groupElement.isNewlyAddedNonMandatory && addSubGroupValidation(groupElement) && (
               <span>{descriptorSubGroup(groupElement)}</span>
             )}
+
             {(groupElement.isNewlyAdded || groupElement.isNewlyAddedNonMandatory || groupElement.xorMandate) && (
               <FontAwesomeIcon
                 key={"delete" + index}
@@ -321,7 +322,6 @@ const Descriptors = props => {
                 onClick={() => handleDelete(groupElement.id)}
               />
             )}
-
             {/* toggle */}
             {accToggle}
           </div>
@@ -388,6 +388,7 @@ const Descriptors = props => {
               required={element.mandatory ? true : false}
               maxLength={2000}
               rows={4}
+              disabled={descriptorDetails.isHide}
             ></Form.Control>
           ) : element.namespace.name === "label" ||
             element.namespace.name === "dictionary" ||
@@ -399,6 +400,7 @@ const Descriptors = props => {
               placeholder={element.description.toLowerCase()}
               onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
               required={element.mandatory ? true : false}
+              disabled={descriptorDetails.isHide}
             ></Form.Control>
           ) : element.namespace.name === "number" ? (
             <Form.Control
@@ -411,6 +413,7 @@ const Descriptors = props => {
               onKeyDown={e => {
                 isValidNumber(e);
               }}
+              disabled={descriptorDetails.isHide}
             ></Form.Control>
           ) : element.namespace.name === "date" ? (
             <Datetime
@@ -420,12 +423,14 @@ const Descriptors = props => {
               value={element.value}
               closeOnSelect
               onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
+              disabled={descriptorDetails.isHide}
             />
           ) : (
             ""
           )}
           <Feedback message={`${element.name} is required`} />
         </Col>
+
         {element.units.length > 0 && (
           <Col md={2}>
             <Form.Control
@@ -434,6 +439,7 @@ const Descriptors = props => {
               value={element.unit}
               onChange={e => props.handleUnitSelectionChange(descriptorDetails, e, subGroupName, "")}
               required={element.mandatory ? true : false}
+              disabled={descriptorDetails.isHide}
             >
               <option value="">select</option>
               {element.units.map((unit, index) => {
@@ -476,7 +482,8 @@ Descriptors.propTypes = {
   isCopySample: PropTypes.bool,
   setLoadDataOnFirstNextInUpdate: PropTypes.func,
   isAllExpanded: PropTypes.bool,
-  handleUnitSelectionChange: PropTypes.func
+  handleUnitSelectionChange: PropTypes.func,
+  isHide: PropTypes.bool
 };
 
 export { Descriptors };
