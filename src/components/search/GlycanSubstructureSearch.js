@@ -139,11 +139,12 @@ export default function GlycanSubstructureSearch(props) {
   };
 
   useEffect(() => {
-    if (props.inputValue && props.inputValue.structure) {
+    if (props.searchData && props.searchData.type === "SUBSTRUCTURE") {
+      const { sequence, format, reducingEnd } = props.searchData.input.structure;
       setInputValue({
-        sequence: props.inputValue.structure.sequence,
-        sequenceFormat: props.inputValue.structure.format,
-        reducingEnd: props.inputValue.structure.reducingEnd,
+        sequence,
+        sequenceFormat: format,
+        reducingEnd,
       });
       setTouched({
         sequence: true,
@@ -151,7 +152,7 @@ export default function GlycanSubstructureSearch(props) {
         reducingEnd: true,
       });
     }
-  }, [props.inputValue]);
+  }, [props.searchData]);
 
   return (
     <>

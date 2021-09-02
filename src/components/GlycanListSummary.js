@@ -68,7 +68,7 @@ const GlycanListSummary = (props) => {
                 Mass:
               </Col>
               <Col align="left" xs={6} sm={6} md={6} lg={6}>
-                {minMass}&#8209;{maxMass}
+                {minMass.toFixed(0)}&#8209;{maxMass.toFixed(0)} Da
               </Col>
             </Row>
           )}

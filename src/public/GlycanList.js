@@ -137,7 +137,7 @@ const GlycanList = (props) => {
                 keyColumn="searchId"
                 showRowsInfo
                 infoRowsText="Glycans"
-                searchId={searchId}
+                qsParams={{ searchId }}
               />
             </Card>
           </Grid>

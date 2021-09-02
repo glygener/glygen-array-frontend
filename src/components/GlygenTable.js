@@ -357,6 +357,19 @@ const GlygenTable = (props) => {
             wsCall(
               props.fetchWS,
               "GET",
+              // {
+              //   urlParams: props.urlParams || [],
+              //   qsParams: {
+              //     offset: state.page * state.pageSize,
+              //     limit: state.pageSize,
+              //     sortBy: sortColumn,
+              //     order: sortOrder,
+              //     loadAll: false, //only useful for features, blocks and slides
+              //     filter: searchFilter !== "" ? searchFilter : "",
+              //     type: props.paramTypeValue,
+              //     ...props.qsParams,
+              //   },
+              // },
               {
                 offset: state.page * state.pageSize,
                 limit: state.pageSize,

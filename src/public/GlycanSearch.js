@@ -16,7 +16,7 @@ const GlycanSearch = (props) => {
   const { searchId } = useParams();
 
   const [currentTab, setCurrentTab] = useState("general");
-  const [inputValue, setInputValue] = useState(null);
+  const [searchData, setSearchData] = useState(null);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -46,8 +46,8 @@ const GlycanSearch = (props) => {
         STRUCTURE: "structure",
         SUBSTRUCTURE: "substructure",
       };
+      setSearchData(data);
       setCurrentTab(tabMaps[data.type]);
-      setInputValue(data.input);
     });
   };
 
@@ -90,12 +90,12 @@ const GlycanSearch = (props) => {
             <Tab eventKey="general" className="pt-2" title="General">
               <div style={{ paddingBottom: "20px" }}></div>
               <Container className="tab-content-border">
-                <GlycanAdvancedSearch inputValue={inputValue} />
+                <GlycanAdvancedSearch searchData={searchData} />
               </Container>
             </Tab>
             <Tab eventKey="structure" className="tab-content-padding" title="Structure Search">
               <Container className="tab-content-border">
-                <GlycanStructureSearch inputValue={inputValue} />
+                <GlycanStructureSearch searchData={searchData} />
               </Container>
             </Tab>
             <Tab
@@ -104,7 +104,7 @@ const GlycanSearch = (props) => {
               className="tab-content-padding"
             >
               <Container className="tab-content-border">
-                <GlycanSubstructureSearch inputValue={inputValue} />
+                <GlycanSubstructureSearch searchData={searchData} />
               </Container>
             </Tab>
           </Tabs>

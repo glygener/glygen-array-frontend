@@ -14,7 +14,7 @@ import Button from "react-bootstrap/Button";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
-import { GlycanDetailTable } from "../components/search/GlycanDetailTable";
+import { SearchTable } from "../components/search/SearchTable";
 
 function getDateTime(date) {
   var now = new Date(date);
@@ -204,7 +204,7 @@ const GlycanList = (props) => {
         <Grid container style={{ marginTop: "32px" }}>
           <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
             <Card>
-              <GlycanDetailTable
+              <SearchTable
                 columns={[
                   {
                     Header: "Dataset ID",
@@ -255,7 +255,7 @@ const GlycanList = (props) => {
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Datasets"
-                glycanId={glycanId}
+                urlParams={[glycanId]}
               />
             </Card>
           </Grid>

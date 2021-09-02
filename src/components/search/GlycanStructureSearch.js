@@ -123,17 +123,18 @@ export default function GlycanStructureSearch(props) {
   };
 
   useEffect(() => {
-    if (props.inputValue && props.inputValue.structure) {
+    if (props.searchData && props.searchData.type === "STRUCTURE") {
+      const { sequence, format } = props.searchData.input.structure;
       setInputValue({
-        sequence: props.inputValue.structure.sequence,
-        sequenceFormat: props.inputValue.structure.format,
+        sequence,
+        sequenceFormat: format,
       });
       setTouched({
         sequence: true,
         sequenceFormat: true,
       });
     }
-  }, [props.inputValue]);
+  }, [props.searchData]);
 
   return (
     <>

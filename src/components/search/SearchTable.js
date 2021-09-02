@@ -383,13 +383,17 @@ const SearchTable = (props) => {
               props.fetchWS,
               "GET",
               {
-                offset: state.page * state.pageSize,
-                limit: state.pageSize,
-                sortBy: sortColumn,
-                order: sortOrder,
-                // loadAll: false, //only useful for features, blocks and slides
-                // filter: searchFilter !== "" ? searchFilter : "",
-                searchId: props.searchId,
+                urlParams: props.urlParams || [],
+                qsParams: {
+                  offset: state.page * state.pageSize,
+                  limit: state.pageSize,
+                  sortBy: sortColumn,
+                  order: sortOrder,
+                  loadAll: false, //only useful for features, blocks and slides
+                  filter: searchFilter !== "" ? searchFilter : "",
+                  type: props.paramTypeValue,
+                  ...props.qsParams,
+                },
               },
               true,
               null,
@@ -546,7 +550,8 @@ SearchTable.propTypes = {
   handleChangeForOnlyMyLinkersGlycans: PropTypes.func,
   onlyMyLinkersGlycans: PropTypes.bool,
   onlyMyLinkersGlycansCheckBoxLabel: PropTypes.string,
-  searchId: PropTypes.string,
+  urlParams: PropTypes.array,
+  qsParams: PropTypes.object,
 };
 
 SearchTable.defaultProps = {

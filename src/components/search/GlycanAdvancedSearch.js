@@ -34,6 +34,7 @@ const advancedSearch = glycanSearchData.advanced_search;
 const GlycanAdvancedSearch = (props) => {
   const history = useHistory();
 
+  const [initSearchData, setInitSearchData] = useState({});
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -42,8 +43,8 @@ const GlycanAdvancedSearch = (props) => {
     (state, payload) => ({ ...state, ...payload }),
     {
       glytoucanIds: "",
-      massRange: [1, 10000],
-      massRangeInput: ["1", "10000"],
+      massRange: [0, 0],
+      massRangeInput: ["0", "0"],
     }
   );
 
@@ -80,7 +81,7 @@ const GlycanAdvancedSearch = (props) => {
       console.log(resp);
       setPageErrorsJson(resp);
       setShowErrorSummary(true);
-      setPageErrorMessage("");
+      setPageErrorMessage("No search result found.");
     });
   };
 
@@ -88,8 +89,14 @@ const GlycanAdvancedSearch = (props) => {
     setShowErrorSummary(false);
     setInputValue({
       glytoucanIds: "",
-      massRange: [1, 10000],
-      massRangeInput: ["1", "10000"],
+      massRange: [
+        initSearchData.minGlycanMass.toFixed(0) || 0,
+        initSearchData.maxGlycanMass.toFixed(0) || 0,
+      ],
+      massRangeInput: [
+        String(initSearchData.minGlycanMass.toFixed(0) || 0),
+        String(initSearchData.maxGlycanMass.toFixed(0) || 0),
+      ],
     });
   };
 
@@ -107,14 +114,49 @@ const GlycanAdvancedSearch = (props) => {
     searchGlycan(_glytoucanIds, massRange[0], massRange[1]);
   };
   useEffect(() => {
-    if (props.inputValue) {
+    if (props.searchData && props.searchData.type === "COMBINED") {
+      const { glytoucanIds, minMass, maxMass } = props.searchData.input;
       setInputValue({
-        glytoucanIds: props.inputValue.glytoucanIds ? props.inputValue.glytoucanIds.join(", ") : "",
-        massRange: [props.inputValue.minMass, props.inputValue.maxMass],
-        massRangeInput: [String(props.inputValue.minMass), String(props.inputValue.maxMass)],
+        glytoucanIds: glytoucanIds ? glytoucanIds.join(", ") : "",
+        massRange: [minMass, maxMass],
+        massRangeInput: [String(minMass), String(maxMass)],
       });
     }
-  }, [props.inputValue]);
+  }, [props.searchData]);
+
+  useEffect(() => {
+    wsCall(
+      "initsearch",
+      "GET",
+      null,
+      false,
+      null,
+      glycanInitSearchSuccess,
+      glycanInitSearchFailure
+    );
+  }, []);
+
+  const glycanInitSearchSuccess = (response) => {
+    response.json().then((data) => {
+      setInitSearchData(data);
+      setInputValue({
+        massRange: [data.minGlycanMass.toFixed(0) || 0, data.maxGlycanMass.toFixed(0) || 0],
+        massRangeInput: [
+          String(data.minGlycanMass.toFixed(0) || 0),
+          String(data.maxGlycanMass.toFixed(0) || 0),
+        ],
+      });
+    });
+  };
+
+  const glycanInitSearchFailure = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+      setPageErrorsJson(resp);
+      setPageErrorMessage("No search result found.");
+      setShowErrorSummary(true);
+    });
+  };
 
   return (
     <>
@@ -181,8 +223,8 @@ const GlycanAdvancedSearch = (props) => {
                 </Typography>
                 <RangeInputSlider
                   step={1}
-                  min={1}
-                  max={10000}
+                  min={initSearchData.minGlycanMass || 0}
+                  max={initSearchData.maxGlycanMass || 0}
                   inputValueSlider={inputValue.massRange}
                   setSliderInputValue={(value) => setInputValue({ massRange: value })}
                   inputValue={inputValue.massRangeInput}
