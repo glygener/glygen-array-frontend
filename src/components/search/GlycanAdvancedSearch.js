@@ -68,6 +68,20 @@ const GlycanAdvancedSearch = (props) => {
     response.text().then((searchId) => history.push("/glycanList/" + searchId));
   };
 
+  const glycanSearchFailure = (response) => {
+    response.json().then((resp) => {
+      console.log(resp);
+      if (response.status === 400) {
+        setPageErrorsJson(null);
+        setPageErrorMessage("No search result found.");
+        setShowErrorSummary(true);
+        return;
+      }
+      setPageErrorsJson(resp);
+      setShowErrorSummary(true);
+    });
+  };
+
   /**
    * Function to set glycan id value.
    * @param {string} glycanSearchSuccess - input glycan id value.
@@ -76,26 +90,17 @@ const GlycanAdvancedSearch = (props) => {
     setInputValue({ glytoucanIds: glycanSearchSuccess });
   }
 
-  const glycanSearchFailure = (response) => {
-    response.json().then((resp) => {
-      console.log(resp);
-      setPageErrorsJson(resp);
-      setShowErrorSummary(true);
-      setPageErrorMessage("No search result found.");
-    });
-  };
-
   const clearGlycan = () => {
     setShowErrorSummary(false);
     setInputValue({
       glytoucanIds: "",
       massRange: [
-        initSearchData.minGlycanMass.toFixed(0) || 0,
-        initSearchData.maxGlycanMass.toFixed(0) || 0,
+        Math.floor(initSearchData.minGlycanMass || 0),
+        Math.ceil(initSearchData.maxGlycanMass || 0),
       ],
       massRangeInput: [
-        String(initSearchData.minGlycanMass.toFixed(0) || 0),
-        String(initSearchData.maxGlycanMass.toFixed(0) || 0),
+        String(Math.floor(initSearchData.minGlycanMass || 0)),
+        String(Math.ceil(initSearchData.maxGlycanMass || 0)),
       ],
     });
   };
@@ -118,8 +123,8 @@ const GlycanAdvancedSearch = (props) => {
       const { glytoucanIds, minMass, maxMass } = props.searchData.input;
       setInputValue({
         glytoucanIds: glytoucanIds ? glytoucanIds.join(", ") : "",
-        massRange: [minMass, maxMass],
-        massRangeInput: [String(minMass), String(maxMass)],
+        massRange: [Math.floor(minMass), Math.ceil(maxMass)],
+        massRangeInput: [String(Math.floor(minMass)), String(Math.ceil(maxMass))],
       });
     }
   }, [props.searchData]);
@@ -140,10 +145,10 @@ const GlycanAdvancedSearch = (props) => {
     response.json().then((data) => {
       setInitSearchData(data);
       setInputValue({
-        massRange: [data.minGlycanMass.toFixed(0) || 0, data.maxGlycanMass.toFixed(0) || 0],
+        massRange: [Math.floor(data.minGlycanMass || 0), Math.ceil(data.maxGlycanMass || 0)],
         massRangeInput: [
-          String(data.minGlycanMass.toFixed(0) || 0),
-          String(data.maxGlycanMass.toFixed(0) || 0),
+          String(Math.floor(data.minGlycanMass || 0)),
+          String(Math.ceil(data.maxGlycanMass || 0)),
         ],
       });
     });
@@ -152,8 +157,19 @@ const GlycanAdvancedSearch = (props) => {
   const glycanInitSearchFailure = (response) => {
     response.json().then((resp) => {
       console.log(resp);
+      if (response.status === 404) {
+        setPageErrorsJson(null);
+        setPageErrorMessage("No search result found.");
+        setShowErrorSummary(true);
+        return;
+      }
+      if (response.status === 400) {
+        setPageErrorsJson(null);
+        setPageErrorMessage("Invalid data. Please correct it and try again.");
+        setShowErrorSummary(true);
+        return;
+      }
       setPageErrorsJson(resp);
-      setPageErrorMessage("No search result found.");
       setShowErrorSummary(true);
     });
   };
@@ -223,8 +239,8 @@ const GlycanAdvancedSearch = (props) => {
                 </Typography>
                 <RangeInputSlider
                   step={1}
-                  min={initSearchData.minGlycanMass || 0}
-                  max={initSearchData.maxGlycanMass || 0}
+                  min={Math.floor(initSearchData.minGlycanMass || 0)}
+                  max={Math.ceil(initSearchData.maxGlycanMass || 0)}
                   inputValueSlider={inputValue.massRange}
                   setSliderInputValue={(value) => setInputValue({ massRange: value })}
                   inputValue={inputValue.massRangeInput}
