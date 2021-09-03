@@ -14,7 +14,7 @@
   z-index: -1000;
 }
 .structure-image {
-  /* display: block; */
+  max-width: 100%;
   width: auto;
   height: auto;
   -webkit-transform: scale(0.9);
