@@ -7,7 +7,7 @@ import { head, getMeta } from "../utils/head";
 import { Loading } from "../components/Loading";
 import { Stepper, Step, StepLabel, Button, Typography } from "@material-ui/core";
 import { ErrorSummary } from "../components/ErrorSummary";
-import { Form, FormCheck, Col, Row, Modal } from "react-bootstrap";
+import { Form, FormCheck, Col, Row, Modal, Table } from "react-bootstrap";
 import { FormLabel, Feedback, Title } from "../components/FormControls";
 import { GlygenTable } from "../components/GlygenTable";
 import ReactTable from "react-table";
@@ -22,6 +22,7 @@ import { Peptides } from "./Peptides";
 import { Proteins } from "./Proteins";
 import { Lipids } from "./Lipids";
 import { AddFeatureGlycoTypes } from "./AddFeatureGlycoTypes";
+import { SourceForGlycanInFeature } from "../components/SourceForGlycanInFeature";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -77,6 +78,7 @@ const AddFeature = props => {
   const [onlyMyglycans, setOnlyMyglycans] = useState(false);
   const [onlyMyLinkers, setOnlyMyLinkers] = useState(false);
   var [rowSelected, setRowSelected] = useState([]);
+  var [currentGlycanSelection, setCurrentGlycanSelection] = useState();
 
   const generalSteps = [
     "Select Feature Type",
@@ -138,18 +140,19 @@ const AddFeature = props => {
   }
 
   const isStepSkipped = step => {
-    return (
-      (featureAddState.type === "CONTROL" ||
-        featureAddState.type === "NEGATIVE_CONTROL" ||
-        featureAddState.type === "COMPOUND" ||
-        featureAddState.type === "LANDING_LIGHT") &&
-      step === 2 &&
-      activeStep === 3
-    );
+    return featureAddState.isLipidLinkedToSurfaceUsingLinker === "No"
+      ? step === 1 && activeStep === 2
+      : (featureAddState.type === "CONTROL" ||
+          featureAddState.type === "NEGATIVE_CONTROL" ||
+          featureAddState.type === "COMPOUND" ||
+          featureAddState.type === "LANDING_LIGHT") &&
+          step === 2 &&
+          activeStep === 3;
   };
 
   const handleNextLinker = () => {
     var stepIncrement = 1;
+
     if (activeStep === 1) {
       setLinkerValidated(true);
       if (activeStep === 1) {
@@ -167,7 +170,7 @@ const AddFeature = props => {
       }
     } else if (activeStep === 2) {
       if (featureAddState.type === "LINKED_GLYCAN") {
-        if (featureAddState.glycans.length < 1) {
+        if (featureAddState.glycans.length < 2) {
           setErrorMessage("Glycan selection is required.");
           setShowErrorSummary(true);
           return;
@@ -187,7 +190,10 @@ const AddFeature = props => {
 
   const handleNextGlycoLipid = () => {
     var stepIncrement = 1;
-    if (activeStep === 1) {
+
+    if (activeStep === 0 && featureAddState.isLipidLinkedToSurfaceUsingLinker === "No") {
+      stepIncrement = stepIncrement + 1;
+    } else if (activeStep === 1) {
       if (featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") {
         if (featureAddState.linker && featureAddState.linker.id) {
           var isValidLinker = setupGlycanSelection(featureAddState.linker);
@@ -233,6 +239,9 @@ const AddFeature = props => {
 
     if (activeStep === 1) {
       setLinkerValidated(false);
+    } else if (activeStep === 2 && featureAddState.isLipidLinkedToSurfaceUsingLinker === "No") {
+      debugger;
+      stepDecrement += 1;
     }
     if (activeStep === 3) {
       if (featureAddState.type !== "LINKED_GLYCAN") {
@@ -314,6 +323,7 @@ const AddFeature = props => {
       setShowErrorSummary(false);
     }
 
+    setCurrentGlycanSelection(row);
     setFeatureAddState({ glycans: selectedrows });
     setRowSelected(selectedrows);
   };
@@ -516,22 +526,23 @@ const AddFeature = props => {
   }
 
   function setupGlycanSelection(linker) {
-    // var valid = true; // all NORMAL features are initially valid
-    // var chooseGlycanTableData = [
-    //   {
-    //     glycan: []
-    //   }
-    // ];
-    // if (linker.type !== "SMALLMOLECULE" && featureAddState.glycans.length === 0) {
-    //   valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
-    //   chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
-    //   if (chooseGlycanTableData.length > 0) {
-    //     valid = true; //attachable position for glycan found
-    //     chooseGlycanTableData.forEach(e => (e["glycan"] = undefined));
-    //   }
-    // }
-    // featureAddState.glycans.length === 0 && setFeatureAddState({ glycans: chooseGlycanTableData });
-    // return valid;
+    var valid = true; // all NORMAL features are initially valid
+    var chooseGlycanTableData = [
+      {
+        glycan: []
+      }
+    ];
+    if (linker.type !== "SMALLMOLECULE" && featureAddState.glycans.length === 0) {
+      valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
+      chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
+      if (chooseGlycanTableData.length > 0) {
+        valid = true; //attachable position for glycan found
+        chooseGlycanTableData.forEach(e => (e["glycan"] = undefined));
+      }
+    }
+
+    setFeatureAddState({ glycans: chooseGlycanTableData });
+    return valid;
   }
 
   function displayGlycanPicker(index) {
@@ -579,7 +590,7 @@ const AddFeature = props => {
       glycan: glycan.name
     });
 
-    glycansList.push(glycan);
+    glycansList.push({ glycan: glycan, source: {} });
     setFeatureAddState({ glycans: glycansList });
     setGlycoLipidGlycanLinkerListStep4(glycoLipidGlycanLinkerList);
     setErrorMessage("");
@@ -762,14 +773,32 @@ const AddFeature = props => {
                   />
                   {featureTypes[key]}
 
-                  {/* {featureAddState.type === "GLYCO_LIPID" && featureTypes[key] === "glycolipid" && (
+                  {featureAddState.type === "GLYCO_LIPID" && featureTypes[key] === "glycolipid" && (
                     <>
                       <div style={{ margin: "15px" }}>
                         Is the lipid linked to the surface using a linker?
                         <div style={{ marginTop: "15px" }}>{getGlycoLipidStep1()}</div>
                       </div>
                     </>
-                  )} */}
+                  )}
+
+                  {featureAddState.type === "GLYCO_PEPTIDE" && featureTypes[key] === "glycopeptide" && (
+                    <>
+                      <div style={{ margin: "15px" }}>
+                        Is the peptide linked to the surface using a linker?
+                        <div style={{ marginTop: "15px" }}>{getGlycoLipidStep1()}</div>
+                      </div>
+                    </>
+                  )}
+
+                  {featureAddState.type === "GLYCO_PROTEIN" && featureTypes[key] === "glycoprotein" && (
+                    <>
+                      <div style={{ margin: "15px" }}>
+                        Is the protein linked to the surface using a linker?
+                        <div style={{ marginTop: "15px" }}>{getGlycoLipidStep1()}</div>
+                      </div>
+                    </>
+                  )}
                 </FormCheck.Label>
               </FormCheck>
             );
@@ -782,33 +811,6 @@ const AddFeature = props => {
   const getCase1 = () => {
     return (
       <>
-        {featureAddState.type === "GLYCO_LIPID" && (
-          <>
-            <div className="radioform">
-              <div style={{ marginBottom: "10px" }}>Is the lipid linked to the surface using a linker?</div>
-              {getGlycoLipidStep1()}
-            </div>
-          </>
-        )}
-
-        {featureAddState.type === "GLYCO_PEPTIDE" && (
-          <>
-            <div className="radioform">
-              <div style={{ marginBottom: "10px" }}>Is the peptide linked to the surface using a linker?</div>
-              {getGlycoLipidStep1()}
-            </div>
-          </>
-        )}
-
-        {featureAddState.type === "GLYCO_PROTEIN" && (
-          <>
-            <div className="radioform">
-              <div style={{ marginBottom: "10px" }}>Is the protein linked to the surface using a linker?</div>
-              {getGlycoLipidStep1()}
-            </div>
-          </>
-        )}
-
         {((featureAddState.type === "GLYCO_LIPID" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PEPTIDE" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PROTEIN" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
@@ -1012,6 +1014,8 @@ const AddFeature = props => {
                   </label>
                 </Col>
               </Form.Group>
+
+              {/* {featureAddState.glycans && <AddGlycanInfoToFeature glycans={featureAddState.glycans} />} */}
             </Form>
           </>
         )}
@@ -1064,25 +1068,53 @@ const AddFeature = props => {
           )}
 
           {featureAddState.type === "LINKED_GLYCAN" && showGlycanPicker ? (
-            <Modal
-              size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-              show={showGlycanPicker}
-              onHide={() => setShowGlycanPicker(false)}
-            >
-              <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                  Pick Glycan for position {glycanPickIndex + 1}:
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>{getGlycanTabletoSelect()}</Modal.Body>
-              <Modal.Footer>
-                <Button onClick={() => setShowGlycanPicker(false)}>Close</Button>
-              </Modal.Footer>
-            </Modal>
+            // <Modal
+            //   size="xl"
+            //   aria-labelledby="contained-modal-title-vcenter"
+            //   centered
+            //   show={showGlycanPicker}
+            //   onHide={() => setShowGlycanPicker(false)}
+            // >
+            //   <Modal.Header closeButton>
+            //     <Modal.Title id="contained-modal-title-vcenter">
+            //       {/* Pick Glycan for position {glycanPickIndex + 1}: */}
+            //       Pick Glycans
+            //     </Modal.Title>
+            //   </Modal.Header>
+            //   <Modal.Body>{getGlycanTabletoSelect()}</Modal.Body>
+            //   <Modal.Footer>
+            //     <Button onClick={() => setShowGlycanPicker(false)}>Close</Button>
+            //   </Modal.Footer>
+            // </Modal>
+
+            <SourceForGlycanInFeature
+              showGlycanPicker={showGlycanPicker}
+              setShowGlycanPicker={setShowGlycanPicker}
+              getGlycanTabletoSelect={getGlycanTabletoSelect}
+              glycoProteinPepTideListStep4={glycoProteinPepTideListStep4}
+              setGlycoProteinPepTideListStep4={setGlycoProteinPepTideListStep4}
+              featureAddState={featureAddState}
+              setFeatureAddState={setFeatureAddState}
+              currentGlycanSelection={currentGlycanSelection}
+            />
           ) : (
-            getGlycanTabletoSelect(false)
+            // getGlycanTabletoSelect(false)
+            <Table
+              style={{
+                textAlign: "center"
+              }}
+            >
+              <tr>
+                <td>Glycans</td>
+                <td
+                  style={{
+                    width: "50%"
+                  }}
+                >
+                  <input type="button" onClick={() => setShowGlycanPicker(true)} value={"Pick Glycans"} />
+                </td>
+              </tr>
+            </Table>
           )}
         </Form>
       </>

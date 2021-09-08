@@ -54,7 +54,7 @@ const AddPeptide = props => {
     sequence: "",
     publications: [],
     urls: [],
-    commercialandNonCommercial: "notSpecified",
+    source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
     nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
@@ -70,14 +70,14 @@ const AddPeptide = props => {
 
   const sourceSelection = e => {
     const newValue = e.target.value;
-    setPeptide({ commercialandNonCommercial: newValue });
+    setPeptide({ source: newValue });
   };
 
   const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (peptide.commercialandNonCommercial === "commercial") {
+    if (peptide.source === "commercial") {
       if (name === "vendor") {
         setValidatedCommNonComm(false);
       }
@@ -123,8 +123,8 @@ const AddPeptide = props => {
       }
 
       if (
-        (peptide.commercialandNonCommercial === "commercial" && peptide.commercial.vendor === "") ||
-        (peptide.commercialandNonCommercial === "nonCommercial" && peptide.nonCommercial.providerLab === "")
+        (peptide.source === "commercial" && peptide.commercial.vendor === "") ||
+        (peptide.source === "nonCommercial" && peptide.nonCommercial.providerLab === "")
       ) {
         setValidatedCommNonComm(true);
         count++;
@@ -435,7 +435,7 @@ const AddPeptide = props => {
                         value={"commercial"}
                         label={"Commercial"}
                         onChange={sourceSelection}
-                        checked={peptide.commercialandNonCommercial === "commercial"}
+                        checked={peptide.source === "commercial"}
                       />
                       {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -446,7 +446,7 @@ const AddPeptide = props => {
                         label={"Non Commercial"}
                         value={"nonCommercial"}
                         onChange={sourceSelection}
-                        checked={peptide.commercialandNonCommercial === "nonCommercial"}
+                        checked={peptide.source === "nonCommercial"}
                       />
                       {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -457,14 +457,14 @@ const AddPeptide = props => {
                         value={"notSpecified"}
                         label={"Not Specified"}
                         onChange={sourceSelection}
-                        checked={peptide.commercialandNonCommercial === "notSpecified"}
+                        checked={peptide.source === "notSpecified"}
                       />
                       {"Not Specified"}
                     </Form.Check.Label>
                   </Col>
                 </Row>
                 &nbsp;&nbsp;&nbsp;
-                {peptide.commercialandNonCommercial === "commercial" ? (
+                {peptide.source === "commercial" ? (
                   <Source
                     isCommercial
                     commercial={peptide.commercial}
@@ -472,7 +472,7 @@ const AddPeptide = props => {
                     sourceChange={sourceChange}
                   />
                 ) : (
-                  peptide.commercialandNonCommercial === "nonCommercial" && (
+                  peptide.source === "nonCommercial" && (
                     <Source
                       isNonCommercial
                       nonCommercial={peptide.nonCommercial}
@@ -572,12 +572,12 @@ const AddPeptide = props => {
       type: "NOTRECORDED"
     };
 
-    if (peptide.commercialandNonCommercial === "commercial") {
+    if (peptide.source === "commercial") {
       source.type = "COMMERCIAL";
       source.vendor = peptide.commercial.vendor;
       source.catalogueNumber = peptide.commercial.catalogueNumber;
       source.batchId = peptide.commercial.batchId;
-    } else if (peptide.commercialandNonCommercial === "nonCommercial") {
+    } else if (peptide.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
       source.batchId = peptide.commercial.batchId;
       source.providerLab = peptide.nonCommercial.providerLab;

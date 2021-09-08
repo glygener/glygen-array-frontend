@@ -63,7 +63,7 @@ const AddLinker = props => {
     isomericSmiles: "",
     publications: [],
     urls: [],
-    commercialandNonCommercial: "notSpecified",
+    source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
     nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
@@ -86,14 +86,14 @@ const AddLinker = props => {
 
   const sourceSelection = e => {
     const newValue = e.target.value;
-    setLinker({ commercialandNonCommercial: newValue });
+    setLinker({ source: newValue });
   };
 
   const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (linker.commercialandNonCommercial === "commercial") {
+    if (linker.source === "commercial") {
       if (name === "vendor") {
         setValidatedCommNonComm(false);
       }
@@ -141,8 +141,8 @@ const AddLinker = props => {
       }
 
       if (
-        (linker.commercialandNonCommercial === "commercial" && linker.commercial.vendor === "") ||
-        (linker.commercialandNonCommercial === "nonCommercial" && linker.nonCommercial.providerLab === "")
+        (linker.source === "commercial" && linker.commercial.vendor === "") ||
+        (linker.source === "nonCommercial" && linker.nonCommercial.providerLab === "")
       ) {
         setValidatedCommNonComm(true);
         count++;
@@ -697,7 +697,7 @@ const AddLinker = props => {
                         value={"commercial"}
                         label={"Commercial"}
                         onChange={sourceSelection}
-                        checked={linker.commercialandNonCommercial === "commercial"}
+                        checked={linker.source === "commercial"}
                       />
                       {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -708,7 +708,7 @@ const AddLinker = props => {
                         label={"Non Commercial"}
                         value={"nonCommercial"}
                         onChange={sourceSelection}
-                        checked={linker.commercialandNonCommercial === "nonCommercial"}
+                        checked={linker.source === "nonCommercial"}
                       />
                       {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -719,14 +719,14 @@ const AddLinker = props => {
                         value={"notSpecified"}
                         label={"Not Specified"}
                         onChange={sourceSelection}
-                        checked={linker.commercialandNonCommercial === "notSpecified"}
+                        checked={linker.source === "notSpecified"}
                       />
                       {"Not Specified"}
                     </Form.Check.Label>
                   </Col>
                 </Row>
                 &nbsp;&nbsp;&nbsp;
-                {linker.commercialandNonCommercial === "commercial" ? (
+                {linker.source === "commercial" ? (
                   <Source
                     isCommercial
                     commercial={linker.commercial}
@@ -734,7 +734,7 @@ const AddLinker = props => {
                     sourceChange={sourceChange}
                   />
                 ) : (
-                  linker.commercialandNonCommercial === "nonCommercial" && (
+                  linker.source === "nonCommercial" && (
                     <Source
                       isNonCommercial
                       nonCommercial={linker.nonCommercial}
@@ -759,14 +759,14 @@ const AddLinker = props => {
                 key === "canonicalSmiles" ||
                 key === "isomericSmiles") &&
                 linker.selectedLinker === "Unknown") ||
-              (linker.commercialandNonCommercial !== "commercial" &&
+              (linker.source !== "commercial" &&
                 (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
-              (linker.commercialandNonCommercial !== "nonCommercial" &&
+              (linker.source !== "nonCommercial" &&
                 (key === "providerLab" ||
                   key === "method" ||
                   key === "nonCommercialBatchId" ||
                   key === "sourceComment")) ||
-              (linker.commercialandNonCommercial === "notSpecified" &&
+              (linker.source === "notSpecified" &&
                 (key === "vendor" ||
                   key === "catalogueNumber" ||
                   key === "commercialBatchId" ||
@@ -854,12 +854,12 @@ const AddLinker = props => {
       type: "NOTRECORDED"
     };
 
-    if (linker.commercialandNonCommercial === "commercial") {
+    if (linker.source === "commercial") {
       source.type = "COMMERCIAL";
       source.vendor = linker.commercial.vendor;
       source.catalogueNumber = linker.commercial.catalogueNumber;
       source.batchId = linker.commercial.batchId;
-    } else if (linker.commercialandNonCommercial === "nonCommercial") {
+    } else if (linker.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
       source.batchId = linker.commercial.batchId;
       source.providerLab = linker.nonCommercial.providerLab;

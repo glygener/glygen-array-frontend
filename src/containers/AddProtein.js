@@ -57,7 +57,7 @@ const AddProtein = props => {
     pdbIds: [],
     publications: [],
     urls: [],
-    commercialandNonCommercial: "notSpecified",
+    source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
     nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
@@ -82,14 +82,14 @@ const AddProtein = props => {
 
   const sourceSelection = e => {
     const newValue = e.target.value;
-    setProtein({ commercialandNonCommercial: newValue });
+    setProtein({ source: newValue });
   };
 
   const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (protein.commercialandNonCommercial === "commercial") {
+    if (protein.source === "commercial") {
       if (name === "vendor") {
         setValidatedCommNonComm(false);
       }
@@ -135,8 +135,8 @@ const AddProtein = props => {
       }
 
       if (
-        (protein.commercialandNonCommercial === "commercial" && protein.commercial.vendor === "") ||
-        (protein.commercialandNonCommercial === "nonCommercial" && protein.nonCommercial.providerLab === "")
+        (protein.source === "commercial" && protein.commercial.vendor === "") ||
+        (protein.source === "nonCommercial" && protein.nonCommercial.providerLab === "")
       ) {
         setValidatedCommNonComm(true);
         count++;
@@ -524,7 +524,7 @@ const AddProtein = props => {
                         value={"commercial"}
                         label={"Commercial"}
                         onChange={sourceSelection}
-                        checked={protein.commercialandNonCommercial === "commercial"}
+                        checked={protein.source === "commercial"}
                       />
                       {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -535,7 +535,7 @@ const AddProtein = props => {
                         label={"Non Commercial"}
                         value={"nonCommercial"}
                         onChange={sourceSelection}
-                        checked={protein.commercialandNonCommercial === "nonCommercial"}
+                        checked={protein.source === "nonCommercial"}
                       />
                       {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -546,14 +546,14 @@ const AddProtein = props => {
                         value={"notSpecified"}
                         label={"Not Specified"}
                         onChange={sourceSelection}
-                        checked={protein.commercialandNonCommercial === "notSpecified"}
+                        checked={protein.source === "notSpecified"}
                       />
                       {"Not Specified"}
                     </Form.Check.Label>
                   </Col>
                 </Row>
                 &nbsp;&nbsp;&nbsp;
-                {protein.commercialandNonCommercial === "commercial" ? (
+                {protein.source === "commercial" ? (
                   <Source
                     isCommercial
                     commercial={protein.commercial}
@@ -561,7 +561,7 @@ const AddProtein = props => {
                     sourceChange={sourceChange}
                   />
                 ) : (
-                  protein.commercialandNonCommercial === "nonCommercial" && (
+                  protein.source === "nonCommercial" && (
                     <Source
                       isNonCommercial
                       nonCommercial={protein.nonCommercial}
@@ -580,14 +580,14 @@ const AddProtein = props => {
             {Object.keys(reviewFields).map(key =>
               ((key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
                 protein.selectedProtein === "Unknown") ||
-              (protein.commercialandNonCommercial !== "commercial" &&
+              (protein.source !== "commercial" &&
                 (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
-              (protein.commercialandNonCommercial !== "nonCommercial" &&
+              (protein.source !== "nonCommercial" &&
                 (key === "providerLab" ||
                   key === "method" ||
                   key === "nonCommercialBatchId" ||
                   key === "sourceComment")) ||
-              (protein.commercialandNonCommercial === "notSpecified" &&
+              (protein.source === "notSpecified" &&
                 (key === "vendor" ||
                   key === "catalogueNumber" ||
                   key === "commercialBatchId" ||
@@ -675,12 +675,12 @@ const AddProtein = props => {
       type: "NOTRECORDED"
     };
 
-    if (protein.commercialandNonCommercial === "commercial") {
+    if (protein.source === "commercial") {
       source.type = "COMMERCIAL";
       source.vendor = protein.commercial.vendor;
       source.catalogueNumber = protein.commercial.catalogueNumber;
       source.batchId = protein.commercial.batchId;
-    } else if (protein.commercialandNonCommercial === "nonCommercial") {
+    } else if (protein.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
       source.batchId = protein.commercial.batchId;
       source.providerLab = protein.nonCommercial.providerLab;

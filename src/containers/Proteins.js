@@ -52,7 +52,7 @@ const Proteins = props => {
           editUrl="proteins/editlinker"
           keyColumn="id"
           showRowsInfo
-          infoRowsText="Peptides"
+          infoRowsText="Proteins"
           showDeleteButton={props.showDeleteButton ? props.showDeleteButton : true}
           showEditButton={props.showEditButton ? props.showEditButton : true}
           fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}

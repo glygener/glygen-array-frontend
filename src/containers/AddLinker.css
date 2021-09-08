@@ -9,13 +9,6 @@
   margin: 10px 10px 0px 10px !important;
 }
 
-.add-button {
-  min-width: 35px !important;
-  font-size: 1em !important;
-  height: 37px !important;
-  padding: 0 !important;
-}
-
 .stepper-button:disabled {
   color: rgba(0, 0, 0, 0.5) !important;
   background-color: rgba(0, 0, 0, 0.12) !important;

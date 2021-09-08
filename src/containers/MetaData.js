@@ -259,11 +259,6 @@ const MetaData = props => {
     props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
-  const handleDescriptorSelectChange = e => {
-    const value = e.target.value;
-    setAddDescriptorSelection(value);
-  };
-
   const editDescriptorGroup = selectedDescriptorSubGroup => {
     return (
       <>
@@ -428,9 +423,7 @@ const MetaData = props => {
           paddingTop: 0
         }}
       >
-        <Popover.Title as="h3" style={{ marginTop: "-70px" }}>
-          Descriptors
-        </Popover.Title>
+        <Popover.Title as="h3">Descriptors</Popover.Title>
         <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
       </Popover>
     );
@@ -497,20 +490,18 @@ const MetaData = props => {
       <>
         <Form.Group as={Row} controlId={""}>
           <Col md={10}>
-            <Form.Control as="select" value={addDescriptorSelection} onChange={handleDescriptorSelectChange}>
+            <Form.Control
+              as="select"
+              value={addDescriptorSelection}
+              onChange={e => {
+                setAddDescriptorSelection(e.target.value);
+                if (e.target.value !== "Select" && e.target.value !== "select") {
+                  handleAddDescriptors();
+                }
+              }}
+            >
               {getDescriptorOptions()}
             </Form.Control>
-          </Col>
-          <Col md={2}>
-            {addDescriptorSelection !== "Select" && addDescriptorSelection !== "select" && (
-              <FontAwesomeIcon
-                className={"plus-button-icon"}
-                icon={["fas", "plus"]}
-                size="lg"
-                title="Add Sub Group Descriptors"
-                onClick={() => handleAddDescriptors("")}
-              />
-            )}
           </Col>
         </Form.Group>
       </>

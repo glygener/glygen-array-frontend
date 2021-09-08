@@ -29,7 +29,7 @@ const Linkers = props => {
         <Title title="Linkers" />
 
         <Col className={"col-link-button"}>
-          {props.showOnlyMyLinkersOrGlycansCheckBox && (
+          {!props.isImported && (
             <Link to="/linkers/addlinker" className="link-button" style={{ width: "150px" }}>
               Add Linker
             </Link>

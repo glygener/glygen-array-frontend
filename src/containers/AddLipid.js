@@ -63,7 +63,7 @@ const AddLipid = props => {
     isomericSmiles: "",
     publications: [],
     urls: [],
-    commercialandNonCommercial: "notSpecified",
+    source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
     nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
@@ -86,14 +86,14 @@ const AddLipid = props => {
 
   const sourceSelection = e => {
     const newValue = e.target.value;
-    setLipid({ commercialandNonCommercial: newValue });
+    setLipid({ source: newValue });
   };
 
   const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (lipid.commercialandNonCommercial === "commercial") {
+    if (lipid.source === "commercial") {
       if (name === "vendor") {
         setValidatedCommNonComm(false);
       }
@@ -141,8 +141,8 @@ const AddLipid = props => {
       }
 
       if (
-        (lipid.commercialandNonCommercial === "commercial" && lipid.commercial.vendor === "") ||
-        (lipid.commercialandNonCommercial === "nonCommercial" && lipid.nonCommercial.providerLab === "")
+        (lipid.source === "commercial" && lipid.commercial.vendor === "") ||
+        (lipid.source === "nonCommercial" && lipid.nonCommercial.providerLab === "")
       ) {
         setValidatedCommNonComm(true);
         count++;
@@ -698,7 +698,7 @@ const AddLipid = props => {
                         value={"commercial"}
                         label={"Commercial"}
                         onChange={sourceSelection}
-                        checked={lipid.commercialandNonCommercial === "commercial"}
+                        checked={lipid.source === "commercial"}
                       />
                       {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -709,7 +709,7 @@ const AddLipid = props => {
                         label={"Non Commercial"}
                         value={"nonCommercial"}
                         onChange={sourceSelection}
-                        checked={lipid.commercialandNonCommercial === "nonCommercial"}
+                        checked={lipid.source === "nonCommercial"}
                       />
                       {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
                     </Form.Check.Label>
@@ -720,14 +720,14 @@ const AddLipid = props => {
                         value={"notSpecified"}
                         label={"Not Specified"}
                         onChange={sourceSelection}
-                        checked={lipid.commercialandNonCommercial === "notSpecified"}
+                        checked={lipid.source === "notSpecified"}
                       />
                       {"Not Specified"}
                     </Form.Check.Label>
                   </Col>
                 </Row>
                 &nbsp;&nbsp;&nbsp;
-                {lipid.commercialandNonCommercial === "commercial" ? (
+                {lipid.source === "commercial" ? (
                   <Source
                     isCommercial
                     commercial={lipid.commercial}
@@ -735,7 +735,7 @@ const AddLipid = props => {
                     sourceChange={sourceChange}
                   />
                 ) : (
-                  lipid.commercialandNonCommercial === "nonCommercial" && (
+                  lipid.source === "nonCommercial" && (
                     <Source
                       isNonCommercial
                       nonCommercial={lipid.nonCommercial}
@@ -760,14 +760,14 @@ const AddLipid = props => {
                 key === "canonicalSmiles" ||
                 key === "isomericSmiles") &&
                 lipid.selectedLipid === "Unknown") ||
-              (lipid.commercialandNonCommercial !== "commercial" &&
+              (lipid.source !== "commercial" &&
                 (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
-              (lipid.commercialandNonCommercial !== "nonCommercial" &&
+              (lipid.source !== "nonCommercial" &&
                 (key === "providerLab" ||
                   key === "method" ||
                   key === "nonCommercialBatchId" ||
                   key === "sourceComment")) ||
-              (lipid.commercialandNonCommercial === "notSpecified" &&
+              (lipid.source === "notSpecified" &&
                 (key === "vendor" ||
                   key === "catalogueNumber" ||
                   key === "commercialBatchId" ||
@@ -855,12 +855,12 @@ const AddLipid = props => {
       type: "NOTRECORDED"
     };
 
-    if (lipid.commercialandNonCommercial === "commercial") {
+    if (lipid.source === "commercial") {
       source.type = "COMMERCIAL";
       source.vendor = lipid.commercial.vendor;
       source.catalogueNumber = lipid.commercial.catalogueNumber;
       source.batchId = lipid.commercial.batchId;
-    } else if (lipid.commercialandNonCommercial === "nonCommercial") {
+    } else if (lipid.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
       source.batchId = lipid.commercial.batchId;
       source.providerLab = lipid.nonCommercial.providerLab;

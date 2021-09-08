@@ -35,7 +35,7 @@ const AddOtherMolecule = props => {
     comment: "",
     publications: [],
     urls: [],
-    commercialandNonCommercial: "notSpecified",
+    source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
     nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
@@ -45,14 +45,14 @@ const AddOtherMolecule = props => {
 
   const sourceSelection = e => {
     const newValue = e.target.value;
-    setOtherMolecule({ commercialandNonCommercial: newValue });
+    setOtherMolecule({ source: newValue });
   };
 
   const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (otherMolecule.commercialandNonCommercial === "commercial") {
+    if (otherMolecule.source === "commercial") {
       if (name === "vendor") {
         setValidatedCommNonComm(false);
       }
@@ -290,7 +290,7 @@ const AddOtherMolecule = props => {
                   value={"commercial"}
                   label={"Commercial"}
                   onChange={sourceSelection}
-                  checked={otherMolecule.commercialandNonCommercial === "commercial"}
+                  checked={otherMolecule.source === "commercial"}
                 />
                 {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
               </Form.Check.Label>
@@ -301,7 +301,7 @@ const AddOtherMolecule = props => {
                   label={"Non Commercial"}
                   value={"nonCommercial"}
                   onChange={sourceSelection}
-                  checked={otherMolecule.commercialandNonCommercial === "nonCommercial"}
+                  checked={otherMolecule.source === "nonCommercial"}
                 />
                 {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
               </Form.Check.Label>
@@ -312,14 +312,14 @@ const AddOtherMolecule = props => {
                   value={"notSpecified"}
                   label={"Not Specified"}
                   onChange={sourceSelection}
-                  checked={otherMolecule.commercialandNonCommercial === "notSpecified"}
+                  checked={otherMolecule.source === "notSpecified"}
                 />
                 {"Not Specified"}
               </Form.Check.Label>
             </Col>
           </Row>
           &nbsp;&nbsp;&nbsp;
-          {otherMolecule.commercialandNonCommercial === "commercial" ? (
+          {otherMolecule.source === "commercial" ? (
             <Source
               isCommercial
               commercial={otherMolecule.commercial}
@@ -327,7 +327,7 @@ const AddOtherMolecule = props => {
               sourceChange={sourceChange}
             />
           ) : (
-            otherMolecule.commercialandNonCommercial === "nonCommercial" && (
+            otherMolecule.source === "nonCommercial" && (
               <Source
                 isNonCommercial
                 nonCommercial={otherMolecule.nonCommercial}
@@ -350,7 +350,7 @@ const AddOtherMolecule = props => {
       type: "NOTRECORDED"
     };
 
-    if (otherMolecule.commercialandNonCommercial === "commercial") {
+    if (otherMolecule.source === "commercial") {
       if (otherMolecule.commercial.vendor === "") {
         setValidatedCommNonComm(true);
       }
@@ -359,7 +359,7 @@ const AddOtherMolecule = props => {
       source.vendor = otherMolecule.commercial.vendor;
       source.catalogueNumber = otherMolecule.commercial.catalogueNumber;
       source.batchId = otherMolecule.commercial.batchId;
-    } else if (otherMolecule.commercialandNonCommercial === "nonCommercial") {
+    } else if (otherMolecule.source === "nonCommercial") {
       if (otherMolecule.nonCommercial.providerLab === "") {
         setValidatedCommNonComm(true);
       }

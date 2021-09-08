@@ -81,9 +81,10 @@ label.form-check-label {
 
 .add-button {
   min-width: 35px !important;
-  font-size: 1em !important;
+  font-size: 1.2em !important;
   height: 37px !important;
   padding: 0 !important;
+  border: 1px solid lightgrey !important;
 }
 
 .stepper-button:disabled {
