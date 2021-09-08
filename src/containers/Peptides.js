@@ -23,11 +23,11 @@ const Peptides = props => {
         {getMeta(head.peptides)}
       </Helmet>
 
-      <div className="page-container">
+      <div className={!props.isImported ? "page-container" : ""}>
         <Title title="Peptides" />
 
         <Col className={"col-link-button"}>
-          {props.showOnlyMyLinkersOrGlycansCheckBox && (
+          {!props.isImported && (
             <Link to="/peptides/addpeptide" className="link-button" style={{ width: "150px" }}>
               Add Peptide
             </Link>

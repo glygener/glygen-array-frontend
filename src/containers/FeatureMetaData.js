@@ -514,7 +514,7 @@ const FeatureMetaData = props => {
     metaDataDetails.sample.descriptors.forEach(group => {
       const templateDescriptorGroup = sampleModel[0].descriptors.find(i => i.id === group.id && i.group === true);
 
-      if (templateDescriptorGroup.descriptors) {
+      if (templateDescriptorGroup && templateDescriptorGroup.descriptors) {
         if (!templateDescriptorGroup.mandatory) {
           templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
           templateDescriptorGroup.isNewlyAdded = true;

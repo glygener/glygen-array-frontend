@@ -19,11 +19,11 @@ const OtherMolecules = props => {
         {getMeta(head.othermolecules)}
       </Helmet>
 
-      <div className="page-container">
+      <div className={!props.isImported ? "page-container" : ""}>
         <Title title="Other Molecules" />
 
         <Col className={"col-link-button"}>
-          {props.showOnlyMyLinkersOrGlycansCheckBox && (
+          {!props.isImported && (
             <Link to="/othermolecules/addothermolecule" className="link-button" style={{ width: "180px" }}>
               Add Other Molecule
             </Link>
