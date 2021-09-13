@@ -320,8 +320,8 @@ export function getWsUrl(ws) {
       return ws_base_user + "/listusernames";
     case "searchglycans":
       return ws_base_public_search + "/searchGlycans";
-    case "initsearch":
-      return ws_base_public_search + "/initSearch";
+    case "initglycansearch":
+      return ws_base_public_search + "/initGlycanSearch";
     case "searchglycansbymass":
       return ws_base_public_search + "/searchGlycansByMass";
     case "searchglycansbystructure":

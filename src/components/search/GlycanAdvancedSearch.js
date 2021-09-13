@@ -131,7 +131,7 @@ const GlycanAdvancedSearch = (props) => {
 
   useEffect(() => {
     wsCall(
-      "initsearch",
+      "initglycansearch",
       "GET",
       null,
       false,
