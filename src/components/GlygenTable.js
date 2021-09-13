@@ -140,7 +140,11 @@ const GlygenTable = props => {
                 size="xs"
                 title="Delete"
                 className="caution-color table-btn"
-                onClick={() => deletePrompt(row.original[props.keyColumn], props.queryParamDelete)}
+                onClick={() => {
+                  return props.deleteOnClick
+                    ? props.deleteOnClick(row.original)
+                    : deletePrompt(row.original[props.keyColumn], props.queryParamDelete);
+                }}
               />
               &nbsp;
             </>
@@ -516,7 +520,8 @@ GlygenTable.propTypes = {
   onlyMyLinkersGlycans: PropTypes.bool,
   onlyMyLinkersGlycansCheckBoxLabel: PropTypes.string,
   isModal: PropTypes.bool,
-  paramTypeValue: PropTypes.string
+  paramTypeValue: PropTypes.string,
+  deleteOnClick: PropTypes.func
 };
 
 GlygenTable.defaultProps = {

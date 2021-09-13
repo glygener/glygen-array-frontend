@@ -3,14 +3,22 @@ import { Row, Col, Form, Button } from "react-bootstrap";
 import { FormLabel, Feedback } from "../components/FormControls";
 import { Source } from "./Source";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { externalizeUrl, csvToArray, isValidURL } from "../utils/commonUtils";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import MultiToggle from "react-multi-toggle";
 import { Link } from "@material-ui/core";
+import { wsCall } from "../utils/wsUtils";
+import { ErrorSummary } from "./ErrorSummary";
+import { PublicationCard } from "./PublicationCard";
+import { Loading } from "./Loading";
 
 const AddGlycanInfoToFeature = props => {
   const [invalidUrls, setInvalidUrls] = useState(false);
   const [newURL, setNewURL] = useState("");
-  const [newPaper, setNewPaper] = useState("");
+  const [newPubMedId, setNewPubMedId] = useState("");
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [pageErrorMessage, setPageErrorMessage] = useState("");
+  const [showLoading, setShowLoading] = useState(false);
 
   const sourceInfoChange = (e, glycanId) => {
     const name = e.target.name;
@@ -124,50 +132,59 @@ const AddGlycanInfoToFeature = props => {
     setNewURL("");
   }
 
-  const paperWidget = enableDelete => {
-    return (
-      <>
-        {props.addGlycanInfoToFeature.papers && props.addGlycanInfoToFeature.papers.length > 0
-          ? props.addGlycanInfoToFeature.papers.map((paper, index) => {
-              return (
-                <Row style={{ marginTop: "8px" }} key={index}>
-                  <Col md={10}>{paper}</Col>
-                  {enableDelete && (
-                    <Col style={{ marginTop: "2px", textAlign: "center" }} md={2}>
-                      <FontAwesomeIcon
-                        icon={["far", "trash-alt"]}
-                        size="xs"
-                        title="Delete Paper"
-                        className="caution-color table-btn"
-                        onClick={() => {
-                          const listPapers = props.addGlycanInfoToFeature.papers;
-                          listPapers.splice(index, 1);
-                          props.setAddGlycanInfoToFeature({ papers: listPapers });
-                        }}
-                      />
-                    </Col>
-                  )}
-                </Row>
-              );
-            })
-          : ""}
-      </>
-    );
-  };
+  function addPublication() {
+    let publications = props.addGlycanInfoToFeature.papers;
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
-  function addPaper() {
-    var listPapers = props.addGlycanInfoToFeature.papers;
-    const paperExists = listPapers.find(i => i === newPaper);
-
-    if (!paperExists && newPaper.trim() !== "") {
-      listPapers.push(newPaper);
-      props.setAddGlycanInfoToFeature({ papers: listPapers });
+    if (!pubmedExists) {
+      setShowLoading(true);
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
+    } else {
+      setNewPubMedId("");
     }
-    setNewPaper("");
+
+    function addPublicationSuccess(response) {
+      debugger;
+      response.json().then(responseJson => {
+        setShowErrorSummary(false);
+        props.setAddGlycanInfoToFeature({ papers: props.addGlycanInfoToFeature.papers.concat([responseJson]) });
+        setNewPubMedId("");
+      });
+      setShowLoading(false);
+    }
+
+    function addPublicationError(response) {
+      response.text().then(resp => {
+        if (resp) {
+          setPageErrorsJson(JSON.parse(resp));
+        } else {
+          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
+        }
+        setShowErrorSummary(true);
+      });
+      setShowLoading(false);
+    }
   }
 
-  return (
+  function deletePublication(id, wscall) {
+    const publications = props.addGlycanInfoToFeature.papers;
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
+    const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
+    publications.splice(pubDeleteIndex, 1);
+    props.setAddGlycanInfoToFeature({ papers: publications });
+  }
+
+  return props.step2 ? (
     <>
+      {showErrorSummary === true && (
+        <ErrorSummary
+          show={showErrorSummary}
+          form="linkers"
+          errorJson={pageErrorsJson}
+          errorMessage={pageErrorMessage}
+        />
+      )}
+
       <Form.Group as={Row} controlId="urls">
         <FormLabel label="URLs" />
         <Col md={4}>
@@ -196,31 +213,39 @@ const AddGlycanInfoToFeature = props => {
           </Row>
         </Col>
       </Form.Group>
+
       <Form.Group as={Row} controlId="papers">
         <FormLabel label="Papers" />
-        <Col md={4}>
-          {paperWidget(true)}
+        <Col md={6}>
+          {props.addGlycanInfoToFeature.papers.map((pub, index) => {
+            return <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />;
+          })}
           <Row>
             <Col md={10}>
               <Form.Control
-                as="input"
+                type="number"
                 name="papers"
                 placeholder="Enter name of the Paper and click +"
-                value={newPaper}
-                onChange={e => {
-                  setNewPaper(e.target.value);
+                value={newPubMedId}
+                onChange={e => setNewPubMedId(e.target.value)}
+                maxLength={100}
+                onKeyDown={e => {
+                  isValidNumber(e);
                 }}
-                maxLength={200}
+                onInput={e => {
+                  numberLengthCheck(e);
+                }}
               />
             </Col>
             <Col md={1}>
-              <Button variant="contained" onClick={addPaper} className="add-button">
+              <Button variant="contained" onClick={addPublication} className="add-button">
                 +
               </Button>
             </Col>
           </Row>
         </Col>
       </Form.Group>
+
       <Form.Group as={Row} controlId="opensRing">
         <FormLabel label={"Opens Ring"} />
         <Col md={6}>
@@ -260,6 +285,9 @@ const AddGlycanInfoToFeature = props => {
           </Col>
         </Form.Group>
       )}
+    </>
+  ) : (
+    <>
       <Row>
         <FormLabel label="Source" />
 
@@ -316,6 +344,7 @@ const AddGlycanInfoToFeature = props => {
           />
         )
       )}
+      <Loading show={showLoading} />
     </>
   );
 };

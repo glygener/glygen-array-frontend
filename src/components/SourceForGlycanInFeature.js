@@ -20,24 +20,22 @@ const SourceForGlycanInFeature = props => {
 
   const [addGlycanInfoToFeature, setAddGlycanInfoToFeature] = useReducer(reducer, AddGlycanInfoToFeatureIntiState);
 
-  const steps = ["Select Glycans", "Add Source Information"];
+  const steps = ["Select Glycans", "Add Reducing End Information", "Add Source"];
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
     var stepIncrement = 1;
-    debugger;
-    if (activeStep === 1) {
+
+    if (activeStep === 2) {
       var glycansList = props.featureAddState.glycans;
 
       var selectedRow = glycansList.find(e => e.id === props.currentGlycanSelection.id);
       var selectedRowIndex = glycansList.indexOf(selectedRow);
 
-      // commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-      // nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
-
       let source = {
         type: "NOTRECORDED"
       };
+      debugger;
 
       if (addGlycanInfoToFeature.source === "commercial") {
         source.type = "COMMERCIAL";
@@ -68,6 +66,7 @@ const SourceForGlycanInFeature = props => {
       });
 
       props.setShowGlycanPicker(false);
+      props.setCurrentGlycanSelection();
     }
 
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
@@ -82,9 +81,17 @@ const SourceForGlycanInFeature = props => {
   function getStepContent(activeStep) {
     switch (activeStep) {
       case 0:
-        return <>{props.getGlycanTabletoSelect()}</>;
+        return <>{props.getGlycanTabletoSelect(true)}</>;
 
       case 1:
+        return (
+          <AddGlycanInfoToFeature
+            addGlycanInfoToFeature={addGlycanInfoToFeature}
+            setAddGlycanInfoToFeature={setAddGlycanInfoToFeature}
+            step2
+          />
+        );
+      case 2:
         return (
           <AddGlycanInfoToFeature
             addGlycanInfoToFeature={addGlycanInfoToFeature}

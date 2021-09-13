@@ -81,8 +81,8 @@ const Linkers = props => {
           keyColumn="id"
           showRowsInfo
           infoRowsText="Linkers"
-          showDeleteButton={props.showDeleteButton ? props.showDeleteButton : true}
-          showEditButton={props.showEditButton ? props.showEditButton : true}
+          showDeleteButton={props.isImported ? false : true}
+          showEditButton={props.isImported ? false : true}
           fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
           paramTypeValue={"SMALLMOLECULE"}
           isModal={props.isModal}

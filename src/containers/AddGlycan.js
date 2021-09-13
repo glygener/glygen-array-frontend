@@ -74,7 +74,7 @@ const AddGlycan = props => {
       setInvalidMass(true);
       return;
     } else if (
-      userSelection.selectedGlycan === "SequenceDefined" &&
+      (userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other") &&
       (userSelection.sequence === " " || userSelection.sequence.trim().length < 1) &&
       activeStep === 1
     ) {
@@ -277,7 +277,7 @@ const AddGlycan = props => {
               </FormCheck.Label>
             </FormCheck>
 
-            <FormCheck>
+            <FormCheck className="line-break-1">
               <FormCheck.Label>
                 <FormCheck.Input
                   type="radio"
@@ -286,6 +286,18 @@ const AddGlycan = props => {
                   checked={userSelection.selectedGlycan === "Unknown"}
                 />
                 {displayNames.glycan.UNKNOWN}
+              </FormCheck.Label>
+            </FormCheck>
+
+            <FormCheck>
+              <FormCheck.Label>
+                <FormCheck.Input
+                  type="radio"
+                  value="Other"
+                  onChange={handleSelect}
+                  checked={userSelection.selectedGlycan === "Other"}
+                />
+                {displayNames.glycan.OTHER}
               </FormCheck.Label>
             </FormCheck>
           </Form>
@@ -345,7 +357,11 @@ const AddGlycan = props => {
                 <Form.Group
                   as={Row}
                   controlId="sequence"
-                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                  className={
+                    userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
+                      ? ""
+                      : "hide-content"
+                  }
                 >
                   <FormLabel label="Sequence" className="required-asterik" />
                   <Col md={4}>

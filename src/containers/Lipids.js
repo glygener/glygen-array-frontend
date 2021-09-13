@@ -25,13 +25,15 @@ const Lipids = props => {
         {getMeta(head.lipids)}
       </Helmet>
 
-      <div className="page-container">
+      <div className={!props.isImported ? "page-container" : ""}>
         <Title title="Lipids" />
 
         <Col className={"col-link-button"}>
-          <Link to="/lipids/addlipid" className="link-button" style={{ width: "150px" }}>
-            Add Lipid
-          </Link>
+          {!props.isImported && (
+            <Link to="/lipids/addlipid" className="link-button" style={{ width: "150px" }}>
+              Add Lipid
+            </Link>
+          )}
         </Col>
 
         <GlygenTable
@@ -69,8 +71,8 @@ const Lipids = props => {
           keyColumn="id"
           showRowsInfo
           infoRowsText="Lipids"
-          showDeleteButton={props.showDeleteButton ? props.showDeleteButton : true}
-          showEditButton={props.showEditButton ? props.showEditButton : true}
+          showDeleteButton={props.isImported ? false : true}
+          showEditButton={props.isImported ? false : true}
           fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
           paramTypeValue={"LIPID"}
           isModal={props.isModal}

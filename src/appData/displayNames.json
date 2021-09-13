@@ -7,6 +7,7 @@
     "SEQUENCE_DEFINED": "Sequence Defined",
     "MASS_ONLY": "Mass Defined",
     "UNKNOWN": "Unknown",
+    "OTHER": "Other",
     "COMPOSITION_BASED": "Composition Based",
     "CLASSIFICATION_BASED": "Classification Based",
     "FRAGMENT_ONLY": "Fragment Only"
