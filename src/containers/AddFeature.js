@@ -277,7 +277,7 @@ const AddFeature = props => {
     if (isModal && featureAddState.type === "GLYCO_LIPID") {
       setShowLinkerPicker(false);
       let selectedGlycans = [...featureAddState.glycans];
-      selectedGlycans[0].linker = linker.name;
+      selectedGlycans[0].linker = linker;
       setFeatureAddState({ glycans: selectedGlycans });
     } else {
       setFeatureAddState({ linker: linker });
@@ -557,7 +557,6 @@ const AddFeature = props => {
   }
 
   function setupGlycanSelection(linker) {
-    debugger;
     var valid = true; // all NORMAL features are initially valid
     var chooseGlycanTableData = [
       {
@@ -586,9 +585,9 @@ const AddFeature = props => {
     let featureObj = {};
 
     if (featureAddState.type === "LINKED_GLYCAN") {
-      getLinkedGlycanData(featureObj);
+      featureObj = getLinkedGlycanData(featureObj);
     } else if (featureAddState.type === "GLYCO_LIPID") {
-      getGlycoLipidData(featureObj);
+      featureObj = getGlycoLipidData(featureObj);
     }
 
     setShowLoading(true);
@@ -638,33 +637,31 @@ const AddFeature = props => {
     return featureObj;
   }
   function getGlycoLipidData(featureObj) {
+    let glycans = featureAddState.glycans.map(glycanObj => {
+      let glycans = {};
+      let reducingEndConfiguration = {};
+
+      glycans.glycan = glycanObj;
+      glycans.urls = glycanObj.urls;
+
+      glycans.publications = glycanObj.papers;
+
+      reducingEndConfiguration.type = glycanObj.opensRing;
+      reducingEndConfiguration.comment = glycanObj.opensRing === 0 ? glycanObj.equilibriumComment : "";
+      glycans.reducingEndConfiguration = reducingEndConfiguration;
+      glycans.linker = glycanObj.linker;
+      glycans.source = glycanObj.source;
+
+      return glycans;
+    });
+
     featureObj = {
       type: "GLYCOLIPID",
-
       name: featureAddState.name,
       internalId: featureAddState.featureId,
       linker: featureAddState.linker,
       lipid: featureAddState.lipid,
-
-      glycans: featureAddState.glycans.map(glycanObj => {
-        let glycans = {};
-        let reducingEndConfiguration = {};
-
-        glycans.glycan = glycanObj;
-        glycans.urls = glycanObj.urls;
-
-        glycans.publications = glycanObj.papers;
-
-        reducingEndConfiguration.type = glycanObj.opensRing;
-        reducingEndConfiguration.comment = glycanObj.opensRing === 0 ? glycanObj.equilibriumComment : "";
-        glycans.reducingEndConfiguration = reducingEndConfiguration;
-
-        glycans.linker = glycanObj.linker;
-        glycans.source = glycanObj.source;
-
-        return [{ glycans: glycans }];
-      }),
-
+      glycans: [{ glycans: glycans, type: "LINKEDGLYCAN" }],
       positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.id) {
           map[glycanObj.position] = glycanObj.glycan.id;
@@ -1316,7 +1313,7 @@ const AddFeature = props => {
                     accessor: "linker",
                     Cell: (row, index) => {
                       return row.original.linker ? (
-                        row.original.linker
+                        row.original.linker.name
                       ) : (
                         <Button
                           style={{
