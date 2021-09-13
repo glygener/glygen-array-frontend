@@ -232,6 +232,7 @@ export default function GlycanSubstructureSearch(props) {
               inputValue.sequence.length > subStructureSearch.sequence.length && (
                 <FormHelperText error>{subStructureSearch.sequence.errorText}</FormHelperText>
               )}
+            WURCS Example: WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1
           </FormControl>
         </Grid>
 

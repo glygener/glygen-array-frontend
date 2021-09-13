@@ -13,6 +13,7 @@ import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import ExampleExploreControl from "../ExampleExploreControl";
 
 const structureSearch = glycanSearchData.structure_search;
 
@@ -96,6 +97,14 @@ export default function GlycanStructureSearch(props) {
       setPageErrorMessage("");
     });
   };
+
+  /**
+   * Function to set glycan id value.
+   * @param {string} glycanSearchSuccess - input glycan id value.
+   **/
+  function funcSetInputValues(glycanSearchSuccesss) {
+    setInputValue({ sequence: glycanSearchSuccess });
+  }
 
   /**
    * Function to clear input field values.
@@ -213,6 +222,11 @@ export default function GlycanStructureSearch(props) {
             {touched.sequence && inputValue.sequence.length > structureSearch.sequence.length && (
               <FormHelperText error>{structureSearch.sequence.errorText}</FormHelperText>
             )}
+            WURCS Example: WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1
+            {/* <ExampleExploreControl
+              setInputValue={funcSetInputValues}
+              inputValue={structureSearch.examples}
+            /> */}
           </FormControl>
         </Grid>
       </Grid>
