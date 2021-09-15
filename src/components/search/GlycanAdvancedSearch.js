@@ -71,7 +71,7 @@ const GlycanAdvancedSearch = (props) => {
   const glycanSearchFailure = (response) => {
     response.json().then((resp) => {
       console.log(resp);
-      if (response.status === 400) {
+      if (resp.statusCode === 404) {
         setPageErrorsJson(null);
         setPageErrorMessage("No search result found.");
         setShowErrorSummary(true);
@@ -157,13 +157,13 @@ const GlycanAdvancedSearch = (props) => {
   const glycanInitSearchFailure = (response) => {
     response.json().then((resp) => {
       console.log(resp);
-      if (response.status === 404) {
+      if (resp.statusCode === 404) {
         setPageErrorsJson(null);
         setPageErrorMessage("No search result found.");
         setShowErrorSummary(true);
         return;
       }
-      if (response.status === 400) {
+      if (resp.statusCode === 400) {
         setPageErrorsJson(null);
         setPageErrorMessage("Invalid data. Please correct it and try again.");
         setShowErrorSummary(true);
