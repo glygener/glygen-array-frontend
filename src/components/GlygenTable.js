@@ -272,7 +272,7 @@ const GlygenTable = props => {
               <GlygenTableRowsInfo
                 currentPage={tableElement.state ? tableElement.state.page : 0}
                 pageSize={tableElement.state ? tableElement.state.pageSize : 0}
-                currentRows={data.length}
+                currentRows={data && data.length}
                 totalRows={rows}
                 infoRowsText={props.infoRowsText}
                 show={props.showRowsInfo}
@@ -350,28 +350,28 @@ const GlygenTable = props => {
             wsCall(
               props.fetchWS,
               "GET",
-              // {
-              //   urlParams: props.urlParams || [],
-              //   qsParams: {
-              //     offset: state.page * state.pageSize,
-              //     limit: state.pageSize,
-              //     sortBy: sortColumn,
-              //     order: sortOrder,
-              //     loadAll: false, //only useful for features, blocks and slides
-              //     filter: searchFilter !== "" ? searchFilter : "",
-              //     type: props.paramTypeValue,
-              //     ...props.qsParams,
-              //   },
-              // },
               {
-                offset: state.page * state.pageSize,
-                limit: state.pageSize,
-                sortBy: sortColumn,
-                order: sortOrder,
-                loadAll: false, //only useful for features, blocks and slides
-                filter: searchFilter !== "" ? searchFilter : "",
-                type: props.paramTypeValue
+                urlParams: props.urlParams || [],
+                qsParams: {
+                  offset: state.page * state.pageSize,
+                  limit: state.pageSize,
+                  sortBy: sortColumn,
+                  order: sortOrder,
+                  loadAll: false, //only useful for features, blocks and slides
+                  filter: searchFilter !== "" ? searchFilter : "",
+                  type: props.paramTypeValue,
+                  ...props.qsParams
+                }
               },
+              // {
+              //   offset: state.page * state.pageSize,
+              //   limit: state.pageSize,
+              //   sortBy: sortColumn,
+              //   order: sortOrder,
+              //   loadAll: false, //only useful for features, blocks and slides
+              //   filter: searchFilter !== "" ? searchFilter : "",
+              //   type: props.paramTypeValue
+              // },
               true,
               null,
               response => fetchSuccess(response, state),
@@ -393,7 +393,7 @@ const GlygenTable = props => {
         <GlygenTableRowsInfo
           currentPage={tableElement.state ? tableElement.state.page : 0}
           pageSize={tableElement.state ? tableElement.state.pageSize : 0}
-          currentRows={data.length}
+          currentRows={data && data.length}
           totalRows={rows}
           infoRowsText={props.infoRowsText}
         />
