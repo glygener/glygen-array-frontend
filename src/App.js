@@ -108,7 +108,9 @@ const App = () => {
           (location.pathname === "/data" ||
             location.pathname === "/glycanSearch" ||
             location.pathname === "/glycanList" ||
-            location.pathname === "/glycanDetail" ||
+            location.pathname === "/datasetDetailSearch" ||
+            location.pathname === "/datasetDetailList" ||
+            location.pathname === "/datasetDetail" ||
             location.pathname === "/submitterSearch" ||
             location.pathname === "/") ? (
             <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
@@ -137,7 +139,9 @@ const App = () => {
       "submitterSearch",
       "glycanSearch",
       "glycanList",
-      "glycanDetail",
+      "datasetDetailSearch",
+      "datasetDetailList",
+      "datasetDetail",
     ];
     var pagename = getPageName(history);
 

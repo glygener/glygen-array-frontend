@@ -138,6 +138,32 @@
       }
     ]
   },
+  "datasetDetailSearch": {
+    "title": "Dataset Detail Search | Search for Datasets",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Search for datasets based on their Dataset name, Slide name, PMID, Username, Last name, Group, Organization/Institution, and Co-owners."
+      },
+      {
+        "name": "keywords",
+        "content": "Dataset name, Slide name, PMID, Username, Last name, Group, Organization/Institution, Co-owners."
+      }
+    ]
+  },
+  "datasetDetailList": {
+    "title": "Dataset Detail List | Summary of Your Glycan Search",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Results of a dataset detail search - a list of datasets. Select the dataset from the list."
+      },
+      {
+        "name": "keywords",
+        "content": "Dataset name, Slide name, PMID, Username, Last name, Group, Organization/Institution, Co-owners."
+      }
+    ]
+  },
   "glycans": {
     "title": "My Glycans",
     "meta": [

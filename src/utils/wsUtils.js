@@ -330,6 +330,12 @@ export function getWsUrl(ws) {
       return ws_base_public_search + "/searchGlycansBySubstructure";
     case "listglycansforsearch":
       return ws_base_public_search + "/listGlycansForSearch";
+    case "searchdatasets":
+      return ws_base_public_search + "/searchDatasets";
+    case "searchdatasetsbyuser":
+      return ws_base_public_search + "/searchDatasetsByUser";
+    case "listdatasetsforsearch":
+      return ws_base_public_search + "/listDatasetsForSearch";
 
     default:
       return ws_base_user;

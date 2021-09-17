@@ -127,5 +127,140 @@
         }
       ]
     }
+  },
+  "dataset_search": {
+    "tabTitle": "Dataset",
+    "dataset_name": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter Dataset Name",
+      "tooltip": {
+        "title": "Dataset Name",
+        "text": "Dataset name description.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "6574"
+          }
+        }
+     ]
+    },
+    "printed_slide_name": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter Slide Name",
+      "tooltip": {
+        "title": "Slide Name",
+        "text": "Slide name description.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "CFG5.2PrintedSlide"
+          }
+        }
+     ]
+    },
+    "pmid": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter PMID",
+      "tooltip": {
+        "title": "PMID",
+        "text": "pmid description.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "1234"
+          }
+        }
+     ]
+    },
+    "username": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter Username",
+      "tooltip": {
+        "title": "Username",
+        "text": "username description."
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "cfguser"
+          }
+        }
+     ]
+    },
+    "last_name": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter Last Name",
+      "tooltip": {
+        "title": "Last Name",
+        "text": "Last name description."
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "Georgia"
+          }
+        }
+     ]
+    },
+    "group_name": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter Group Name",
+      "tooltip": {
+        "title": "Group Name",
+        "text": "Group name description."
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "Glygeners1"
+          }
+        }
+     ]
+    },
+    "institution": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter Institution",
+      "tooltip": {
+        "title": "Institution",
+        "text": "Institution description."
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "glygen-array-frontend1"
+          }
+        }
+     ]
+    }
   }
 }

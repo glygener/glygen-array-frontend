@@ -40,6 +40,7 @@ const TopNavBar = (props) => {
               <NavDropdown
                 className={
                   location.pathname.includes("/glycanSearch") ||
+                  location.pathname === "/datasetDetailSearch" ||
                   location.pathname === "/submitterSearch"
                     ? "gg-dropdown-navbar gg-dropdown-navbar-active"
                     : "gg-dropdown-navbar gg-ml-10"
@@ -48,6 +49,14 @@ const TopNavBar = (props) => {
                 id="basic-nav-dropdown"
                 exact="true"
               >
+                <NavDropdown.Item
+                  className="gg-nav-link"
+                  as={NavLink}
+                  to="/datasetDetailSearch"
+                  exact
+                >
+                  By Dataset Detail
+                </NavDropdown.Item>
                 <NavDropdown.Item className="gg-nav-link" as={NavLink} to="/glycanSearch" exact>
                   By Glycan
                 </NavDropdown.Item>

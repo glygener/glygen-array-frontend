@@ -117,10 +117,12 @@ const PublicListDataset = () => {
                 Cell: (row, index) => (
                   <div key={index} style={{ textAlign: "left", margin: "20px" }}>
                     <div>
+                      <strong>ID:</strong>{" "}
                       <Link to={`/data/dataset/${row.original.id}`}>{row.original.id}</Link>
                     </div>
                     <div>
-                      <strong>{row.original.name}</strong>
+                      <strong>Dataset Name: </strong>
+                      {row.original.name}
                     </div>
                     <div>
                       <strong>Sample:</strong> {row.original.sample.name}
