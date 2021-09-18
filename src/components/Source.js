@@ -16,10 +16,24 @@ const Source = props => {
               value={props.commercial.vendor}
               isInvalid={props.validate}
               onChange={e => props.sourceChange(e)}
+              disabled={props.commercial.vendorNotRecorded}
               required
             />
             <Feedback message={"Vendor is required"} />
           </Col>
+          {props.isMetadata && (
+            <Col>
+              <Form.Group className="mb-3" controlId={"vendorCheckBox"}>
+                <Form.Check
+                  type="checkbox"
+                  label={"not reported"}
+                  onChange={props.commercialNotRecordedChange}
+                  checked={props.commercial["vendorNotRecorded"]}
+                  // defaultChecked={props.commercial["vendorNotRecorded"]}
+                />
+              </Form.Group>
+            </Col>
+          )}
         </Form.Group>
 
         <Form.Group as={Row} controlId={"cataloguenumber"}>
@@ -64,10 +78,24 @@ const Source = props => {
               value={props.nonCommercial.providerLab}
               isInvalid={props.validate}
               onChange={e => props.sourceChange(e)}
+              disabled={props.nonCommercial.providerLabNotRecorded}
               required
             />
             <Feedback message={"Provider lab is required"} />
           </Col>
+          {props.isMetadata && (
+            <Col>
+              <Form.Group className="mb-3" controlId={"providerLabCheckBox"}>
+                <Form.Check
+                  type="checkbox"
+                  label={"not reported"}
+                  onChange={props.nonCommercialNotRecordedChange}
+                  checked={props.nonCommercial["providerLabNotRecorded"]}
+                  // defaultChecked={props.nonCommercial["providerLabNotRecorded"]}
+                />
+              </Form.Group>
+            </Col>
+          )}
         </Form.Group>
 
         <Form.Group as={Row} controlId={"batchId"}>

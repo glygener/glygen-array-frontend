@@ -4,7 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import PropTypes from "prop-types";
 import { getFormErrorMessage } from "../utils/errorHandling";
 
-const ErrorSummary = (props) => {
+const ErrorSummary = props => {
   const [summary, setSummary] = useState("");
   useEffect(updateSummary, [props.errorJson], [props.errorMessage]);
 
@@ -12,7 +12,7 @@ const ErrorSummary = (props) => {
     var aggregatedSummary = "";
     if (props.show) {
       if (props.errorJson && null != props.errorJson.errors && props.errorJson.errors.length > 0) {
-        props.errorJson.errors.forEach((error) => {
+        props.errorJson.errors.forEach(error => {
           if (props.customMessage) {
             aggregatedSummary += "\n" + error.objectName + " - " + error.defaultMessage + "\n";
           } else {
@@ -23,9 +23,6 @@ const ErrorSummary = (props) => {
       } else if (props.errorMessage) {
         setSummary(props.errorMessage);
       } else {
-        console.log(
-          props.errorJson.errorCode + " - " + props.errorJson.statusCode + " - Bad Request"
-        );
         setSummary(getFormErrorMessage());
       }
     }
@@ -45,7 +42,7 @@ ErrorSummary.propTypes = {
   form: PropTypes.string,
   errorJson: PropTypes.object,
   errorMessage: PropTypes.string,
-  customMessage: PropTypes.bool,
+  customMessage: PropTypes.bool
 };
 
 export { ErrorSummary };

@@ -15,23 +15,23 @@ import { StructureImage } from "../components/StructureImage";
 import { getAAPositionsFromSequence } from "../utils/sequence";
 import { wsCall } from "../utils/wsUtils";
 import { useHistory } from "react-router-dom";
-import { FeatureMetaData } from "./FeatureMetaData";
 import { Linkers } from "./Linkers";
 import { Peptides } from "./Peptides";
 import { Proteins } from "./Proteins";
 import { Lipids } from "./Lipids";
 import { AddFeatureGlycoTypes } from "./AddFeatureGlycoTypes";
 import { SourceForGlycanInFeature } from "../components/SourceForGlycanInFeature";
+import { updateMetadataTemplate, getMetadataSubmitData } from "../containers/FeatureMetadata";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
 
   const featureTypes = {
     LINKED_GLYCAN: "Linked Glycan",
-    GLYCO_LIPID: "glycolipid",
-    GLYCO_PEPTIDE: "glycopeptide",
-    GLYCO_PROTEIN: "glycoprotein",
-    GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE: "glycoprotein_linked_glycopeptide",
+    GLYCO_LIPID: "GlycoLipid",
+    GLYCO_PEPTIDE: "GlycoPeptide",
+    GLYCO_PROTEIN: "GlycoProtein",
+    GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE: "GlycoProtein linked GlycoPeptide",
     CONTROL: "Control",
     NEGATIVE_CONTROL: "Negative Control",
     COMPOUND: "Organic Compound",
@@ -44,8 +44,6 @@ const AddFeature = props => {
   };
 
   const featureAddInitState = {
-    name: "",
-    featureId: "",
     linker: {},
     glycans: [],
     lipid: {},
@@ -59,10 +57,8 @@ const AddFeature = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
-  const [genericInfoValidated, setGenericInfoValidated] = useState(false);
   const [linkerValidated, setLinkerValidated] = useState(false);
   const [validLinker, setValidLinker] = useState(true);
-  // const [glycanPickIndex, setGlycanPickIndex] = useState(0);
   const [showGlycanPicker, setShowGlycanPicker] = useState(false);
   const [showLinkerPicker, setShowLinkerPicker] = useState(false);
   const [glycoLipidGlycanLinkerListStep4, setGlycoLipidGlycanLinkerListStep4] = useState();
@@ -73,8 +69,33 @@ const AddFeature = props => {
     ...{ type: "LINKED_GLYCAN" }
   });
 
-  const [featureMetaData, setFeatureMetaData] = useState();
-  const [metadataforAddFeature, setMetadataforAddFeature] = useState([]);
+  const featureMetaDataInitState = {
+    commercial: { vendor: "", catalogueNumber: "", batchId: "", vendorNotRecorded: false },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "", providerLabNotRecorded: false },
+    purity: {
+      comment: "",
+      value: "",
+      method: "",
+      purityNotSpecified: "specify",
+      valueNotRecorded: false,
+      methodNotRecorded: false
+    },
+    source: "notSpecified",
+    validatedCommNonComm: false,
+    validateMethod: false,
+    validateValue: false,
+    invalidName: false,
+    validateFeatureId: false,
+    featureId: "",
+    name: ""
+  };
+
+  const [featureMetaData, setFeatureMetaData] = useReducer(
+    (oldState, newState) => ({ ...oldState, ...newState }),
+    featureMetaDataInitState
+  );
+
+  const [metadataTemplate, setMetadataTemplate] = useState([]);
   const [onlyMyglycans, setOnlyMyglycans] = useState(false);
   const [onlyMyLinkers, setOnlyMyLinkers] = useState(false);
   var [rowSelected, setRowSelected] = useState([]);
@@ -168,14 +189,15 @@ const AddFeature = props => {
     } else if (activeStep === 2) {
       if (featureAddState.type === "LINKED_GLYCAN") {
         if (featureAddState.glycans.length < 1) {
+          setPageErrorsJson({});
           setErrorMessage("Glycan selection is required.");
           setShowErrorSummary(true);
           return;
         }
       }
     } else if (activeStep === 3) {
-      setGenericInfoValidated(true);
-      if (featureAddState.name === "") {
+      let result = getMetadataStep();
+      if (!result) {
         return;
       }
     } else if (activeStep === 4) {
@@ -184,6 +206,78 @@ const AddFeature = props => {
     }
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
+
+  const getMetadataStep = () => {
+    if (featureMetaData.name === "") {
+      setFeatureMetaData({ invalidName: true });
+    }
+
+    if (featureMetaData.featureId === "") {
+      setFeatureMetaData({ validateFeatureId: true });
+    }
+
+    if (featureMetaData.purity.purityNotSpecified === "specify") {
+      if (featureMetaData.purity.method === "" && !featureMetaData.purity.methodNotRecorded) {
+        setFeatureMetaData({ validateMethod: true });
+      }
+      if (featureMetaData.purity.value === "" && !featureMetaData.purity.valueNotRecorded) {
+        setFeatureMetaData({ validateValue: true });
+      }
+    }
+
+    if (featureMetaData.source === "commercial" && !featureMetaData.commercial.vendorNotRecorded) {
+      if (featureMetaData.commercial.vendor === "") {
+        setFeatureMetaData({ validatedCommNonComm: true });
+      }
+    } else if (featureMetaData.source === "nonCommercial" && !featureMetaData.nonCommercial.providerLabNotRecorded) {
+      if (featureMetaData.nonCommercial.providerLab === "") {
+        setFeatureMetaData({ validatedCommNonComm: true });
+      }
+    }
+
+    if (
+      featureMetaData.validatedCommNonComm ||
+      (featureMetaData.source === "commercial" &&
+        !featureMetaData.commercial.vendorNotRecorded &&
+        featureMetaData.commercial.vendor === "") ||
+      (featureMetaData.source === "nonCommercial" &&
+        !featureMetaData.nonCommercial.providerLabNotRecorded &&
+        featureMetaData.nonCommercial.providerLab === "") ||
+      (featureMetaData.purity.purityNotSpecified === "specify" &&
+        ((!featureMetaData.purity.methodNotRecorded && featureMetaData.purity.method === "") ||
+          (!featureMetaData.purity.valueNotRecorded && featureMetaData.purity.value === ""))) ||
+      featureMetaData.validateValue ||
+      featureMetaData.validateMethod ||
+      featureMetaData.invalidName ||
+      featureMetaData.name === "" ||
+      featureMetaData.featureId === "" ||
+      featureMetaData.validateFeatureId
+    ) {
+      return false;
+    } else {
+      metadataList();
+      return true;
+    }
+  };
+
+  function metadataList() {
+    wsCall("listtemplates", "GET", { type: "FEATURE" }, true, null, getListTemplatesSuccess, getListTemplatesFailure);
+
+    function getListTemplatesSuccess(response) {
+      response.json().then(resp => {
+        let respJson = resp;
+
+        updateMetadataTemplate(respJson, featureMetaData, setMetadataTemplate);
+      });
+    }
+    function getListTemplatesFailure(response) {
+      response.json().then(responseJson => {
+        setPageErrorsJson(responseJson);
+      });
+      // setPageErrorMessage("");
+      setShowErrorSummary(true);
+    }
+  }
 
   const handleNextGlycoLipid = () => {
     var stepIncrement = 1;
@@ -218,14 +312,15 @@ const AddFeature = props => {
         }
       }
     } else if (activeStep === 3) {
-      setGenericInfoValidated(true);
       if (!glycoLipidGlycanLinkerListStep4) {
+        setPageErrorsJson({});
         setErrorMessage("Glycan selection is required.");
         setShowErrorSummary(true);
         return;
       }
     } else if (activeStep === 4) {
-      if (featureAddState.name === "") {
+      let result = getMetadataStep();
+      if (!result) {
         return;
       }
     } else if (activeStep === 5) {
@@ -255,7 +350,6 @@ const AddFeature = props => {
       // if (featureAddState.type !== "LINKED_GLYCAN" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "No") {
       //   stepDecrement += 1;
       // }
-      setGenericInfoValidated(false);
     }
     setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
   };
@@ -263,14 +357,8 @@ const AddFeature = props => {
   const handleTypeSelect = e => {
     const newValue = e.target.value;
     setGlycoLipidGlycanLinkerListStep4();
-    setFeatureMetaData();
+    setFeatureMetaData({ ...featureMetaDataInitState });
     setFeatureAddState({ ...featureAddInitState, ...{ type: newValue } });
-  };
-
-  const handleChange = e => {
-    const name = e.target.name;
-    const newValue = e.target.value;
-    setFeatureAddState({ [name]: newValue });
   };
 
   const handleLinkerSelect = (linker, isModal) => {
@@ -346,48 +434,6 @@ const AddFeature = props => {
     return rowSelected.find(e => e.id === row.id);
   };
 
-  const getStep3Content = () => {
-    return (
-      <>
-        <div className="radioform1">
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Name" className={"required-asterik"} />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={featureAddState.name}
-                onChange={handleChange}
-                isInvalid={genericInfoValidated && featureAddState.name === ""}
-                maxLength={50}
-                required
-              />
-              <Feedback message="Name is required"></Feedback>
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="featureId">
-            <FormLabel label="Feature Id" className={"required-asterik"} />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                name="featureId"
-                placeholder="Feature Id"
-                value={featureAddState.featureId}
-                onChange={handleChange}
-                isInvalid={genericInfoValidated && featureAddState.featureId === ""}
-                maxLength={30}
-                required
-              />
-              <Feedback message="Feature Id is required"></Feedback>
-            </Col>
-          </Form.Group>
-        </div>
-      </>
-    );
-  };
-
   const getGlycoLipidStep1 = () => {
     return (
       <>
@@ -416,18 +462,7 @@ const AddFeature = props => {
   };
 
   const getMetadata = () => {
-    return (
-      <FeatureMetaData
-        metadataType={"Feature"}
-        importedInAPage={true}
-        importedPageData={metadataforAddFeature}
-        setMetadataforImportedPage={setMetadataforAddFeature}
-        setImportedPageDataToSubmit={setFeatureMetaData}
-        handleBack={handleBack}
-        handleNext={featureAddState.type === "GLYCO_LIPID" ? handleNextGlycoLipid : handleNextLinker}
-        importPageContent={getStep3Content}
-      />
-    );
+    return <SourceForGlycanInFeature metadata={featureMetaData} setMetadata={setFeatureMetaData} isMetadata />;
   };
 
   const getTableforLinkers = isModal => {
@@ -510,16 +545,22 @@ const AddFeature = props => {
         <Form className="radioform1">
           <Form.Group as={Row} controlId="lipid">
             <FormLabel label="Selected Lipid" />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                name="lipid"
-                value={featureAddState.lipid.name}
-                disabled={true}
-                placeholder="No lipid selected"
-                isInvalid={linkerValidated}
-              />
-              <Feedback message="Please select a lipid from below"></Feedback>
+            <Col md={4} className="sequence-label-div">
+              {!featureAddState.lipid.name ? (
+                <>
+                  <Form.Control
+                    type="text"
+                    name="lipid"
+                    value={featureAddState.lipid.name}
+                    disabled={true}
+                    placeholder="No lipid selected"
+                    isInvalid={linkerValidated}
+                  />
+                  <Feedback message="Please select a lipid from below"></Feedback>
+                </>
+              ) : (
+                <label>{featureAddState.lipid.name ? featureAddState.lipid.name : "-"}</label>
+              )}
             </Col>
           </Form.Group>
 
@@ -605,12 +646,29 @@ const AddFeature = props => {
     }
   }
 
+  function metadataToSubmit() {
+    const descriptorGroups = getMetadataSubmitData(metadataTemplate);
+    // const descriptors = getDescriptors();
+
+    let objectToBeSaved = {
+      name: featureMetaData.name,
+      user: {
+        name: window.localStorage.getItem("loggedinuser")
+      },
+      template: "Default Feature",
+      descriptors: [],
+      descriptorGroups: descriptorGroups,
+      id: ""
+    };
+    return objectToBeSaved;
+  }
+
   function getLinkedGlycanData(featureObj) {
     featureObj = {
       type: "LINKEDGLYCAN",
 
-      name: featureAddState.name,
-      internalId: featureAddState.featureId,
+      name: featureMetaData.name,
+      internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       glycans: featureAddState.glycans.map(glycanObj => {
         let glycanDetails = {};
@@ -632,10 +690,12 @@ const AddFeature = props => {
         }
         return map;
       }, {}),
-      metadata: featureMetaData
+
+      metadata: metadataTemplate.length > 0 && metadataToSubmit()
     };
     return featureObj;
   }
+
   function getGlycoLipidData(featureObj) {
     let glycans = featureAddState.glycans.map(glycanObj => {
       let glycans = {};
@@ -657,18 +717,20 @@ const AddFeature = props => {
 
     featureObj = {
       type: "GLYCOLIPID",
-      name: featureAddState.name,
-      internalId: featureAddState.featureId,
+
+      name: featureMetaData.name,
+      internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       lipid: featureAddState.lipid,
-      glycans: [{ glycans: glycans, type: "LINKEDGLYCAN" }],
+      glycans: [{ glycans: glycans, type: "LINKEDGLYCAN", linker: glycans[0].linker }],
       positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.id) {
           map[glycanObj.position] = glycanObj.glycan.id;
         }
         return map;
       }, {}),
-      metadata: featureMetaData
+
+      metadata: metadataTemplate.length > 0 && metadataToSubmit()
     };
 
     return featureObj;
@@ -676,20 +738,7 @@ const AddFeature = props => {
   const getGlycanTabletoSelect = showSelect => {
     return (
       <>
-        {currentGlycanSelection && (
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Selected Glycan" />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                name="glycan_name"
-                value={currentGlycanSelection.id}
-                disabled={true}
-                placeholder="No linker selected"
-              />
-            </Col>
-          </Form.Group>
-        )}
+        {currentGlycanSelection && <>{displaySelectedGlycanInfoInFeature()}</>}
 
         <GlygenTable
           columns={[
@@ -734,6 +783,37 @@ const AddFeature = props => {
           showSelectButton={showSelect}
           selectButtonHandler={handleGlycanSelect}
         />
+      </>
+    );
+  };
+
+  const displaySelectedGlycanInfoInFeature = () => {
+    return (
+      <>
+        <Form>
+          <Form.Group as={Row} controlId="id">
+            <FormLabel label="Selected Glycan" />
+            <Col md={4} className="sequence-label-div">
+              <label>{currentGlycanSelection.id ? currentGlycanSelection.id : "-"}</label>
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="glytoucanId">
+            <FormLabel label="Glytoucan Id" />
+            <Col md={4} className="sequence-label-div">
+              <label>{currentGlycanSelection.glytoucanId ? currentGlycanSelection.glytoucanId : "-"}</label>
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="image">
+            <Col md={{ span: 3, offset: 2 }}>
+              <FormLabel label={""} />
+            </Col>
+            <Col md={4}>
+              <StructureImage base64={currentGlycanSelection.cartoon}></StructureImage>
+            </Col>
+          </Form.Group>
+        </Form>
       </>
     );
   };
@@ -900,7 +980,7 @@ const AddFeature = props => {
                   />
                   {featureTypes[key]}
 
-                  {featureAddState.type === "GLYCO_LIPID" && featureTypes[key] === "glycolipid" && (
+                  {featureAddState.type === "GLYCO_LIPID" && featureTypes[key] === "GlycoLipid" && (
                     <>
                       <div style={{ margin: "15px" }}>
                         Is the lipid linked to the surface using a linker?
@@ -909,7 +989,7 @@ const AddFeature = props => {
                     </>
                   )}
 
-                  {featureAddState.type === "GLYCO_PEPTIDE" && featureTypes[key] === "glycopeptide" && (
+                  {featureAddState.type === "GLYCO_PEPTIDE" && featureTypes[key] === "GlycoPeptide" && (
                     <>
                       <div style={{ margin: "15px" }}>
                         Is the peptide linked to the surface using a linker?
@@ -918,7 +998,7 @@ const AddFeature = props => {
                     </>
                   )}
 
-                  {featureAddState.type === "GLYCO_PROTEIN" && featureTypes[key] === "glycoprotein" && (
+                  {featureAddState.type === "GLYCO_PROTEIN" && featureTypes[key] === "GlycoProtein" && (
                     <>
                       <div style={{ margin: "15px" }}>
                         Is the protein linked to the surface using a linker?
@@ -948,61 +1028,8 @@ const AddFeature = props => {
           featureAddState.type === "NEGATIVE_CONTROL" ||
           featureAddState.type === "COMPOUND" ||
           featureAddState.type === "LANDING_LIGHT") &&
-          (linkerValidated || Object.keys(featureAddState.linker).length > 0) && (
-            <Form className="radioform1">
-              <Form.Group as={Row} controlId="name">
-                <FormLabel label="Selected Linker" />
-                <Col md={4}>
-                  <Form.Control
-                    type="text"
-                    name="linker_name"
-                    value={featureAddState.linker.name}
-                    disabled={true}
-                    placeholder="No linker selected"
-                    isInvalid={linkerValidated && Object.keys(featureAddState.linker).length === 0}
-                  />
-                  <Feedback message="Please select a linker from below"></Feedback>
-                </Col>
-              </Form.Group>
-              {featureAddState.linker.imageURL && (
-                <Form.Group as={Row} controlId="name">
-                  <Col md={{ span: 3, offset: 2 }}>
-                    <FormLabel label={""} />
-                  </Col>
-
-                  <Col md={4}>
-                    <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
-                  </Col>
-                </Form.Group>
-              )}
-
-              <Form.Group as={Row} controlId="sequence">
-                <FormLabel label={featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "InChI" : "AA sequence"} />
-                <Col md={4} className="sequence-label-div">
-                  <Form.Control
-                    as="textarea"
-                    rows={5}
-                    className="sequence-textarea"
-                    value={
-                      featureAddState.linker.type === "SMALLMOLECULE_LINKER"
-                        ? featureAddState.linker && featureAddState.linker.inChiSequence
-                          ? featureAddState.linker.inChiSequence.trim()
-                          : "No sequence"
-                        : featureAddState.linker &&
-                          featureAddState.linker.sequence &&
-                          formatSequenceForDisplay(
-                            featureAddState.linker.sequence && featureAddState.linker.sequence.trim(),
-                            60
-                          )
-                    }
-                    disabled
-                    isInvalid={linkerValidated && !validLinker}
-                  />
-                  <Feedback message="Glycans cannot be attached to this protein/peptide linker. If you did not mean to add glycans to this feature, please select another type of feature."></Feedback>
-                </Col>
-              </Form.Group>
-            </Form>
-          )}
+          (linkerValidated || Object.keys(featureAddState.linker).length > 0) &&
+          getSelectedLinkerInformation()}
 
         {((featureAddState.type === "GLYCO_LIPID" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PEPTIDE" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
@@ -1014,6 +1041,64 @@ const AddFeature = props => {
           featureAddState.type === "LANDING_LIGHT") && (
           <Form className="form-container">{getTableforLinkers(false)}</Form>
         )}
+      </>
+    );
+  };
+
+  const getSelectedLinkerInformation = () => {
+    return (
+      <>
+        <Form className="radioform1">
+          <Form.Group as={Row} controlId="name">
+            <FormLabel label="Selected Linker" />
+            <Col md={4} className="sequence-label-div">
+              {!featureAddState.linker.name ? (
+                <>
+                  <Form.Control
+                    type="text"
+                    name="linker_name"
+                    value={featureAddState.linker.name}
+                    disabled={true}
+                    placeholder="No linker selected"
+                    isInvalid={linkerValidated && Object.keys(featureAddState.linker).length === 0}
+                  />
+                  <Feedback message="Please select a linker from below"></Feedback>
+                </>
+              ) : (
+                <label>{featureAddState.linker.name ? featureAddState.linker.name : "-"}</label>
+              )}
+            </Col>
+          </Form.Group>
+
+          {featureAddState.linker.iupacName && (
+            <Form.Group as={Row} controlId="iupacname">
+              <FormLabel label="IUPAC Name" />
+              <Col md={4} className="sequence-label-div">
+                <label>{featureAddState.linker.iupacName ? featureAddState.linker.iupacName : "-"}</label>
+              </Col>
+            </Form.Group>
+          )}
+
+          {featureAddState.linker && featureAddState.linker.type !== "SMALLMOLECULE" ? (
+            featureAddState.linker.imageURL && (
+              <Form.Group as={Row} controlId="name">
+                <Col md={{ span: 3, offset: 2 }}>
+                  <FormLabel label={""} />
+                </Col>
+                <Col md={4}>
+                  <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
+                </Col>
+              </Form.Group>
+            )
+          ) : (
+            <Form.Group as={Row} controlId="comment">
+              <FormLabel label="Comment" />
+              <Col md={4} className="sequence-label-div">
+                <label>{featureAddState.linker.description ? featureAddState.linker.description : "-"}</label>
+              </Col>
+            </Form.Group>
+          )}
+        </Form>
       </>
     );
   };
@@ -1107,45 +1192,7 @@ const AddFeature = props => {
   const getCase2 = () => {
     return (
       <>
-        {featureAddState.type === "LINKED_GLYCAN" && (
-          <>
-            <Form className="radioform1">
-              <Form.Group as={Row} controlId="name">
-                <FormLabel label="Selected Linker" />
-                <Col md={4} className="sequence-label-div">
-                  <label>{featureAddState.linker.name ? featureAddState.linker.name : "-"}</label>
-                </Col>
-              </Form.Group>
-              {featureAddState.linker.imageURL && (
-                <Form.Group as={Row} controlId="name">
-                  <Col md={{ span: 3, offset: 2 }}>
-                    <FormLabel label={""} />
-                  </Col>
-
-                  <Col md={4}>
-                    <StructureImage imgUrl={featureAddState.linker.imageURL} />
-                  </Col>
-                </Form.Group>
-              )}
-              <Form.Group as={Row} controlId="sequence">
-                <FormLabel label={featureAddState.linker.type === "SMALLMOLECULE_LINKER" ? "InChI" : "AA sequence"} />
-                <Col md={4} className="sequence-label-div">
-                  <label className="sequence-textarea">
-                    {featureAddState.linker.type === "SMALLMOLECULE_LINKER"
-                      ? featureAddState.linker && featureAddState.linker.inChiSequence
-                        ? featureAddState.linker.inChiSequence
-                        : "No sequence"
-                      : featureAddState.linker &&
-                        featureAddState.linker.sequence &&
-                        formatSequenceForDisplay(featureAddState.linker.sequence, 60)}
-                  </label>
-                </Col>
-              </Form.Group>
-
-              {/* {featureAddState.glycans && <AddGlycanInfoToFeature glycans={featureAddState.glycans} />} */}
-            </Form>
-          </>
-        )}
+        {featureAddState.type === "LINKED_GLYCAN" && <>{getSelectedLinkerInformation()}</>}
 
         <Form className="form-container">
           {featureAddState.type !== "LINKED_GLYCAN" && (
@@ -1214,17 +1261,24 @@ const AddFeature = props => {
             setFeatureAddState={setFeatureAddState}
             currentGlycanSelection={currentGlycanSelection}
             setCurrentGlycanSelection={setCurrentGlycanSelection}
+            displaySelectedGlycanInfoInFeature={displaySelectedGlycanInfoInFeature}
           />
         ) : (
           <>
+            <div style={{ textAlign: "center" }}>
+              <h3>{"List of glycans"}</h3>
+              <p>
+                {"Add one or more glycans to the linker by clicking ‘Pick Glycan’ and provding the glycan details."}
+              </p>
+            </div>
             <div>
               {((featureAddState.type === "GLYCO_LIPID" && featureAddState.glycans.length < 1) ||
                 featureAddState.type === "LINKED_GLYCAN") && (
-                <input type="button" onClick={() => setShowGlycanPicker(true)} value={"Pick Glycans"} />
+                <input type="button" onClick={() => setShowGlycanPicker(true)} value={"Pick Glycan"} />
               )}
             </div>
             &nbsp;&nbsp;
-            {featureAddState.glycans.length > 0 && getSelectedGlycanList()}
+            {getSelectedGlycanList()}
           </>
         )}
       </>
@@ -1297,7 +1351,15 @@ const AddFeature = props => {
             },
             {
               Header: "Source",
-              accessor: "source.type"
+              accessor: "source.type",
+              Cell: row => {
+                debugger;
+                return row.original.source.type === "NOTRECORDED"
+                  ? "Not Recorded"
+                  : row.original.source.type === "COMMERCIAL"
+                  ? "Commercial"
+                  : "Non Commercial";
+              }
             },
             {
               Header: "Reducing end state",
@@ -1331,7 +1393,7 @@ const AddFeature = props => {
               : [])
           ]}
           data={featureAddState.glycans}
-          defaultPageSize={featureAddState.glycans.length}
+          defaultPageSize={5}
           showDeleteButton
           deleteOnClick={handleDeletedSelectedGlycan}
           showPagination={false}
@@ -1349,14 +1411,14 @@ const AddFeature = props => {
           <Form.Group as={Row} controlId="name">
             <FormLabel label="Name" />
             <Col md={6}>
-              <Form.Control as="input" value={featureAddState.name} disabled />
+              <Form.Control as="input" value={featureMetaData.name} disabled />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="featureId">
             <FormLabel label="Feature Id" />
             <Col md={6}>
-              <Form.Control as="input" value={featureAddState.featureId} disabled />
+              <Form.Control as="input" value={featureMetaData.featureId} disabled />
             </Col>
           </Form.Group>
 
@@ -1465,7 +1527,6 @@ const AddFeature = props => {
 
       <div className="page-container">
         <Title title="Add Feature to Repository" />
-
         <Stepper activeStep={activeStep}>
           {getSteps(featureAddState.type).map((label, index) => {
             const stepProps = {};
@@ -1483,64 +1544,46 @@ const AddFeature = props => {
             );
           })}
         </Stepper>
-
-        <div>
-          {(featureAddState.type === "GLYCO_LIPID" ||
-          featureAddState.type === "GLYCO_PEPTIDE" ||
-          featureAddState.type === "GLYCO_PROTEIN"
-            ? activeStep !== 4
-            : activeStep !== 3) && (
-            <div className="button-div text-center">
-              <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                onClick={
-                  featureAddState.type === "GLYCO_LIPID" ||
-                  featureAddState.type === "GLYCO_PEPTIDE" ||
-                  featureAddState.type === "GLYCO_PROTEIN"
-                    ? handleNextGlycoLipid
-                    : handleNextLinker
-                }
-                className="stepper-button"
-              >
-                {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
-              </Button>
-            </div>
-          )}
-          &nbsp;&nbsp;
-          <ErrorSummary show={showErrorSummary} form="feature" errorJson={pageErrorsJson} errorMessage={errorMessage} />
-          <Typography component={"span"} variant={"body2"}>
-            {/* {featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "GLYCO_PEPTIDE"
-              ? getStepContentForGlycoLipid(activeStep)
-              : getStepContentForLinkedGlycan(activeStep)} */}
-            {getStepContent(featureAddState.type, activeStep)}
-          </Typography>
-          {(featureAddState.type === "GLYCO_LIPID" ||
-          featureAddState.type === "GLYCO_PEPTIDE" ||
-          featureAddState.type === "GLYCO_PROTEIN"
-            ? activeStep !== 4
-            : activeStep !== 3) && (
-            <div className="button-div text-center">
-              <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                onClick={
-                  featureAddState.type === "GLYCO_LIPID" ||
-                  featureAddState.type === "GLYCO_PEPTIDE" ||
-                  featureAddState.type === "GLYCO_PROTEIN"
-                    ? handleNextGlycoLipid
-                    : handleNextLinker
-                }
-                className="stepper-button"
-              >
-                {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
-              </Button>
-            </div>
-          )}
+        <div className="button-div text-center">
+          <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            onClick={
+              featureAddState.type === "GLYCO_LIPID" ||
+              featureAddState.type === "GLYCO_PEPTIDE" ||
+              featureAddState.type === "GLYCO_PROTEIN"
+                ? handleNextGlycoLipid
+                : handleNextLinker
+            }
+            className="stepper-button"
+          >
+            {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
+          </Button>
+        </div>
+        &nbsp;&nbsp;
+        <ErrorSummary show={showErrorSummary} form="feature" errorJson={pageErrorsJson} errorMessage={errorMessage} />
+        <Typography component={"span"} variant={"body2"}>
+          {getStepContent(featureAddState.type, activeStep)}
+        </Typography>
+        <div className="button-div text-center">
+          <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            onClick={
+              featureAddState.type === "GLYCO_LIPID" ||
+              featureAddState.type === "GLYCO_PEPTIDE" ||
+              featureAddState.type === "GLYCO_PROTEIN"
+                ? handleNextGlycoLipid
+                : handleNextLinker
+            }
+            className="stepper-button"
+          >
+            {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
+          </Button>
         </div>
       </div>
 

@@ -44,7 +44,11 @@
   },
   "feature": {
     "FEATURE": "Feature",
-    "NORMAL": "Normal",
+    "LINKEDGLYCAN": "Linked Glycan",
+    "GLYCOLIPID": "GlycoLipid",
+    "GLYCOPEPTIDE": "GlycoPeptide",
+    "GLYCOPROTEIN": "GlycoProtein",
+    "GPLINKEDGLYCOPEPTIDE,": "GlycoProtein linked GlycoPeptide",
     "CONTROL": "Control",
     "NEGATIVE_CONTROL": "Negative Control",
     "COMPOUND": "Organic Compound",
