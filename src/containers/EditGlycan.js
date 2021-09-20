@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { Row, Col, Form } from "react-bootstrap";
 import Helmet from "react-helmet";
 import { FormLabel, Feedback, FormButton, Title, LinkButton } from "../components/FormControls";
-import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import { useParams, useHistory } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -33,10 +32,7 @@ const EditGlycan = props => {
     name: "",
     internalId: "",
     description: "",
-    glytoucanId: "",
-    type: "",
-    mass: "",
-    cartoon: ""
+    type: ""
   });
 
   const handleChange = e => {
@@ -50,7 +46,6 @@ const EditGlycan = props => {
     response.json().then(parsedJson => {
       setGlycanDetails(parsedJson);
       setShowLoading(false);
-      console.log(parsedJson);
     });
   }
 
@@ -58,6 +53,22 @@ const EditGlycan = props => {
     setValidated(false);
     setShowLoading(false);
     console.log(response);
+  }
+
+  function getGlycanTypeLabel(type) {
+    switch (type) {
+      case "SEQUENCE_DEFINED":
+        return "Sequence defined glycan";
+      case "UNKNOWN":
+        return "Unknown glycan";
+      case "MASS_ONLY":
+        return "Mass defined glycan";
+      case "OTHER":
+        return "Other glycan";
+
+      default:
+        return "Sequence defined glycan";
+    }
   }
 
   return (
@@ -132,31 +143,10 @@ const EditGlycan = props => {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="glycanToucanId">
-            <FormLabel label="Glytoucan Id" />
-            <Col md={4}>
-              <Form.Control type="text" plaintext readOnly value={glycanDetails.glytoucanId} />
-            </Col>
-          </Form.Group>
-
           <Form.Group as={Row} controlId="glycanType">
             <FormLabel label="Type" />
             <Col md={4}>
-              <Form.Control type="text" plaintext readOnly value={glycanDetails.type} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="mass">
-            <FormLabel label="Mass" />
-            <Col md={4}>
-              <Form.Control type="text" plaintext readOnly value={glycanDetails.mass} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="mass">
-            <FormLabel label="Structure Image" />
-            <Col md={4} style={{ alignContent: "left" }}>
-              <StructureImage base64={glycanDetails.cartoon}></StructureImage>
+              <Form.Control type="text" plaintext readOnly value={getGlycanTypeLabel(glycanDetails.type)} />
             </Col>
           </Form.Group>
 

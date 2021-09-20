@@ -5,7 +5,7 @@ import "react-table/react-table.css";
 import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import "./GlygenTable.css";
-import { OverlayTrigger, Popover, Form, Col, Row, FormCheck } from "react-bootstrap";
+import { OverlayTrigger, Popover, Form, Col, Row } from "react-bootstrap";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { GlygenTableRowsInfo } from "./GlygenTableRowsInfo";
 import { ErrorSummary } from "./ErrorSummary";
@@ -86,9 +86,16 @@ const GlygenTable = props => {
             overlay={
               <Popover>
                 <Popover.Title as="h3">
-                  Comments for {props.commentsRefColumn}: {row.original[props.commentsRefColumn]}
+                  Comments for{" "}
+                  {props.customCommentColumn
+                    ? row.original.name
+                      ? row.original.name
+                      : row.original.glytoucanId
+                      ? row.original.glytoucanId
+                      : row.original.internalId
+                    : ""}
                 </Popover.Title>
-                <Popover.Content>{row.value}</Popover.Content>
+                <Popover.Content className={"popover-body-custom"}>{row.value}</Popover.Content>
               </Popover>
             }
           >
@@ -521,7 +528,8 @@ GlygenTable.propTypes = {
   onlyMyLinkersGlycansCheckBoxLabel: PropTypes.string,
   isModal: PropTypes.bool,
   paramTypeValue: PropTypes.string,
-  deleteOnClick: PropTypes.func
+  deleteOnClick: PropTypes.func,
+  customCommentColumn: PropTypes.bool
 };
 
 GlygenTable.defaultProps = {

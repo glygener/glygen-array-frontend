@@ -55,6 +55,18 @@ const EditLinker = props => {
     });
   }
 
+  function getTypeLabel(type) {
+    switch (type) {
+      case "PEPTIDE":
+        return "Peptide";
+      case "UNKNOWN PEPTIDE":
+        return "Unknown peptide";
+
+      default:
+        return "Peptide";
+    }
+  }
+
   return (
     <>
       <Helmet>
@@ -103,15 +115,42 @@ const EditLinker = props => {
             </Col>
           </Form.Group>
 
+          {linkerDetails.sequence && (
+            <Form.Group as={Row} controlId="sequence">
+              <FormLabel label="Sequence" />
+              <Col md={4}>
+                <Form.Control type="text" plaintext readOnly value={linkerDetails.sequence} />
+              </Col>
+            </Form.Group>
+          )}
+
           <Form.Group as={Row} controlId="linkerType">
             <FormLabel label="Type" />
             <Col md={4}>
-              <Form.Control type="text" plaintext readOnly defaultValue={linkerDetails.type} />
+              <Form.Control
+                type="text"
+                plaintext
+                readOnly
+                defaultValue={
+                  linkerDetails.type.includes("peptide") ? getTypeLabel(linkerDetails.type) : linkerDetails.type
+                }
+              />
             </Col>
           </Form.Group>
 
           <FormButton className="line-break-1" type="submit" label="Submit" />
-          <LinkButton to="/linkers" label="Cancel" />
+
+          {linkerDetails.type && (
+            <>
+              {linkerDetails.type === "OTHER" && <LinkButton to="/othermolecules" label="Cancel" />}
+              {(linkerDetails.type === "LINKERS" || linkerDetails.type === "SMALLMOLECULE") && (
+                <LinkButton to="/linkers" label="Cancel" />
+              )}
+              {linkerDetails.type === "LIPID" && <LinkButton to="/lipids" label="Cancel" />}
+              {linkerDetails.type === "PROTEIN" && <LinkButton to="/proteins" label="Cancel" />}
+              {linkerDetails.type === "PEPTIDE" && <LinkButton to={"/peptides"} label="Cancel" />}
+            </>
+          )}
         </Form>
       </div>
     </>
@@ -127,7 +166,6 @@ const EditLinker = props => {
   }
 
   function updateLinkerSuccess() {
-    debugger;
     switch (linkerDetails.type) {
       case "OTHER":
         return history.push("/othermolecules");

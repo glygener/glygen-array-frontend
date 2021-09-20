@@ -10,6 +10,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import displayNames from "../appData/displayNames";
 import { useHistory } from "react-router-dom";
 import { isValidNumber } from "../utils/commonUtils";
+import { Loading } from "../components/Loading";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,11 +31,13 @@ const AddGlycan = props => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
+  const [validateName, setValidateName] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [registrationCheckFlag, setRegistrationCheckFlag] = useState(true);
   const [disableReset, setDisableReset] = useState(false);
   const [invalidMass, setInvalidMass] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const history = useHistory();
 
   const initialState = {
@@ -57,13 +60,14 @@ const AddGlycan = props => {
 
   const handleNext = e => {
     setValidate(false);
+    setValidateName(false);
 
     if (
       userSelection.selectedGlycan === "Unknown" &&
       (userSelection.name === " " || userSelection.name.trim().length < 1) &&
       activeStep === 1
     ) {
-      setValidate(true);
+      setValidateName(true);
       return;
     } else if (
       userSelection.selectedGlycan === "MassDefined" &&
@@ -75,11 +79,23 @@ const AddGlycan = props => {
       return;
     } else if (
       (userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other") &&
-      (userSelection.sequence === " " || userSelection.sequence.trim().length < 1) &&
       activeStep === 1
     ) {
-      setValidate(true);
-      return;
+      if (userSelection.sequence === "" || userSelection.sequence.trim().length < 1) {
+        setValidate(true);
+      }
+
+      if (userSelection.name === "") {
+        setValidateName(true);
+      }
+
+      if (
+        userSelection.sequence === "" ||
+        userSelection.sequence.trim().length < 1 ||
+        (userSelection.name === "" && userSelection.selectedGlycan !== "SequenceDefined")
+      ) {
+        return;
+      }
     }
 
     if (e.currentTarget.innerText === "FINISH") {
@@ -110,10 +126,11 @@ const AddGlycan = props => {
 
     const name = e.target.name;
     const newValue = e.target.value;
-    if (name === "name" && newValue.trim().length < 1 && userSelection.selectedGlycan === "Unknown") {
-      setValidate(true);
-    } else {
-      setValidate(false);
+
+    if (name === "name" && newValue.trim().length < 1 && userSelection.selectedGlycan !== "SequenceDefined") {
+      setValidateName(true);
+    } else if (userSelection.selectedGlycan !== "SequenceDefined") {
+      setValidateName(false);
     }
 
     if (name === "glytoucanRegistration") {
@@ -123,6 +140,10 @@ const AddGlycan = props => {
     } else {
       if (name === "mass" && (newValue === "" || newValue > 0)) {
         setInvalidMass(false);
+      }
+
+      if (name === "sequence" && newValue.trim().length > 1) {
+        setValidate(false);
       }
       setUserSelection({ [name]: newValue });
     }
@@ -152,7 +173,7 @@ const AddGlycan = props => {
               value={userSelection.name}
               onChange={handleChange}
               required={true}
-              isInvalid={validate}
+              isInvalid={validateName}
               maxLength={50}
             />
             <Feedback message="Please Enter Glycan Name." />
@@ -310,7 +331,11 @@ const AddGlycan = props => {
                 <Form.Group as={Row} controlId="name">
                   <FormLabel
                     label="Name"
-                    className={userSelection.selectedGlycan === "Unknown" ? "required-asterik" : ""}
+                    className={
+                      userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
+                        ? "required-asterik"
+                        : ""
+                    }
                   />
                   <Col md={4}>
                     <Form.Control
@@ -319,7 +344,12 @@ const AddGlycan = props => {
                       placeholder="Name"
                       value={userSelection.name}
                       onChange={handleChange}
-                      required={userSelection.selectedGlycan === "Unknown"}
+                      isInvalid={
+                        userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
+                          ? validateName
+                          : ""
+                      }
+                      required={userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"}
                       maxLength={50}
                     />
                     <Feedback message="Name is required." />
@@ -331,16 +361,17 @@ const AddGlycan = props => {
                   controlId="glytoucanId"
                   className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
                 >
-                  <FormLabel label="Glytoucan Id" />
+                  <FormLabel label="GlyTouCan ID" />
                   <Col md={4}>
                     <Form.Control
                       type="text"
                       name="glytoucanId"
-                      placeholder="Glytoucan Id"
+                      placeholder="GlyTouCan ID"
                       value={userSelection.glytoucanId}
                       onChange={handleChange}
                       onFocus={() => setShowErrorSummary(false)}
                       minLength={8}
+                      maxLength={10}
                     />
                   </Col>
                   {userSelection.glytoucanId !== "" && userSelection.glytoucanId.length > 7 && (
@@ -374,8 +405,13 @@ const AddGlycan = props => {
                       onChange={handleChange}
                       required={true}
                       isInvalid={validate}
+                      maxLength={5000}
                     />
                     <Feedback message="Please Enter Valid Sequence" />
+                    <span className="character-counter" style={{ marginLeft: "80%" }}>
+                      {userSelection.sequence && userSelection.sequence.length > 0 ? userSelection.sequence.length : ""}
+                      /5000
+                    </span>
                   </Col>
                 </Form.Group>
 
@@ -560,7 +596,11 @@ const AddGlycan = props => {
               <Form.Group
                 as={Row}
                 controlId="sequence"
-                className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                className={
+                  userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
+                    ? ""
+                    : "hide-content"
+                }
               >
                 <FormLabel label={displayNames.glycan.SEQUENCE} />
                 <Col>
@@ -593,6 +633,8 @@ const AddGlycan = props => {
                 </Col>
               </Form.Group>
             </Form>
+
+            <Loading show={showLoading}></Loading>
           </>
         );
 
@@ -640,11 +682,14 @@ const AddGlycan = props => {
   }
 
   function addGlycan(e) {
+    setShowLoading(true);
     var glycanType = "SEQUENCE_DEFINED";
     if (userSelection.selectedGlycan === "MassDefined") {
       glycanType = "MASS_ONLY";
     } else if (userSelection.selectedGlycan === "Unknown") {
       glycanType = "UNKNOWN";
+    } else if (userSelection.selectedGlycan === "Other") {
+      glycanType = "OTHER";
     }
 
     wsCall(
@@ -671,6 +716,7 @@ const AddGlycan = props => {
   }
 
   function addGlycanSuccess() {
+    setShowLoading(false);
     history.push("/glycans");
   }
 
@@ -679,6 +725,7 @@ const AddGlycan = props => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
     });
+    setShowLoading(false);
   }
 
   function getNavigationButtons(className) {

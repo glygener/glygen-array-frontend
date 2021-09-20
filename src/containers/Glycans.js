@@ -45,6 +45,13 @@ const Glycans = props => {
         <GlygenTable
           columns={[
             {
+              Header: "Id",
+              accessor: "id",
+              style: {
+                textAlign: "left"
+              }
+            },
+            {
               Header: "Internal Id",
               accessor: "internalId",
               style: {
@@ -77,6 +84,7 @@ const Glycans = props => {
           defaultPageSize={10}
           defaultSortColumn="id"
           showCommentsButton
+          customCommentColumn
           showDeleteButton
           showSearchBox
           showEditButton
