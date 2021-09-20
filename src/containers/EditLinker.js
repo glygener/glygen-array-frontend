@@ -21,7 +21,9 @@ const EditLinker = props => {
 
   const [linkerDetails, setLinkerDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
     name: "",
+    comment: "",
     description: "",
+    sequence: "",
     type: ""
   });
 
@@ -108,21 +110,12 @@ const EditLinker = props => {
               <Form.Control
                 as="textarea"
                 placeholder="comment"
-                name="description"
-                value={linkerDetails.description}
+                name="comment"
+                value={linkerDetails.description || linkerDetails.comment}
                 onChange={handleChange}
               />
             </Col>
           </Form.Group>
-
-          {linkerDetails.sequence && (
-            <Form.Group as={Row} controlId="sequence">
-              <FormLabel label="Sequence" />
-              <Col md={4}>
-                <Form.Control type="text" plaintext readOnly value={linkerDetails.sequence} />
-              </Col>
-            </Form.Group>
-          )}
 
           <Form.Group as={Row} controlId="linkerType">
             <FormLabel label="Type" />
@@ -137,6 +130,21 @@ const EditLinker = props => {
               />
             </Col>
           </Form.Group>
+
+          {(linkerDetails.sequence || linkerDetails.inChiSequence) && (
+            <Form.Group as={Row} controlId="sequence">
+              <FormLabel label={linkerDetails.sequence ? "Sequence" : "InchI"} />
+              <Col md={4}>
+                <Form.Control
+                  rows={4}
+                  as="textarea"
+                  plaintext
+                  readOnly
+                  value={linkerDetails.sequence ? linkerDetails.sequence : linkerDetails.inChiSequence}
+                />
+              </Col>
+            </Form.Group>
+          )}
 
           <FormButton className="line-break-1" type="submit" label="Submit" />
 

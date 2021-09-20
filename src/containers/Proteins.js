@@ -48,6 +48,7 @@ const Proteins = props => {
           showCommentsButton
           showSearchBox
           commentsRefColumn="description"
+          customCommentColumn
           deleteWS="linkerdelete"
           editUrl="proteins/editlinker"
           keyColumn="id"

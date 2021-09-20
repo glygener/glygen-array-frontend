@@ -585,15 +585,7 @@ const AddPeptide = props => {
       source.comment = peptide.nonCommercial.sourceComment;
     }
 
-    var peptideObj = {
-      type: "PEPTIDE",
-      name: peptide.name,
-      comment: peptide.comment,
-      publications: peptide.publications,
-      urls: peptide.urls,
-      sequence: peptide.sequence,
-      source: source
-    };
+    var peptideObj = peptide.selectedPeptide === "Unknown" ? getUnknownSubmitData() : getPeptideSubmitData();
 
     wsCall("addlinker", "POST", null, true, peptideObj, response => history.push("/peptides"), addPeptideFailure);
 
@@ -603,6 +595,34 @@ const AddPeptide = props => {
         setShowErrorSummary(true);
         setShowLoading(false);
       });
+    }
+
+    function getPeptideSubmitData() {
+      var peptideseq = {
+        type: "PEPTIDE",
+        name: peptide.name,
+        comment: peptide.comment,
+        publications: peptide.publications,
+        urls: peptide.urls,
+        sequence: peptide.sequence,
+        source: source
+      };
+
+      return peptideseq;
+    }
+
+    function getUnknownSubmitData() {
+      var unknownpep = {
+        type: "PEPTIDE",
+        name: peptide.name,
+        comment: peptide.comment,
+        publications: peptide.publications,
+        urls: peptide.urls,
+        sequence: "",
+        source: source
+      };
+
+      return unknownpep;
     }
   }
 

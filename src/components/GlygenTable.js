@@ -71,7 +71,7 @@ const GlygenTable = props => {
   if (props.showCommentsButton) {
     columnsToRender["commentsColumn"] = {
       Header: "Comments",
-      accessor: "description",
+      accessor: props.commentsRefColumn,
       style: {
         textAlign: "center"
       },

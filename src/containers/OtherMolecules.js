@@ -40,10 +40,11 @@ const OtherMolecules = props => {
           defaultPageSize={10}
           defaultSortColumn="id"
           showCommentsButton
+          customCommentColumn
           showDeleteButton
           showSearchBox
           showEditButton
-          commentsRefColumn="description"
+          commentsRefColumn="comment"
           fetchWS="listmoleculesbytype"
           paramTypeValue={"OTHER"}
           deleteWS="linkerdelete"

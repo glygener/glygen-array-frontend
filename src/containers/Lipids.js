@@ -66,8 +66,9 @@ const Lipids = props => {
           showCommentsButton
           showSearchBox
           commentsRefColumn="description"
+          customCommentColumn
           deleteWS="linkerdelete"
-          editUrl="linkers/editlinker"
+          editUrl="lipids/editlinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Lipids"

@@ -376,6 +376,7 @@ const AddOtherMolecule = props => {
         type: "OTHER",
         name: otherMolecule.name,
         comment: otherMolecule.comment,
+        description: otherMolecule.comment,
         publications: otherMolecule.publications,
         urls: otherMolecule.urls,
         source: source

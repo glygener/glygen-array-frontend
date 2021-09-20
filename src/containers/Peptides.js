@@ -48,6 +48,7 @@ const Peptides = props => {
           defaultPageSize={10}
           defaultSortColumn="id"
           showCommentsButton
+          customCommentColumn
           showSearchBox
           commentsRefColumn="description"
           deleteWS="linkerdelete"

@@ -76,6 +76,7 @@ const Linkers = props => {
           showCommentsButton
           showSearchBox
           commentsRefColumn="description"
+          customCommentColumn
           deleteWS="linkerdelete"
           editUrl="linkers/editlinker"
           keyColumn="id"

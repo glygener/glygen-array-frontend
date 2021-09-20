@@ -7,13 +7,13 @@
   text-align: left;
 }
 
-/* .MuiListItem-button:hover,
+.MuiListItem-button:hover,
 .active {
   background-color: var(--gg-blue) !important;
   color: #e6e6e6 !important;
 }
-*/
+
 .MuiTypography-body1 {
   font-size: 1.1em !important;
   font-weight: bold !important;
-} 
+}
