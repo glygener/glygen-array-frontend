@@ -1353,7 +1353,6 @@ const AddFeature = props => {
               Header: "Source",
               accessor: "source.type",
               Cell: row => {
-                debugger;
                 return row.original.source.type === "NOTRECORDED"
                   ? "Not Recorded"
                   : row.original.source.type === "COMMERCIAL"

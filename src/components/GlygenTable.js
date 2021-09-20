@@ -125,6 +125,19 @@ const GlygenTable = props => {
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
         <>
+          {props.showViewIcon && !row.original.isPublic && (
+            <>
+              <FontAwesomeIcon
+                key={"view" + index}
+                icon={["far", "eye"]}
+                size="xs"
+                title="View"
+                className="table-btn  edit-icon"
+                onClick={() => history.push("/" + props.viewUrl + "/" + row.original[props.keyColumn])}
+              />
+            </>
+          )}
+
           {props.showEditButton && (
             <>
               <FontAwesomeIcon
@@ -137,7 +150,6 @@ const GlygenTable = props => {
               />
             </>
           )}
-
           {props.showDeleteButton && !row.original.isPublic ? (
             <>
               <FontAwesomeIcon
@@ -156,7 +168,6 @@ const GlygenTable = props => {
           ) : (
             ""
           )}
-
           {props.showCopyButton && (
             <>
               <FontAwesomeIcon
@@ -171,7 +182,6 @@ const GlygenTable = props => {
               />
             </>
           )}
-
           {props.showMirageCompliance && (
             <img
               className="table-btn image-icon"
@@ -192,7 +202,6 @@ const GlygenTable = props => {
               }
             />
           )}
-
           {props.showMakePublic && !row.original.isPublic && (
             <>
               <FontAwesomeIcon
@@ -525,7 +534,9 @@ GlygenTable.propTypes = {
   isModal: PropTypes.bool,
   paramTypeValue: PropTypes.string,
   deleteOnClick: PropTypes.func,
-  customCommentColumn: PropTypes.bool
+  customCommentColumn: PropTypes.bool,
+  showViewIcon: PropTypes.bool,
+  viewUrl: PropTypes.string
 };
 
 GlygenTable.defaultProps = {

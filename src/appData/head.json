@@ -360,6 +360,15 @@
       }
     ]
   },
+  "viewFeature": {
+    "title": "Feature View",
+    "meta": [
+      {
+        "name": "description",
+        "content": ""
+      }
+    ]
+  },
   "addFeature": {
     "title": "Add Feature",
     "meta": [

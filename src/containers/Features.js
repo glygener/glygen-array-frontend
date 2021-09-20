@@ -5,13 +5,16 @@ import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
 import { Title } from "../components/FormControls";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);
+  const history = useHistory();
+
   return (
     <>
       <Helmet>
@@ -88,6 +91,8 @@ const Features = props => {
           showDeleteButton
           showEditButton
           showSearchBox
+          showViewIcon
+          viewUrl="features/viewFeature"
           commentsRefColumn="name"
           fetchWS="featurelist"
           deleteWS="featuredelete"
