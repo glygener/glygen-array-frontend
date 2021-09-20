@@ -135,7 +135,6 @@ const GlygenTable = props => {
                 className="table-btn edit-icon"
                 onClick={() => history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])}
               />
-              &nbsp;
             </>
           )}
 
@@ -153,7 +152,6 @@ const GlygenTable = props => {
                     : deletePrompt(row.original[props.keyColumn], props.queryParamDelete);
                 }}
               />
-              &nbsp;
             </>
           ) : (
             ""
@@ -171,7 +169,6 @@ const GlygenTable = props => {
                   history.push("/" + props.copyUrl + "/" + row.original[props.keyColumn] + "?" + props.copyPage)
                 }
               />
-              &nbsp;
             </>
           )}
 
@@ -206,7 +203,6 @@ const GlygenTable = props => {
                 className="table-btn"
                 onClick={() => makePublicPrompt(row.original[props.keyColumn])}
               />
-              &nbsp;
             </>
           )}
         </>

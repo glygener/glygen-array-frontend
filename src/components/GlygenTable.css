@@ -1,6 +1,7 @@
 .table-btn {
   width: 25px;
   height: 25px;
+  margin-right: 5px;
   /* cursor: pointer;
   font-size: large !important; */
 }
@@ -37,7 +38,7 @@
 }
 .ReactTable.-highlight .rt-tbody .rt-tr:not(.-padRow):hover {
   background-color: #e2e8ef !important;
-} 
+}
 .ReactTable {
   background-color: #fff !important;
 }
@@ -48,6 +49,7 @@
 .ReactTable .rt-tbody .rt-td {
   border-right: 1px solid #ced2d6 !important;
 }
-.ReactTable .rt-th, .ReactTable .rt-td {
+.ReactTable .rt-th,
+.ReactTable .rt-td {
   padding: 10px 15px;
 }
