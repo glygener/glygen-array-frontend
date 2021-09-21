@@ -12,7 +12,9 @@ import { Card } from "react-bootstrap";
 import { SearchTable } from "../components/search/SearchTable";
 import { StructureImage } from "../components/StructureImage";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
-import { PublicListDataset } from "./PublicListDataset";
+// import { PublicListDataset } from "./PublicListDataset";
+import { DatasetTable } from "../components/DatasetTable";
+import { DatasetTableReusable } from "../components/DatasetTableReusable";
 
 const DatasetDetailList = () => {
   const { searchId } = useParams();
@@ -90,7 +92,9 @@ const DatasetDetailList = () => {
           margin: "2%",
         }}
       >
-        <PublicListDataset />
+        {/* <DatasetTableReusable wsName="listdatasetsforsearch" qsParams={{ seachId: searchId }} /> */}
+        <DatasetTable searchId={searchId} />
+        {/* <PublicListDataset /> */}
       </Card>
     </>
   );
