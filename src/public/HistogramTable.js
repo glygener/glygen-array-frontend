@@ -54,7 +54,6 @@ const HistogramTable = props => {
               Header: () => <div className={"table-header"}>{"GlycanId / GlytoucanId"}</div>,
               accessor: "feature.glycans[0].glycan.id",
               Cell: (row, index) => {
-                debugger;
                 return (
                   <div key={index}>
                     {row.original.feature.glycans[0].glycan.glytoucanId
