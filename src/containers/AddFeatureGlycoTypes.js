@@ -52,7 +52,7 @@ const AddFeatureGlycoTypes = props => {
       case 0:
         return (
           <>
-            <Form.Group as={Row} controlId="position" style={{ marginTop: "5%", marginBottom: "5%" }}>
+            {/* <Form.Group as={Row} controlId="position" style={{ marginTop: "5%", marginBottom: "5%" }}>
               <FormLabel label="Position" />
               <Col md={4}>
                 <Form.Control
@@ -63,7 +63,7 @@ const AddFeatureGlycoTypes = props => {
                   onChange={e => setGlycoFeatureTypes({ position: e.target.value })}
                 />
               </Col>
-            </Form.Group>
+            </Form.Group> */}
             {props.getGlycanTabletoSelect(true)}
           </>
         );
@@ -76,7 +76,15 @@ const AddFeatureGlycoTypes = props => {
           <>
             <Form.Group as={Row} controlId="Range">
               <FormLabel label={"Range"} className="required-asterik" />
-              <Col></Col>
+              <Col md={4}>
+                <Form.Control
+                  type="text"
+                  name="range"
+                  placeholder="Enter Range"
+                  value={glycoFeatureTypes.range}
+                  onChange={e => setGlycoFeatureTypes({ range: e.target.value })}
+                />
+              </Col>
             </Form.Group>
           </>
         );
@@ -94,23 +102,30 @@ const AddFeatureGlycoTypes = props => {
       {!showSelectionModal && (
         <>
           <Form className="form-container">
-            <Button
+            {/* <Button
               onClick={() => setShowSelectionModal(true)}
               className="link-button"
               style={{ width: "150px", marginBottom: "20px", backgroundColor: "rgb(75, 133, 182)" }}
             >
-              Add Row
-            </Button>
+              Pick Glycans
+            </Button> */}
+
+            <input
+              type="button"
+              onClick={() => setShowSelectionModal(true)}
+              value={"Pick Glycan"}
+              style={{ marginBottom: "20px" }}
+            />
 
             <ReactTable
               columns={[
-                {
-                  Header: "Position",
-                  Cell: (row, index) => {
-                    return row.original.position ? row.original.position : 0;
-                  },
-                  minWidth: 150
-                },
+                // {
+                //   Header: "Position",
+                //   Cell: (row, index) => {
+                //     return row.original.position ? row.original.position : 0;
+                //   },
+                //   minWidth: 150
+                // },
                 {
                   Header: "Glycan",
                   Cell: (row, index) => {
@@ -135,7 +150,7 @@ const AddFeatureGlycoTypes = props => {
                 {
                   Header: "Action",
                   Cell: (row, index) => {
-                    return (
+                    return row.original.glycan ? (
                       <>
                         <FontAwesomeIcon
                           key={"delete" + index}
@@ -144,10 +159,11 @@ const AddFeatureGlycoTypes = props => {
                           title="Delete"
                           className="caution-color table-btn"
                           onClick={() => props.deleteRow(index)}
-                          // onClick={() => deletePrompt(row.original[props.keyColumn])}
                         />
                         &nbsp;
                       </>
+                    ) : (
+                      ""
                     );
                   }
                 }

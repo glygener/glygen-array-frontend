@@ -11,6 +11,7 @@ import displayNames from "../appData/displayNames";
 import { useHistory } from "react-router-dom";
 import { isValidNumber } from "../utils/commonUtils";
 import { Loading } from "../components/Loading";
+import { scrollToTop } from "../components/ScrollToTop";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -129,7 +130,7 @@ const AddGlycan = props => {
 
     if (name === "name" && newValue.trim().length < 1 && userSelection.selectedGlycan !== "SequenceDefined") {
       setValidateName(true);
-    } else if (userSelection.selectedGlycan !== "SequenceDefined") {
+    } else if (userSelection.selectedGlycan !== "SequenceDefined" && name === "name") {
       setValidateName(false);
     }
 
@@ -144,6 +145,7 @@ const AddGlycan = props => {
 
       if (name === "sequence" && newValue.trim().length > 1) {
         setValidate(false);
+        setShowErrorSummary(false);
       }
       setUserSelection({ [name]: newValue });
     }
@@ -240,7 +242,10 @@ const AddGlycan = props => {
         <div>
           <div>
             <Typography className={classes.instructions} component={"span"} variant={"body2"}>
-              {getStepContent(activeStep, validate)}
+              <>
+                {getStepContent(activeStep, validate)}
+                <Loading show={showLoading}></Loading>
+              </>
             </Typography>
             {getNavigationButtons("button-div line-break-1 text-center")}
           </div>
@@ -633,8 +638,6 @@ const AddGlycan = props => {
                 </Col>
               </Form.Group>
             </Form>
-
-            <Loading show={showLoading}></Loading>
           </>
         );
 
@@ -644,6 +647,7 @@ const AddGlycan = props => {
   }
 
   function getSequenceFromGlytoucan() {
+    setShowLoading(true);
     const glytoucanId = userSelection.glytoucanId.trim();
     if (glytoucanId !== "" && glytoucanId !== null) {
       wsCall(
@@ -666,6 +670,7 @@ const AddGlycan = props => {
       setUserSelection({ glytoucanRegistration: false });
       setDisableReset(true);
     });
+    setShowLoading(false);
   }
 
   function checkGlytoucanFailure(response) {
@@ -675,6 +680,7 @@ const AddGlycan = props => {
       setRegistrationCheckFlag(true);
       getGlytoucanRegistration();
     });
+    setShowLoading(false);
   }
 
   function getGlytoucanRegistration() {
@@ -726,6 +732,7 @@ const AddGlycan = props => {
       setShowErrorSummary(true);
     });
     setShowLoading(false);
+    scrollToTop();
   }
 
   function getNavigationButtons(className) {

@@ -4,7 +4,7 @@ import { Button } from "@material-ui/core";
 // import { Button } from "react-bootstrap";
 import { BiArrowToTop } from "react-icons/bi";
 
-export default function ScrollToTop() {
+const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   // Show button when page is scorlled upto given distance
@@ -14,15 +14,6 @@ export default function ScrollToTop() {
     } else {
       setIsVisible(false);
     }
-  };
-
-  // Set the top cordinate to 0
-  // make scrolling smooth
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   };
 
   useEffect(() => {
@@ -41,4 +32,15 @@ export default function ScrollToTop() {
       )}
     </div>
   );
-}
+};
+
+// Set the top cordinate to 0
+// make scrolling smooth
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
+
+export { ScrollToTop, scrollToTop };

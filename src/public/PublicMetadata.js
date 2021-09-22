@@ -8,7 +8,7 @@ import MetadataKeyPairs from "./MetadataKeyPairs";
 import { AddBlockLayout } from "../containers/AddBlockLayout";
 import { Row, Col, Button, Spinner, Accordion, Card } from "react-bootstrap";
 import { ContextAwareToggle } from "../utils/commonUtils";
-import { scrollToTop } from "../utils/commonUtils";
+import { scrollToTopIcon } from "../utils/commonUtils";
 
 const PublicMetadata = props => {
   // const [openSlide, setOpenSlide] = useState("");
@@ -234,7 +234,7 @@ const PublicMetadata = props => {
           </Col>
 
           <Col md={1}>
-            <>{scrollToTop()}</>
+            <>{scrollToTopIcon()}</>
           </Col>
         </Row>
 

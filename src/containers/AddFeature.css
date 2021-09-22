@@ -22,3 +22,8 @@
 .selected-glycans-review {
   margin-left: 17%;
 }
+
+.metadata-descriptor-title {
+  text-indent: -10%;
+  font-weight: bold;
+}

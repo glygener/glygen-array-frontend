@@ -9,21 +9,20 @@ import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
 
 const FeatureView = props => {
-  useEffect(props.authCheckAgent, []);
-
   let { featureId } = useParams();
   const [validated, setValidated] = useState(false);
+
+  useEffect(() => props.authCheckAgent, []);
 
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
     }
     wsCall("getfeature", "GET", [featureId], true, null, getFeatureSuccess, getFeatureFailure);
-  }, [props]);
+  }, [featureId]);
 
   function getFeatureSuccess(response) {
     response.json().then(parsedJson => {
-      debugger;
       setFeatureDetails(parsedJson);
     });
   }
@@ -70,23 +69,23 @@ const FeatureView = props => {
     );
   };
 
-  function getType(type) {
-    switch (type) {
-      case "LINKEDGLYCAN":
-        return getFeatureTypeTable(featureDetails.linker, "LINKEDGLYCAN");
-      case "GLYCOLIPID":
-        return getFeatureTypeTable(featureDetails.lipid, "GLYCOLIPID");
-      case "GLYCOPEPTIDE":
-        return getFeatureTypeTable(featureDetails.linker, "GLYCOPEPTIDE");
-      case "GLYCOPROTEIN":
-        return getFeatureTypeTable(featureDetails.lipid, "GLYCOPROTEIN");
-      case "GPLINKEDGLYCOPEPTIDE":
-        return getFeatureTypeTable(featureDetails.lipid, "GPLINKEDGLYCOPEPTIDE");
+  // function getType(type) {
+  //   switch (type) {
+  //     case "LINKEDGLYCAN":
+  //       return getFeatureTypeTable(featureDetails.linker, "LINKEDGLYCAN");
+  //     case "GLYCOLIPID":
+  //       return getFeatureTypeTable(featureDetails.lipid, "GLYCOLIPID");
+  //     case "GLYCOPEPTIDE":
+  //       return getFeatureTypeTable(featureDetails.linker, "GLYCOPEPTIDE");
+  //     case "GLYCOPROTEIN":
+  //       return getFeatureTypeTable(featureDetails.lipid, "GLYCOPROTEIN");
+  //     case "GPLINKEDGLYCOPEPTIDE":
+  //       return getFeatureTypeTable(featureDetails.lipid, "GPLINKEDGLYCOPEPTIDE");
 
-      default:
-        return getFeatureTypeTable(featureDetails.linker, "LINKEDGLYCAN");
-    }
-  }
+  //     default:
+  //       return getFeatureTypeTable(featureDetails.linker, "LINKEDGLYCAN");
+  //   }
+  // }
 
   function getTypeTableLabel(type) {
     switch (type) {
@@ -142,7 +141,6 @@ const FeatureView = props => {
   };
 
   const getGlycanTable = () => {
-    debugger;
     return (
       <>
         <h3>Glycans</h3>
@@ -173,7 +171,6 @@ const FeatureView = props => {
               Header: "Source",
               accessor: "source.type",
               Cell: row => {
-                debugger;
                 return featureDetails.type === "LINKEDGLYCAN"
                   ? row.original.source.type === "NOTRECORDED"
                     ? "Not Recorded"
@@ -221,6 +218,265 @@ const FeatureView = props => {
     );
   };
 
+  const getLinker = () => {
+    if (props.linker) {
+      if ((props.type !== "LINKED_GLYCAN" && props.linkerSeletion !== "No") || props.type === "LINKED_GLYCAN") {
+        return displayDetails(props.linker, "case4", "Linker");
+      }
+    } else if (featureDetails.linker) {
+      return displayDetails(featureDetails.linker, "view", "Linker");
+    }
+  };
+
+  const getLipid = () => {
+    if (props.type === "GLYCO_LIPID" && props.lipid) {
+      return displayDetails(props.lipid, "case4", "Lipid");
+    } else if (featureDetails && featureDetails.type === "GLYCOLIPID") {
+      return displayDetails(featureDetails.lipid, "view", "Lipid");
+    }
+  };
+
+  const case4Metadata = () => {
+    return (
+      <>
+        {props.metadata.purity.purityNotSpecified === "specify" ? (
+          <>
+            <FormLabel label="Purity" className={"metadata-descriptor-title "} />
+            <Form.Group as={Row} controlId="value">
+              <FormLabel label="Value" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.purity.value} />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="method">
+              <FormLabel label="Method" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.purity.method} />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="comment">
+              <FormLabel label="Comment" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.purity.comment} />
+              </Col>
+            </Form.Group>
+          </>
+        ) : (
+          <Form.Group as={Row} controlId="value">
+            <FormLabel label="Purity" className={"metadata-descriptor-title "} />
+            <Col md={4}>
+              <Form.Control type="text" disabled value={"Not Recorded"} />
+            </Col>
+          </Form.Group>
+        )}
+
+        {props.metadata.source === "notSpecified" && (
+          <Form.Group as={Row} controlId="value">
+            <FormLabel label="Source" className={"metadata-descriptor-title "} />
+            <Col md={4}>
+              <Form.Control type="text" disabled value={"Not Recorded"} />
+            </Col>
+          </Form.Group>
+        )}
+
+        {props.metadata.source === "commercial" && (
+          <>
+            <FormLabel label="Source" className={"metadata-descriptor-title "} />
+            <Form.Group as={Row} controlId="vendor">
+              <FormLabel label="Vendor" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.commercial.vendor} />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="catalogueNumber">
+              <FormLabel label="Catalogue Number" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.commercial.catalogueNumber} />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="batchId">
+              <FormLabel label=" Batch Id" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.commercial.batchId} />
+              </Col>
+            </Form.Group>
+          </>
+        )}
+
+        {props.metadata.source === "nonCommercial" && (
+          <>
+            <FormLabel label="Source" className={"metadata-descriptor-title "} />
+            <Form.Group as={Row} controlId="providerLab">
+              <FormLabel label="Provider Lab" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.nonCommercial.providerLab} />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="method">
+              <FormLabel label="Method" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.nonCommercial.method} />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="batchId">
+              <FormLabel label="Batch Id" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.nonCommercial.batchId} />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} controlId="batchId">
+              <FormLabel label="Comment" />
+              <Col md={4}>
+                <Form.Control type="text" disabled value={props.metadata.nonCommercial.sourceComment} />
+              </Col>
+            </Form.Group>
+          </>
+        )}
+      </>
+    );
+  };
+
+  const displayDetails = (linker, page, label) => {
+    return (
+      <>
+        <FormLabel label={label} className={"metadata-descriptor-title"} />
+
+        <Form.Group as={Row} controlId="name">
+          <FormLabel label="Name" />
+          <Col md={4}>
+            <Form.Control type="text" disabled={page === "case4"} plaintext={page === "view"} value={linker.name} />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="type">
+          <FormLabel label="Type" />
+          <Col md={4}>
+            <Form.Control type="text" disabled={page === "case4"} plaintext={page === "view"} value={linker.type} />
+          </Col>
+        </Form.Group>
+
+        {linker.sequence && (
+          <Form.Group as={Row} controlId="sequence">
+            <FormLabel label="Sequence" />
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                disabled={page === "case4"}
+                plaintext={page === "view"}
+                value={linker.sequence}
+              />
+            </Col>
+          </Form.Group>
+        )}
+      </>
+    );
+  };
+
+  const getMetadataNameandId = page => {
+    return (
+      <>
+        <Form.Group as={Row} controlId="name">
+          <FormLabel label="Name" />
+          <Col md={4}>
+            <Form.Control
+              type="text"
+              disabled={page === "case4"}
+              plaintext={page === "view"}
+              value={props.metadata ? props.metadata.name : featureDetails.name}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="Type">
+          <FormLabel label="Type" />
+          <Col md={4}>
+            <Form.Control
+              type="text"
+              disabled={page === "case4"}
+              plaintext={page === "view"}
+              value={props.type ? props.type : featureDetails.type}
+            />
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
+
+  const getSelectedGlycanList = () => {
+    return (
+      <>
+        <div className={"form-container"}>
+          <GlygenTable
+            columns={[
+              {
+                Header: "Name",
+                accessor: "name"
+              },
+              {
+                Header: "Structure Image",
+                accessor: "cartoon",
+                Cell: row => <StructureImage base64={row.value} />,
+                minWidth: 300
+              },
+              {
+                Header: "Source",
+                accessor: "source.type",
+                Cell: row => {
+                  return row.original.source.type === "NOTRECORDED"
+                    ? "Not Recorded"
+                    : row.original.source.type === "COMMERCIAL"
+                    ? "Commercial"
+                    : "Non Commercial";
+                }
+              },
+              {
+                Header: "Reducing end state",
+                accessor: "opensRing",
+                Cell: row => {
+                  return getReducingEndState(row.value);
+                }
+              },
+              ...(props.type === "GLYCO_LIPID"
+                ? [
+                    {
+                      Header: "Linker",
+                      accessor: "linker",
+                      Cell: (row, index) => {
+                        return row.original.linker ? row.original.linker.name : "";
+                      },
+                      minWidth: 150
+                    }
+                  ]
+                : [])
+            ]}
+            data={props.glycans}
+            defaultPageSize={5}
+            showPagination={false}
+            showRowsInfo={false}
+            infoRowsText="Selected Glycans"
+          />
+        </div>
+      </>
+    );
+  };
+
+  function getReducingEndState(opensRing) {
+    switch (opensRing) {
+      case 0:
+        return "Equilibrium";
+      case 1:
+        return "Unknown";
+      case 2:
+        return "Open Ring";
+      case 3:
+        return "Beta";
+      case 4:
+        return "Alpha";
+      default:
+        return "Unknown";
+    }
+  }
+
   const getFeatureDetails = () => {
     return (
       <>
@@ -229,42 +485,20 @@ const FeatureView = props => {
           {getMeta(head.viewFeature)}
         </Helmet>
 
-        <div className="page-container">
-          <Title title="Feature View" />
-          <Form.Group as={Row} controlId="internalId">
-            <FormLabel label="Internal ID" />
-            <Col md={4}>
-              <Form.Control type="text" plaintext readOnly value={featureDetails.internalId} />
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Name" />
-            <Col md={4}>
-              <Form.Control type="text" plaintext readOnly value={featureDetails.name} />
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} controlId="Type">
-            <FormLabel label="Type" />
-            <Col md={4}>
-              <Form.Control type="text" plaintext readOnly value={featureDetails.type} />
-            </Col>
-          </Form.Group>
+        <div className={featureId ? "page-container" : ""}>
+          <Title title={featureId ? "Feature View" : ""} />
 
-          {getType("LINKEDGLYCAN")}
-          <br />
-          {featureDetails.type !== "LINKEDGLYCAN" && getType(featureDetails.type)}
-          <br />
-          <br />
-          {featureDetails.metadata && featureDetails.metadata.descriptorGroups && (
-            <div>
-              <h3>Metadata</h3>
-              <br />
-              {getMetadataTable()}
-            </div>
-          )}
-          <br />
+          {getMetadataNameandId(props.metadata ? "case4" : "view")}
 
-          {featureDetails.glycans.length > 0 && getGlycanTable()}
+          {getLinker()}
+
+          {getLipid()}
+
+          {props.metadata
+            ? case4Metadata()
+            : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
+
+          {props.glycans ? getSelectedGlycanList() : featureDetails.glycans.length > 0 && getGlycanTable()}
           <br />
 
           <LinkButton to="/features" label="Back" />

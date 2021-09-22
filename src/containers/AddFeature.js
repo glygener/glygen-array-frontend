@@ -22,6 +22,7 @@ import { Lipids } from "./Lipids";
 import { AddFeatureGlycoTypes } from "./AddFeatureGlycoTypes";
 import { SourceForGlycanInFeature } from "../components/SourceForGlycanInFeature";
 import { updateMetadataTemplate, getMetadataSubmitData } from "../containers/FeatureMetadata";
+import { FeatureView } from "./FeatureView";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -1405,116 +1406,120 @@ const AddFeature = props => {
 
   const getCase4 = () => {
     return (
-      <>
-        <Form className="radioform2">
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Name" />
-            <Col md={6}>
-              <Form.Control as="input" value={featureMetaData.name} disabled />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="featureId">
-            <FormLabel label="Feature Id" />
-            <Col md={6}>
-              <Form.Control as="input" value={featureMetaData.featureId} disabled />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="linker">
-            <FormLabel label="Linker Details:" />
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="linkerName">
-            <FormLabel label="Name" className="linker-field-label" />
-            <Col md={6}>
-              <Form.Control as="input" value={featureAddState.linker.name} disabled />
-            </Col>
-          </Form.Group>
-
-          {featureAddState.linker.imageURL && (
-            <Form.Group as={Row} controlId="name">
-              <FormLabel label="Structure Image" className="linker-field-label" />
-              <Col md={6}>
-                <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
-              </Col>
-            </Form.Group>
-          )}
-
-          {featureAddState.linker.sequence && (
-            <Form.Group as={Row} controlId="sequence">
-              <FormLabel label="Sequence" className="linker-field-label" />
-              <Col md={6} className="sequence-label-div">
-                <Form.Control
-                  as="textarea"
-                  className="sequence-textarea"
-                  value={featureAddState.linker.sequence}
-                  disabled
-                />
-              </Col>
-            </Form.Group>
-          )}
-
-          <Form.Group as={Row} controlId="glycan">
-            <FormLabel label="Attached Glycan(s) Details:" />
-          </Form.Group>
-          <Form.Group as={Row} controlId="glycanTable">
-            <Col className="selected-glycans-review">
-              {featureAddState.glycans && (
-                <ReactTable
-                  columns={[
-                    ...(featureAddState.linker.type !== "SMALLMOLECULE_LINKER"
-                      ? [
-                          {
-                            Header: "Position",
-                            accessor: "position"
-                          },
-                          {
-                            Header: "Amino Acid",
-                            accessor: "aminoAcid"
-                          }
-                        ]
-                      : []),
-                    {
-                      Header: "Glytoucan Id",
-                      accessor: "glycan",
-                      Cell: row => row.original && row.original.glytoucanId
-                    },
-                    {
-                      Header: "Name",
-                      accessor: "glycan",
-                      Cell: row => row.original && row.original.name
-                    },
-                    {
-                      Header: "Glycan",
-                      accessor: "glycan",
-                      // eslint-disable-next-line react/display-name
-                      Cell: (row, index) =>
-                        //{
-                        // return <StructureImage key={index} base64={row.original.cartoon}></StructureImage>;
-                        // },
-                        row.original ? (
-                          row.original.cartoon ? (
-                            <StructureImage key={index} base64={row.original.cartoon}></StructureImage>
-                          ) : (
-                            "No Image"
-                          )
-                        ) : (
-                          "No Glycan Selected"
-                        ),
-                      minWidth: 150
-                    }
-                  ]}
-                  data={featureAddState.glycans}
-                  defaultPageSize={featureAddState.glycans.length}
-                  showPagination={false}
-                />
-              )}
-            </Col>
-          </Form.Group>
-        </Form>
-      </>
+      <FeatureView
+        linker={featureAddState.linker}
+        lipid={featureAddState.type === "GLYCO_LIPID" ? featureAddState.lipid : ""}
+        type={featureAddState.type}
+        linkerSeletion={featureAddState.isLipidLinkedToSurfaceUsingLinker}
+        metadata={featureMetaData}
+        glycans={featureAddState.glycans}
+      />
     );
+    // return (
+    //   <>
+    //     <Form className="radioform2">
+    //       <Form.Group as={Row} controlId="name">
+    //         <FormLabel label="Name" />
+    //         <Col md={6}>
+    //           <Form.Control as="input" value={featureMetaData.name} disabled />
+    //         </Col>
+    //       </Form.Group>
+    //       <Form.Group as={Row} controlId="featureId">
+    //         <FormLabel label="Feature Id" />
+    //         <Col md={6}>
+    //           <Form.Control as="input" value={featureMetaData.featureId} disabled />
+    //         </Col>
+    //       </Form.Group>
+    //       <Form.Group as={Row} controlId="linker">
+    //         <FormLabel label="Linker Details:" />
+    //       </Form.Group>
+    //       <Form.Group as={Row} controlId="linkerName">
+    //         <FormLabel label="Name" className="linker-field-label" />
+    //         <Col md={6}>
+    //           <Form.Control as="input" value={featureAddState.linker.name} disabled />
+    //         </Col>
+    //       </Form.Group>
+    //       {featureAddState.linker.imageURL && (
+    //         <Form.Group as={Row} controlId="name">
+    //           <FormLabel label="Structure Image" className="linker-field-label" />
+    //           <Col md={6}>
+    //             <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
+    //           </Col>
+    //         </Form.Group>
+    //       )}
+    //       {featureAddState.linker.sequence && (
+    //         <Form.Group as={Row} controlId="sequence">
+    //           <FormLabel label="Sequence" className="linker-field-label" />
+    //           <Col md={6} className="sequence-label-div">
+    //             <Form.Control
+    //               as="textarea"
+    //               className="sequence-textarea"
+    //               value={featureAddState.linker.sequence}
+    //               disabled
+    //             />
+    //           </Col>
+    //         </Form.Group>
+    //       )}
+    //       <Form.Group as={Row} controlId="glycan">
+    //         <FormLabel label="Attached Glycan(s) Details:" />
+    //       </Form.Group>
+    //       <Form.Group as={Row} controlId="glycanTable">
+    //         <Col className="selected-glycans-review">
+    //           {featureAddState.glycans && (
+    //             <ReactTable
+    //               columns={[
+    //                 ...(featureAddState.linker.type !== "SMALLMOLECULE_LINKER"
+    //                   ? [
+    //                       {
+    //                         Header: "Position",
+    //                         accessor: "position"
+    //                       },
+    //                       {
+    //                         Header: "Amino Acid",
+    //                         accessor: "aminoAcid"
+    //                       }
+    //                     ]
+    //                   : []),
+    //                 {
+    //                   Header: "Glytoucan Id",
+    //                   accessor: "glycan",
+    //                   Cell: row => row.original && row.original.glytoucanId
+    //                 },
+    //                 {
+    //                   Header: "Name",
+    //                   accessor: "glycan",
+    //                   Cell: row => row.original && row.original.name
+    //                 },
+    //                 {
+    //                   Header: "Glycan",
+    //                   accessor: "glycan",
+    //                   // eslint-disable-next-line react/display-name
+    //                   Cell: (row, index) =>
+    //                     //{
+    //                     // return <StructureImage key={index} base64={row.original.cartoon}></StructureImage>;
+    //                     // },
+    //                     row.original ? (
+    //                       row.original.cartoon ? (
+    //                         <StructureImage key={index} base64={row.original.cartoon}></StructureImage>
+    //                       ) : (
+    //                         "No Image"
+    //                       )
+    //                     ) : (
+    //                       "No Glycan Selected"
+    //                     ),
+    //                   minWidth: 150
+    //                 }
+    //               ]}
+    //               data={featureAddState.glycans}
+    //               defaultPageSize={featureAddState.glycans.length}
+    //               showPagination={false}
+    //             />
+    //           )}
+    //         </Col>
+    //       </Form.Group>
+    //     </Form>
+    //   </>
+    // );
   };
 
   return (

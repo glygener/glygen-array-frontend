@@ -160,12 +160,12 @@ export function ContextAwareToggle({ children, eventKey, callback, classname }) 
   );
 }
 
-export function scrollToTop() {
+export function scrollToTopIcon() {
   return (
     <>
       <span>
         <FontAwesomeIcon
-          key={"scrollToTop"}
+          key={"scrollToTopIcon"}
           icon={["fas", "arrow-circle-up"]}
           size="3x"
           title="Scroll To Top"

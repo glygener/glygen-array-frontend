@@ -9,7 +9,6 @@ import { Link, useHistory } from "react-router-dom";
 import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
 import { Title } from "../components/FormControls";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);

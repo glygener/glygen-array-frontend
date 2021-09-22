@@ -17,7 +17,7 @@ import { ConfirmationModal } from "../components/ConfirmationModal";
 import { ColorNotation } from "../components/ColorNotation";
 import { GridForm } from "../components/GridForm";
 import MetadataKeyPairs from "../public/MetadataKeyPairs";
-// import { scrollToTop } from "../utils/commonUtils";
+// import { scrollToTopIcon } from "../utils/commonUtils";
 
 const AddBlockLayout = props => {
   let { blockLayoutId } = useParams();
@@ -122,7 +122,7 @@ const AddBlockLayout = props => {
   const handleChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
-    
+
     setGridParams({ [name]: newValue });
 
     if (isUpdateBlock) {
@@ -622,7 +622,7 @@ const AddBlockLayout = props => {
         />
       </div>
 
-      {/* <Col>{scrollToTop()}</Col> */}
+      {/* <Col>{scrollToTopIcon()}</Col> */}
     </>
   );
 

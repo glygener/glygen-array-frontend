@@ -6,17 +6,34 @@ import { getFormErrorMessage } from "../utils/errorHandling";
 
 const ErrorSummary = props => {
   const [summary, setSummary] = useState("");
+  const [listAlerts, setListAlerts] = useState([]);
+  const [listSummary, setListSummary] = useState();
+
   useEffect(updateSummary, [props.errorJson], [props.errorMessage]);
 
   function updateSummary() {
     var aggregatedSummary = "";
+
+    if (props.errorJson && props.errorJson.errors && props.errorJson.errors.length > 1) {
+      aggregatedSummary += "There have been multiple errors submitting the entry: \n";
+    }
+
     if (props.show) {
+      let alerts = [];
       if (props.errorJson && null != props.errorJson.errors && props.errorJson.errors.length > 0) {
         props.errorJson.errors.forEach(error => {
           if (props.customMessage) {
-            aggregatedSummary += "\n" + error.objectName + " - " + error.defaultMessage + "\n";
+            if (props.errorJson.errors.length > 1) {
+              alerts.push(error.objectName + " - " + error.defaultMessage);
+            } else {
+              aggregatedSummary += "\n" + error.objectName + " - " + error.defaultMessage + "\n";
+            }
           } else {
-            aggregatedSummary += getFormErrorMessage(props.form, error) + "\n";
+            if (props.errorJson.errors.length > 1) {
+              alerts.push(getFormErrorMessage(props.form, error));
+            } else {
+              aggregatedSummary += getFormErrorMessage(props.form, error);
+            }
           }
         });
         setSummary(aggregatedSummary);
@@ -25,13 +42,27 @@ const ErrorSummary = props => {
       } else {
         setSummary(getFormErrorMessage());
       }
+
+      setListSummary(aggregatedSummary);
+      alerts.length > 1 && setListAlerts(alerts);
     }
   }
 
   return (
     <div>
       <Alert variant="danger" show={props.show}>
-        {summary}
+        {listAlerts.length > 0 ? (
+          <>
+            {listSummary}
+            <ul>
+              {listAlerts.map(line => {
+                return <li>{line}</li>;
+              })}
+            </ul>
+          </>
+        ) : (
+          summary
+        )}
       </Alert>
     </div>
   );

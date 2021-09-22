@@ -10,6 +10,7 @@ import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "./ErrorSummary";
 import { PublicationCard } from "./PublicationCard";
 import { Loading } from "./Loading";
+import "../containers/AddFeature.css";
 
 const AddGlycanInfoToFeature = props => {
   const [invalidUrls, setInvalidUrls] = useState(false);
@@ -242,7 +243,7 @@ const AddGlycanInfoToFeature = props => {
   const getMetadataNameandId = () => {
     return (
       <>
-        <div className="radioform1">
+        <div className="line-break-2">
           <Form.Group as={Row} controlId="name">
             <FormLabel label="Name" className={"required-asterik"} />
             <Col md={4}>
@@ -288,7 +289,6 @@ const AddGlycanInfoToFeature = props => {
   };
 
   const getDisableCheck = (purityField, validate) => {
-    debugger;
     let purityDetails = props.metadata.purity;
     return (
       <>
@@ -329,62 +329,64 @@ const AddGlycanInfoToFeature = props => {
   const getPurityDescriptors = () => {
     return (
       <>
-        <Form.Group as={Row} controlId="purityComment">
-          <FormLabel label="Comment" />
-          <Col md={4}>
-            <Form.Control
-              as="textarea"
-              rows={4}
-              name={"comment"}
-              placeholder={"comment"}
-              value={props.metadata.purity && props.metadata.purity.comment}
-              onChange={purityInfoChange}
-              maxLength={2000}
-            />
-            <span className="character-counter" style={{ marginLeft: "80%" }}>
-              {props.metadata.purity && props.metadata.purity.comment && props.metadata.purity.comment.length > 0
-                ? props.metadata.purity.comment.length
-                : ""}
-              /2000
-            </span>
-          </Col>
-        </Form.Group>
+        <div className={'line-break-2"'}>
+          <Form.Group as={Row} controlId={"value"}>
+            <FormLabel label={"Value"} className={"required-asterik"} />
+            <Col md={4}>
+              <Form.Control
+                name={"value"}
+                type={"text"}
+                placeholder={"value"}
+                value={props.metadata.purity && props.metadata.purity.value}
+                isInvalid={props.metadata.validateValue}
+                onChange={purityInfoChange}
+                disabled={props.metadata.purity.valueNotRecorded}
+                required
+              />
+              <Feedback message={"Value is required"} />
+            </Col>
+            {getDisableCheck("valueNotRecorded", "validateValue")}
+          </Form.Group>
 
-        <Form.Group as={Row} controlId={"value"}>
-          <FormLabel label={"Value"} className={"required-asterik"} />
-          <Col md={4}>
-            <Form.Control
-              name={"value"}
-              type={"text"}
-              placeholder={"value"}
-              value={props.metadata.purity && props.metadata.purity.value}
-              isInvalid={props.metadata.validateValue}
-              onChange={purityInfoChange}
-              disabled={props.metadata.purity.valueNotRecorded}
-              required
-            />
-            <Feedback message={"Value is required"} />
-          </Col>
-          {getDisableCheck("valueNotRecorded", "validateValue")}
-        </Form.Group>
+          <Form.Group as={Row} controlId={"method"}>
+            <FormLabel label={"Method"} className={"required-asterik"} />
+            <Col md={4}>
+              <Form.Control
+                name={"method"}
+                type={"text"}
+                placeholder={"method"}
+                value={props.metadata.purity && props.metadata.purity.method}
+                isInvalid={props.metadata.validateMethod}
+                onChange={purityInfoChange}
+                disabled={props.metadata.purity.methodNotRecorded}
+                required
+              />
+              <Feedback message={"Method is required"} />
+            </Col>
+            {getDisableCheck("methodNotRecorded", "validateMethod")}
+          </Form.Group>
 
-        <Form.Group as={Row} controlId={"method"}>
-          <FormLabel label={"Method"} className={"required-asterik"} />
-          <Col md={4}>
-            <Form.Control
-              name={"method"}
-              type={"text"}
-              placeholder={"method"}
-              value={props.metadata.purity && props.metadata.purity.method}
-              isInvalid={props.metadata.validateMethod}
-              onChange={purityInfoChange}
-              disabled={props.metadata.purity.methodNotRecorded}
-              required
-            />
-            <Feedback message={"Method is required"} />
-          </Col>
-          {getDisableCheck("methodNotRecorded", "validateMethod")}
-        </Form.Group>
+          <Form.Group as={Row} controlId="purityComment">
+            <FormLabel label="Comment" />
+            <Col md={4}>
+              <Form.Control
+                as="textarea"
+                rows={4}
+                name={"comment"}
+                placeholder={"comment"}
+                value={props.metadata.purity && props.metadata.purity.comment}
+                onChange={purityInfoChange}
+                maxLength={2000}
+              />
+              <span className="character-counter" style={{ marginLeft: "80%" }}>
+                {props.metadata.purity && props.metadata.purity.comment && props.metadata.purity.comment.length > 0
+                  ? props.metadata.purity.comment.length
+                  : ""}
+                /2000
+              </span>
+            </Col>
+          </Form.Group>
+        </div>
       </>
     );
   };
@@ -392,8 +394,12 @@ const AddGlycanInfoToFeature = props => {
   const getSourceOptions = sourceProp => {
     return (
       <>
-        <Row>
-          <FormLabel label="Source" />
+        <Row
+          style={{
+            marginTop: "1em"
+          }}
+        >
+          <FormLabel label="Source" className={"metadata-descriptor-title "} />
 
           <Col md={{ span: 6 }} style={{ marginLeft: "30px" }}>
             <Form.Check.Label>
@@ -590,8 +596,12 @@ const AddGlycanInfoToFeature = props => {
         {props.isMetadata ? (
           <>
             {getMetadataNameandId()}
-            <Row>
-              <FormLabel label="Purity" />
+            <Row
+              style={{
+                marginTop: "1em"
+              }}
+            >
+              <FormLabel label="Purity" className={"metadata-descriptor-title "} />
 
               <Col md={{ span: 6 }} style={{ marginLeft: "30px" }}>
                 <Form.Check.Label>
