@@ -1,9 +1,8 @@
 import React from "react";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { PublicListDataset } from "./PublicListDataset";
 import { Card } from "react-bootstrap";
-
+import { DatasetTable } from "../components/DatasetTable";
 const PublicData = () => {
   return (
     <>
@@ -16,11 +15,12 @@ const PublicData = () => {
           // marginLeft: "5%",
           // marginRight: "5%",
           width: "95%",
-          margin: "2%"
+          margin: "2%",
           // marginTop: window.innerHeight / 8
         }}
       >
-        <PublicListDataset />
+        <DatasetTable wsName="listpublicdataset" />
+        {/* <PublicListDataset /> */}
       </Card>
     </>
   );

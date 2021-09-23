@@ -29,29 +29,33 @@ const DatasetTable = (props) => {
     dataset
   );
   useEffect(() => {
-    if (props.searchId) {
-      setShowLoading(true);
-      wsCall(
-        "listdatasetsforsearch",
-        "GET",
-        {
-          offset: "0",
-          loadAll: false,
-          sortBy: publicData.sortBy,
-          order: orderBy ? 1 : 0,
-          searchId: props.searchId,
-        },
-        false,
-        null,
-        (response) =>
-          response.json().then((responseJson) => {
-            setListDataSet(responseJson.rows);
-            setShowLoading(false);
-          }),
-        errorWscall
-      );
+    setShowLoading(true);
+
+    let params = {
+      offset: "0",
+      loadAll: false,
+      sortBy: publicData.sortBy,
+      order: orderBy ? 1 : 0,
+    };
+
+    if (props.qsParams) {
+      params = { ...params, ...props.qsParams };
     }
-  }, [orderBy, publicData.sortBy, props.searchId]);
+
+    wsCall(
+      props.wsName,
+      "GET",
+      params,
+      false,
+      null,
+      (response) =>
+        response.json().then((responseJson) => {
+          setListDataSet(responseJson.rows);
+          setShowLoading(false);
+        }),
+      errorWscall
+    );
+  }, [orderBy, publicData.sortBy, props.wsName, props.qsParams]);
 
   function errorWscall(response) {
     response.json().then((responseJson) => {
@@ -164,8 +168,15 @@ const DatasetTable = (props) => {
             ]}
             data={listDataSet}
             pageSizeOptions={[5, 10, 25]}
-            // defaultPageSize={listDataSet.length < 5 ? 5 : 15}
             defaultPageSize={listDataSet.length < 5 ? 5 : 1}
+            minRows={0}
+            NoDataComponent={({ state, ...rest }) =>
+              !state?.loading ? (
+                <p className="pt-2 text-center">
+                  <strong>No data available </strong>
+                </p>
+              ) : null
+            }
             showPaginationTop
             className={"-striped -highlight"}
             sortable={true}

@@ -10,8 +10,8 @@ import Container from "@material-ui/core/Container";
 import { Row, Card } from "react-bootstrap";
 import VersionCard from "../components/VersionCard";
 import { StatisticsCard } from "../components/StatisticsCard";
-import { PublicListDataset } from "../public/PublicListDataset";
 import { useHistory } from "react-router-dom";
+import { DatasetTable } from "../components/DatasetTable";
 
 const Home = () => {
   const history = useHistory();
@@ -56,7 +56,7 @@ const Home = () => {
                 <Grid container style={{ marginTop: "32px" }}>
                   <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
                     <Card>
-                      <PublicListDataset />
+                      <DatasetTable wsName="listpublicdataset" />
                     </Card>
                   </Grid>
                 </Grid>

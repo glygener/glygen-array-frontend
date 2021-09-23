@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { useParams, Link, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import DatasetDettailListSummary from "../components/DatasetDettailListSummary";
-import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
-import Grid from "@material-ui/core/Grid";
 import { Card } from "react-bootstrap";
-import { SearchTable } from "../components/search/SearchTable";
-import { StructureImage } from "../components/StructureImage";
-import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
-// import { PublicListDataset } from "./PublicListDataset";
 import { DatasetTable } from "../components/DatasetTable";
-import { DatasetTableReusable } from "../components/DatasetTableReusable";
 
 const DatasetDetailList = () => {
   const { searchId } = useParams();
@@ -92,9 +85,7 @@ const DatasetDetailList = () => {
           margin: "2%",
         }}
       >
-        {/* <DatasetTableReusable wsName="listdatasetsforsearch" qsParams={{ seachId: searchId }} /> */}
-        <DatasetTable searchId={searchId} />
-        {/* <PublicListDataset /> */}
+        <DatasetTable wsName="listdatasetsforsearch" qsParams={{ searchId: searchId }} />
       </Card>
     </>
   );
