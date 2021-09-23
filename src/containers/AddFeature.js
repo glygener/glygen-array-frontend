@@ -636,6 +636,7 @@ const AddFeature = props => {
     wsCall("addfeature", "POST", null, true, featureObj, addFeatureSuccess, addFeatureError);
 
     function addFeatureSuccess() {
+      setShowLoading(false);
       history.push("/features");
     }
 
@@ -643,6 +644,7 @@ const AddFeature = props => {
       response.json().then(responseJson => {
         setPageErrorsJson(responseJson);
         setShowErrorSummary(true);
+        setShowLoading(false);
       });
     }
   }
@@ -669,7 +671,6 @@ const AddFeature = props => {
       type: "LINKEDGLYCAN",
 
       name: featureMetaData.name,
-      internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       glycans: featureAddState.glycans.map(glycanObj => {
         let glycanDetails = {};
@@ -720,7 +721,6 @@ const AddFeature = props => {
       type: "GLYCOLIPID",
 
       name: featureMetaData.name,
-      internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       lipid: featureAddState.lipid,
       glycans: [{ glycans: glycans, type: "LINKEDGLYCAN", linker: glycans[0].linker }],
