@@ -643,6 +643,7 @@ const AddFeature = props => {
     function addFeatureError(response) {
       response.json().then(responseJson => {
         setPageErrorsJson(responseJson);
+        setErrorMessage("");
         setShowErrorSummary(true);
         setShowLoading(false);
       });

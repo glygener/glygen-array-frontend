@@ -5,14 +5,13 @@ import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { Col } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
 import { Title } from "../components/FormControls";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);
-  const history = useHistory();
 
   return (
     <>
@@ -64,7 +63,16 @@ const Features = props => {
               Header: "Linker Type",
               accessor: "linker",
               // eslint-disable-next-line react/display-name
-              Cell: ({ value, index }) => <div key={index}>{value && displayNames.linker[value.type]}</div>
+              Cell: ({ row, index }) => {
+                return (
+                  <div key={index}>
+                    {
+                      row.linker.type
+                      // && displayNames.linker[row.linker.type]
+                    }
+                  </div>
+                );
+              }
             },
             {
               Header: "Glycans",
@@ -73,14 +81,17 @@ const Features = props => {
               Cell: (row, index) => (
                 <div key={index}>
                   {row.value
-                    ? row.value.map((glycan, i) => (
-                        <div key={i}>
-                          <Link to={"/glycans/editglycan/" + glycan.id} target="_blank">
-                            {glycan.name}
-                          </Link>
-                          <br />
-                        </div>
-                      ))
+                    ? row.value.map(
+                        (glycans, i) =>
+                          glycans.glycan && (
+                            <div key={i}>
+                              <Link to={"/glycans/editglycan/" + glycans.glycan.id} target="_blank">
+                                {glycans.glycan.name}
+                              </Link>
+                              <br />
+                            </div>
+                          )
+                      )
                     : ""}
                 </div>
               )
