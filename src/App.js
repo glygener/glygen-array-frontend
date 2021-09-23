@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { getLoginStatus, getPageName } from "./utils/commonUtils";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-// import { ScrollToTopBtn } from "./components/ScrollToTop";
+import { ScrollToTopBtn } from "./components/ScrollToTop";
 import { faEdit, faTrashAlt, faClone, faEyeSlash, faEye } from "@fortawesome/free-regular-svg-icons";
 import {
   faUsers,
@@ -96,7 +96,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <TopNavBar loggedInFlag={loggedIn} logoutHandler={logoutHandler} />
           <CssBaseline />
-          {/* <ScrollToTopBtn /> */}
+          <ScrollToTopBtn />
           {location &&
           location.pathname &&
           (location.pathname === "/data" ||

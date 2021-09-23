@@ -4,7 +4,7 @@ import { Button } from "@material-ui/core";
 // import { Button } from "react-bootstrap";
 import { BiArrowToTop } from "react-icons/bi";
 
-const ScrollToTop = () => {
+const ScrollToTopBtn = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   // Show button when page is scorlled upto given distance
@@ -23,7 +23,7 @@ const ScrollToTop = () => {
   return (
     <div className="scroll-to-top">
       {isVisible && (
-        <div onClick={scrollToTop}>
+        <div onClick={ScrollToTop}>
           <Button className="gg-reg-btn-outline">
             {/* <VerticalAlignTopIcon fontSize="large" /> */}
             <BiArrowToTop fontSize="40px" />
@@ -36,11 +36,11 @@ const ScrollToTop = () => {
 
 // Set the top cordinate to 0
 // make scrolling smooth
-const scrollToTop = () => {
+const ScrollToTop = () => {
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
 };
 
-export { ScrollToTop, scrollToTop };
+export { ScrollToTopBtn, ScrollToTop };
