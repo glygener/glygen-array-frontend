@@ -58,11 +58,12 @@
   color: var(--gg-light-blue) !important;
 }
 
-@media (min-width: 992px) {
+/* @media (min-width: 992px) {
   .navbar-expand-lg .navbar-nav {
       align-items: center;
   }
-}
+} */
+
 .topbar {
   margin-bottom: 6px !important;
 }
