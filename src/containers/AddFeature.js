@@ -679,7 +679,7 @@ const AddFeature = props => {
         glycanDetails.glycan = glycanObj;
 
         reducingEndConfiguration.type = glycanObj.opensRing;
-        reducingEndConfiguration.comment = glycanObj.opensRing === 0 ? glycanObj.equilibriumComment : "";
+        reducingEndConfiguration.comment = glycanObj.opensRing === 4 ? glycanObj.equilibriumComment : "";
         glycanDetails.reducingEndConfiguration = reducingEndConfiguration;
 
         glycanDetails.source = glycanObj.source;
@@ -709,7 +709,7 @@ const AddFeature = props => {
       glycans.publications = glycanObj.papers;
 
       reducingEndConfiguration.type = glycanObj.opensRing;
-      reducingEndConfiguration.comment = glycanObj.opensRing === 0 ? glycanObj.equilibriumComment : "";
+      reducingEndConfiguration.comment = glycanObj.opensRing === 4 ? glycanObj.equilibriumComment : "";
       glycans.reducingEndConfiguration = reducingEndConfiguration;
       glycans.linker = glycanObj.linker;
       glycans.source = glycanObj.source;
@@ -1289,15 +1289,16 @@ const AddFeature = props => {
   function getReducingEndState(opensRing) {
     switch (opensRing) {
       case 0:
-        return "Equilibrium";
-      case 1:
-        return "Unknown";
-      case 2:
         return "Open Ring";
-      case 3:
-        return "Beta";
-      case 4:
+      case 1:
         return "Alpha";
+      case 2:
+        return "Beta";
+      case 3:
+        return "Unknown";
+      case 4:
+        return "Equilibrium";
+
       default:
         return "Unknown";
     }
@@ -1395,6 +1396,7 @@ const AddFeature = props => {
           data={featureAddState.glycans}
           defaultPageSize={5}
           showDeleteButton
+          customDeleteOnClick
           deleteOnClick={handleDeletedSelectedGlycan}
           showPagination={false}
           showRowsInfo={false}

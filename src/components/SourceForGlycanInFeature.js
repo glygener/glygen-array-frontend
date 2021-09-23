@@ -21,7 +21,7 @@ const SourceForGlycanInFeature = props => {
     source: "notSpecified",
     urls: [],
     papers: [],
-    opensRing: 1,
+    opensRing: 3,
     equilibriumComment: ""
   };
 
@@ -89,7 +89,7 @@ const SourceForGlycanInFeature = props => {
       selectedRow.papers = addGlycanInfoToFeature.papers;
       selectedRow.opensRing = addGlycanInfoToFeature.opensRing;
 
-      if (addGlycanInfoToFeature.opensRing === 0) {
+      if (addGlycanInfoToFeature.opensRing === 4) {
         selectedRow.equilibriumComment = addGlycanInfoToFeature.equilibriumComment;
       }
 

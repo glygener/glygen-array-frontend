@@ -11,7 +11,7 @@ import displayNames from "../appData/displayNames";
 import { useHistory } from "react-router-dom";
 import { isValidNumber } from "../utils/commonUtils";
 import { Loading } from "../components/Loading";
-import { scrollToTop } from "../components/ScrollToTop";
+import { ScrollToTop } from "../components/ScrollToTop";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -732,7 +732,7 @@ const AddGlycan = props => {
       setShowErrorSummary(true);
     });
     setShowLoading(false);
-    scrollToTop();
+    ScrollToTop();
   }
 
   function getNavigationButtons(className) {
