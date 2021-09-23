@@ -463,15 +463,16 @@ const FeatureView = props => {
   function getReducingEndState(opensRing) {
     switch (opensRing) {
       case 0:
-        return "Equilibrium";
-      case 1:
-        return "Unknown";
-      case 2:
         return "Open Ring";
-      case 3:
-        return "Beta";
-      case 4:
+      case 1:
         return "Alpha";
+      case 2:
+        return "Beta";
+      case 3:
+        return "Unknown";
+      case 4:
+        return "Equilibrium";
+
       default:
         return "Unknown";
     }

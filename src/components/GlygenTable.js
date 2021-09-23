@@ -125,6 +125,23 @@ const GlygenTable = props => {
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
         <>
+          {props.showDeleteButton && (
+            <>
+              <FontAwesomeIcon
+                key={"delete" + index}
+                icon={["far", "trash-alt"]}
+                size="xs"
+                title="Delete"
+                className="caution-color table-btn"
+                onClick={() => {
+                  props.deleteOnClick
+                    ? props.deleteOnClick(row.original)
+                    : deletePrompt(row.original[props.keyColumn], props.queryParamDelete);
+                }}
+              />
+            </>
+          )}
+
           {props.showViewIcon && !row.original.isPublic && (
             <>
               <FontAwesomeIcon
@@ -150,24 +167,7 @@ const GlygenTable = props => {
               />
             </>
           )}
-          {props.showDeleteButton && !row.original.isPublic ? (
-            <>
-              <FontAwesomeIcon
-                key={"delete" + index}
-                icon={["far", "trash-alt"]}
-                size="xs"
-                title="Delete"
-                className="caution-color table-btn"
-                onClick={() => {
-                  return props.deleteOnClick
-                    ? props.deleteOnClick(row.original)
-                    : deletePrompt(row.original[props.keyColumn], props.queryParamDelete);
-                }}
-              />
-            </>
-          ) : (
-            ""
-          )}
+
           {props.showCopyButton && (
             <>
               <FontAwesomeIcon
@@ -182,6 +182,7 @@ const GlygenTable = props => {
               />
             </>
           )}
+
           {props.showMirageCompliance && (
             <img
               className="table-btn image-icon"
@@ -202,6 +203,7 @@ const GlygenTable = props => {
               }
             />
           )}
+
           {props.showMakePublic && !row.original.isPublic && (
             <>
               <FontAwesomeIcon

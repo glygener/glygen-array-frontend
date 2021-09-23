@@ -119,24 +119,24 @@ const AddGlycanInfoToFeature = props => {
 
   const opensRingOptions = [
     {
+      displayName: "Open Ring",
+      value: 0
+    },
+    {
       displayName: "Alpha",
-      value: 4
+      value: 1
     },
     {
       displayName: "Beta",
-      value: 3
-    },
-    {
-      displayName: "Open Ring",
       value: 2
     },
     {
       displayName: "Unknown",
-      value: 1
+      value: 3
     },
     {
       displayName: "Equilibrium",
-      value: 0
+      value: 4
     }
   ];
 
@@ -555,7 +555,7 @@ const AddGlycanInfoToFeature = props => {
           />
         </Col>
       </Form.Group>
-      {props.addGlycanInfoToFeature.opensRing === 0 && (
+      {props.addGlycanInfoToFeature.opensRing === 4 && (
         <Form.Group as={Row} controlId="equilibriumComment">
           <FormLabel label="Comment" />
           <Col md={4}>
