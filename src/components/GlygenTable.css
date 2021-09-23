@@ -53,3 +53,28 @@
 .ReactTable .rt-td {
   padding: 10px 15px;
 }
+
+/* Table Sortiing */
+.MyReactTableClass .-sort-desc,
+.MyReactTableClass .-sort-asc {
+box-shadow: none !important;
+background-color: transparent !important;
+}
+
+.MyReactTableClass .-sort-desc::before {
+  position: absolute;
+  right: 15px;
+  top: 35%;
+  content: "▼";
+  float: right;
+  color: #fff;
+}
+
+.MyReactTableClass .-sort-asc::before {
+  position: absolute;
+  right: 15px;
+  top: 35%;
+  content: "▲";
+  float: right;
+  color: #fff;
+}
