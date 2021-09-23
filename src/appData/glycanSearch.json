@@ -19,7 +19,7 @@
             "id": "G43981RC"
           }
         }
-     ]
+      ]
     },
     "mass": {
       "name": "Monoisotopic Mass",
@@ -44,14 +44,50 @@
         "urlText": "Read more...",
         "url": "https://glytoucan.org/Structures"
       },
-      "examples": [
-        {
-          "example": {
-            "name": "WURCS Example",
-            "id": "WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1"
+      "IUPAC": {
+        "examples": [
+          {
+            "orderID": 102,
+            "example": {
+              "name": "CFG IUPAC Example",
+              "id": "Galb1-3GlcNAcb"
+            }
           }
-        }
-     ]
+        ]
+      },
+      "GlycoCT": {
+        "examples": [
+          {
+            "orderID": 103,
+            "example": {
+              "name": "GlycoCT Example",
+              "id": "RES\n1b:b-dglc-HEX-1:5\n2s:n-acetyl\n3b:b-dgal-HEX-1:5\nLIN\n1:1d(2+1)2n\n2:1o(3+1)3d"
+            }
+          }
+        ]
+      },
+      "GlycoWorkbench": {
+        "examples": [
+          {
+            "orderID": 101,
+            "example": {
+              "name": "GWS Example",
+              "id": "freeEnd--?b1D-GlcNAc,p--3b1D-Gal,p$MONO,perMe,Na,0,freeEnd"
+            }
+          }
+        ]
+      },
+      "Wurcs": {
+        "examples": [
+          {
+            "orderID": 100,
+            "example": {
+              "name": "WURCS Example",
+              "id": "WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1"
+            }
+          }
+        ]
+      }
     },
     "sequence_type": {
       "requiredText": "This field is required.",
@@ -65,15 +101,15 @@
       },
       "options": [
         {
-          "id": "Iupac",
+          "id": "IUPAC",
           "name": "CFG IUPAC"
         },
         {
-          "id": "Glcyoct",
-          "name": "GlcyoCT"
+          "id": "GlycoCT",
+          "name": "GlycoCT"
         },
         {
-          "id": "Gws",
+          "id": "GlycoWorkbench",
           "name": "GWS"
         },
         {
@@ -96,15 +132,28 @@
         "urlText": "Read more...",
         "url": "https://glytoucan.org/Structures"
       },
-      "examples": [
-        {
-          "orderID": 100,
-          "example": {
-            "name": "WURCS Example",
-            "id": "WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1"
+      "GlycoCT": {
+        "examples": [
+          {
+            "orderID": 103,
+            "example": {
+              "name": "GlycoCT Example",
+              "id": "RES\n1b:b-dglc-HEX-1:5\n2s:n-acetyl\n3b:b-dgal-HEX-1:5\nLIN\n1:1d(2 + 1)2n\n2:1o(3 + 1)3d"
+            }
           }
-        }
-     ]
+        ]
+      },
+      "Wurcs": {
+        "examples": [
+          {
+            "orderID": 100,
+            "example": {
+              "name": "WURCS Example",
+              "id": "WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1"
+            }
+          }
+        ]
+      }
     },
     "sequence_type": {
       "requiredText": "This field is required.",
@@ -118,8 +167,8 @@
       },
       "options": [
         {
-          "id": "Glcyoct",
-          "name": "GlcyoCT"
+          "id": "GlycoCT",
+          "name": "GlycoCT"
         },
         {
           "id": "Wurcs",
@@ -148,7 +197,7 @@
             "id": "6574"
           }
         }
-     ]
+      ]
     },
     "printed_slide_name": {
       "length": 100,
@@ -168,7 +217,7 @@
             "id": "CFG5.2PrintedSlide"
           }
         }
-     ]
+      ]
     },
     "pmid": {
       "length": 100,
@@ -188,7 +237,7 @@
             "id": "1234"
           }
         }
-     ]
+      ]
     },
     "username": {
       "length": 100,
@@ -206,7 +255,7 @@
             "id": "cfguser"
           }
         }
-     ]
+      ]
     },
     "last_name": {
       "length": 100,
@@ -224,7 +273,7 @@
             "id": "Georgia"
           }
         }
-     ]
+      ]
     },
     "group_name": {
       "length": 100,
@@ -242,7 +291,7 @@
             "id": "Glygeners1"
           }
         }
-     ]
+      ]
     },
     "institution": {
       "length": 100,
@@ -260,7 +309,7 @@
             "id": "glygen-array-frontend1"
           }
         }
-     ]
+      ]
     }
   }
 }

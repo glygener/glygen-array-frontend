@@ -102,6 +102,7 @@ const App = () => {
           (location.pathname === "/data" ||
             location.pathname === "/glycanSearch" ||
             location.pathname === "/glycanList" ||
+            location.pathname === "/glycanDetail" ||
             location.pathname === "/datasetDetailSearch" ||
             location.pathname === "/datasetDetailList" ||
             location.pathname === "/datasetDetail" ||
@@ -133,6 +134,7 @@ const App = () => {
       "submitterSearch",
       "glycanSearch",
       "glycanList",
+      "glycanDetail",
       "datasetDetailSearch",
       "datasetDetailList",
       "datasetDetail"

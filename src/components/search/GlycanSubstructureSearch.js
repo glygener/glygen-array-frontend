@@ -16,6 +16,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import { withStyles } from "@material-ui/core/styles";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import ExampleExploreControl from "../ExampleExploreControl";
 
 const BlueCheckbox = withStyles({
   root: {
@@ -106,9 +107,20 @@ export default function GlycanSubstructureSearch(props) {
   const glycanSearchFailure = (response) => {
     response.json().then((resp) => {
       console.log(resp);
+      if (resp.statusCode === 404) {
+        setPageErrorsJson(null);
+        setPageErrorMessage("No search result found.");
+        setShowErrorSummary(true);
+        return;
+      }
+      if (resp.statusCode === 400) {
+        setPageErrorsJson(null);
+        setPageErrorMessage("Invalid data. Please correct it and try again.");
+        setShowErrorSummary(true);
+        return;
+      }
       setPageErrorsJson(resp);
       setShowErrorSummary(true);
-      setPageErrorMessage("");
     });
   };
 
@@ -232,7 +244,14 @@ export default function GlycanSubstructureSearch(props) {
               inputValue.sequence.length > subStructureSearch.sequence.length && (
                 <FormHelperText error>{subStructureSearch.sequence.errorText}</FormHelperText>
               )}
-            WURCS Example: WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1
+            {inputValue.sequenceFormat && (
+              <ExampleExploreControl
+                setInputValue={(id) => {
+                  setInputValue({ sequence: id });
+                }}
+                inputValue={subStructureSearch.sequence[inputValue.sequenceFormat].examples}
+              />
+            )}
           </FormControl>
         </Grid>
 
