@@ -7,13 +7,26 @@
   text-align: left;
 }
 
-.MuiListItem-button:hover,
-.active {
+ /* .MuiListItem-button:hover,  */
+.active-sidebar
+{
   background-color: var(--gg-blue) !important;
-  color: #e6e6e6 !important;
+  color: #fff !important;
+}
+.sidebar-item-text {
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.sidebar-ittem:hover
+{
+  background-color: #fff !important;
+  color: var(--gg-blue) !important;
+  -webkit-transition: all 0.5s !important;
+  transition: ease-in-out 0.5s !important;
 }
 
 .MuiTypography-body1 {
-  font-size: 1.1em !important;
-  font-weight: bold !important;
+  /* font-size: 1.1em !important; */
+  font-weight: 600!important;
 }
