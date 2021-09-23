@@ -13,20 +13,20 @@ import { isValidNumber } from "../utils/commonUtils";
 import { Loading } from "../components/Loading";
 import { ScrollToTop } from "../components/ScrollToTop";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    width: "90%"
+    width: "90%",
   },
   backButton: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   instructions: {
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }));
 
-const AddGlycan = props => {
+const AddGlycan = (props) => {
   useEffect(props.authCheckAgent, []);
 
   const classes = useStyles();
@@ -50,7 +50,7 @@ const AddGlycan = props => {
     glytoucanId: "",
     sequence: "",
     glytoucanRegistration: true,
-    sequenceType: "GlycoCT"
+    sequenceType: "GlycoCT",
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -59,7 +59,7 @@ const AddGlycan = props => {
 
   const steps = getSteps();
 
-  const handleNext = e => {
+  const handleNext = (e) => {
     setValidate(false);
     setValidateName(false);
 
@@ -79,7 +79,8 @@ const AddGlycan = props => {
       setInvalidMass(true);
       return;
     } else if (
-      (userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other") &&
+      (userSelection.selectedGlycan === "SequenceDefined" ||
+        userSelection.selectedGlycan === "Other") &&
       activeStep === 1
     ) {
       if (userSelection.sequence === "" || userSelection.sequence.trim().length < 1) {
@@ -104,15 +105,15 @@ const AddGlycan = props => {
       return;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
     setShowErrorSummary(false);
   };
 
-  const handleSelect = e => {
+  const handleSelect = (e) => {
     const newValue = e.target.value;
     if (newValue !== "SequenceDefined") {
       setDefaultCheck(false);
@@ -122,13 +123,17 @@ const AddGlycan = props => {
     setUserSelection({ ...initialState, ...{ selectedGlycan: newValue } });
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setDisableReset(true);
 
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (name === "name" && newValue.trim().length < 1 && userSelection.selectedGlycan !== "SequenceDefined") {
+    if (
+      name === "name" &&
+      newValue.trim().length < 1 &&
+      userSelection.selectedGlycan !== "SequenceDefined"
+    ) {
       setValidateName(true);
     } else if (userSelection.selectedGlycan !== "SequenceDefined" && name === "name") {
       setValidateName(false);
@@ -151,7 +156,7 @@ const AddGlycan = props => {
     }
   };
 
-  const handleClassSelect = e => {
+  const handleClassSelect = (e) => {
     const select = e.target.options[e.target.selectedIndex].value;
     setUserSelection({ sequenceType: select });
   };
@@ -166,7 +171,10 @@ const AddGlycan = props => {
     return (
       <Form className="radioform1">
         <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" className={userSelection.selectedGlycan === "Unknown" ? "required-asterik" : ""} />
+          <FormLabel
+            label="Name"
+            className={userSelection.selectedGlycan === "Unknown" ? "required-asterik" : ""}
+          />
           <Col md={4}>
             <Form.Control
               type="text"
@@ -209,7 +217,9 @@ const AddGlycan = props => {
               maxLength={2000}
             />
             <span className="character-counter">
-              {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : ""}
+              {userSelection.comment && userSelection.comment.length > 0
+                ? userSelection.comment.length
+                : ""}
               /2000
             </span>
           </Col>
@@ -228,7 +238,7 @@ const AddGlycan = props => {
       <div className="page-container">
         <Title title="Add Glycan to Repository" />
         <Stepper activeStep={activeStep}>
-          {steps.map(label => (
+          {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
             </Step>
@@ -237,7 +247,11 @@ const AddGlycan = props => {
         {getNavigationButtons("button - div text-center")}
         &nbsp; &nbsp;
         {showErrorSummary === true && (
-          <ErrorSummary show={showErrorSummary} form="glycans" errorJson={pageErrorsJson}></ErrorSummary>
+          <ErrorSummary
+            show={showErrorSummary}
+            form="glycans"
+            errorJson={pageErrorsJson}
+          ></ErrorSummary>
         )}
         <div>
           <div>
@@ -265,7 +279,12 @@ const AddGlycan = props => {
           <Form className="radioform">
             <FormCheck className="line-break-1">
               <FormCheck.Label>
-                <FormCheck.Input type="radio" value="SequenceDefined" onChange={handleSelect} checked={defaultCheck} />
+                <FormCheck.Input
+                  type="radio"
+                  value="SequenceDefined"
+                  onChange={handleSelect}
+                  checked={defaultCheck}
+                />
                 {displayNames.glycan.SEQUENCE_DEFINED}
               </FormCheck.Label>
             </FormCheck>
@@ -291,7 +310,12 @@ const AddGlycan = props => {
 
             <FormCheck>
               <FormCheck.Label className="disableradio">
-                <FormCheck.Input type="radio" value="ClassificationBased" disabled label="Classification Based" />
+                <FormCheck.Input
+                  type="radio"
+                  value="ClassificationBased"
+                  disabled
+                  label="Classification Based"
+                />
                 {displayNames.glycan.CLASSIFICATION_BASED}
               </FormCheck.Label>
             </FormCheck>
@@ -337,7 +361,8 @@ const AddGlycan = props => {
                   <FormLabel
                     label="Name"
                     className={
-                      userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
+                      userSelection.selectedGlycan === "Unknown" ||
+                      userSelection.selectedGlycan === "Other"
                         ? "required-asterik"
                         : ""
                     }
@@ -350,11 +375,15 @@ const AddGlycan = props => {
                       value={userSelection.name}
                       onChange={handleChange}
                       isInvalid={
-                        userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
+                        userSelection.selectedGlycan === "Unknown" ||
+                        userSelection.selectedGlycan === "Other"
                           ? validateName
                           : ""
                       }
-                      required={userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"}
+                      required={
+                        userSelection.selectedGlycan === "Unknown" ||
+                        userSelection.selectedGlycan === "Other"
+                      }
                       maxLength={50}
                     />
                     <Feedback message="Name is required." />
@@ -364,7 +393,9 @@ const AddGlycan = props => {
                 <Form.Group
                   as={Row}
                   controlId="glytoucanId"
-                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                  className={
+                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                  }
                 >
                   <FormLabel label="GlyTouCan ID" />
                   <Col md={4}>
@@ -394,7 +425,8 @@ const AddGlycan = props => {
                   as={Row}
                   controlId="sequence"
                   className={
-                    userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
+                    userSelection.selectedGlycan === "SequenceDefined" ||
+                    userSelection.selectedGlycan === "Other"
                       ? ""
                       : "hide-content"
                   }
@@ -414,7 +446,9 @@ const AddGlycan = props => {
                     />
                     <Feedback message="Please Enter Valid Sequence" />
                     <span className="character-counter" style={{ marginLeft: "80%" }}>
-                      {userSelection.sequence && userSelection.sequence.length > 0 ? userSelection.sequence.length : ""}
+                      {userSelection.sequence && userSelection.sequence.length > 0
+                        ? userSelection.sequence.length
+                        : ""}
                       /5000
                     </span>
                   </Col>
@@ -423,7 +457,9 @@ const AddGlycan = props => {
                 <Form.Group
                   as={Row}
                   controlId="sequenceType"
-                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                  className={
+                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                  }
                 >
                   <FormLabel label="Sequence Type" className="required-asterik" />
                   <Col md={4}>
@@ -460,11 +496,13 @@ const AddGlycan = props => {
                       isInvalid={invalidMass}
                       isValid={validate}
                       required={true}
-                      onKeyDown={e => {
+                      onKeyDown={(e) => {
                         isValidNumber(e);
                       }}
                     />
-                    <Feedback message={invalidMass ? "Mass should be greater than 0" : "Please Enter Mass"} />
+                    <Feedback
+                      message={invalidMass ? "Mass should be greater than 0" : "Please Enter Mass"}
+                    />
                   </Col>
                 </Form.Group>
 
@@ -516,7 +554,9 @@ const AddGlycan = props => {
                       maxLength={2000}
                     />
                     <span className="character-counter">
-                      {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : ""}
+                      {userSelection.comment && userSelection.comment.length > 0
+                        ? userSelection.comment.length
+                        : ""}
                       /2000
                     </span>
                   </Col>
@@ -572,7 +612,12 @@ const AddGlycan = props => {
               <Form.Group as={Row} controlId="glycanSelected">
                 <FormLabel label="Glycan Type" />
                 <Col>
-                  <Form.Control type="text" name="glycanType" value={userSelection.selectedGlycan} disabled />
+                  <Form.Control
+                    type="text"
+                    name="glycanType"
+                    value={userSelection.selectedGlycan}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
@@ -594,7 +639,12 @@ const AddGlycan = props => {
               >
                 <FormLabel label={displayNames.glycan.GLYTOUCAN_ID} />
                 <Col>
-                  <Form.Control type="text" name="glytoucanId" value={userSelection.glytoucanId} disabled />
+                  <Form.Control
+                    type="text"
+                    name="glytoucanId"
+                    value={userSelection.glytoucanId}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
@@ -602,14 +652,21 @@ const AddGlycan = props => {
                 as={Row}
                 controlId="sequence"
                 className={
-                  userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
+                  userSelection.selectedGlycan === "SequenceDefined" ||
+                  userSelection.selectedGlycan === "Other"
                     ? ""
                     : "hide-content"
                 }
               >
                 <FormLabel label={displayNames.glycan.SEQUENCE} />
                 <Col>
-                  <Form.Control as="textarea" rows="15" name="sequence" value={userSelection.sequence} disabled />
+                  <Form.Control
+                    as="textarea"
+                    rows="15"
+                    name="sequence"
+                    value={userSelection.sequence}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
@@ -627,14 +684,25 @@ const AddGlycan = props => {
               <Form.Group as={Row} controlId="internalId">
                 <FormLabel label={displayNames.glycan.INTERNAL_ID} />
                 <Col>
-                  <Form.Control type="text" name="internalId" value={userSelection.internalId} disabled />
+                  <Form.Control
+                    type="text"
+                    name="internalId"
+                    value={userSelection.internalId}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
               <Form.Group as={Row} controlId="comments">
                 <FormLabel label="Comments" />
                 <Col>
-                  <Form.Control as="textarea" rows={4} name="comment" value={userSelection.comment} disabled />
+                  <Form.Control
+                    as="textarea"
+                    rows={4}
+                    name="comment"
+                    value={userSelection.comment}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
             </Form>
@@ -663,7 +731,7 @@ const AddGlycan = props => {
   }
 
   function checkGlytoucanSuccess(response) {
-    response.text().then(parsedJson => {
+    response.text().then((parsedJson) => {
       setUserSelection({ sequence: parsedJson });
       setRegistrationCheckFlag(false);
       getGlytoucanRegistration();
@@ -674,7 +742,7 @@ const AddGlycan = props => {
   }
 
   function checkGlytoucanFailure(response) {
-    response.json().then(parsedJson => {
+    response.json().then((parsedJson) => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
       setRegistrationCheckFlag(true);
@@ -712,7 +780,7 @@ const AddGlycan = props => {
         name: userSelection.name,
         description: userSelection.comment,
         type: glycanType,
-        mass: userSelection.mass
+        mass: userSelection.mass,
       },
       addGlycanSuccess,
       addGlycanFailure
@@ -727,7 +795,7 @@ const AddGlycan = props => {
   }
 
   function addGlycanFailure(response) {
-    response.json().then(parsedJson => {
+    response.json().then((parsedJson) => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
     });
