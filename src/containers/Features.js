@@ -12,6 +12,7 @@ import { Title } from "../components/FormControls";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);
+
   return (
     <>
       <Helmet>
