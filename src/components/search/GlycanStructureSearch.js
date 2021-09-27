@@ -13,7 +13,7 @@ import { ErrorSummary } from "../../components/ErrorSummary";
 import SelectControl from "./SelectControl";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import ExampleExploreControl from "../ExampleExploreControl";
+import ExampleSequenceControl from "../ExampleSequenceControl";
 
 const structureSearch = glycanSearchData.structure_search;
 
@@ -192,7 +192,7 @@ export default function GlycanStructureSearch(props) {
               placeholderId={structureSearch.sequence_type.placeholderId}
               placeholder={structureSearch.sequence_type.placeholder}
               inputValue={inputValue.sequenceFormat}
-              setInputValue={(value) => setInputValue({ sequenceFormat: value })}
+              setInputValue={(value) => setInputValue({ sequenceFormat: value, sequence: "" })}
               menu={structureSearch.sequence_type.options}
               error={touched.sequenceFormat && errors.sequenceFormat}
               onBlur={() => setTouched({ sequenceFormat: true })}
@@ -234,7 +234,7 @@ export default function GlycanStructureSearch(props) {
               <FormHelperText error>{structureSearch.sequence.errorText}</FormHelperText>
             )}
             {inputValue.sequenceFormat && (
-              <ExampleExploreControl
+              <ExampleSequenceControl
                 setInputValue={(id) => {
                   setInputValue({ sequence: id });
                 }}

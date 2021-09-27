@@ -16,7 +16,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import { withStyles } from "@material-ui/core/styles";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import ExampleExploreControl from "../ExampleExploreControl";
+import ExampleSequenceControl from "../ExampleSequenceControl";
 
 const BlueCheckbox = withStyles({
   root: {
@@ -202,7 +202,7 @@ export default function GlycanSubstructureSearch(props) {
               placeholderId={subStructureSearch.sequence_type.placeholderId}
               placeholder={subStructureSearch.sequence_type.placeholder}
               inputValue={inputValue.sequenceFormat}
-              setInputValue={(value) => setInputValue({ sequenceFormat: value })}
+              setInputValue={(value) => setInputValue({ sequenceFormat: value, sequence: "" })}
               menu={subStructureSearch.sequence_type.options}
               error={touched.sequenceFormat && errors.sequenceFormat}
               onBlur={() => setTouched({ sequenceFormat: true })}
@@ -245,7 +245,7 @@ export default function GlycanSubstructureSearch(props) {
                 <FormHelperText error>{subStructureSearch.sequence.errorText}</FormHelperText>
               )}
             {inputValue.sequenceFormat && (
-              <ExampleExploreControl
+              <ExampleSequenceControl
                 setInputValue={(id) => {
                   setInputValue({ sequence: id });
                 }}
