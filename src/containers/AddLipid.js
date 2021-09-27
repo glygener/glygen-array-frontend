@@ -929,7 +929,7 @@ const AddLipid = props => {
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="lipids"
+            form="linkers"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
           />

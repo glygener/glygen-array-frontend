@@ -416,7 +416,7 @@ const AddOtherMolecule = props => {
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="othermolecules"
+            form="linkers"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
           />

@@ -108,7 +108,7 @@ const AddPeptide = props => {
       if (peptide.sequence === "") {
         return;
       } else {
-        var seqError = validateSequence("PEPTIDE_LINKER", peptide.sequence);
+        var seqError = validateSequence("PEPTIDE_LINKER", peptide.sequence.trim());
         setSequenceError(seqError);
         if (seqError !== "") {
           return;
@@ -146,9 +146,11 @@ const AddPeptide = props => {
     const newValue = e.target.value;
 
     setPeptide({ [name]: newValue });
+    setValidate(false);
   };
 
   const handleBack = () => {
+    setShowErrorSummary(false);
     var stepDecrement = 1;
     if (activeStep === 1) {
       setValidate(false);
@@ -320,6 +322,11 @@ const AddPeptide = props => {
                   />
                   {peptide.sequence === "" && <Feedback message="Sequence is required" />}
                   {sequenceError !== "" && <Feedback message={sequenceError} />}
+                  <Feedback message="Please Enter Valid Sequence" />
+                  <span className="character-counter" style={{ marginLeft: "80%" }}>
+                    {peptide.sequence && peptide.sequence.length > 0 ? peptide.sequence.length : ""}
+                    /10000
+                  </span>
                 </Col>
               </Form.Group>
             </>
@@ -330,7 +337,7 @@ const AddPeptide = props => {
         if (activeStep === 2) {
           return (
             <>
-              <Form className="radioform2" validated={validate && validatedCommNonComm}>
+              <Form noValidate className="radioform2" validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
                   <FormLabel label="Name" className="required-asterik" />
                   <Col md={4}>
@@ -340,7 +347,7 @@ const AddPeptide = props => {
                       placeholder="name"
                       value={peptide.name}
                       onChange={handleChange}
-                      isInValid={validate}
+                      isInvalid={validate}
                       maxLength={100}
                       required
                     />
@@ -499,7 +506,7 @@ const AddPeptide = props => {
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
                       rows={key === "sequence" ? "15" : "4"}
                       name={key}
-                      placeholder={"-"}
+                      placeholder={""}
                       value={peptide[key]}
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}
@@ -509,24 +516,30 @@ const AddPeptide = props => {
               )
             )}
 
-            <Form.Group as={Row} controlId="publications">
-              <FormLabel label="Publications" />
-              <Col md={4}>
-                {peptide.publications && peptide.publications.length > 0
-                  ? peptide.publications.map(pub => {
-                      return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
-                    })
-                  : ""}
-              </Col>
-            </Form.Group>
+            {peptide.publications && peptide.publications.length > 0 && (
+              <Form.Group as={Row} controlId="publications">
+                <FormLabel label="Publications" />
+                <Col md={4}>
+                  {peptide.publications && peptide.publications.length > 0
+                    ? peptide.publications.map(pub => {
+                        return (
+                          <li>
+                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
+                          </li>
+                        );
+                      })
+                    : ""}
+                </Col>
+              </Form.Group>
+            )}
 
-            <Form.Group as={Row} controlId="urls">
-              <FormLabel label="Urls" />
-              <Col md={4}>
-                {peptide.urls && peptide.urls.length > 0 ? (
-                  peptide.urls.map((url, index) => {
+            {peptide.urls && peptide.urls.length > 0 && (
+              <Form.Group as={Row} controlId="urls">
+                <FormLabel label="Urls" />
+                <Col md={4}>
+                  {peptide.urls.map((url, index) => {
                     return (
-                      <div style={{ marginTop: "8px" }} key={index}>
+                      <li style={{ marginTop: "8px" }} key={index}>
                         <Link
                           style={{ fontSize: "0.9em" }}
                           href={externalizeUrl(url)}
@@ -536,14 +549,12 @@ const AddPeptide = props => {
                           {url}
                         </Link>
                         <br />
-                      </div>
+                      </li>
                     );
-                  })
-                ) : (
-                  <div style={{ marginTop: "8px" }}>None</div>
-                )}
-              </Col>
-            </Form.Group>
+                  })}
+                </Col>
+              </Form.Group>
+            )}
           </Form>
         );
 
@@ -659,7 +670,7 @@ const AddPeptide = props => {
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="peptides"
+            form="linkers"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
           />

@@ -50,7 +50,7 @@ const Peptides = props => {
           showCommentsButton
           customCommentColumn
           showSearchBox
-          commentsRefColumn="description"
+          commentsRefColumn="comment"
           deleteWS="linkerdelete"
           editUrl="peptides/editlinker"
           keyColumn="id"

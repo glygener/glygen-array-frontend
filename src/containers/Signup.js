@@ -40,10 +40,6 @@ const Signup = () => {
     setUserInput({ [name]: newValue });
   };
 
-  const checkUsername = () => {
-    checkUserName();
-  };
-
   return (
     <>
       <Helmet>
@@ -75,8 +71,9 @@ const Signup = () => {
                     maxLength={100}
                     className={"custom-text-fields"}
                   />
-                  <Form.Label className={"label required-asterik"}>First name</Form.Label>  
-                  <Feedback message="Please enter first name." />{/* {userInput.firstName && userInput.firstName.length > 100 ? (
+                  <Form.Label className={"label required-asterik"}>First name</Form.Label>
+                  <Feedback message="Please enter first name." />
+                  {/* {userInput.firstName && userInput.firstName.length > 100 ? (
                     <Feedback message="Entry is too long - max length is 100." maxLength={true} />
                   ) : (
                   <Feedback message="Please enter first name." />
@@ -108,7 +105,7 @@ const Signup = () => {
                     name="userName"
                     placeholder=" "
                     onChange={handleChange}
-                    onBlur={checkUsername()}
+                    onBlur={() => checkUserName()}
                     value={userInput.username}
                     minLength={5}
                     maxLength={20}
@@ -317,7 +314,7 @@ const Signup = () => {
       setPageErrorMessage("Passwords must match.");
       setShowErrorSummary(true);
     } else if (e.currentTarget.checkValidity()) {
-      checkUsername();
+      checkUserName();
       wsCall("signup", "POST", null, false, userInput, signUpSuccess, signUpFailure);
     }
     e.preventDefault();

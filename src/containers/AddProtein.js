@@ -741,7 +741,7 @@ const AddProtein = props => {
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="proteins"
+            form="linkers"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
           />
