@@ -290,7 +290,7 @@ const GlygenTable = (props) => {
       {props.showRowsInfo && (
         <>
           <Row>
-            <Col md={{ span: 3, offset: 4 }}>
+            <Col>
               <GlygenTableRowsInfo
                 currentPage={tableElement.state ? tableElement.state.page : 0}
                 pageSize={tableElement.state ? tableElement.state.pageSize : 0}
@@ -319,20 +319,13 @@ const GlygenTable = (props) => {
             )}
 
             {props.showSearchBox && (
-              <Col
-                md={{ span: 3, offset: props.showOnlyMyLinkersOrGlycansCheckBox ? 0 : 2 }}
-                style={{
-                  marginBottom: "10px",
-                  marginRight: props.showOnlyMyLinkersOrGlycansCheckBox ? "-50px" : "",
-                }}
-              >
+              <Col md={5}>
                 <Form.Control
                   type="text"
                   name="search"
-                  placeholder="search table"
+                  placeholder="Search Table"
                   value={searchFilter}
                   onChange={handleFilterChange}
-                  style={{ width: "80%" }}
                 />
               </Col>
             )}
@@ -354,8 +347,8 @@ const GlygenTable = (props) => {
         defaultPageSize={props.defaultPageSize}
         data={props.data ? props.data : data}
         pages={pages}
-        loading={showLoading}
-        loadingText={<CardLoader pageLoading={showLoading} />}
+        // loading={showLoading}
+        // loadingText={<CardLoader pageLoading={showLoading} />}
         multiSort={false}
         showPaginationTop
         manual

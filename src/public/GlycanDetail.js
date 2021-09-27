@@ -14,7 +14,7 @@ import Button from "react-bootstrap/Button";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
-import { SearchTable } from "../components/search/SearchTable";
+import { GlygenTable } from "../components/GlygenTable";
 import { addCommas } from "../utils/commonUtils";
 
 function getDateTime(date) {
@@ -214,10 +214,10 @@ const GlycanList = (props) => {
             </Accordion.Collapse>
           </Card>
         </Accordion>
-        <Grid container style={{ marginTop: "32px" }}>
-          <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
-            <Card>
-              <SearchTable
+        <Grid container>
+          <Grid item xs={12} sm={12}>
+            <div>
+              <GlygenTable
                 columns={[
                   {
                     Header: "Dataset ID",
@@ -270,7 +270,7 @@ const GlycanList = (props) => {
                 infoRowsText="Datasets"
                 urlParams={[glycanId]}
               />
-            </Card>
+            </div>
           </Grid>
         </Grid>
       </Container>

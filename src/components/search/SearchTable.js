@@ -352,8 +352,8 @@ const SearchTable = (props) => {
         defaultPageSize={props.defaultPageSize}
         data={props.data ? props.data : data}
         pages={pages}
-        loading={showLoading}
-        loadingText={<CardLoader pageLoading={showLoading} />}
+        // loading={showLoading}
+        // loadingText={<CardLoader pageLoading={showLoading} />}
         multiSort={false}
         showPaginationTop
         manual

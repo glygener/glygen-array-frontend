@@ -9,7 +9,7 @@ import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
 import { Card } from "react-bootstrap";
-import { SearchTable } from "../components/search/SearchTable";
+import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 import { addCommas } from "../utils/commonUtils";
@@ -84,10 +84,10 @@ const GlycanList = (props) => {
             />
           )}
         </section>
-        <Grid container style={{ marginTop: "32px" }}>
-          <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
-            <Card>
-              <SearchTable
+        <Grid container>
+          <Grid item xs={12} sm={12}>
+            <div>
+              <GlygenTable
                 columns={[
                   {
                     Header: "Glycan ID",
@@ -140,7 +140,7 @@ const GlycanList = (props) => {
                 infoRowsText="Glycans"
                 qsParams={{ searchId }}
               />
-            </Card>
+            </div>
           </Grid>
         </Grid>
       </Container>
