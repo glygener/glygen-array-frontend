@@ -101,7 +101,7 @@ const GlycanList = (props) => {
                   {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
-                    Cell: (row) => (row.value ? row.value : "No data available"),
+                    Cell: (row) => (row.value ? row.value : ""),
                   },
                   {
                     Header: "Structure Image",

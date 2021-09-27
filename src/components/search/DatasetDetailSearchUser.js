@@ -153,7 +153,7 @@ const DatasetDetailSearchUser = (props) => {
               Clear Fields
             </Button>
             <Button className="gg-btn-blue" onClick={searchDatasetAdvClick}>
-              Search Glycan
+              Search Dataset
             </Button>
           </Row>
         </Grid>
