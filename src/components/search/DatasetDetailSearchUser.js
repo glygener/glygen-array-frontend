@@ -247,7 +247,7 @@ const DatasetDetailSearchUser = (props) => {
                 title={datasetSearch.institution.tooltip.title}
                 text={datasetSearch.institution.tooltip.text}
               />
-              Institution
+              Organization/Institution
             </Typography>
             <OutlinedInput
               fullWidth
