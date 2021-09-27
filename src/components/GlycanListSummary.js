@@ -2,6 +2,7 @@ import React from "react";
 import { Row, Col } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import { addCommas } from "../utils/commonUtils";
 
 function getDateTime() {
   var now = new Date();
@@ -65,10 +66,10 @@ const GlycanListSummary = (props) => {
           {minMass && maxMass && (
             <Row className="summary-table-col">
               <Col align="right" xs={6} sm={6} md={6} lg={6}>
-                Mass:
+                Monoisotopic Mass:
               </Col>
               <Col align="left" xs={6} sm={6} md={6} lg={6}>
-                {minMass.toFixed(0)}&#8209;{maxMass.toFixed(0)} Da
+                {addCommas(minMass.toFixed(0))}&#8209;{addCommas(maxMass.toFixed(0))} Da
               </Col>
             </Row>
           )}
@@ -91,7 +92,9 @@ const GlycanListSummary = (props) => {
                 Sequence:
               </Col>
               <Col align="left" xs={6} sm={6} md={6} lg={6}>
-                {structure.sequence}
+                {structure.sequence.split("\n").map((line) => (
+                  <div>{line}</div>
+                ))}
               </Col>
             </Row>
           )}

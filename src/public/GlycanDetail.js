@@ -15,6 +15,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
 import { SearchTable } from "../components/search/SearchTable";
+import { addCommas } from "../utils/commonUtils";
 
 function getDateTime(date) {
   var now = new Date(date);
@@ -40,7 +41,8 @@ function getDateTime(date) {
   if (second.toString().length === 1) {
     second = "0" + second;
   }
-  var dateTime = year + "/" + month + "/" + day + " " + hour + ":" + minute + ":" + second;
+  var dateTime = year + "/" + month + "/" + day;
+  // var dateTime = year + "/" + month + "/" + day + " " + hour + ":" + minute + ":" + second;
   return dateTime;
 }
 
@@ -169,23 +171,36 @@ const GlycanList = (props) => {
                   {glycanData && glycanData.glytoucanId && (
                     <div>
                       <strong>GlyTouCan ID: </strong>
-                      {glycanData.glytoucanId}
+                      <a
+                        href={"https://glytoucan.org/Structures/Glycans/" + glycanData.glytoucanId}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {glycanData.glytoucanId}
+                      </a>
                     </div>
                   )}
 
                   {/* mass */}
                   {glycanData && glycanData.mass && (
                     <div>
-                      <strong>Mass: </strong>
-                      {parseInt(glycanData.mass).toFixed(2)}
+                      <strong>Monoisotopic Mass: </strong>
+                      {addCommas(parseInt(glycanData.mass).toFixed(2))} Da
                     </div>
                   )}
 
                   {/* Creation date/user */}
                   {glycanData && glycanData.dateCreated && (
                     <div>
-                      <strong>Creation date/user: </strong>
+                      <strong>Creation date: </strong>
                       {getDateTime(glycanData.dateCreated)}
+                    </div>
+                  )}
+                  {/* Username */}
+                  {glycanData && glycanData.user.name && (
+                    <div>
+                      <strong>Username: </strong>
+                      {glycanData.user.name}
                     </div>
                   )}
 
@@ -216,7 +231,7 @@ const GlycanList = (props) => {
                     ),
                   },
                   {
-                    Header: "Dataset",
+                    Header: "Dataset Name",
                     accessor: "name",
                     minWidth: 150,
                     Cell: (row) => (
@@ -240,7 +255,7 @@ const GlycanList = (props) => {
                     accessor: "user.name",
                   },
                   {
-                    Header: "Published Date",
+                    Header: "Date Published",
                     accessor: "dateCreated",
                     minWidth: 150,
                     Cell: (row) => <>{getDateTime(row.original.dateCreated)}</>,

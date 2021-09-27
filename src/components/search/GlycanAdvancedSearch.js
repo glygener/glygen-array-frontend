@@ -99,8 +99,8 @@ const GlycanAdvancedSearch = (props) => {
         Math.ceil(initSearchData.maxGlycanMass || 0),
       ],
       massRangeInput: [
-        String(Math.floor(initSearchData.minGlycanMass || 0)),
-        String(Math.ceil(initSearchData.maxGlycanMass || 0)),
+        Math.floor(initSearchData.minGlycanMass || 0).toLocaleString(),
+        Math.ceil(initSearchData.maxGlycanMass || 0).toLocaleString(),
       ],
     });
   };
@@ -124,7 +124,7 @@ const GlycanAdvancedSearch = (props) => {
       setInputValue({
         glytoucanIds: glytoucanIds ? glytoucanIds.join(", ") : "",
         massRange: [Math.floor(minMass), Math.ceil(maxMass)],
-        massRangeInput: [String(Math.floor(minMass)), String(Math.ceil(maxMass))],
+        massRangeInput: [Math.floor(minMass).toLocaleString(), Math.ceil(maxMass).toLocaleString()],
       });
     }
   }, [props.searchData]);
@@ -147,8 +147,8 @@ const GlycanAdvancedSearch = (props) => {
       setInputValue({
         massRange: [Math.floor(data.minGlycanMass || 0), Math.ceil(data.maxGlycanMass || 0)],
         massRangeInput: [
-          String(Math.floor(data.minGlycanMass || 0)),
-          String(Math.ceil(data.maxGlycanMass || 0)),
+          Math.floor(data.minGlycanMass || 0).toLocaleString(),
+          Math.ceil(data.maxGlycanMass || 0).toLocaleString(),
         ],
       });
     });

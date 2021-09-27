@@ -12,6 +12,7 @@ import { Card } from "react-bootstrap";
 import { SearchTable } from "../components/search/SearchTable";
 import { StructureImage } from "../components/StructureImage";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
+import { addCommas } from "../utils/commonUtils";
 
 const GlycanList = (props) => {
   const { searchId } = useParams();
@@ -118,10 +119,10 @@ const GlycanList = (props) => {
                       ),
                   },
                   {
-                    Header: "Mass",
+                    Header: "Monoisotopic Mass (Da)",
                     accessor: "mass",
                     // // eslint-disable-next-line react/prop-types
-                    Cell: (row) => (row.value ? parseFloat(row.value).toFixed(2) : ""),
+                    Cell: (row) => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : ""),
                   },
                   {
                     Header: "Dataset Count",
