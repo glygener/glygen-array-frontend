@@ -192,8 +192,14 @@ const GlycanList = (props) => {
                   {/* Creation date/user */}
                   {glycanData && glycanData.dateCreated && (
                     <div>
-                      <strong>Creation date: </strong>
-                      {getDateTime(glycanData.dateCreated)} <strong>{glycanData.user.name}</strong>
+                      <strong>Creation Date: </strong>
+                      {getDateTime(glycanData.dateCreated)}{" "}
+                      {glycanData && glycanData.dateCreated && (
+                        <span>
+                          <strong> By Owner: </strong>
+                          {glycanData.user.name}
+                        </span>
+                      )}
                     </div>
                   )}
                   {/* Description */}
