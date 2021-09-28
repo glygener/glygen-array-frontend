@@ -9,6 +9,7 @@ import { Col } from "react-bootstrap";
 import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
+import { getToolTip } from "../utils/commonUtils";
 
 const Glycans = props => {
   useEffect(props.authCheckAgent, []);
@@ -47,6 +48,7 @@ const Glycans = props => {
             {
               Header: "Id",
               accessor: "id",
+              Cell: row => getToolTip(row.original.id),
               style: {
                 textAlign: "left"
               }
@@ -54,17 +56,20 @@ const Glycans = props => {
             {
               Header: "Internal Id",
               accessor: "internalId",
+              Cell: row => getToolTip(row.original.internalId),
               style: {
                 textAlign: "left"
               }
             },
             {
               Header: "GlyTouCan ID",
-              accessor: "glytoucanId"
+              accessor: "glytoucanId",
+              Cell: row => getToolTip(row.original.glytoucanId)
             },
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
+              Cell: row => getToolTip(row.original.name)
             },
             {
               Header: "Structure Image",
@@ -78,7 +83,7 @@ const Glycans = props => {
               Header: "Mass",
               accessor: "mass",
               // eslint-disable-next-line react/prop-types
-              Cell: row => (row.value ? parseFloat(row.value).toFixed(4) : "")
+              Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
             }
           ]}
           defaultPageSize={10}

@@ -93,55 +93,61 @@ const EditGlycan = props => {
         )}
 
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-          <Form.Group as={Row} controlId="internalId">
-            <FormLabel label="Internal Id" />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                placeholder="internal Id"
-                name="internalId"
-                value={glycanDetails.internalId}
-                onChange={handleChange}
-                maxLength={30}
-              />
-            </Col>
-          </Form.Group>
+          {glycanDetails.internalId && (
+            <Form.Group as={Row} controlId="internalId">
+              <FormLabel label="Internal Id" />
+              <Col md={4}>
+                <Form.Control
+                  type="text"
+                  placeholder="internal Id"
+                  name="internalId"
+                  value={glycanDetails.internalId}
+                  onChange={handleChange}
+                  maxLength={30}
+                />
+              </Col>
+            </Form.Group>
+          )}
 
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Name" className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""} />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                placeholder="name"
-                name="name"
-                value={glycanDetails.name}
-                onChange={handleChange}
-                required={glycanDetails.type === "UNKNOWN" ? true : false}
-                maxLength={50}
-              />
-              <Feedback message="Please Enter Glycan Name." />
-            </Col>
-          </Form.Group>
+          {glycanDetails.name && (
+            <Form.Group as={Row} controlId="name">
+              <FormLabel label="Name" className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""} />
+              <Col md={4}>
+                <Form.Control
+                  type="text"
+                  placeholder="name"
+                  name="name"
+                  value={glycanDetails.name}
+                  onChange={handleChange}
+                  required={glycanDetails.type === "UNKNOWN" ? true : false}
+                  maxLength={50}
+                />
+                <Feedback message="Please Enter Glycan Name." />
+              </Col>
+            </Form.Group>
+          )}
 
-          <Form.Group as={Row} controlId="comment">
-            <FormLabel label="Comment" />
-            <Col md={4}>
-              <Form.Control
-                as="textarea"
-                placeholder="comment"
-                name="description"
-                value={glycanDetails.description}
-                onChange={handleChange}
-                maxLength={2000}
-              />
-              <span className="character-counter" style={{ marginLeft: "80%" }}>
-                {glycanDetails.description && glycanDetails.description.length > 0
-                  ? glycanDetails.description.length
-                  : ""}
-                /2000
-              </span>
-            </Col>
-          </Form.Group>
+          {glycanDetails.description && (
+            <Form.Group as={Row} controlId="comment">
+              <FormLabel label="Comment" />
+              <Col md={4}>
+                <Form.Control
+                  as="textarea"
+                  placeholder="comment"
+                  name="description"
+                  value={glycanDetails.description}
+                  onChange={handleChange}
+                  maxLength={2000}
+                />
+                <span className="character-counter" style={{ marginLeft: "80%" }}>
+                  {glycanDetails.description && glycanDetails.description.length > 0
+                    ? glycanDetails.description.length
+                    : ""}
+                  /2000
+                </span>
+              </Col>
+            </Form.Group>
+          )}
 
           <Form.Group as={Row} controlId="glycanType">
             <FormLabel label="Type" />

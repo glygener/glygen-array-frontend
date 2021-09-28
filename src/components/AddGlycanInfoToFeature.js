@@ -471,6 +471,26 @@ const AddGlycanInfoToFeature = props => {
     );
   };
 
+  const getRange = () => {
+    return (
+      <>
+        <Form.Group as={Row} controlId="range">
+          <FormLabel label="Range" />
+          <Col md={4}>
+            <Form.Control
+              type="number"
+              name={"range"}
+              placeholder={"range"}
+              value={props.addGlycanInfoToFeature.range}
+              onChange={e => props.setAddGlycanInfoToFeature({ range: e.target.value })}
+              min={0}
+            />
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
+
   return props.step2 ? (
     <>
       {showErrorSummary === true && (
@@ -583,6 +603,8 @@ const AddGlycanInfoToFeature = props => {
         </Form.Group>
       )}
     </>
+  ) : props.step3 ? (
+    getRange()
   ) : (
     <>
       <Form

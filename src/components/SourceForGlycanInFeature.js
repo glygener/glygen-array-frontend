@@ -22,14 +22,16 @@ const SourceForGlycanInFeature = props => {
     urls: [],
     papers: [],
     opensRing: 3,
-    equilibriumComment: ""
+    equilibriumComment: "",
+    range: ""
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
 
   const [addGlycanInfoToFeature, setAddGlycanInfoToFeature] = useReducer(reducer, AddGlycanInfoToFeatureIntiState);
 
-  const steps = ["Select Glycans", "Add Reducing End Information", "Add Source"];
+  let steps = ["Select Glycans", "Add Reducing End Information", "Add Source"];
+  let stepsGlycos = ["Select Glycans", "Add Reducing End Information", "Add Source", "Add Range"];
   const [activeStep, setActiveStep] = useState(0);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -51,65 +53,136 @@ const SourceForGlycanInFeature = props => {
       }
     }
 
-    if (activeStep === 2) {
-      var glycansList = props.featureAddState.glycans;
+    if (
+      activeStep === 2 &&
+      (props.featureAddState.type !== "GLYCO_PEPTIDE" ||
+        (props.featureAddState.type === "GLYCO_PEPTIDE" && props.featureAddState.positionDetails.isPosition))
+    ) {
+      submitSelectedData();
+    }
 
-      var selectedRow = glycansList.find(e => e.id === props.currentGlycanSelection.id && !e.source);
-      var selectedRowIndex = glycansList.indexOf(selectedRow);
-
-      let source = {
-        type: "NOTRECORDED"
-      };
-
-      if (addGlycanInfoToFeature.source === "commercial") {
-        if (addGlycanInfoToFeature.commercial.vendor === "") {
-          setAddGlycanInfoToFeature({ validatedCommNonComm: true });
-          return;
-        }
-
-        source.type = "COMMERCIAL";
-        source.vendor = addGlycanInfoToFeature.commercial.vendor;
-        source.catalogueNumber = addGlycanInfoToFeature.commercial.catalogueNumber;
-        source.batchId = addGlycanInfoToFeature.commercial.batchId;
-      } else if (addGlycanInfoToFeature.source === "nonCommercial") {
-        if (addGlycanInfoToFeature.nonCommercial.providerLab === "") {
-          setAddGlycanInfoToFeature({ validatedCommNonComm: true });
-          return;
-        }
-
-        source.type = "NONCOMMERCIAL";
-        source.batchId = addGlycanInfoToFeature.commercial.batchId;
-        source.providerLab = addGlycanInfoToFeature.nonCommercial.providerLab;
-        source.method = addGlycanInfoToFeature.nonCommercial.method;
-        source.comment = addGlycanInfoToFeature.nonCommercial.sourceComment;
-      }
-
-      selectedRow.source = source;
-      selectedRow.urls = addGlycanInfoToFeature.urls;
-      selectedRow.papers = addGlycanInfoToFeature.papers;
-      selectedRow.opensRing = addGlycanInfoToFeature.opensRing;
-
-      if (addGlycanInfoToFeature.opensRing === 4) {
-        selectedRow.equilibriumComment = addGlycanInfoToFeature.equilibriumComment;
-      }
-
-      glycansList[selectedRowIndex] = selectedRow;
-
-      props.setFeatureAddState({
-        glycans: glycansList
-      });
-
-      props.setShowGlycanPicker(false);
-      props.setCurrentGlycanSelection();
+    if (
+      activeStep === 3 &&
+      props.featureAddState.type === "GLYCO_PEPTIDE" &&
+      !props.featureAddState.positionDetails.isPosition
+    ) {
+      submitSelectedData();
     }
 
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
 
+  function submitSelectedData() {
+    debugger;
+    let glycansList;
+    let selectedRow;
+    let selectedRowIndex;
+    let selectedPosition;
+
+    if (
+      props.featureAddState.type !== "GLYCO_PEPTIDE" ||
+      (props.featureAddState.type === "GLYCO_PEPTIDE" && props.featureAddState.positionDetails.isPosition)
+    ) {
+      glycansList = props.featureAddState.glycans;
+    } else {
+      glycansList = props.featureAddState.rangeGlycans;
+    }
+
+    if (props.featureAddState.positionDetails.isPosition) {
+      selectedPosition = glycansList.find(e => e.position === props.featureAddState.positionDetails.number);
+      selectedRow = selectedPosition.glycan;
+      selectedRowIndex = glycansList.indexOf(selectedPosition);
+    } else {
+      selectedRow = glycansList.find(e => e.id === props.currentGlycanSelection.id && !e.source);
+      selectedRowIndex = glycansList.indexOf(selectedRow);
+    }
+
+    let source = {
+      type: "NOTRECORDED"
+    };
+
+    if (addGlycanInfoToFeature.source === "commercial") {
+      if (addGlycanInfoToFeature.commercial.vendor === "") {
+        setAddGlycanInfoToFeature({ validatedCommNonComm: true });
+        return;
+      }
+
+      source.type = "COMMERCIAL";
+      source.vendor = addGlycanInfoToFeature.commercial.vendor;
+      source.catalogueNumber = addGlycanInfoToFeature.commercial.catalogueNumber;
+      source.batchId = addGlycanInfoToFeature.commercial.batchId;
+    } else if (addGlycanInfoToFeature.source === "nonCommercial") {
+      if (addGlycanInfoToFeature.nonCommercial.providerLab === "") {
+        setAddGlycanInfoToFeature({ validatedCommNonComm: true });
+        return;
+      }
+
+      source.type = "NONCOMMERCIAL";
+      source.batchId = addGlycanInfoToFeature.commercial.batchId;
+      source.providerLab = addGlycanInfoToFeature.nonCommercial.providerLab;
+      source.method = addGlycanInfoToFeature.nonCommercial.method;
+      source.comment = addGlycanInfoToFeature.nonCommercial.sourceComment;
+    }
+
+    selectedRow.source = source;
+    selectedRow.urls = addGlycanInfoToFeature.urls;
+    selectedRow.papers = addGlycanInfoToFeature.papers;
+    selectedRow.opensRing = addGlycanInfoToFeature.opensRing;
+
+    if (addGlycanInfoToFeature.opensRing === 4) {
+      selectedRow.equilibriumComment = addGlycanInfoToFeature.equilibriumComment;
+    }
+
+    if (props.featureAddState.type === "GLYCO_PEPTIDE" && !props.featureAddState.positionDetails.isPosition) {
+      selectedRow.range = addGlycanInfoToFeature.range;
+      glycansList[selectedRowIndex] = selectedRow;
+      props.setFeatureAddState({
+        rangeGlycans: glycansList
+      });
+    } else if (props.featureAddState.positionDetails.isPosition) {
+      selectedPosition.glycan = selectedRow;
+      glycansList[selectedRowIndex] = selectedPosition;
+
+      let positionSelected = props.featureAddState.positionDetails;
+      positionSelected.isPosition = false;
+
+      props.setFeatureAddState({
+        glycans: glycansList,
+        positionDetails: positionSelected
+      });
+    } else {
+      glycansList[selectedRowIndex] = selectedRow;
+      props.setFeatureAddState({
+        glycans: glycansList
+      });
+    }
+
+    props.setShowGlycanPicker(false);
+    props.setCurrentGlycanSelection();
+  }
+
   const handleBack = () => {
     var stepDecrement = 1;
 
     setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
+  };
+
+  const getSteps = () => {
+    debugger;
+    if (props.featureAddState.type === "GLYCO_PEPTIDE" && !props.featureAddState.positionDetails.isPosition) {
+      steps = [...stepsGlycos];
+    }
+
+    return steps.map((label, index) => {
+      const stepProps = {};
+      const labelProps = {};
+
+      return (
+        <Step key={label} {...stepProps}>
+          <StepLabel {...labelProps}>{label}</StepLabel>
+        </Step>
+      );
+    });
   };
 
   function getStepContent(activeStep) {
@@ -135,6 +208,14 @@ const SourceForGlycanInFeature = props => {
             setAddGlycanInfoToFeature={setAddGlycanInfoToFeature}
           />
         );
+      case 3:
+        return (
+          <AddGlycanInfoToFeature
+            addGlycanInfoToFeature={addGlycanInfoToFeature}
+            setAddGlycanInfoToFeature={setAddGlycanInfoToFeature}
+            step3
+          />
+        );
 
       default:
         return "Invalid step";
@@ -142,17 +223,27 @@ const SourceForGlycanInFeature = props => {
   }
 
   function closeModal() {
+    debugger;
     if (props.currentGlycanSelection) {
       var glycansList = props.featureAddState.glycans;
-      var selectedRow = glycansList.filter(e => e.id === props.currentGlycanSelection.id);
 
-      if (selectedRow.length > 1) {
-        selectedRow = selectedRow[selectedRow.length - 1];
+      if (!props.featureAddState.positionDetails.isPosition) {
+        var selectedRow = glycansList.filter(e => e.id === props.currentGlycanSelection.id);
+
+        if (selectedRow.length > 1) {
+          selectedRow = selectedRow[selectedRow.length - 1];
+        } else {
+          selectedRow = selectedRow[0];
+        }
+        var selectedRowIndex = glycansList.indexOf(selectedRow);
+        glycansList.splice(selectedRowIndex, 1);
       } else {
-        selectedRow = selectedRow[0];
+        let selectedPosition = glycansList.find(e => e.position === props.featureAddState.positionDetails.number);
+        selectedRowIndex = glycansList.indexOf(selectedPosition);
+        selectedPosition.glycan = {};
+        glycansList[selectedRowIndex] = selectedPosition;
       }
-      var selectedRowIndex = glycansList.indexOf(selectedRow);
-      glycansList.splice(selectedRowIndex, 1);
+
       props.setFeatureAddState({ glycans: glycansList });
       props.setCurrentGlycanSelection();
     }
@@ -175,18 +266,7 @@ const SourceForGlycanInFeature = props => {
           >
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
-              <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
-                  const stepProps = {};
-                  const labelProps = {};
-
-                  return (
-                    <Step key={label} {...stepProps}>
-                      <StepLabel {...labelProps}>{label}</StepLabel>
-                    </Step>
-                  );
-                })}
-              </Stepper>
+              <Stepper activeStep={activeStep}>{getSteps()}</Stepper>
               <div className="button-div text-center">
                 <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
                   Back

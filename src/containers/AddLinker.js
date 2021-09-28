@@ -783,7 +783,7 @@ const AddLinker = props => {
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
                       rows={key === "sequence" ? "15" : "4"}
                       name={key}
-                      placeholder={"-"}
+                      placeholder={""}
                       value={linker[key]}
                       disabled
                       className={key === "sequence" ? "sequence-text-area" : false}

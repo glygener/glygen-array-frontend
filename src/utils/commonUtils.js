@@ -6,6 +6,7 @@ import AccordionContext from "react-bootstrap/AccordionContext";
 import React, { useContext } from "react";
 import { wsCall } from "../utils/wsUtils";
 import { includes } from "lodash";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 /**
  *
@@ -13,20 +14,7 @@ import { includes } from "lodash";
  * returns date string in MM/DD/YYYY format
  */
 export function getDateMMDDYYYY(date) {
-  var monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   var day = date.slice(8, 10);
   var month = date.slice(4, 7);
@@ -81,7 +69,7 @@ function parseJwt(token) {
   var base64 = decodeURIComponent(
     atob(base64Url)
       .split("")
-      .map(function (c) {
+      .map(function(c) {
         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
       })
       .join("")
@@ -120,10 +108,10 @@ export function csvToArray(csv) {
 export function isValidURL(str) {
   var pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
       "(\\#[-a-z\\d_]*)?$",
     "i"
   ); // fragment locator
@@ -187,7 +175,7 @@ export function scrollToTopIcon() {
             position: "absolute",
             float: "left",
             left: 0,
-            bottom: 0,
+            bottom: 0
           }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         />
@@ -196,28 +184,22 @@ export function scrollToTopIcon() {
   );
 }
 
-export function downloadFile(
-  file,
-  setPageErrorsJson,
-  setPageErrorMessage,
-  setShowErrorSummary,
-  wscall
-) {
+export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, wscall) {
   wsCall(
     wscall,
     "GET",
     {
       fileFolder: file.fileFolder,
       fileIdentifier: file.identifier,
-      originalName: file.originalName,
+      originalName: file.originalName
     },
     true,
     undefined,
-    (response) => fileDownloadSuccess(response),
-    (response) => fileDownloadFailure(response),
+    response => fileDownloadSuccess(response),
+    response => fileDownloadFailure(response),
     {
       Accept: "*/*",
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     }
   );
   function fileDownloadSuccess(response) {
@@ -228,7 +210,7 @@ export function downloadFile(
     const fileName = contentDisposition.substring(fileNameIndex, contentDisposition.length - 1);
 
     //   window.location.href = fileUrl;
-    response.blob().then((blob) => {
+    response.blob().then(blob => {
       var fileUrl = URL.createObjectURL(blob);
       var a = document.createElement("a");
       document.body.appendChild(a);
@@ -241,7 +223,7 @@ export function downloadFile(
   }
 
   function fileDownloadFailure(response) {
-    response.json().then((responseJson) => {
+    response.json().then(responseJson => {
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
       setShowErrorSummary(true);
@@ -302,7 +284,7 @@ const alphabets = [
   "X",
   "Y",
   "Z",
-  " ",
+  " "
 ];
 
 export function isValidNumber(e) {
@@ -382,4 +364,14 @@ export function addCommas(nStr) {
     x1 = x1.replace(rgx, "$1" + "," + "$2");
   }
   return x1 + x2;
+}
+
+export function getToolTip(displayValue) {
+  return (
+    <>
+      <LineTooltip text={displayValue}>
+        <span>{displayValue}</span>
+      </LineTooltip>
+    </>
+  );
 }
