@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { Row } from "react-bootstrap";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "react-bootstrap/Button";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 import glycanSearchData from "../../appData/glycanSearch";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
@@ -16,6 +14,7 @@ import ExampleExploreControl from "../ExampleExploreControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { withStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
+import { AutoTextInput } from "../../components/AutoTextInput";
 
 const BlueCheckbox = withStyles({
   root: {
@@ -157,7 +156,6 @@ const DatasetDetailSearchUser = (props) => {
             </Button>
           </Row>
         </Grid>
-
         {/* Username */}
         <Grid item xs={12} sm={10} md={10} className="pt-3">
           <FormControl fullWidth variant="outlined">
@@ -168,17 +166,14 @@ const DatasetDetailSearchUser = (props) => {
               />
               Username
             </Typography>
-            <OutlinedInput
-              fullWidth
-              multiline
-              error={inputValue.username.length > datasetSearch.username.length}
+            <AutoTextInput
+              length={datasetSearch.username.length}
+              errorText={datasetSearch.username.errorText}
               placeholder={datasetSearch.username.placeholder}
-              value={inputValue.username}
-              onChange={(e) => setInputValue({ username: e.target.value })}
-            ></OutlinedInput>
-            {inputValue.username.length > datasetSearch.username.length && (
-              <FormHelperText error>{datasetSearch.username.errorText}</FormHelperText>
-            )}
+              inputValue={inputValue.username}
+              setInputValue={(value) => setInputValue({ username: value })}
+              typeahedID="username"
+            />
             <ExampleExploreControl
               setInputValue={funcSetInputValuesUsername}
               inputValue={datasetSearch.username.examples}
@@ -195,17 +190,14 @@ const DatasetDetailSearchUser = (props) => {
               />
               Last Name
             </Typography>
-            <OutlinedInput
-              fullWidth
-              multiline
-              error={inputValue.lastName.length > datasetSearch.last_name.length}
+            <AutoTextInput
+              length={datasetSearch.last_name.length}
+              errorText={datasetSearch.last_name.errorText}
               placeholder={datasetSearch.last_name.placeholder}
-              value={inputValue.lastName}
-              onChange={(e) => setInputValue({ lastName: e.target.value })}
-            ></OutlinedInput>
-            {inputValue.lastName.length > datasetSearch.last_name.length && (
-              <FormHelperText error>{datasetSearch.last_name.errorText}</FormHelperText>
-            )}
+              inputValue={inputValue.lastName}
+              setInputValue={(value) => setInputValue({ lastName: value })}
+              typeahedID="lastname"
+            />
             <ExampleExploreControl
               setInputValue={funcSetInputValuesLastName}
               inputValue={datasetSearch.last_name.examples}
@@ -222,17 +214,14 @@ const DatasetDetailSearchUser = (props) => {
               />
               Group Name
             </Typography>
-            <OutlinedInput
-              fullWidth
-              multiline
-              error={inputValue.groupName.length > datasetSearch.group_name.length}
+            <AutoTextInput
+              length={datasetSearch.group_name.length}
+              errorText={datasetSearch.group_name.errorText}
               placeholder={datasetSearch.group_name.placeholder}
-              value={inputValue.groupName}
-              onChange={(e) => setInputValue({ groupName: e.target.value })}
-            ></OutlinedInput>
-            {inputValue.groupName.length > datasetSearch.group_name.length && (
-              <FormHelperText error>{datasetSearch.group_name.errorText}</FormHelperText>
-            )}
+              inputValue={inputValue.groupName}
+              setInputValue={(value) => setInputValue({ groupName: value })}
+              typeahedID="group"
+            />
             <ExampleExploreControl
               setInputValue={funcSetInputValuesGroupName}
               inputValue={datasetSearch.group_name.examples}
@@ -249,17 +238,14 @@ const DatasetDetailSearchUser = (props) => {
               />
               Organization/Institution
             </Typography>
-            <OutlinedInput
-              fullWidth
-              multiline
-              error={inputValue.institution.length > datasetSearch.institution.length}
+            <AutoTextInput
+              length={datasetSearch.institution.length}
+              errorText={datasetSearch.institution.errorText}
               placeholder={datasetSearch.institution.placeholder}
-              value={inputValue.institution}
-              onChange={(e) => setInputValue({ institution: e.target.value })}
-            ></OutlinedInput>
-            {inputValue.institution.length > datasetSearch.institution.length && (
-              <FormHelperText error>{datasetSearch.institution.errorText}</FormHelperText>
-            )}
+              inputValue={inputValue.institution}
+              setInputValue={(value) => setInputValue({ institution: value })}
+              typeahedID="organization"
+            />
             <ExampleExploreControl
               setInputValue={funcSetInputValuesInstitution}
               inputValue={datasetSearch.institution.examples}

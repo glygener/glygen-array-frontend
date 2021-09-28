@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { Row } from "react-bootstrap";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "react-bootstrap/Button";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 import glycanSearchData from "../../appData/glycanSearch";
 import { wsCall } from "../../utils/wsUtils";
 import { ErrorSummary } from "../../components/ErrorSummary";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import "../../css/Search.css";
 import ExampleExploreControl from "../ExampleExploreControl";
+import { AutoTextInput } from "../../components/AutoTextInput";
 
 const datasetSearch = glycanSearchData.dataset_search;
 const DatasetDetailSearchDataset = (props) => {
@@ -142,17 +141,14 @@ const DatasetDetailSearchDataset = (props) => {
               />
               Dataset Name
             </Typography>
-            <OutlinedInput
-              fullWidth
-              multiline
-              error={inputValue.datasetName.length > datasetSearch.dataset_name.length}
+            <AutoTextInput
+              length={datasetSearch.dataset_name.length}
+              errorText={datasetSearch.dataset_name.errorText}
               placeholder={datasetSearch.dataset_name.placeholder}
-              value={inputValue.datasetName}
-              onChange={(e) => setInputValue({ datasetName: e.target.value })}
-            ></OutlinedInput>
-            {inputValue.datasetName.length > datasetSearch.dataset_name.length && (
-              <FormHelperText error>{datasetSearch.dataset_name.errorText}</FormHelperText>
-            )}
+              inputValue={inputValue.datasetName}
+              setInputValue={(value) => setInputValue({ datasetName: value })}
+              typeahedID="dataset"
+            />
             <ExampleExploreControl
               setInputValue={funcSetInputValuesDataset}
               inputValue={datasetSearch.dataset_name.examples}
@@ -169,17 +165,14 @@ const DatasetDetailSearchDataset = (props) => {
               />
               Slide Name
             </Typography>
-            <OutlinedInput
-              fullWidth
-              multiline
-              error={inputValue.printedSlideName.length > datasetSearch.dataset_name.length}
+            <AutoTextInput
+              length={datasetSearch.printed_slide_name.length}
+              errorText={datasetSearch.printed_slide_name.errorText}
               placeholder={datasetSearch.printed_slide_name.placeholder}
-              value={inputValue.printedSlideName}
-              onChange={(e) => setInputValue({ printedSlideName: e.target.value })}
-            ></OutlinedInput>
-            {inputValue.printedSlideName.length > datasetSearch.printed_slide_name.length && (
-              <FormHelperText error>{datasetSearch.printed_slide_name.errorText}</FormHelperText>
-            )}
+              inputValue={inputValue.printedSlideName}
+              setInputValue={(value) => setInputValue({ printedSlideName: value })}
+              typeahedID="printedslide"
+            />
             <ExampleExploreControl
               setInputValue={funcSetInputValuesSlide}
               inputValue={datasetSearch.printed_slide_name.examples}
@@ -196,17 +189,14 @@ const DatasetDetailSearchDataset = (props) => {
               />
               PMID
             </Typography>
-            <OutlinedInput
-              fullWidth
-              multiline
-              error={inputValue.pmid.length > datasetSearch.pmid.length}
+            <AutoTextInput
+              length={datasetSearch.pmid.length}
+              errorText={datasetSearch.pmid.errorText}
               placeholder={datasetSearch.pmid.placeholder}
-              value={inputValue.pmid}
-              onChange={(e) => setInputValue({ pmid: e.target.value })}
-            ></OutlinedInput>
-            {inputValue.pmid.length > datasetSearch.pmid.length && (
-              <FormHelperText error>{datasetSearch.pmid.errorText}</FormHelperText>
-            )}
+              inputValue={inputValue.pmid}
+              setInputValue={(value) => setInputValue({ pmid: value })}
+              typeahedID="pmid"
+            />
             <ExampleExploreControl
               setInputValue={funcSetInputValuesPmid}
               inputValue={datasetSearch.pmid.examples}

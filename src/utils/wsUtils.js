@@ -270,6 +270,8 @@ export function getWsUrl(ws) {
       return ws_base_public + "/getarraydataset";
     case "getuserdetails":
       return ws_base_util + "/getuserdetails";
+    case "gettypeahead":
+      return ws_base_util + "/getTypeAhead";
     case "addslide":
       return ws_base_array + "/addSlide";
     case "getpublicsample":
