@@ -7,7 +7,7 @@ import { TopNavBar } from "./components/TopNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { getLoginStatus, getPageName } from "./utils/commonUtils";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ScrollToTopBtn } from "./components/ScrollToTop";
 import { faEdit, faTrashAlt, faClone, faEyeSlash, faEye } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -35,7 +35,7 @@ import {
 import { CssBaseline } from "@material-ui/core";
 import { ResponsiveEmbed } from "react-bootstrap";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     fontFamily: [
       "-apple-system",

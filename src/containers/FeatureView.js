@@ -7,6 +7,7 @@ import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
+import { getToolTip } from "../utils/commonUtils";
 
 const FeatureView = props => {
   let { featureId } = useParams();
@@ -236,6 +237,14 @@ const FeatureView = props => {
     }
   };
 
+  const getPeptide = () => {
+    if (props.type === "GLYCO_PEPTIDE" && props.peptide) {
+      return displayDetails(props.peptide, "case4", "Peptide");
+    } else if (featureDetails && featureDetails.type === "GLYCOPEPTIDE") {
+      return displayDetails(featureDetails.peptide, "view", "Peptide");
+    }
+  };
+
   const case4Metadata = () => {
     return (
       <>
@@ -403,6 +412,7 @@ const FeatureView = props => {
   };
 
   const getSelectedGlycanList = () => {
+    debugger;
     return (
       <>
         <div className={"form-container"}>
@@ -410,46 +420,77 @@ const FeatureView = props => {
             columns={[
               {
                 Header: "Name",
-                accessor: "name"
+                accessor: "name",
+                Cell: row => {
+                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
+                    ? getToolTip(row.original.glycan.name)
+                    : getToolTip(row.original.name);
+                }
               },
               {
                 Header: "Structure Image",
                 accessor: "cartoon",
-                Cell: row => <StructureImage base64={row.value} />,
+                Cell: row => {
+                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0 ? (
+                    <StructureImage base64={row.original.glycan.cartoon} />
+                  ) : (
+                    <StructureImage base64={row.value} />
+                  );
+                },
                 minWidth: 300
               },
               {
                 Header: "Source",
                 accessor: "source.type",
                 Cell: row => {
-                  return row.original.source.type === "NOTRECORDED"
-                    ? "Not Recorded"
+                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
+                    ? row.original.glycan.source.type === "NOTRECORDED"
+                      ? getToolTip("Not Recorded")
+                      : row.original.glycan.source.type === "COMMERCIAL"
+                      ? getToolTip("Commercial")
+                      : getToolTip("Non Commercial")
+                    : row.original.source.type === "NOTRECORDED"
+                    ? getToolTip("Not Recorded")
                     : row.original.source.type === "COMMERCIAL"
-                    ? "Commercial"
-                    : "Non Commercial";
+                    ? getToolTip("Commercial")
+                    : getToolTip("Non Commercial");
                 }
               },
               {
                 Header: "Reducing end state",
                 accessor: "opensRing",
                 Cell: row => {
-                  return getReducingEndState(row.value);
+                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
+                    ? getToolTip(getReducingEndState(row.original.glycan.value))
+                    : getToolTip(getReducingEndState(row.value));
                 }
               },
-              ...(props.type === "GLYCO_LIPID"
+              ...(props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length > 0
+                ? [
+                    {
+                      Header: "Range",
+                      accessor: "range",
+                      Cell: row => {
+                        return getToolTip(row.original.range);
+                      }
+                    }
+                  ]
+                : []),
+
+              ...(props.type === "GLYCO_LIPID" || (props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length > 0)
                 ? [
                     {
                       Header: "Linker",
                       accessor: "linker",
                       Cell: (row, index) => {
-                        return row.original.linker ? row.original.linker.name : "";
+                        return row.original.linker ? getToolTip(row.original.linker.name) : "";
                       },
                       minWidth: 150
                     }
                   ]
                 : [])
             ]}
-            data={props.glycans}
+            data={props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length > 0 ? props.rangeGlycans : props.glycans}
             defaultPageSize={5}
             showPagination={false}
             showRowsInfo={false}
@@ -495,6 +536,8 @@ const FeatureView = props => {
 
           {getLipid()}
 
+          {getPeptide()}
+
           {props.metadata
             ? case4Metadata()
             : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
@@ -502,7 +545,7 @@ const FeatureView = props => {
           {props.glycans ? getSelectedGlycanList() : featureDetails.glycans.length > 0 && getGlycanTable()}
           <br />
 
-          <LinkButton to="/features" label="Back" />
+          {featureDetails && featureDetails.type && <LinkButton to="/features" label="Back" />}
           <br />
           <br />
         </div>

@@ -129,12 +129,23 @@ const SourceForGlycanInFeature = props => {
     selectedRow.papers = addGlycanInfoToFeature.papers;
     selectedRow.opensRing = addGlycanInfoToFeature.opensRing;
 
+    if (props.featureAddState.positionDetails.isPosition) {
+      let glycansListLength = glycansList.length;
+
+      if (glycansListLength === 1) {
+        selectedRow.index = 0;
+      } else {
+        selectedRow.index = glycansList[glycansListLength - 2].index + 1;
+      }
+    }
+
     if (addGlycanInfoToFeature.opensRing === 4) {
       selectedRow.equilibriumComment = addGlycanInfoToFeature.equilibriumComment;
     }
 
     if (props.featureAddState.type === "GLYCO_PEPTIDE" && !props.featureAddState.positionDetails.isPosition) {
       selectedRow.range = addGlycanInfoToFeature.range;
+
       glycansList[selectedRowIndex] = selectedRow;
       props.setFeatureAddState({
         rangeGlycans: glycansList
