@@ -321,7 +321,7 @@ const AddFeature = props => {
       }
     } else if (activeStep === 3) {
       let count = 0;
-      debugger;
+
       if (featureAddState.type === "GLYCO_PEPTIDE") {
         if (featureAddState.rangeGlycans.length < 1) {
           let unfilledPositions = featureAddState.glycans.filter(i => !i.glycan);
@@ -389,7 +389,6 @@ const AddFeature = props => {
       selectedGlycans[0].linker = linker;
       setFeatureAddState({ glycans: selectedGlycans });
     } else if (isModal && featureAddState.type === "GLYCO_PEPTIDE") {
-      debugger;
       setShowLinkerPicker(false);
       let selectedGlycans = [...featureAddState.rangeGlycans];
 
@@ -816,8 +815,6 @@ const AddFeature = props => {
       metadata: metadataTemplate.length > 0 && metadataToSubmit()
     };
 
-    debugger;
-
     return featureObj;
   }
 
@@ -962,7 +959,6 @@ const AddFeature = props => {
   }
 
   const getCase3PeptideFeature = () => {
-    debugger;
     return (
       <>
         <ReactTable
@@ -1222,7 +1218,6 @@ const AddFeature = props => {
   };
 
   const getCase2ForGlycoLipid = () => {
-    debugger;
     return (
       <>
         {getGlycanWizard()}
@@ -1415,7 +1410,6 @@ const AddFeature = props => {
   };
 
   const handleGlycanSelectionForPosition = glycan => {
-    debugger;
     let glycansList = [...featureAddState.glycans];
 
     let glycanObj = glycansList.find(i => i.position === featureAddState.positionDetails.number);
@@ -1448,7 +1442,6 @@ const AddFeature = props => {
   };
 
   const getSelectedGlycanList = () => {
-    debugger;
     return (
       <>
         <GlygenTable
@@ -1513,7 +1506,6 @@ const AddFeature = props => {
                             backgroundColor: "lightgray"
                           }}
                           onClick={() => {
-                            debugger;
                             setLinkerForSelectedGlycan(row.original);
                             setShowLinkerPicker(true);
                           }}
