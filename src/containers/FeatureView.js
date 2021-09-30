@@ -461,7 +461,7 @@ const FeatureView = props => {
                 accessor: "opensRing",
                 Cell: row => {
                   return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
-                    ? getToolTip(getReducingEndState(row.original.glycan.value))
+                    ? getToolTip(getReducingEndState(row.original.glycan.opensRing))
                     : getToolTip(getReducingEndState(row.value));
                 }
               },

@@ -329,6 +329,10 @@ const AddFeature = props => {
             count++;
           }
         }
+      } else if (featureAddState.type === "GLYCO_LIPID") {
+        if (featureAddState.glycans.length < 1) {
+          count++;
+        }
       }
 
       if (count > 0) {
@@ -635,7 +639,7 @@ const AddFeature = props => {
         glycan: []
       }
     ];
-    if (linker.type !== "SMALLMOLECULE" && featureAddState.glycans.length === 0) {
+    if (linker.type !== "SMALLMOLECULE") {
       valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
       chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
       if (chooseGlycanTableData.length > 0) {
@@ -774,7 +778,12 @@ const AddFeature = props => {
     let glycanList = featureAddState.rangeGlycans.length > 0 ? featureAddState.rangeGlycans : featureAddState.glycans;
 
     let glycans = glycanList.map(positionDetails => {
-      let glycanObj = positionDetails.glycan;
+      let glycanObj;
+      if (featureAddState.rangeGlycans.length > 0) {
+        glycanObj = positionDetails;
+      } else {
+        glycanObj = positionDetails.glycan;
+      }
 
       let glycans = {};
       let reducingEndConfiguration = {};
@@ -790,13 +799,15 @@ const AddFeature = props => {
       glycans.linker = glycanObj.linker;
       glycans.source = glycanObj.source;
 
+      if (featureAddState.rangeGlycans.length > 0) {
+        glycans.range = {
+          min: glycanObj.min,
+          max: glycanObj.max
+        };
+      }
+
       return glycans;
     });
-
-    // glycans.range = {
-    //   min: 0,
-    //   max: glycanObj.range
-    // };
 
     featureObj = {
       type: "GLYCOPEPTIDE",
@@ -804,7 +815,13 @@ const AddFeature = props => {
       name: featureMetaData.name,
       linker: featureAddState.linker,
       peptide: featureAddState.peptide,
-      glycans: [{ glycans: glycans, type: "LINKEDGLYCAN", linker: glycans[0].linker }],
+      glycans: [
+        {
+          glycans: glycans,
+          type: "LINKEDGLYCAN",
+          linker: glycans[0].linker
+        }
+      ],
       positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.id) {
           map[glycanObj.position] = glycanObj.glycan.id;
@@ -1319,6 +1336,13 @@ const AddFeature = props => {
             currentGlycanSelection={currentGlycanSelection}
             setCurrentGlycanSelection={setCurrentGlycanSelection}
             displaySelectedGlycanInfoInFeature={displaySelectedGlycanInfoInFeature}
+            maxRange={
+              featureAddState.type === "GLYCO_PEPTIDE"
+                ? featureAddState.peptide.sequence.length
+                : featureAddState.type === "GLYCO_PROTEIN"
+                ? featureAddState.protein.sequence.length
+                : ""
+            }
           />
         ) : (
           <>
@@ -1336,7 +1360,9 @@ const AddFeature = props => {
                 <input
                   type="button"
                   onClick={() => {
-                    setFeatureAddState({ [featureAddState.positionDetails.isPosition]: false });
+                    let pd = featureAddState.positionDetails;
+                    pd.isPosition = false;
+                    setFeatureAddState({ positionDetails: pd });
                     setShowGlycanPicker(true);
                   }}
                   value={"Pick Glycan"}
@@ -1423,6 +1449,7 @@ const AddFeature = props => {
   };
 
   const handleDeletedSelectedGlycan = deleteRow => {
+    debugger;
     let selectedGlycans;
     if (featureAddState.type === "GLYCO_LIPID") {
       selectedGlycans = [...featureAddState.glycans];
@@ -1486,7 +1513,7 @@ const AddFeature = props => {
                     Header: "Range",
                     accessor: "range",
                     Cell: row => {
-                      return getToolTip(row.original.range);
+                      return getToolTip(`${row.original.min} - ${row.original.max}`);
                     }
                   }
                 ]

@@ -11,6 +11,7 @@ import { ErrorSummary } from "./ErrorSummary";
 import { PublicationCard } from "./PublicationCard";
 import { Loading } from "./Loading";
 import "../containers/AddFeature.css";
+import RangeSlider from "react-bootstrap-range-slider";
 
 const AddGlycanInfoToFeature = props => {
   const [invalidUrls, setInvalidUrls] = useState(false);
@@ -20,6 +21,9 @@ const AddGlycanInfoToFeature = props => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showLoading, setShowLoading] = useState(false);
+
+  const [minRangeValid, setMinRangeValid] = useState(false);
+  const [maxRangeValid, setMaxRangeValid] = useState(false);
 
   const sourceInfoChange = (e, glycanId) => {
     const name = e.target.name;
@@ -474,19 +478,83 @@ const AddGlycanInfoToFeature = props => {
   const getRange = () => {
     return (
       <>
-        <Form.Group as={Row} controlId="range">
-          <FormLabel label="Range" />
-          <Col md={4}>
-            <Form.Control
-              type="number"
-              name={"range"}
-              placeholder={"range"}
-              value={props.addGlycanInfoToFeature.range}
-              onChange={e => props.setAddGlycanInfoToFeature({ range: e.target.value })}
-              min={0}
-            />
-          </Col>
-        </Form.Group>
+        <Form noValidate validated={minRangeValid && maxRangeValid}>
+          <Form.Group as={Row} controlId="range">
+            <FormLabel label="Range" className={"metadata-descriptor-title "} />
+          </Form.Group>
+
+          <Form.Group as={Row}>
+            <FormLabel label="Min" />
+
+            <Col md={4}>
+              <Form.Control
+                type="number"
+                name={"minRange"}
+                placeholder={"min range"}
+                value={props.addGlycanInfoToFeature.minRangeSelected}
+                isInvalid={minRangeValid}
+                onChange={e => {
+                  if (
+                    parseInt(e.target.value) > parseInt(props.maxRange) ||
+                    parseInt(e.target.value) < 1 ||
+                    (props.addGlycanInfoToFeature.maxRangeSelected !== "" &&
+                      parseInt(e.target.value) > parseInt(props.addGlycanInfoToFeature.maxRangeSelected))
+                  ) {
+                    setMinRangeValid(true);
+                  } else {
+                    setMinRangeValid(false);
+                  }
+                  props.setAddGlycanInfoToFeature({ minRangeSelected: e.target.value });
+                }}
+                min={1}
+                onKeyDown={e => {
+                  if (e.key.length === 1) {
+                    if (e.key !== "v" && e.key !== "V") {
+                      isValidNumber(e);
+                    }
+                  }
+                }}
+              />
+              <Feedback message="Invalid Min Range" />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row}>
+            <FormLabel label="Max" />
+
+            <Col md={4}>
+              <Form.Control
+                type="number"
+                name={"maxRange"}
+                placeholder={"max range"}
+                value={props.addGlycanInfoToFeature.maxRangeSelected}
+                isInvalid={maxRangeValid}
+                onChange={e => {
+                  debugger;
+                  if (
+                    parseInt(e.target.value) > parseInt(props.maxRange) ||
+                    parseInt(e.target.value) < 1 ||
+                    parseInt(e.target.value) < parseInt(props.addGlycanInfoToFeature.minRangeSelected)
+                  ) {
+                    setMaxRangeValid(true);
+                  } else {
+                    setMaxRangeValid(false);
+                  }
+                  props.setAddGlycanInfoToFeature({ maxRangeSelected: e.target.value });
+                }}
+                min={1}
+                onKeyDown={e => {
+                  if (e.key.length === 1) {
+                    if (e.key !== "v" && e.key !== "V") {
+                      isValidNumber(e);
+                    }
+                  }
+                }}
+              />
+              <Feedback message="Invalid Max Range" />
+            </Col>
+          </Form.Group>
+        </Form>
       </>
     );
   };

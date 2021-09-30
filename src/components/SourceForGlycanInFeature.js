@@ -23,7 +23,8 @@ const SourceForGlycanInFeature = props => {
     papers: [],
     opensRing: 3,
     equilibriumComment: "",
-    range: ""
+    minRangeSelected: "",
+    maxRangeSelected: ""
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -73,7 +74,6 @@ const SourceForGlycanInFeature = props => {
   };
 
   function submitSelectedData() {
-    debugger;
     let glycansList;
     let selectedRow;
     let selectedRowIndex;
@@ -129,7 +129,7 @@ const SourceForGlycanInFeature = props => {
     selectedRow.papers = addGlycanInfoToFeature.papers;
     selectedRow.opensRing = addGlycanInfoToFeature.opensRing;
 
-    if (props.featureAddState.positionDetails.isPosition) {
+    if (!props.featureAddState.positionDetails.isPosition) {
       let glycansListLength = glycansList.length;
 
       if (glycansListLength === 1) {
@@ -144,7 +144,8 @@ const SourceForGlycanInFeature = props => {
     }
 
     if (props.featureAddState.type === "GLYCO_PEPTIDE" && !props.featureAddState.positionDetails.isPosition) {
-      selectedRow.range = addGlycanInfoToFeature.range;
+      selectedRow.min = addGlycanInfoToFeature.minRangeSelected;
+      selectedRow.max = addGlycanInfoToFeature.maxRangeSelected;
 
       glycansList[selectedRowIndex] = selectedRow;
       props.setFeatureAddState({
@@ -179,7 +180,6 @@ const SourceForGlycanInFeature = props => {
   };
 
   const getSteps = () => {
-    debugger;
     if (props.featureAddState.type === "GLYCO_PEPTIDE" && !props.featureAddState.positionDetails.isPosition) {
       steps = [...stepsGlycos];
     }
@@ -224,6 +224,7 @@ const SourceForGlycanInFeature = props => {
           <AddGlycanInfoToFeature
             addGlycanInfoToFeature={addGlycanInfoToFeature}
             setAddGlycanInfoToFeature={setAddGlycanInfoToFeature}
+            maxRange={props.maxRange}
             step3
           />
         );
@@ -234,7 +235,6 @@ const SourceForGlycanInFeature = props => {
   }
 
   function closeModal() {
-    debugger;
     if (props.currentGlycanSelection) {
       var glycansList = props.featureAddState.glycans;
 
