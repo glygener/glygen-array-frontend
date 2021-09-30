@@ -245,6 +245,14 @@ const FeatureView = props => {
     }
   };
 
+  const getProtein = () => {
+    if (props.type === "GLYCO_PROTEIN" && props.protein) {
+      return displayDetails(props.protein, "case4", "Protein");
+    } else if (featureDetails && featureDetails.type === "GLYCOPROTEIN") {
+      return displayDetails(featureDetails.protein, "view", "Protein");
+    }
+  };
+
   const case4Metadata = () => {
     return (
       <>
@@ -471,7 +479,7 @@ const FeatureView = props => {
                       Header: "Range",
                       accessor: "range",
                       Cell: row => {
-                        return getToolTip(row.original.range);
+                        return getToolTip(`${row.original.min} - ${row.original.max}`);
                       }
                     }
                   ]
@@ -537,6 +545,8 @@ const FeatureView = props => {
           {getLipid()}
 
           {getPeptide()}
+
+          {getProtein()}
 
           {props.metadata
             ? case4Metadata()

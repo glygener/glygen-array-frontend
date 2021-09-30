@@ -23,13 +23,15 @@ const Proteins = props => {
         {getMeta(head.proteins)}
       </Helmet>
 
-      <div className="page-container">
+      <div className={!props.isImported ? "page-container" : ""}>
         <Title title="Proteins" />
 
         <Col className={"col-link-button"}>
-          <Link to="/proteins/addprotein" className="link-button" style={{ width: "150px" }}>
-            Add Protein
-          </Link>
+          {!props.isImported && (
+            <Link to="/proteins/addprotein" className="link-button" style={{ width: "150px" }}>
+              Add Protein
+            </Link>
+          )}
         </Col>
 
         <GlygenTable

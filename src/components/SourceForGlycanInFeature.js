@@ -56,15 +56,17 @@ const SourceForGlycanInFeature = props => {
 
     if (
       activeStep === 2 &&
-      (props.featureAddState.type !== "GLYCO_PEPTIDE" ||
-        (props.featureAddState.type === "GLYCO_PEPTIDE" && props.featureAddState.positionDetails.isPosition))
+      (props.featureAddState.type === "GLYCO_LIPID" ||
+        props.featureAddState.type === "LINKED_GLYCAN" ||
+        ((props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
+          props.featureAddState.positionDetails.isPosition))
     ) {
       submitSelectedData();
     }
 
     if (
       activeStep === 3 &&
-      props.featureAddState.type === "GLYCO_PEPTIDE" &&
+      (props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
       !props.featureAddState.positionDetails.isPosition
     ) {
       submitSelectedData();
@@ -78,10 +80,13 @@ const SourceForGlycanInFeature = props => {
     let selectedRow;
     let selectedRowIndex;
     let selectedPosition;
+    debugger;
 
     if (
-      props.featureAddState.type !== "GLYCO_PEPTIDE" ||
-      (props.featureAddState.type === "GLYCO_PEPTIDE" && props.featureAddState.positionDetails.isPosition)
+      props.featureAddState.type === "GLYCO_LIPID" ||
+      props.featureAddState.type === "LINKED_GLYCAN" ||
+      ((props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
+        props.featureAddState.positionDetails.isPosition)
     ) {
       glycansList = props.featureAddState.glycans;
     } else {
@@ -143,7 +148,10 @@ const SourceForGlycanInFeature = props => {
       selectedRow.equilibriumComment = addGlycanInfoToFeature.equilibriumComment;
     }
 
-    if (props.featureAddState.type === "GLYCO_PEPTIDE" && !props.featureAddState.positionDetails.isPosition) {
+    if (
+      (props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
+      !props.featureAddState.positionDetails.isPosition
+    ) {
       selectedRow.min = addGlycanInfoToFeature.minRangeSelected;
       selectedRow.max = addGlycanInfoToFeature.maxRangeSelected;
 
@@ -180,7 +188,10 @@ const SourceForGlycanInFeature = props => {
   };
 
   const getSteps = () => {
-    if (props.featureAddState.type === "GLYCO_PEPTIDE" && !props.featureAddState.positionDetails.isPosition) {
+    if (
+      (props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
+      !props.featureAddState.positionDetails.isPosition
+    ) {
       steps = [...stepsGlycos];
     }
 
