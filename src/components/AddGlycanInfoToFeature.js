@@ -11,7 +11,6 @@ import { ErrorSummary } from "./ErrorSummary";
 import { PublicationCard } from "./PublicationCard";
 import { Loading } from "./Loading";
 import "../containers/AddFeature.css";
-import RangeSlider from "react-bootstrap-range-slider";
 
 const AddGlycanInfoToFeature = props => {
   const [invalidUrls, setInvalidUrls] = useState(false);

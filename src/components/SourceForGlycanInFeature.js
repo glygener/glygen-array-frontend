@@ -40,7 +40,7 @@ const SourceForGlycanInFeature = props => {
 
   const handleNext = () => {
     var stepIncrement = 1;
-
+    debugger;
     if (activeStep === 0) {
       if (!props.currentGlycanSelection) {
         setPageErrorsJson({});
@@ -61,7 +61,10 @@ const SourceForGlycanInFeature = props => {
         ((props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
           props.featureAddState.positionDetails.isPosition))
     ) {
-      submitSelectedData();
+      let flag = submitSelectedData();
+      if (flag) {
+        return;
+      }
     }
 
     if (
@@ -80,6 +83,7 @@ const SourceForGlycanInFeature = props => {
     let selectedRow;
     let selectedRowIndex;
     let selectedPosition;
+    let flag = false;
     debugger;
 
     if (
@@ -109,7 +113,8 @@ const SourceForGlycanInFeature = props => {
     if (addGlycanInfoToFeature.source === "commercial") {
       if (addGlycanInfoToFeature.commercial.vendor === "") {
         setAddGlycanInfoToFeature({ validatedCommNonComm: true });
-        return;
+        flag = true;
+        return flag;
       }
 
       source.type = "COMMERCIAL";
@@ -119,7 +124,8 @@ const SourceForGlycanInFeature = props => {
     } else if (addGlycanInfoToFeature.source === "nonCommercial") {
       if (addGlycanInfoToFeature.nonCommercial.providerLab === "") {
         setAddGlycanInfoToFeature({ validatedCommNonComm: true });
-        return;
+        flag = true;
+        return flag;
       }
 
       source.type = "NONCOMMERCIAL";
@@ -163,12 +169,12 @@ const SourceForGlycanInFeature = props => {
       selectedPosition.glycan = selectedRow;
       glycansList[selectedRowIndex] = selectedPosition;
 
-      let positionSelected = props.featureAddState.positionDetails;
-      positionSelected.isPosition = false;
+      // let positionSelected = props.featureAddState.positionDetails;
+      // positionSelected.isPosition = false;
 
       props.setFeatureAddState({
-        glycans: glycansList,
-        positionDetails: positionSelected
+        glycans: glycansList
+        // positionDetails: positionSelected
       });
     } else {
       glycansList[selectedRowIndex] = selectedRow;
