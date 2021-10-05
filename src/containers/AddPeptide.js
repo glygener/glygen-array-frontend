@@ -555,6 +555,70 @@ const AddPeptide = props => {
                 </Col>
               </Form.Group>
             )}
+
+            {peptide.source === "notSpecified" && (
+              <Form.Group as={Row} controlId="value">
+                <FormLabel label="Source" />
+                <Col md={4}>
+                  <Form.Control type="text" disabled value={"Not Recorded"} />
+                </Col>
+              </Form.Group>
+            )}
+
+            {peptide.source === "commercial" && (
+              <>
+                <FormLabel label="Source" className={"metadata-descriptor-title "} />
+                <Form.Group as={Row} controlId="vendor">
+                  <FormLabel label="Vendor" />
+                  <Col md={4}>
+                    <Form.Control type="text" disabled value={peptide.commercial.vendor} />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="catalogueNumber">
+                  <FormLabel label="Catalogue Number" />
+                  <Col md={4}>
+                    <Form.Control type="text" disabled value={peptide.commercial.catalogueNumber} />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="batchId">
+                  <FormLabel label=" Batch Id" />
+                  <Col md={4}>
+                    <Form.Control type="text" disabled value={peptide.commercial.batchId} />
+                  </Col>
+                </Form.Group>
+              </>
+            )}
+
+            {peptide.source === "nonCommercial" && (
+              <>
+                <FormLabel label="Source" className={"metadata-descriptor-title "} />
+                <Form.Group as={Row} controlId="providerLab">
+                  <FormLabel label="Provider Lab" />
+                  <Col md={4}>
+                    <Form.Control type="text" disabled value={peptide.nonCommercial.providerLab} />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="method">
+                  <FormLabel label="Method" />
+                  <Col md={4}>
+                    <Form.Control type="text" disabled value={peptide.nonCommercial.method} />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="batchId">
+                  <FormLabel label="Batch Id" />
+                  <Col md={4}>
+                    <Form.Control type="text" disabled value={peptide.nonCommercial.batchId} />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="batchId">
+                  <FormLabel label="Comment" />
+                  <Col md={4}>
+                    <Form.Control type="text" disabled value={peptide.nonCommercial.sourceComment} />
+                  </Col>
+                </Form.Group>
+              </>
+            )}
           </Form>
         );
 

@@ -35,8 +35,8 @@ const FORM_ERROR_MESSAGES = {
     Duplicate_name: "Another glycan in your collection has the same Name. Please use another Name",
     NotValid_sequence:
       "Sequence string seems to be unrecognizable or may not be compatible with the selected format. Please check again for validity",
-    NotValid_glytoucanId: "That Glytoucan Id is not recognized by Glytoucan. Please try again.",
-    Invalid_structure: "Provided Glycan does not specify the Glytoucan Id",
+    NotValid_glytoucanId: "That GlyTouCan ID is not recognized by Glytoucan. Please try again.",
+    Invalid_structure: "Provided Glycan does not specify the GlyTouCan ID",
     NotValid_file: "Invalid file. Please verify the file, selected format and upload again"
   },
   linkers: {
@@ -44,6 +44,7 @@ const FORM_ERROR_MESSAGES = {
     NotValid_pubmedid: "The PubMed Id entered is invalid. Please try again.",
     Duplicate_pubchemid: "A linker with that PubChem Id already exists in your collection",
     Duplicate_name: "Another linker in your collection has the same Name. Please use another Name",
+    Duplicate_sequence: "Another item in your collection has the same sequence. Please use different sequence",
     LengthExceeded_name: "Length of Name is exceeded. Please use another Name."
   },
   feature: {},

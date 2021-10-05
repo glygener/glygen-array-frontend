@@ -25,6 +25,7 @@ import { FeatureView } from "./FeatureView";
 import { getToolTip } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ScrollToTop } from "../components/ScrollToTop";
+import { GlycoPeptides } from "../components/GlycoPeptides";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -73,6 +74,7 @@ const AddFeature = props => {
   const [linkerForSelectedGlycan, setLinkerForSelectedGlycan] = useState();
   const [glycoLipidGlycanLinkerListStep4, setGlycoLipidGlycanLinkerListStep4] = useState();
   const [glycoProteinPepTideListStep4, setGlycoProteinPepTideListStep4] = useState([{ position: 0 }]);
+  const [showGlycoPeptides, setShowGlycoPeptides] = useState(false);
 
   const [featureAddState, setFeatureAddState] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
     ...featureAddInitState,
@@ -146,6 +148,15 @@ const AddFeature = props => {
     "Review and Add"
   ];
 
+  const glycoProteinLinkedGlycoPeptideSteps = [
+    "Select Feature Type",
+    "Select Linker",
+    "Select Protein",
+    "Select Glycan",
+    "Generic Feature Info",
+    "Review and Add"
+  ];
+
   function getSteps(type) {
     switch (type) {
       case "LINKED_GLYCAN":
@@ -161,9 +172,8 @@ const AddFeature = props => {
         return glycoPeptideSteps;
       case "GLYCO_PROTEIN":
         return glycoProteinSteps;
-
-      // case "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE":
-      // return glycoProteinSteps;
+      case "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE":
+        return glycoProteinLinkedGlycoPeptideSteps;
 
       default:
         return generalSteps;
@@ -399,7 +409,6 @@ const AddFeature = props => {
   };
 
   const handleLinkerSelect = (linker, isModal) => {
-    debugger;
     if (isModal && featureAddState.type === "GLYCO_LIPID") {
       setShowLinkerPicker(false);
       let selectedGlycans = [...featureAddState.glycans];
@@ -413,7 +422,7 @@ const AddFeature = props => {
       setShowLinkerPicker(false);
       let selectedGlycans = [...featureAddState.rangeGlycans];
 
-      let glycan = selectedGlycans.find(i => i.index === linkerForSelectedGlycan.index);
+      let glycan = selectedGlycans.find(i => i.glycan.index === linkerForSelectedGlycan.glycan.index);
       let glycanIndex = selectedGlycans.indexOf(glycan);
 
       glycan.linker = linker;
@@ -425,10 +434,10 @@ const AddFeature = props => {
       featureAddState.positionDetails.isPosition
     ) {
       setShowLinkerPicker(false);
-      debugger;
+
       let selectedGlycans = [...featureAddState.glycans];
 
-      let glycan = selectedGlycans.find(i => i.index === linkerForSelectedGlycan.index);
+      let glycan = selectedGlycans.find(i => i.glycan.index === linkerForSelectedGlycan.glycan.index);
       let glycanIndex = selectedGlycans.indexOf(glycan);
 
       glycan.linker = linker;
@@ -1003,9 +1012,14 @@ const AddFeature = props => {
       case 3:
         return featureAddState.type === "GLYCO_LIPID" ? (
           getCase2ForGlycoLipid()
-        ) : (
+        ) : featureAddState.type !== "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ? (
           <>
             {getCase3PeptideFeature()}
+            {getCase2ForGlycoLipid()}
+          </>
+        ) : (
+          <>
+            {getCase3GlycoProteinLinkedPeptideFeature()}
             {getCase2ForGlycoLipid()}
           </>
         );
@@ -1082,7 +1096,9 @@ const AddFeature = props => {
                     </>
                   )}
 
-                  {featureAddState.type === "GLYCO_PROTEIN" && featureTypes[key] === "GlycoProtein" && (
+                  {((featureAddState.type === "GLYCO_PROTEIN" && featureTypes[key] === "GlycoProtein") ||
+                    (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
+                      featureTypes[key] === "GlycoProtein linked GlycoPeptide")) && (
                     <>
                       <div style={{ margin: "15px" }}>
                         Is the protein linked to the surface using a linker?
@@ -1118,6 +1134,8 @@ const AddFeature = props => {
         {((featureAddState.type === "GLYCO_LIPID" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PEPTIDE" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           (featureAddState.type === "GLYCO_PROTEIN" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
+          (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
+            featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
           featureAddState.type === "LINKED_GLYCAN" ||
           featureAddState.type === "CONTROL" ||
           featureAddState.type === "NEGATIVE_CONTROL" ||
@@ -1311,6 +1329,129 @@ const AddFeature = props => {
         />
       </>
     );
+  };
+
+  const getCase3GlycoProteinLinkedPeptideFeature = () => {
+    return (
+      <>
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <h3>{"List of GlycoPeptides in Positions"}</h3>
+          <p>{"Add GlycoPeptide and linker for each available position below by clicking ‘Pick Glyco Peptide."}</p>
+        </div>
+        <ReactTable
+          columns={[
+            ...(featureAddState.linker.type !== "SMALLMOLECULE_LINKER"
+              ? [
+                  {
+                    Header: "Position",
+                    accessor: "position"
+                  },
+                  {
+                    Header: "Amino Acid",
+                    accessor: "aminoAcid"
+                  }
+                ]
+              : []),
+            {
+              Header: "Glyco Peptide",
+              accessor: "glycoPeptide",
+              // eslint-disable-next-line react/display-name
+              Cell: (row, index) =>
+                row.value ? (
+                  row.value.cartoon ? (
+                    <StructureImage key={index} base64={row.value.cartoon} />
+                  ) : row.value.name ? (
+                    row.value.name
+                  ) : (
+                    "No Glyco Peptide Selected"
+                  )
+                ) : (
+                  "No Glyco Peptide Selected"
+                ),
+              minWidth: 150
+            },
+            {
+              Header: "Linker",
+              accessor: "linker",
+              Cell: (row, index) => {
+                return row.original.linker ? (
+                  getToolTip(row.original.linker.name)
+                ) : (
+                  <Button
+                    style={{
+                      backgroundColor: "lightgray"
+                    }}
+                    onClick={() => {
+                      setLinkerForSelectedGlycan(row.original);
+                      setShowLinkerPicker(true);
+                    }}
+                    disabled={!row.original.glycan}
+                  >
+                    Add linker
+                  </Button>
+                );
+              },
+              minWidth: 150
+            },
+            {
+              Header: "",
+              // eslint-disable-next-line react/display-name
+              Cell: ({ row, index }) => {
+                return row.glycan && row.glycan.name ? (
+                  <>
+                    <FontAwesomeIcon
+                      key={"delete" + index}
+                      icon={["far", "trash-alt"]}
+                      size="xs"
+                      title="Delete"
+                      className="caution-color table-btn"
+                      onClick={() => {
+                        let glycansList = featureAddState.glycans;
+
+                        let selectedPosition = glycansList.find(e => e.position === row.position);
+                        let positionIndex = featureAddState.glycans.indexOf(selectedPosition);
+
+                        selectedPosition.glycan = undefined;
+                        selectedPosition.linker = undefined;
+                        glycansList[positionIndex] = selectedPosition;
+                        setFeatureAddState({ glycans: glycansList });
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <input
+                      key={index}
+                      type="button"
+                      onClick={() => {
+                        setShowGlycoPeptides(true);
+                        getGlycoPeptides();
+
+                        let positionSelected = {};
+                        positionSelected.number = row.position;
+                        positionSelected.isPosition = true;
+
+                        setFeatureAddState({ positionDetails: positionSelected });
+                      }}
+                      value={"Pick Glyco Peptide"}
+                      disabled={featureAddState.rangeGlycans.length > 0}
+                    />
+                  </>
+                );
+              }
+            }
+          ]}
+          data={featureAddState.glycans}
+          defaultPageSize={featureAddState.glycans.length}
+          showPagination={false}
+          showSearchBox
+        />
+      </>
+    );
+  };
+
+  const getGlycoPeptides = () => {
+    return showGlycoPeptides && <GlycoPeptides />;
   };
 
   const getCase2ForGlycoLipid = () => {
@@ -1542,7 +1683,6 @@ const AddFeature = props => {
   };
 
   const handleDeletedSelectedGlycan = deleteRow => {
-    debugger;
     let selectedGlycans;
     if (featureAddState.type === "GLYCO_LIPID") {
       selectedGlycans = [...featureAddState.glycans];
@@ -1714,7 +1854,8 @@ const AddFeature = props => {
             onClick={
               featureAddState.type === "GLYCO_LIPID" ||
               featureAddState.type === "GLYCO_PEPTIDE" ||
-              featureAddState.type === "GLYCO_PROTEIN"
+              featureAddState.type === "GLYCO_PROTEIN" ||
+              featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
                 ? handleNextGlycoLipid
                 : handleNextLinker
             }
@@ -1737,7 +1878,8 @@ const AddFeature = props => {
             onClick={
               featureAddState.type === "GLYCO_LIPID" ||
               featureAddState.type === "GLYCO_PEPTIDE" ||
-              featureAddState.type === "GLYCO_PROTEIN"
+              featureAddState.type === "GLYCO_PROTEIN" ||
+              featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
                 ? handleNextGlycoLipid
                 : handleNextLinker
             }

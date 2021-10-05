@@ -8,6 +8,7 @@ import { head, getMeta } from "../utils/head";
 import { useParams, useHistory } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Loading } from "../components/Loading";
+import { StructureImage } from "../components/StructureImage";
 
 const EditGlycan = props => {
   let { glycanId } = useParams();
@@ -32,6 +33,9 @@ const EditGlycan = props => {
     name: "",
     internalId: "",
     description: "",
+    mass: "",
+    cartoon: "",
+    glytoucanId: "",
     type: ""
   });
 
@@ -44,6 +48,7 @@ const EditGlycan = props => {
 
   function getGlycanSuccess(response) {
     response.json().then(parsedJson => {
+      debugger;
       setGlycanDetails(parsedJson);
       setShowLoading(false);
     });
@@ -93,58 +98,83 @@ const EditGlycan = props => {
         )}
 
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-          {glycanDetails.internalId && (
-            <Form.Group as={Row} controlId="internalId">
-              <FormLabel label="Internal Id" />
+          <Form.Group as={Row} controlId="internalId">
+            <FormLabel label="Internal Id" />
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                placeholder="internal Id"
+                name="internalId"
+                value={glycanDetails.internalId}
+                onChange={handleChange}
+                maxLength={30}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="name">
+            <FormLabel label="Name" className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""} />
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                placeholder="name"
+                name="name"
+                value={glycanDetails.name}
+                onChange={handleChange}
+                required={glycanDetails.type === "UNKNOWN" ? true : false}
+                maxLength={50}
+              />
+              <Feedback message="Please Enter Glycan Name." />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="comment">
+            <FormLabel label="Comment" />
+            <Col md={4}>
+              <Form.Control
+                as="textarea"
+                placeholder="comment"
+                name="description"
+                value={glycanDetails.description}
+                onChange={handleChange}
+                maxLength={2000}
+              />
+              <span className="character-counter" style={{ marginLeft: "80%" }}>
+                {glycanDetails.description && glycanDetails.description.length > 0
+                  ? glycanDetails.description.length
+                  : ""}
+                /2000
+              </span>
+            </Col>
+          </Form.Group>
+
+          {glycanDetails.cartoon && (
+            <Form.Group as={Row} controlId="image">
+              <FormLabel label="Image" />
               <Col md={4}>
-                <Form.Control
-                  type="text"
-                  placeholder="internal Id"
-                  name="internalId"
-                  value={glycanDetails.internalId}
-                  onChange={handleChange}
-                  maxLength={30}
+                <StructureImage
+                  base64={glycanDetails.cartoon}
+                  style={{
+                    maxWidth: "300px",
+                    overflow: "scroll"
+                  }}
                 />
               </Col>
             </Form.Group>
           )}
 
-          {glycanDetails.name && (
-            <Form.Group as={Row} controlId="name">
-              <FormLabel label="Name" className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""} />
+          {glycanDetails.mass && (
+            <Form.Group as={Row} controlId="mass">
+              <FormLabel label="mass" />
               <Col md={4}>
-                <Form.Control
-                  type="text"
-                  placeholder="name"
-                  name="name"
-                  value={glycanDetails.name}
-                  onChange={handleChange}
-                  required={glycanDetails.type === "UNKNOWN" ? true : false}
-                  maxLength={50}
-                />
-                <Feedback message="Please Enter Glycan Name." />
+                <Form.Control type="text" plaintext readOnly value={glycanDetails.mass} />
               </Col>
             </Form.Group>
           )}
 
-          {glycanDetails.description && (
-            <Form.Group as={Row} controlId="comment">
-              <FormLabel label="Comment" />
+          {glycanDetails.glytoucanId && (
+            <Form.Group as={Row} controlId="glytoucanId">
+              <FormLabel label="GlyTouCan ID" />
               <Col md={4}>
-                <Form.Control
-                  as="textarea"
-                  placeholder="comment"
-                  name="description"
-                  value={glycanDetails.description}
-                  onChange={handleChange}
-                  maxLength={2000}
-                />
-                <span className="character-counter" style={{ marginLeft: "80%" }}>
-                  {glycanDetails.description && glycanDetails.description.length > 0
-                    ? glycanDetails.description.length
-                    : ""}
-                  /2000
-                </span>
+                <Form.Control type="text" plaintext readOnly value={glycanDetails.glytoucanId} />
               </Col>
             </Form.Group>
           )}
