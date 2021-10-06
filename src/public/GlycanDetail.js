@@ -16,6 +16,7 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
 import { GlygenTable } from "../components/GlygenTable";
 import { addCommas } from "../utils/commonUtils";
+import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 
 function getDateTime(date) {
   var now = new Date(date);
@@ -107,7 +108,7 @@ const GlycanList = (props) => {
           </h1>
         </div>
 
-        <div className="text-right gg-download-btn-width pb-3">
+        {/* <div className="text-right gg-download-btn-width pb-3">
           <Button
             type="button"
             className="gg-btn-blue"
@@ -117,7 +118,7 @@ const GlycanList = (props) => {
           >
             Back
           </Button>
-        </div>
+        </div> */}
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
@@ -148,68 +149,65 @@ const GlycanList = (props) => {
             </Card.Header>
             <Accordion.Collapse eventKey="0">
               <Card.Body>
-                <div>
-                  {/* image */}
-                  {glycanData && glycanData.cartoon && (
-                    <div className="mt-2 mb-2">
-                      <StructureImage
-                        style={{ minWidth: "20%" }}
-                        base64={glycanData.cartoon}
-                      ></StructureImage>
-                    </div>
-                  )}
-
-                  {/* glycanID */}
-                  {glycanData && glycanData.id && (
-                    <div>
-                      <strong>Glycan ID: </strong>
-                      {glycanData.id}
-                    </div>
-                  )}
-
-                  {/* glytoucanIds */}
-                  {glycanData && glycanData.glytoucanId && (
-                    <div>
-                      <strong>GlyTouCan ID: </strong>
-                      <a
-                        href={"https://glytoucan.org/Structures/Glycans/" + glycanData.glytoucanId}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {glycanData.glytoucanId}
-                      </a>
-                    </div>
-                  )}
-
-                  {/* mass */}
-                  {glycanData && glycanData.mass && (
-                    <div>
-                      <strong>Monoisotopic Mass: </strong>
-                      {addCommas(parseInt(glycanData.mass).toFixed(2))} Da
-                    </div>
-                  )}
-
-                  {/* Creation date/user */}
-                  {glycanData && glycanData.dateCreated && (
-                    <div>
-                      <strong>Creation Date: </strong>
-                      {getDateTime(glycanData.dateCreated)}{" "}
-                      {glycanData && glycanData.dateCreated && (
-                        <span>
-                          <strong> By Owner: </strong>
-                          {glycanData.user.name}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  {/* Description */}
-                  {glycanData && glycanData.description && (
-                    <div>
-                      <strong>Description: </strong>
-                      {glycanData.description}
-                    </div>
-                  )}
-                </div>
+                {/* image */}
+                {glycanData && glycanData.cartoon ? (
+                  <StructureImage
+                    style={{ minWidth: "20%" }}
+                    base64={glycanData.cartoon}
+                  ></StructureImage>
+                ) : (
+                  <StructureImage
+                    style={{ minWidth: "20%" }}
+                    imgUrl={glygenNotFoundSmall}
+                  ></StructureImage>
+                )}
+                {/* glycanID */}
+                {glycanData && glycanData.id && (
+                  <div>
+                    <strong>Glycan ID: </strong>
+                    {glycanData.id}
+                  </div>
+                )}
+                {/* glytoucanIds */}
+                {glycanData && glycanData.glytoucanId && (
+                  <div>
+                    <strong>GlyTouCan ID: </strong>
+                    <a
+                      href={"https://glytoucan.org/Structures/Glycans/" + glycanData.glytoucanId}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {glycanData.glytoucanId}
+                    </a>
+                  </div>
+                )}
+                {/* mass */}
+                {glycanData && glycanData.mass && (
+                  <div>
+                    <strong>Monoisotopic Mass: </strong>
+                    {addCommas(parseInt(glycanData.mass).toFixed(2))} Da
+                  </div>
+                )}
+                {/* Creation date/user */}
+                {glycanData && glycanData.dateCreated && (
+                  <div>
+                    <strong>Creation Date: </strong>
+                    {getDateTime(glycanData.dateCreated)}{" "}
+                    {glycanData && glycanData.dateCreated && (
+                      <span>
+                        {"("}By user: {glycanData.user.name}
+                        {")"}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {/* Description */}
+                {glycanData && glycanData.description && (
+                  <div>
+                    <strong>Description: </strong>
+                    {glycanData.description}
+                  </div>
+                )}
               </Card.Body>
             </Accordion.Collapse>
           </Card>
