@@ -129,7 +129,7 @@ const DatasetDetailSearchUser = (props) => {
         lastName: lastName ? lastName : "",
         groupName: groupName ? groupName : "",
         institution: institution ? institution : "",
-        coOwner: true,
+        coOwner,
       });
     }
   }, [props.searchData]);
