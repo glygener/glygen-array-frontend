@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -36,8 +36,9 @@ const GlycanListSummary = (props) => {
   const title = "Glycan Search Summary";
   const { data, onModifySearch } = props;
   const executionTime = getDateTime();
-
   const { glytoucanIds, maxMass, minMass, structure } = data;
+  const [showMore, setShowMore] = useState(false);
+  const toggleShowMore = () => setShowMore((showMore) => !showMore);
 
   return (
     <>
@@ -92,9 +93,16 @@ const GlycanListSummary = (props) => {
                 Sequence:
               </Col>
               <Col align="left" xs={6} sm={6} md={6} lg={6}>
-                {structure.sequence.split("\n").map((line) => (
+                {/* {structure.sequence.split("\n").map((line) => (
                   <div>{line}</div>
-                ))}
+                ))} */}
+                {structure.sequence
+                  .split("\n")
+                  .map((line, index) => (showMore || index < 4 ? <div>{line}</div> : null))}
+
+                <Button className={"lnk-btn"} variant="link" onClick={toggleShowMore}>
+                  {showMore ? "Show less..." : "Show more..."}
+                </Button>
               </Col>
             </Row>
           )}
