@@ -99,10 +99,11 @@ const GlycanListSummary = (props) => {
                 {structure.sequence
                   .split("\n")
                   .map((line, index) => (showMore || index < 4 ? <div>{line}</div> : null))}
-
-                <Button className={"lnk-btn"} variant="link" onClick={toggleShowMore}>
-                  {showMore ? "Show less..." : "Show more..."}
-                </Button>
+                {structure.sequence.split("\n").length > 4 && (
+                  <Button className={"lnk-btn"} variant="link" onClick={toggleShowMore}>
+                    {showMore ? "Show less..." : "Show more..."}
+                  </Button>
+                )}
               </Col>
             </Row>
           )}
