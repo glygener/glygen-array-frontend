@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { Col } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
+import { getToolTip } from "../utils/commonUtils";
 
 const Peptides = props => {
   useEffect(() => {
@@ -38,11 +39,13 @@ const Peptides = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
+              Cell: row => getToolTip(row.original.name)
             },
             {
               Header: "Sequence",
-              accessor: "sequence"
+              accessor: "sequence",
+              Cell: row => getToolTip(row.original.sequence)
             }
           ]}
           defaultPageSize={10}

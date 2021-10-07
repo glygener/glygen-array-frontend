@@ -10,6 +10,7 @@ import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import displayNames from "../appData/displayNames";
 import { Title } from "../components/FormControls";
+import { getToolTip } from "../utils/commonUtils";
 
 const Linkers = props => {
   useEffect(() => {
@@ -45,7 +46,7 @@ const Linkers = props => {
               Cell: row =>
                 row.value ? (
                   <a href={row.original.pubChemUrl} target="_blank" rel="noopener noreferrer">
-                    {row.value}
+                    {getToolTip(row.value)}
                   </a>
                 ) : (
                   ""
@@ -55,6 +56,7 @@ const Linkers = props => {
             {
               Header: "Name",
               accessor: "name",
+              Cell: row => getToolTip(row.original.name),
               minWidth: 50
             },
             {

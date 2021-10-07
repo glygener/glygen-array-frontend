@@ -10,6 +10,7 @@ import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 import displayNames from "../appData/displayNames";
 import { StructureImage } from "../components/StructureImage";
+import { getToolTip } from "../utils/commonUtils";
 
 const Lipids = props => {
   useEffect(() => {
@@ -40,11 +41,13 @@ const Lipids = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
+              Cell: row => getToolTip(row.original.name)
             },
             {
               Header: "PubChem ID",
-              accessor: "pubChemId"
+              accessor: "pubChemId",
+              Cell: row => getToolTip(row.original.pubChemId)
             },
             {
               Header: displayNames.linker.STRUCTURE,

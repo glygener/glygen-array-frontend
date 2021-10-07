@@ -911,7 +911,7 @@ const AddLinker = props => {
   }
 
   const isStepSkipped = step => {
-    return linker.selectedLinker === "Unknown" && step === 1 && activeStep === 2;
+    return linker.selectedLinker === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
   };
 
   return (

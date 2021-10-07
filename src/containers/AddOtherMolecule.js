@@ -395,7 +395,9 @@ const AddOtherMolecule = props => {
 
     function addOtherMoleculeFailure(response) {
       response.json().then(parsedJson => {
+        setValidate(false);
         setPageErrorsJson(parsedJson);
+        setPageErrorMessage("");
         setShowErrorSummary(true);
       });
     }

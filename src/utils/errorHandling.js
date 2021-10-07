@@ -43,7 +43,7 @@ const FORM_ERROR_MESSAGES = {
     NotValid_pubchemid: "That PubChem Id was not recognized by PubChem. Please try again.",
     NotValid_pubmedid: "The PubMed Id entered is invalid. Please try again.",
     Duplicate_pubchemid: "A linker with that PubChem Id already exists in your collection",
-    Duplicate_name: "Another linker in your collection has the same Name. Please use another Name",
+    Duplicate_name: "Another molecule in your collection has the same Name. Please use another Name",
     Duplicate_sequence: "Another item in your collection has the same sequence. Please use different sequence",
     LengthExceeded_name: "Length of Name is exceeded. Please use another Name."
   },

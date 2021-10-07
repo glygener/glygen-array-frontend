@@ -227,7 +227,7 @@ const AddLipid = props => {
           inChiKey: responseJson.inChiKey,
           inChiSequence: responseJson.inChiSequence,
           iupacName: responseJson.iupacName,
-          name: responseJson.iupacName,
+          name: responseJson.iupacName.substring(0, 100),
           imageURL: responseJson.imageURL,
           molecularFormula: responseJson.molecularFormula,
           isomericSmiles: responseJson.isomericSmiles,

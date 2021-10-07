@@ -50,6 +50,7 @@ const EditLinker = props => {
 
   function getLinkerFailure(response) {
     response.json().then(parsedJson => {
+      debugger;
       setValidated(false);
       setPageErrorsJson(parsedJson);
       setPageErrorMessage("");
@@ -71,9 +72,9 @@ const EditLinker = props => {
         return "Lipid";
       case "UNKNOWN_LIPID":
         return "Unknown lipid";
-      case "LINKER":
+      case "SMALLMOLECULE":
         return "Linker";
-      case "UNKNOWN_Linker":
+      case "UNKNOWN_SMALLMOLECULE":
         return "Unknown linker";
       case "OTHER":
         return "Other";
@@ -96,10 +97,10 @@ const EditLinker = props => {
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
-            form="glycans"
+            form="linkers"
             errorJson={pageErrorsJson}
             errorMessage={pageErrorMessage}
-          ></ErrorSummary>
+          />
         )}
 
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>

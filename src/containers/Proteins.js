@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { Col } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
+import { getToolTip } from "../utils/commonUtils";
 
 const Proteins = props => {
   useEffect(() => {
@@ -38,11 +39,13 @@ const Proteins = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
+              Cell: row => getToolTip(row.original.name)
             },
             {
               Header: "UniProtID",
-              accessor: "uniProtId"
+              accessor: "uniProtId",
+              Cell: row => getToolTip(row.original.uniProtId)
             }
           ]}
           defaultPageSize={10}
