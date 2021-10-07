@@ -115,7 +115,9 @@ export default function GlycanSubstructureSearch(props) {
       }
       if (resp.statusCode === 400) {
         setPageErrorsJson(null);
-        setPageErrorMessage("Invalid data. Please correct it and try again.");
+        setPageErrorMessage(
+          "Invalid sequence for selected sequence type. Please correct it and try again."
+        );
         setShowErrorSummary(true);
         return;
       }
@@ -202,7 +204,10 @@ export default function GlycanSubstructureSearch(props) {
               placeholderId={subStructureSearch.sequence_type.placeholderId}
               placeholder={subStructureSearch.sequence_type.placeholder}
               inputValue={inputValue.sequenceFormat}
-              setInputValue={(value) => setInputValue({ sequenceFormat: value, sequence: "" })}
+              setInputValue={(value) => {
+                setInputValue({ sequenceFormat: value, sequence: "" });
+                setTouched({ sequence: false });
+              }}
               menu={subStructureSearch.sequence_type.options}
               error={touched.sequenceFormat && errors.sequenceFormat}
               onBlur={() => setTouched({ sequenceFormat: true })}

@@ -165,7 +165,7 @@ const GlycanAdvancedSearch = (props) => {
       }
       if (resp.statusCode === 400) {
         setPageErrorsJson(null);
-        setPageErrorMessage("Invalid data. Please correct it and try again.");
+        setPageErrorMessage("Invalid search data. Please correct it and try again.");
         setShowErrorSummary(true);
         return;
       }

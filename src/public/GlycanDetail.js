@@ -10,13 +10,13 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
 import { Card } from "react-bootstrap";
 import { StructureImage } from "../components/StructureImage";
-import Button from "react-bootstrap/Button";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
 import { GlygenTable } from "../components/GlygenTable";
 import { addCommas } from "../utils/commonUtils";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
+import { Loading } from "../components/Loading";
 
 function getDateTime(date) {
   var now = new Date(date);
@@ -52,7 +52,7 @@ const GlycanList = (props) => {
   const history = useHistory();
 
   const [glycanData, setGlycanData] = useState(null);
-
+  const [showLoading, setShowLoading] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -61,6 +61,8 @@ const GlycanList = (props) => {
   });
 
   useEffect(() => {
+    setShowLoading(true);
+
     wsCall(
       "getglycanpublic",
       "GET",
@@ -73,6 +75,7 @@ const GlycanList = (props) => {
   }, []);
 
   const glycanSearchSuccess = (response) => {
+    setShowLoading(false);
     response.json().then((data) => setGlycanData(data));
   };
 
@@ -101,6 +104,7 @@ const GlycanList = (props) => {
       </Helmet>
 
       <Container maxWidth="lg" className="gg-container">
+        <Loading show={showLoading} />
         <div className="content-box-md text-center horizontal-heading">
           <h1 className="page-heading">
             <span>Details for Glycan </span>{" "}
@@ -151,11 +155,13 @@ const GlycanList = (props) => {
               <Card.Body>
                 {/* image */}
                 {glycanData && glycanData.cartoon ? (
+                  // <div className="mb-1">
                   <StructureImage
-                    style={{ minWidth: "20%" }}
+                    style={{ maxWidth: "30%" }}
                     base64={glycanData.cartoon}
                   ></StructureImage>
                 ) : (
+                  // </div>
                   <StructureImage
                     style={{ minWidth: "20%" }}
                     imgUrl={glygenNotFoundSmall}

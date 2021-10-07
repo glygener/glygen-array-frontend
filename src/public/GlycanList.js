@@ -8,11 +8,11 @@ import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Grid from "@material-ui/core/Grid";
-import { Card } from "react-bootstrap";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 import { addCommas } from "../utils/commonUtils";
+import { Loading } from "../components/Loading";
 
 const GlycanList = (props) => {
   const { searchId } = useParams();
@@ -21,6 +21,7 @@ const GlycanList = (props) => {
   const [query, setQuery] = useState(null);
   const [timestamp, setTimeStamp] = useState();
 
+  const [showLoading, setShowLoading] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
@@ -30,6 +31,7 @@ const GlycanList = (props) => {
   };
 
   useEffect(() => {
+    setShowLoading(true);
     wsCall(
       "listglycansforsearch",
       "GET",
@@ -46,6 +48,7 @@ const GlycanList = (props) => {
   }, [searchId]);
 
   const glycanSearchSuccess = (response) => {
+    setShowLoading(false);
     response.json().then((data) => setQuery(data.input));
   };
 
@@ -66,6 +69,8 @@ const GlycanList = (props) => {
       </Helmet>
 
       <Container maxWidth="xl" className="gg-container">
+        <Loading show={showLoading} />
+
         {showErrorSummary === true && (
           <ErrorSummary
             show={showErrorSummary}
