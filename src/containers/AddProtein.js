@@ -16,6 +16,7 @@ import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthChec
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
+import { ViewSourceInfo } from "../components/ViewSourceInfo";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,14 +71,7 @@ const AddProtein = props => {
     sequence: { label: "Sequence", type: "textarea" },
     comment: { label: "Comments", type: "textarea", length: 10000 },
     uniProtId: { label: "UniProt Id", type: "text", length: 100 },
-    pdbIds: { label: "PDB Ids", type: "text" },
-    vendor: { label: "Vendor", type: "text" },
-    catalogueNumber: { label: "Catalogue Number", type: "text" },
-    commercialBatchId: { label: "Batch Id", type: "text" },
-    providerLab: { label: "Provider Lab", type: "text" },
-    nonCommercialBatchId: { label: "Batch Id", type: "text" },
-    method: { label: "Method", type: "text" },
-    sourceComment: { label: "Source Comments", type: "text" }
+    pdbIds: { label: "PDB Ids", type: "text" }
   };
 
   const sourceSelection = e => {
@@ -120,7 +114,7 @@ const AddProtein = props => {
       if (protein.sequence === "") {
         return;
       } else {
-        var seqError = validateSequence("", protein.sequence);
+        var seqError = validateSequence("", protein.sequence.trim());
         setSequenceError(seqError);
         if (seqError !== "") {
           return;
@@ -155,9 +149,12 @@ const AddProtein = props => {
 
   const handleChange = e => {
     setValidate(false);
-
     const name = e.target.name;
     const newValue = e.target.value;
+
+    if ((name === "uniProtId" || name === "sequence") && newValue !== "") {
+      setShowErrorSummary(false);
+    }
 
     setProtein({ [name]: newValue });
   };
@@ -243,8 +240,17 @@ const AddProtein = props => {
     }
 
     function getSequenceFromUniprotError(response) {
+      let status = response.status;
+
       response.text().then(function(text) {
-        return text ? setPageErrorMessage(JSON.parse(text)) : "";
+        if (text) {
+          setPageErrorMessage(JSON.parse(text));
+        } else {
+          if (status === 406) {
+            setPageErrorMessage("Not a Valid Input. Please try again");
+            setShowErrorSummary(true);
+          }
+        }
       });
 
       setShowLoading(false);
@@ -285,7 +291,12 @@ const AddProtein = props => {
           ? protein.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
-                  <Col md={10}>
+                  <Col
+                    md={10}
+                    style={{
+                      wordBreak: "break-all"
+                    }}
+                  >
                     <Link
                       style={{ fontSize: "0.9em" }}
                       href={externalizeUrl(url)}
@@ -382,11 +393,12 @@ const AddProtein = props => {
                     name="pdbIds"
                     placeholder="PDB Ids separated by ';'"
                     value={protein.pdbIds.join(";")}
-                    onChange={e =>
+                    onChange={e => {
+                      setShowErrorSummary(false);
                       setProtein({
                         pdbIds: csvToArray(e.target.value)
-                      })
-                    }
+                      });
+                    }}
                     maxLength={100}
                   />
                 </Col>
@@ -408,6 +420,10 @@ const AddProtein = props => {
                   />
                   {protein.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
                   {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
+                  <span className="character-counter" style={{ marginLeft: "80%" }}>
+                    {protein.sequence && protein.sequence.length > 0 ? protein.sequence.length : ""}
+                    /10000
+                  </span>
                 </Col>
               </Form.Group>
             </>
@@ -578,23 +594,8 @@ const AddProtein = props => {
         return (
           <Form className="radioform2">
             {Object.keys(reviewFields).map(key =>
-              ((key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
-                protein.selectedProtein === "Unknown") ||
-              (protein.source !== "commercial" &&
-                (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
-              (protein.source !== "nonCommercial" &&
-                (key === "providerLab" ||
-                  key === "method" ||
-                  key === "nonCommercialBatchId" ||
-                  key === "sourceComment")) ||
-              (protein.source === "notSpecified" &&
-                (key === "vendor" ||
-                  key === "catalogueNumber" ||
-                  key === "commercialBatchId" ||
-                  key === "nonCommercialBatchId" ||
-                  key === "providerLab" ||
-                  key === "method" ||
-                  key === "sourceComment")) ? (
+              (key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
+              protein.selectedProtein === "Unknown" ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
@@ -614,41 +615,55 @@ const AddProtein = props => {
               )
             )}
 
-            <Form.Group as={Row} controlId="publications">
-              <FormLabel label="Publications" />
-              <Col md={4}>
-                {protein.publications && protein.publications.length > 0
-                  ? protein.publications.map(pub => {
-                      return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
-                    })
-                  : ""}
-              </Col>
-            </Form.Group>
+            {protein.publications && protein.publications.length > 0 && (
+              <Form.Group as={Row} controlId="publications">
+                <FormLabel label="Publications" />
+                <Col md={4}>
+                  {protein.publications && protein.publications.length > 0
+                    ? protein.publications.map(pub => {
+                        return (
+                          <li>
+                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
+                          </li>
+                        );
+                      })
+                    : ""}
+                </Col>
+              </Form.Group>
+            )}
 
-            <Form.Group as={Row} controlId="urls">
-              <FormLabel label="Urls" />
-              <Col md={4}>
-                {protein.urls && protein.urls.length > 0 ? (
-                  protein.urls.map((url, index) => {
-                    return (
-                      <div style={{ marginTop: "8px" }} key={index}>
-                        <Link
-                          style={{ fontSize: "0.9em" }}
-                          href={externalizeUrl(url)}
-                          target="_blank"
-                          rel="external noopener noreferrer"
-                        >
-                          {url}
-                        </Link>
-                        <br />
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ marginTop: "8px" }}>None</div>
-                )}
-              </Col>
-            </Form.Group>
+            {protein.urls && protein.urls.length > 0 && (
+              <Form.Group as={Row} controlId="urls">
+                <FormLabel label="Urls" />
+                <Col md={4}>
+                  {protein.urls && protein.urls.length > 0 ? (
+                    protein.urls.map((url, index) => {
+                      return (
+                        <li style={{ marginTop: "8px" }} key={index}>
+                          <Link
+                            style={{ fontSize: "0.9em" }}
+                            href={externalizeUrl(url)}
+                            target="_blank"
+                            rel="external noopener noreferrer"
+                          >
+                            {url}
+                          </Link>
+                          <br />
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <div style={{ marginTop: "8px" }} />
+                  )}
+                </Col>
+              </Form.Group>
+            )}
+
+            <ViewSourceInfo
+              source={protein.source}
+              commercial={protein.commercial}
+              nonCommercial={protein.nonCommercial}
+            />
           </Form>
         );
 
@@ -671,6 +686,8 @@ const AddProtein = props => {
   }
 
   function addProtein(e) {
+    let unknownProtien = protein.selectedProtein === "Unknown" ? true : false;
+
     var source = {
       type: "NOTRECORDED"
     };
@@ -694,11 +711,19 @@ const AddProtein = props => {
       comment: protein.comment,
       publications: protein.publications,
       urls: protein.urls,
-      sequence: protein.sequence,
+      sequence: protein.sequence.trim(),
       source: source
     };
 
-    wsCall("addlinker", "POST", null, true, proteinObj, response => history.push("/proteins"), addProteinFailure);
+    wsCall(
+      "addlinker",
+      "POST",
+      { unknown: unknownProtien },
+      true,
+      proteinObj,
+      response => history.push("/proteins"),
+      addProteinFailure
+    );
 
     function addProteinFailure(response) {
       response.json().then(parsedJson => {
@@ -709,7 +734,7 @@ const AddProtein = props => {
   }
 
   const isStepSkipped = step => {
-    return protein.selectedProtein === "Unknown" && step === 1 && activeStep === 2;
+    return protein.selectedProtein === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
   };
 
   return (

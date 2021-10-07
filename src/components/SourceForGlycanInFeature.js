@@ -140,13 +140,24 @@ const SourceForGlycanInFeature = props => {
     selectedRow.papers = addGlycanInfoToFeature.papers;
     selectedRow.opensRing = addGlycanInfoToFeature.opensRing;
 
-    if (!props.featureAddState.positionDetails.isPosition) {
-      let glycansListLength = glycansList.length;
+    if (props.featureAddState.positionDetails.isPosition) {
+      let glycansWithIndex = glycansList.filter(i => i.glycan && i.glycan.index);
 
-      if (glycansListLength === 1) {
-        selectedRow.index = 0;
+      let currentMaxIndex;
+
+      if (glycansWithIndex.length > 0) {
+        currentMaxIndex = Math.max(
+          ...glycansList.map(i => {
+            return i.glycan.index;
+          }),
+          0
+        );
+      }
+
+      if (currentMaxIndex) {
+        selectedRow.index = currentMaxIndex + 1;
       } else {
-        selectedRow.index = glycansList[glycansListLength - 2].index + 1;
+        selectedRow.index = 0;
       }
     }
 

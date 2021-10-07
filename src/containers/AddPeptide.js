@@ -16,6 +16,7 @@ import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthChec
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
+import { ViewSourceInfo } from "../components/ViewSourceInfo";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -238,7 +239,12 @@ const AddPeptide = props => {
           ? peptide.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
-                  <Col md={10}>
+                  <Col
+                    md={10}
+                    style={{
+                      wordBreak: "break-all"
+                    }}
+                  >
                     <Link
                       style={{ fontSize: "0.9em" }}
                       href={externalizeUrl(url)}
@@ -556,69 +562,11 @@ const AddPeptide = props => {
               </Form.Group>
             )}
 
-            {peptide.source === "notSpecified" && (
-              <Form.Group as={Row} controlId="value">
-                <FormLabel label="Source" />
-                <Col md={4}>
-                  <Form.Control type="text" disabled value={"Not Recorded"} />
-                </Col>
-              </Form.Group>
-            )}
-
-            {peptide.source === "commercial" && (
-              <>
-                <FormLabel label="Source" className={"metadata-descriptor-title "} />
-                <Form.Group as={Row} controlId="vendor">
-                  <FormLabel label="Vendor" />
-                  <Col md={4}>
-                    <Form.Control type="text" disabled value={peptide.commercial.vendor} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="catalogueNumber">
-                  <FormLabel label="Catalogue Number" />
-                  <Col md={4}>
-                    <Form.Control type="text" disabled value={peptide.commercial.catalogueNumber} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="batchId">
-                  <FormLabel label=" Batch Id" />
-                  <Col md={4}>
-                    <Form.Control type="text" disabled value={peptide.commercial.batchId} />
-                  </Col>
-                </Form.Group>
-              </>
-            )}
-
-            {peptide.source === "nonCommercial" && (
-              <>
-                <FormLabel label="Source" className={"metadata-descriptor-title "} />
-                <Form.Group as={Row} controlId="providerLab">
-                  <FormLabel label="Provider Lab" />
-                  <Col md={4}>
-                    <Form.Control type="text" disabled value={peptide.nonCommercial.providerLab} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="method">
-                  <FormLabel label="Method" />
-                  <Col md={4}>
-                    <Form.Control type="text" disabled value={peptide.nonCommercial.method} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="batchId">
-                  <FormLabel label="Batch Id" />
-                  <Col md={4}>
-                    <Form.Control type="text" disabled value={peptide.nonCommercial.batchId} />
-                  </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} controlId="batchId">
-                  <FormLabel label="Comment" />
-                  <Col md={4}>
-                    <Form.Control type="text" disabled value={peptide.nonCommercial.sourceComment} />
-                  </Col>
-                </Form.Group>
-              </>
-            )}
+            <ViewSourceInfo
+              source={peptide.source}
+              commercial={peptide.commercial}
+              nonCommercial={peptide.nonCommercial}
+            />
           </Form>
         );
 
@@ -643,6 +591,8 @@ const AddPeptide = props => {
   function addPeptide(e) {
     setShowLoading(true);
 
+    let unknownPeptide = peptide.selectedPeptide === "Unknown" ? true : false;
+
     var source = {
       type: "NOTRECORDED"
     };
@@ -662,14 +612,22 @@ const AddPeptide = props => {
 
     var peptideObj = peptide.selectedPeptide === "Unknown" ? getUnknownSubmitData() : getPeptideSubmitData();
 
-    wsCall("addlinker", "POST", null, true, peptideObj, response => history.push("/peptides"), addPeptideFailure);
+    wsCall(
+      "addlinker",
+      "POST",
+      { unknown: unknownPeptide },
+      true,
+      peptideObj,
+      response => history.push("/peptides"),
+      addPeptideFailure
+    );
 
     function addPeptideFailure(response) {
       response.json().then(parsedJson => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
-        setShowLoading(false);
       });
+      setShowLoading(false);
     }
 
     function getPeptideSubmitData() {
@@ -679,7 +637,7 @@ const AddPeptide = props => {
         comment: peptide.comment,
         publications: peptide.publications,
         urls: peptide.urls,
-        sequence: peptide.sequence,
+        sequence: peptide.sequence.trim(),
         source: source
       };
 

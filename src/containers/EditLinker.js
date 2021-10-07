@@ -61,11 +61,25 @@ const EditLinker = props => {
     switch (type) {
       case "PEPTIDE":
         return "Peptide";
-      case "UNKNOWN PEPTIDE":
+      case "UNKNOWN_PEPTIDE":
         return "Unknown peptide";
+      case "PROTEIN":
+        return "Protein";
+      case "UNKNOWN_PROTEIN":
+        return "Unknown protein";
+      case "LIPID":
+        return "Lipid";
+      case "UNKNOWN_LIPID":
+        return "Unknown lipid";
+      case "LINKER":
+        return "Linker";
+      case "UNKNOWN_Linker":
+        return "Unknown linker";
+      case "OTHER":
+        return "Other";
 
       default:
-        return "Peptide";
+        return "Linker";
     }
   }
 
@@ -124,9 +138,7 @@ const EditLinker = props => {
                 type="text"
                 plaintext
                 readOnly
-                defaultValue={
-                  linkerDetails.type.includes("peptide") ? getTypeLabel(linkerDetails.type) : linkerDetails.type
-                }
+                defaultValue={linkerDetails.type.length > 0 ? getTypeLabel(linkerDetails.type) : ""}
               />
             </Col>
           </Form.Group>
@@ -150,13 +162,13 @@ const EditLinker = props => {
 
           {linkerDetails.type && (
             <>
-              {linkerDetails.type === "OTHER" && <LinkButton to="/othermolecules" label="Cancel" />}
-              {(linkerDetails.type === "LINKERS" || linkerDetails.type === "SMALLMOLECULE") && (
+              {linkerDetails.type.includes("OTHER") && <LinkButton to="/othermolecules" label="Cancel" />}
+              {(linkerDetails.type.includes("LINKERS") || linkerDetails.type === "SMALLMOLECULE") && (
                 <LinkButton to="/linkers" label="Cancel" />
               )}
-              {linkerDetails.type === "LIPID" && <LinkButton to="/lipids" label="Cancel" />}
-              {linkerDetails.type === "PROTEIN" && <LinkButton to="/proteins" label="Cancel" />}
-              {linkerDetails.type === "PEPTIDE" && <LinkButton to={"/peptides"} label="Cancel" />}
+              {linkerDetails.type.includes("LIPID") && <LinkButton to="/lipids" label="Cancel" />}
+              {linkerDetails.type.includes("PROTEIN") && <LinkButton to="/proteins" label="Cancel" />}
+              {linkerDetails.type.includes("PEPTIDE") && <LinkButton to={"/peptides"} label="Cancel" />}
             </>
           )}
         </Form>

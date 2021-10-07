@@ -15,6 +15,7 @@ import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthChec
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
+import { ViewSourceInfo } from "../components/ViewSourceInfo";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -287,7 +288,12 @@ const AddLipid = props => {
           ? lipid.urls.map((url, index) => {
               return (
                 <Row style={{ marginTop: "8px" }} key={index}>
-                  <Col md={10}>
+                  <Col
+                    md={10}
+                    style={{
+                      wordBreak: "break-all"
+                    }}
+                  >
                     <Link
                       style={{ fontSize: "0.9em" }}
                       href={externalizeUrl(url)}
@@ -592,7 +598,7 @@ const AddLipid = props => {
         if (activeStep === 2) {
           return (
             <>
-              <Form className="radioform2" validated={validate && validatedCommNonComm}>
+              <Form noValidate className="radioform2" validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
                   <FormLabel label="Name" className="required-asterik" />
                   <Col md={4}>
@@ -602,7 +608,7 @@ const AddLipid = props => {
                       placeholder="name"
                       value={lipid.name}
                       onChange={handleChange}
-                      isInValid={validate}
+                      isInvalid={validate}
                       maxLength={100}
                       required
                     />
@@ -752,29 +758,14 @@ const AddLipid = props => {
         return (
           <Form className="radioform2">
             {Object.keys(reviewFields).map(key =>
-              ((key === "pubChemId" ||
+              (key === "pubChemId" ||
                 key === "inChiKey" ||
                 key === "inChiSequence" ||
                 key === "iupacName" ||
                 key === "molecularFormula" ||
                 key === "canonicalSmiles" ||
                 key === "isomericSmiles") &&
-                lipid.selectedLipid === "Unknown") ||
-              (lipid.source !== "commercial" &&
-                (key === "vendor" || key === "catalogueNumber" || key === "commercialBatchId")) ||
-              (lipid.source !== "nonCommercial" &&
-                (key === "providerLab" ||
-                  key === "method" ||
-                  key === "nonCommercialBatchId" ||
-                  key === "sourceComment")) ||
-              (lipid.source === "notSpecified" &&
-                (key === "vendor" ||
-                  key === "catalogueNumber" ||
-                  key === "commercialBatchId" ||
-                  key === "nonCommercialBatchId" ||
-                  key === "providerLab" ||
-                  key === "method" ||
-                  key === "sourceComment")) ? (
+              lipid.selectedLipid === "Unknown" ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
@@ -794,41 +785,51 @@ const AddLipid = props => {
               )
             )}
 
-            <Form.Group as={Row} controlId="publications">
-              <FormLabel label="Publications" />
-              <Col md={4}>
-                {lipid.publications && lipid.publications.length > 0
-                  ? lipid.publications.map(pub => {
-                      return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
-                    })
-                  : ""}
-              </Col>
-            </Form.Group>
+            {lipid.publications && lipid.publications.length > 0 && (
+              <Form.Group as={Row} controlId="publications">
+                <FormLabel label="Publications" />
+                <Col md={4}>
+                  {lipid.publications && lipid.publications.length > 0
+                    ? lipid.publications.map(pub => {
+                        return (
+                          <li>
+                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
+                          </li>
+                        );
+                      })
+                    : ""}
+                </Col>
+              </Form.Group>
+            )}
 
-            <Form.Group as={Row} controlId="urls">
-              <FormLabel label="Urls" />
-              <Col md={4}>
-                {lipid.urls && lipid.urls.length > 0 ? (
-                  lipid.urls.map((url, index) => {
-                    return (
-                      <div style={{ marginTop: "8px" }} key={index}>
-                        <Link
-                          style={{ fontSize: "0.9em" }}
-                          href={externalizeUrl(url)}
-                          target="_blank"
-                          rel="external noopener noreferrer"
-                        >
-                          {url}
-                        </Link>
-                        <br />
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ marginTop: "8px" }}>None</div>
-                )}
-              </Col>
-            </Form.Group>
+            {lipid.urls && lipid.urls.length > 0 && (
+              <Form.Group as={Row} controlId="urls">
+                <FormLabel label="Urls" />
+                <Col md={4}>
+                  {lipid.urls && lipid.urls.length > 0 ? (
+                    lipid.urls.map((url, index) => {
+                      return (
+                        <li style={{ marginTop: "8px" }} key={index}>
+                          <Link
+                            style={{ fontSize: "0.9em" }}
+                            href={externalizeUrl(url)}
+                            target="_blank"
+                            rel="external noopener noreferrer"
+                          >
+                            {url}
+                          </Link>
+                          <br />
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <div style={{ marginTop: "8px" }} />
+                  )}
+                </Col>
+              </Form.Group>
+            )}
+
+            <ViewSourceInfo source={lipid.source} commercial={lipid.commercial} nonCommercial={lipid.nonCommercial} />
           </Form>
         );
 
@@ -851,6 +852,9 @@ const AddLipid = props => {
   }
 
   function addLipid(e) {
+    setShowLoading(true);
+    let unknownLipid = lipid.selectedLipid === "Unknown" ? true : false;
+
     var source = {
       type: "NOTRECORDED"
     };
@@ -886,18 +890,27 @@ const AddLipid = props => {
       source: source
     };
 
-    wsCall("addlinker", "POST", null, true, lipidObj, response => history.push("/lipids"), addLipidFailure);
+    wsCall(
+      "addlinker",
+      "POST",
+      { unknown: unknownLipid },
+      true,
+      lipidObj,
+      response => history.push("/lipids"),
+      addLipidFailure
+    );
 
     function addLipidFailure(response) {
       response.json().then(parsedJson => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
       });
+      setShowLoading(false);
     }
   }
 
   const isStepSkipped = step => {
-    return lipid.selectedLipid === "Unknown" && step === 1 && activeStep === 2;
+    return lipid.selectedLipid === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
   };
 
   return (

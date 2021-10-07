@@ -75,7 +75,7 @@ const Linkers = props => {
           defaultPageSize={10}
           showCommentsButton
           showSearchBox
-          commentsRefColumn="description"
+          commentsRefColumn="comment"
           customCommentColumn
           deleteWS="linkerdelete"
           editUrl="linkers/editlinker"
