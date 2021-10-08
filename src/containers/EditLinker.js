@@ -7,6 +7,7 @@ import { FormLabel, Feedback, FormButton, Title, LinkButton } from "../component
 import { head, getMeta } from "../utils/head";
 import { useHistory, useParams } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
+import { StructureImage } from "../components/StructureImage";
 
 const EditLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -44,6 +45,7 @@ const EditLinker = props => {
 
   function getLinkerSuccess(response) {
     response.json().then(parsedJson => {
+      debugger;
       setLinkerDetails(parsedJson);
     });
   }
@@ -132,18 +134,6 @@ const EditLinker = props => {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="linkerType">
-            <FormLabel label="Type" />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                plaintext
-                readOnly
-                defaultValue={linkerDetails.type.length > 0 ? getTypeLabel(linkerDetails.type) : ""}
-              />
-            </Col>
-          </Form.Group>
-
           {(linkerDetails.sequence || linkerDetails.inChiSequence) && (
             <Form.Group as={Row} controlId="sequence">
               <FormLabel label={linkerDetails.sequence ? "Sequence" : "InchI"} />
@@ -159,16 +149,103 @@ const EditLinker = props => {
             </Form.Group>
           )}
 
+          {linkerDetails.pdbIds && linkerDetails.pdbIds.length > 0 && (
+            <Form.Group as={Row} controlId="pdbIds">
+              <FormLabel label={"PDB Ids"} />
+              <Col md={4}>
+                {linkerDetails.pdbIds.map(pdb => {
+                  return (
+                    <>
+                      <li>
+                        <Form.Control type="text" plaintext readOnly value={pdb} />
+                      </li>
+                    </>
+                  );
+                })}
+              </Col>
+            </Form.Group>
+          )}
+
+          {linkerDetails.uniProtId && (
+            <Form.Group as={Row} controlId="uniProtId">
+              <FormLabel label={"UniProt Id"} />
+              <Col md={4}>
+                <Form.Control type="text" plaintext readOnly value={linkerDetails.uniProtId} />
+              </Col>
+            </Form.Group>
+          )}
+
+          {linkerDetails.imageURL && (
+            <Form.Group as={Row} controlId="imageURL">
+              <FormLabel label={"Image URL"} />
+              <Col md={4}>
+                <StructureImage imgUrl={linkerDetails.imageURL} />,
+              </Col>
+            </Form.Group>
+          )}
+
+          {linkerDetails.mass && (
+            <Form.Group as={Row} controlId="mass">
+              <FormLabel label={"Mass"} />
+              <Col md={4}>
+                <Form.Control type="text" plaintext readOnly value={linkerDetails.mass} />
+              </Col>
+            </Form.Group>
+          )}
+
+          {linkerDetails.iupacName && (
+            <Form.Group as={Row} controlId="iupacName">
+              <FormLabel label={"IUPAC Name"} />
+              <Col md={4}>
+                <Form.Control type="text" plaintext readOnly value={linkerDetails.iupacName} />
+              </Col>
+            </Form.Group>
+          )}
+
+          {linkerDetails.smiles && (
+            <Form.Group as={Row} controlId="smiles">
+              <FormLabel label={"Canonical SMILES"} />
+              <Col md={4}>
+                <Form.Control type="text" plaintext readOnly value={linkerDetails.smiles} />
+              </Col>
+            </Form.Group>
+          )}
+
+          {linkerDetails.isomericSmiles && (
+            <Form.Group as={Row} controlId="smiles">
+              <FormLabel label={"Isomeric SMILES"} />
+              <Col md={4}>
+                <Form.Control type="text" plaintext readOnly value={linkerDetails.isomericSmiles} />
+              </Col>
+            </Form.Group>
+          )}
+
+          <Form.Group as={Row} controlId="linkerType">
+            <FormLabel label="Type" />
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                plaintext
+                readOnly
+                defaultValue={linkerDetails.type.length > 0 ? getTypeLabel(linkerDetails.type) : ""}
+              />
+            </Col>
+          </Form.Group>
+
           <FormButton className="line-break-1" type="submit" label="Submit" />
 
           {linkerDetails.type && (
             <>
               {linkerDetails.type.includes("OTHER") && <LinkButton to="/othermolecules" label="Cancel" />}
+
               {(linkerDetails.type.includes("LINKERS") || linkerDetails.type === "SMALLMOLECULE") && (
                 <LinkButton to="/linkers" label="Cancel" />
               )}
+
               {linkerDetails.type.includes("LIPID") && <LinkButton to="/lipids" label="Cancel" />}
+
               {linkerDetails.type.includes("PROTEIN") && <LinkButton to="/proteins" label="Cancel" />}
+
               {linkerDetails.type.includes("PEPTIDE") && <LinkButton to={"/peptides"} label="Cancel" />}
             </>
           )}
