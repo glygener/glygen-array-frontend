@@ -132,9 +132,14 @@ const AddLipid = props => {
         } else if (lipid.inChiKey) {
           populateLinkerDetails(encodeURIComponent(lipid.inChiKey.trim()));
         }
+
+        if (lipid.inChiSequence !== "" && showErrorSummary) {
+          setShowErrorSummary(false);
+        }
       }
     } else if (activeStep === 2) {
       let count = 0;
+      setShowErrorSummary(false);
 
       if (lipid.name === "") {
         setValidate(true);

@@ -1181,25 +1181,25 @@ const AddFeature = props => {
             </Form.Group>
           )}
 
-          {featureAddState.linker && featureAddState.linker.type !== "SMALLMOLECULE" ? (
-            featureAddState.linker.imageURL && (
-              <Form.Group as={Row} controlId="name">
-                <Col md={{ span: 3, offset: 2 }}>
-                  <FormLabel label={""} />
-                </Col>
-                <Col md={4}>
-                  <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
-                </Col>
-              </Form.Group>
-            )
-          ) : (
-            <Form.Group as={Row} controlId="comment">
-              <FormLabel label="Comment" />
-              <Col md={4} className="sequence-label-div">
-                <label>{featureAddState.linker.description ? featureAddState.linker.description : ""}</label>
-              </Col>
-            </Form.Group>
-          )}
+          {featureAddState.linker && featureAddState.linker.type === "SMALLMOLECULE"
+            ? featureAddState.linker.imageURL && (
+                <Form.Group as={Row} controlId="name">
+                  <Col md={{ span: 3, offset: 2 }}>
+                    <FormLabel label={""} />
+                  </Col>
+                  <Col md={4}>
+                    <StructureImage imgUrl={featureAddState.linker.imageURL}></StructureImage>
+                  </Col>
+                </Form.Group>
+              )
+            : (featureAddState.linker.description || featureAddState.linker.comment) && (
+                <Form.Group as={Row} controlId="comment">
+                  <FormLabel label="Comment" />
+                  <Col md={4} className="sequence-label-div">
+                    <label>{featureAddState.linker.comment ? featureAddState.linker.comment : ""}</label>
+                  </Col>
+                </Form.Group>
+              )}
         </Form>
       </>
     );

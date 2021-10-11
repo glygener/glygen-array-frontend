@@ -156,7 +156,7 @@ const AddProtein = props => {
       setShowErrorSummary(false);
     }
 
-    setProtein({ [name]: newValue });
+    setProtein({ [name]: newValue.trim() });
   };
 
   const handleBack = () => {
