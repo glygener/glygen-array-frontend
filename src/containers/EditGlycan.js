@@ -48,7 +48,6 @@ const EditGlycan = props => {
 
   function getGlycanSuccess(response) {
     response.json().then(parsedJson => {
-      debugger;
       setGlycanDetails(parsedJson);
       setShowLoading(false);
     });

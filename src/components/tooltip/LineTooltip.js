@@ -5,7 +5,7 @@ import HelpOutline from "@material-ui/icons/HelpOutline";
 import "../../css/HelpToolTip.css";
 // Changed file name from HelpTooltip to HelpToolTip
 
-const LineTooltip = (props) => {
+const LineTooltip = props => {
   const { text, children } = props;
 
   return (
@@ -15,16 +15,10 @@ const LineTooltip = (props) => {
         interactive
         arrow
         placement={"bottom-start"}
-        classes={{
-          tooltip: "gg-tooltip",
-        }}
+        classes={{ tooltip: "gg-tooltip" }}
         title={<>{text}</>}
       >
-        {children ? (
-          children
-        ) : (
-          <HelpOutline className={props.helpIcon ? props.helpIcon : "gg-helpicon"} />
-        )}
+        {children ? children : <HelpOutline className={props.helpIcon ? props.helpIcon : "gg-helpicon"} />}
       </Tooltip>
       {(text === undefined || props.text === "") && <div>{children}</div>}
     </>
@@ -32,7 +26,7 @@ const LineTooltip = (props) => {
 };
 
 LineTooltip.propTypes = {
-  text: PropTypes.string,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export { LineTooltip };

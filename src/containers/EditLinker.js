@@ -8,6 +8,10 @@ import { head, getMeta } from "../utils/head";
 import { useHistory, useParams } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { StructureImage } from "../components/StructureImage";
+import { ViewSourceInfo } from "../components/ViewSourceInfo";
+import { PublicationCard } from "../components/PublicationCard";
+import { Link } from "@material-ui/core";
+import { externalizeUrl } from "../utils/commonUtils";
 
 const EditLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -15,6 +19,7 @@ const EditLinker = props => {
   const history = useHistory();
   let { linkerId } = useParams();
 
+  const [source, setSource] = useState({});
   const [validated, setValidated] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -25,7 +30,19 @@ const EditLinker = props => {
     comment: "",
     description: "",
     sequence: "",
-    type: ""
+    type: "",
+    commercial: {
+      vendor: "",
+      catalogueNumber: "",
+      batchId: ""
+    },
+    nonCommercial: {
+      providerLab: "",
+      method: "",
+      batchId: "",
+      sourceComment: ""
+    },
+    source: ""
   });
 
   const handleChange = e => {
@@ -34,6 +51,22 @@ const EditLinker = props => {
 
     setLinkerDetails({ [name]: newValue });
   };
+
+  function handleSource(resp) {
+    let sourceObj = {};
+    if (resp.source.type === "COMMERCIAL") {
+      sourceObj.vendor = resp.source.vendor;
+      sourceObj.catalogueNumber = resp.source.catalogueNumber;
+      sourceObj.batchId = resp.source.batchId;
+    } else if (resp.source.type === "NONCOMMERCIAL") {
+      sourceObj.providerLab = resp.source.providerLab;
+      sourceObj.method = resp.source.method;
+      sourceObj.batchId = resp.source.batchId;
+      sourceObj.sourceComment = resp.source.sourceComment;
+    }
+
+    return sourceObj;
+  }
 
   useEffect(() => {
     if (props.authCheckAgent) {
@@ -44,15 +77,24 @@ const EditLinker = props => {
   }, [linkerId, props]);
 
   function getLinkerSuccess(response) {
+    let sourceObj;
+
     response.json().then(parsedJson => {
-      debugger;
+      let resp = parsedJson;
+      sourceObj = handleSource(resp);
+
       setLinkerDetails(parsedJson);
+
+      setSource({
+        type: resp.source.type,
+        commercial: resp.source.type === "COMMERCIAL" ? sourceObj : {},
+        nonCommercial: resp.source.type === "NONCOMMERCIAL" ? sourceObj : {}
+      });
     });
   }
 
   function getLinkerFailure(response) {
     response.json().then(parsedJson => {
-      debugger;
       setValidated(false);
       setPageErrorsJson(parsedJson);
       setPageErrorMessage("");
@@ -232,6 +274,59 @@ const EditLinker = props => {
             </Col>
           </Form.Group>
 
+          {linkerDetails.publications && linkerDetails.publications.length > 0 && (
+            <Form.Group as={Row} controlId="publications">
+              <FormLabel label="Publications" />
+              <Col md={4}>
+                {linkerDetails.publications && linkerDetails.publications.length > 0
+                  ? linkerDetails.publications.map(pub => {
+                      return (
+                        <li>
+                          <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
+                        </li>
+                      );
+                    })
+                  : ""}
+              </Col>
+            </Form.Group>
+          )}
+
+          {linkerDetails.urls && linkerDetails.urls.length > 0 && (
+            <Form.Group as={Row} controlId="urls">
+              <FormLabel label="Urls" />
+              <Col md={4}>
+                {linkerDetails.urls && linkerDetails.urls.length > 0 ? (
+                  linkerDetails.urls.map((url, index) => {
+                    return (
+                      <li style={{ marginTop: "8px" }} key={index}>
+                        <Link
+                          style={{ fontSize: "0.9em" }}
+                          href={externalizeUrl(url)}
+                          target="_blank"
+                          rel="external noopener noreferrer"
+                        >
+                          {url}
+                        </Link>
+                        <br />
+                      </li>
+                    );
+                  })
+                ) : (
+                  <div style={{ marginTop: "8px" }} />
+                )}
+              </Col>
+            </Form.Group>
+          )}
+
+          {source && (
+            <ViewSourceInfo
+              source={source.type}
+              commercial={source.commercial}
+              nonCommercial={source.nonCommercial}
+              isUpdate
+            />
+          )}
+
           <FormButton className="line-break-1" type="submit" label="Submit" />
 
           {linkerDetails.type && (
@@ -268,12 +363,16 @@ const EditLinker = props => {
       case "OTHER":
         return history.push("/othermolecules");
       case "LINKERS":
+      case "SMALLMOLECULE":
         return history.push("/linkers");
       case "LIPID":
+      case "UNKNOWN_LIPID":
         return history.push("/lipids");
       case "PROTEIN":
+      case "UNKNOWN_PROTEIN":
         return history.push("/proteins");
       case "PEPTIDE":
+      case "UNKNOWN_PEPTIDE":
         return history.push("/peptides");
 
       default:

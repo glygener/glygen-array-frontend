@@ -420,7 +420,6 @@ const FeatureView = props => {
   };
 
   const getSelectedGlycanList = () => {
-    debugger;
     return (
       <>
         <div className={"form-container"}>

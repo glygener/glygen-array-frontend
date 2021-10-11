@@ -40,7 +40,7 @@ const SourceForGlycanInFeature = props => {
 
   const handleNext = () => {
     var stepIncrement = 1;
-    debugger;
+
     if (activeStep === 0) {
       if (!props.currentGlycanSelection) {
         setPageErrorsJson({});
@@ -84,7 +84,6 @@ const SourceForGlycanInFeature = props => {
     let selectedRowIndex;
     let selectedPosition;
     let flag = false;
-    debugger;
 
     if (
       props.featureAddState.type === "GLYCO_LIPID" ||
