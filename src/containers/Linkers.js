@@ -44,12 +44,12 @@ const Linkers = props => {
               accessor: "pubChemId",
               // eslint-disable-next-line react/prop-types
               Cell: row =>
-                row.value ? (
+                row.value && !props.isImported ? (
                   <a href={row.original.pubChemUrl} target="_blank" rel="noopener noreferrer">
                     {getToolTip(row.value)}
                   </a>
                 ) : (
-                  ""
+                  getToolTip(row.value)
                 ),
               minWidth: 70
             },

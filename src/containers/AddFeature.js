@@ -313,6 +313,7 @@ const AddFeature = props => {
           setLinkerValidated(true);
           return;
         }
+        setOnlyMyLinkers(false);
       }
     } else if (activeStep === 2) {
       if (featureAddState.type === "GLYCO_LIPID") {
@@ -398,6 +399,7 @@ const AddFeature = props => {
       //   stepDecrement += 1;
       // }
     }
+    setOnlyMyLinkers(false);
     setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
   };
 
