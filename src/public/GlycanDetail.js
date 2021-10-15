@@ -141,7 +141,7 @@ const GlycanList = (props) => {
           <Card>
             <Card.Header className="panelHeadBgr">
               <h4 className="gg-green d-inline">General</h4>
-              <div className="float-right">
+              {/* <div className="float-right">
                 <Accordion.Toggle
                   eventKey="0"
                   onClick={() => toggleCollapse("general", collapsed.general)}
@@ -149,7 +149,7 @@ const GlycanList = (props) => {
                 >
                   <span>{collapsed.general ? closeIcon : expandIcon}</span>
                 </Accordion.Toggle>
-              </div>
+              </div> */}
             </Card.Header>
             <Accordion.Collapse eventKey="0">
               <Card.Body>
