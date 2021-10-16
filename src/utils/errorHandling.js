@@ -3,91 +3,102 @@
  **/
 const FORM_ERROR_MESSAGES = {
   signin: {
-    Invalid_password: "Bad Credentails. Please try again. "
+    Invalid_password: "Credentails are bad. Please try once more.",
   },
   signup: {
-    Duplicate_username: "The username is already in use. Please choose a different username.",
-    Duplicate_email: "There is already an account with this email, please enter a different one."
+    Duplicate_username:
+      "The username you've entered is already in use. Please select a unique username.",
+    Duplicate_email: "Please use a different email address since this one is already in use.",
   },
   changeEmail: {
-    Duplicate_email: "There is already an account with this email, please enter a different one.",
-    Invalid_password: "Wrong password. Please try again."
+    Duplicate_email: "Please use a different email address since this one is already in use.",
+    Invalid_password: "The password is incorrect. Please try once more.",
   },
   changePassword: {
-    Invalid_currentPassword: "Current Password is not valid. Please try again.",
+    Invalid_currentPassword: "The current password is incorrect. Please try once more.",
     NotValid_password:
-      "password must contain at least one uppercase character, one lowercase character, one numeric value, one special character, five characters in length"
+      "A password must have at least one capital, one lowercase, one number value, one special character, and be at least five characters long.",
   },
   usernameRecovery: {
-    NotFound_email: " No user is associated with this email"
+    NotFound_email: "This email is not associated with any user.",
   },
   passwordRecovery: {
-    Failed_username: " Internal Error, password Recovery Failed. Please try again.",
-    NotFound_username: " No user is associated with this username"
+    Failed_username: "Password recovery failed due to an internal error. Please try once more.",
+    NotFound_username: "This username is not associated with any user.",
   },
   signupVerification: {
-    Invalid_token: "Token Entered is not valid. Please try again.",
-    Expired_token: "The link or token has already expired. Please try signing up again."
+    Invalid_token: "The token you entered is invalid. Please try once more.",
+    Expired_token:
+      "The link or token has already passed its expiration time. Please try again to sign up.",
   },
   glycans: {
-    Duplicate_sequence: "Another glycan with that sequence already exists in your collection",
-    Duplicate_internalId: "Another glycan in your collection has the same Internal ID. Please use another Internal Id",
-    Duplicate_name: "Another glycan in your collection has the same Name. Please use another Name",
+    Duplicate_sequence: "You already have another glycan in your collection with that sequence.",
+    Duplicate_internalId:
+      "The same Internal ID might be found in another glycan in your collection. Please use a different Internal Id.",
+    Duplicate_name:
+      "The name of another glycan in your collection is the same as this one. Please use a different name.",
     NotValid_sequence:
-      "Sequence string seems to be unrecognizable or may not be compatible with the selected format. Please check again for validity",
-    NotValid_glytoucanId: "That GlyTouCan ID is not recognized by Glytoucan. Please try again.",
-    Invalid_structure: "Provided Glycan does not specify the GlyTouCan ID",
-    NotValid_file: "Invalid file. Please verify the file, selected format and upload again"
+      "The sequence string appears to be unrecognizable or incompatible with the format specified. Please double-check for accuracy.",
+    NotValid_glytoucanId: "GlyTouCan does not recognize that GlyTouCan ID. Please try once more.",
+    Invalid_structure: "Provided Glycan does not specify the GlyTouCan ID.",
+    NotValid_file:
+      "The file is invalid. Please verify the file and format selection before re-uploading.",
   },
   linkers: {
-    NotValid_pubchemid: "That PubChem Id was not recognized by PubChem. Please try again.",
-    NotValid_pubmedid: "The PubMed Id entered is invalid. Please try again.",
-    Duplicate_pubchemid: "A linker with that PubChem Id already exists in your collection",
-    Duplicate_name: "Another molecule in your collection has the same Name. Please use another Name",
-    Duplicate_sequence: "Another item in your collection has the same sequence. Please use different sequence",
-    LengthExceeded_name: "Length of Name is exceeded. Please use another Name."
+    NotValid_pubchemid: "PubChem did not recognize that PubChem ID. Please try once more.",
+    NotValid_pubmedid: "The PubMed ID you entered is invalid. Please try once more.",
+    Duplicate_pubchemid: "There is already a linker in your collection with that PubChem ID.",
+    Duplicate_name:
+      "The name of another molecule in your collection is the same. Please use a different name.",
+    Duplicate_sequence:
+      "The sequence is repeated in another item in your collection. Please use a different sequence.",
+    LengthExceeded_name:
+      "The length of the name has been exceeded. Please choose a different name.",
   },
   feature: {},
   bulkGlycans: {
-    Toolarge_file: "Please ensure that the file size is at most 1MB.",
+    Toolarge_file: "Please keep the file size to a maximum of 1MB.",
     Invalidextension_file: "Please select a GlycoWorkbench file(*.gws) or a text file (*.txt)",
     Notvalid_file:
-      "It seems that the uploaded file is invalid. Please ensure that it contains only semi-colon separated valid glycoworkbench sequences"
+      "The uploaded file appears to be invalid. Please verify that it only contains valid glycoworkbench sequences separated by semi-colon.",
   },
   bulkSlideLayouts: {
     Notvalid_file:
-      "It seems that the uploaded file is invalid. Please ensure that it is a valid GRITS glycan library file"
+      "The uploaded file appears to be invalid. Please double-check that the file is a valid GRITS glycan library.",
   },
   importSlidelayouts: {
-    NotValid_file: "It seems that the uploaded file is not valid. You can try uploading new file"
+    NotValid_file: "The submitted file appears to be invalid. You might try re-uploading the file.",
   },
   blockLayouts: {
-    Duplicate_name: "Another block layout in your collection has the same Name. Please use another Name",
-    Positiveonly_height: "# Rows must be a positive integer",
-    Positiveonly_width: "# Columns must be a positive integer"
+    Duplicate_name:
+      "The same name appears in another block layout in your collection. Please use a different name.",
+    Positiveonly_height: "The number of rows must be a positive integer.",
+    Positiveonly_width: "The number of columns must be a positive integer.",
   },
   slideLayouts: {
-    Duplicate_name: "Another slide layout has the same Name. Please use a different Name.",
-    Positiveonly_height: "# Rows must be a positive integer",
-    Positiveonly_width: "# Columns must be a positive integer"
+    Duplicate_name: "The name of another slide layout is the same. Please choose a new name.",
+    Positiveonly_height: "The number of rows must be a positive integer.",
+    Positiveonly_width: "The number of columns must be a positive integer.",
   },
   glygenTable: {
-    Not_Found: "Unknown error occurred. Please be patient while we look into this."
+    Not_Found: "An unidentified error has occurred. Please be patient while we investigate this.",
   },
   processdata: {
-    Internal_Error: "Cannot add the intensities to the repository. Please fix the file and reupload."
+    Internal_Error:
+      "The intensities cannot be added to the repository. Please update the file and re-upload it.",
   },
   experiments: {
-    NotDone_rawData: "RawData is still in process. Please try again.",
-    NotFound_publicationId: "Publication ID is NOT found."
+    NotDone_rawData: "RawData is still in the process. Please try once more.",
+    NotFound_publicationId: "The publication ID could not be found.",
   },
   grants: {
-    Duplicate_grant: "Another grant has the same grant number. Please use a different Grant Number"
+    Duplicate_grant:
+      "Another grant has the same grant number as this one. Use a different grant number if possible.",
   },
 
   default: {
-    default_key: "Unknown error occurred. Please be patient while we look into this."
-  }
+    default_key: "An unidentified error has occurred. Please be patient while we investigate this.",
+  },
 };
 
 /**
