@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactTable from "react-table";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "react-table/react-table.css";
 import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
@@ -12,6 +12,7 @@ import { ErrorSummary } from "./ErrorSummary";
 import mirageIcon from "../images/mirageIcon.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "./CardLoader";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const GlygenTable = (props) => {
   const history = useHistory();
@@ -101,14 +102,20 @@ const GlygenTable = (props) => {
               </Popover>
             }
           >
+            {/* <LineTooltip text="View Comments">
+              <Link> */}
+
             <FontAwesomeIcon
               key={"comments" + index}
               icon={["fas", "comments"]}
-              size="xs"
+              size="lg"
               title="Comments"
-              className="table-btn"
+              className="gg-blue tbl-icon-btn"
+              style={{ cursor: "pointer" }}
               // onClick={() => deletePrompt(row.original[props.keyColumn], props.queryParamDelete)}
             />
+            {/* </Link>
+            </LineTooltip> */}
           </OverlayTrigger>
         ) : (
           <div key={index}></div>
@@ -127,101 +134,133 @@ const GlygenTable = (props) => {
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
         <>
-          {props.showDeleteButton && (
-            <>
-              <FontAwesomeIcon
-                key={"delete" + index}
-                icon={["far", "trash-alt"]}
-                size="xs"
-                title="Delete"
-                className="caution-color table-btn"
-                onClick={() => {
-                  props.deleteOnClick
-                    ? props.deleteOnClick(row.original)
-                    : deletePrompt(row.original[props.keyColumn], props.queryParamDelete);
-                }}
-              />
-            </>
-          )}
-
           {props.showViewIcon && !row.original.isPublic && (
             <>
-              <FontAwesomeIcon
-                key={"view" + index}
-                icon={["far", "eye"]}
-                size="xs"
-                title="View"
-                className="table-btn  edit-icon"
-                onClick={() =>
-                  history.push("/" + props.viewUrl + "/" + row.original[props.keyColumn])
-                }
-              />
+              <LineTooltip text="View Details">
+                <Link>
+                  <FontAwesomeIcon
+                    key={"view" + index}
+                    icon={["far", "eye"]}
+                    alt="View icon"
+                    size="lg"
+                    color="#45818e"
+                    className="tbl-icon-btn"
+                    onClick={() =>
+                      history.push("/" + props.viewUrl + "/" + row.original[props.keyColumn])
+                    }
+                  />
+                </Link>
+              </LineTooltip>
             </>
           )}
 
           {props.showEditButton && (
             <>
-              <FontAwesomeIcon
-                key={"edit" + index}
-                icon={["far", "edit"]}
-                size="xs"
-                title="Edit"
-                className="table-btn edit-icon"
-                onClick={() =>
-                  history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])
-                }
-              />
+              <LineTooltip text="Edit">
+                <Link>
+                  <FontAwesomeIcon
+                    key={"edit" + index}
+                    icon={["far", "edit"]}
+                    alt="Edit icon"
+                    size="lg"
+                    className="gg-blue tbl-icon-btn"
+                    onClick={() =>
+                      history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])
+                    }
+                  />
+                </Link>
+              </LineTooltip>
             </>
           )}
 
           {props.showCopyButton && (
             <>
-              <FontAwesomeIcon
-                key={"clone" + index}
-                icon={["far", "clone"]}
-                size="xs"
-                title="Clone"
-                className="table-btn"
-                onClick={() =>
-                  history.push(
-                    "/" + props.copyUrl + "/" + row.original[props.keyColumn] + "?" + props.copyPage
-                  )
-                }
-              />
+              <LineTooltip text="Clone">
+                <Link>
+                  <FontAwesomeIcon
+                    key={"clone" + index}
+                    icon={["far", "clone"]}
+                    alt="Clone icon"
+                    size="lg"
+                    color="#536C82"
+                    className="tbl-icon-btn"
+                    onClick={() =>
+                      history.push(
+                        "/" +
+                          props.copyUrl +
+                          "/" +
+                          row.original[props.keyColumn] +
+                          "?" +
+                          props.copyPage
+                      )
+                    }
+                  />
+                </Link>
+              </LineTooltip>
             </>
           )}
 
           {props.showMirageCompliance && (
-            <img
-              className="table-btn image-icon"
-              src={mirageIcon}
-              alt="Mirage"
-              title="Mirage Compliance"
-              aria-hidden="true"
-              onClick={() =>
-                wsCall(
-                  "ismiragecompliant",
-                  "GET",
-                  { qsParams: { type: "SAMPLE" }, urlParams: [row.original.id] },
-                  true,
-                  null,
-                  isMirageCheckSuccess,
-                  isMirageCheckFailure
-                )
-              }
-            />
+            <LineTooltip text="Mirage Compliance">
+              <Link>
+                <img
+                  className="table-btn5 tbl-icon-btn image-icon5"
+                  src={mirageIcon}
+                  alt="Mirage icon"
+                  aria-hidden="true"
+                  height="40px"
+                  width="40px"
+                  onClick={() =>
+                    wsCall(
+                      "ismiragecompliant",
+                      "GET",
+                      { qsParams: { type: "SAMPLE" }, urlParams: [row.original.id] },
+                      true,
+                      null,
+                      isMirageCheckSuccess,
+                      isMirageCheckFailure
+                    )
+                  }
+                />
+              </Link>
+            </LineTooltip>
           )}
 
           {props.showMakePublic && !row.original.isPublic && (
             <>
-              <FontAwesomeIcon
-                key={"makePublic" + index}
-                icon={["fas", "users"]}
-                size="xs"
-                title="Make Public"
-                className="table-btn"
-                onClick={() => makePublicPrompt(row.original[props.keyColumn])}
-              />
+              <LineTooltip text="Make Public">
+                <Link>
+                  <FontAwesomeIcon
+                    key={"makePublic" + index}
+                    icon={["fas", "users"]}
+                    alt="Public icon"
+                    size="lg"
+                    color="#777"
+                    className="tbl-icon-btn"
+                    onClick={() => makePublicPrompt(row.original[props.keyColumn])}
+                  />
+                </Link>
+              </LineTooltip>
+            </>
+          )}
+          {props.showDeleteButton && (
+            <>
+              <LineTooltip text="Delete">
+                <Link>
+                  <FontAwesomeIcon
+                    key={"delete" + index}
+                    icon={["far", "trash-alt"]}
+                    alt="Delete icon"
+                    size="lg"
+                    className="caution-color tbl-icon-btn"
+                    onClick={() => {
+                      props.deleteOnClick
+                        ? props.deleteOnClick(row.original)
+                        : deletePrompt(row.original[props.keyColumn], props.queryParamDelete);
+                    }}
+                  />
+                </Link>
+              </LineTooltip>
             </>
           )}
         </>

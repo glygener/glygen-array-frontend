@@ -41,6 +41,9 @@ hr {
 .gg-blue-bg {
   background-color: var(--gg-blue) !important;
 }
+.gg-green {
+  color: var(--gg-green) !important;
+}
 .page-heading {
   color: var(--gg-blue);
   text-align: center;

@@ -57,6 +57,15 @@
   .gg-mr-20 {
     margin-right: 0 !important;
   }
+  .gg-ml-20 {
+    margin-left: 0 !important;
+  }
+  .gg-mr-40 {
+    margin-right: 0 !important;
+  }
+  .gg-ml-40 {
+    margin-left: 0 !important;
+  }
 }
 
 /* Extra Small Devices (Landscape Phones & Portrait Tablets) */

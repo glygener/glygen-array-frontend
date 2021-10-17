@@ -5,13 +5,13 @@ import "./Contribute.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Col } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
+// import { Title } from "../components/FormControls";
 import { getToolTip } from "../utils/commonUtils";
 
-const Glycans = props => {
+const Glycans = (props) => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -22,69 +22,68 @@ const Glycans = props => {
       </Helmet>
 
       <div className="page-container">
-        <Title title="Your glycans" />
-        <p className={"page-description"}>
-          The table shows the list of all glycans added to your repository. It is possible to add new glycans, edit
-          existing glycans and remove glycans that are not used.
-        </p>
+        <div className="content-box-md text-center">
+          <h1 className="page-heading">Your Glycans</h1>
+          <h6 className={"summary-panel pt-1"}>
+            The table below displays a list of all glycans that have been uploaded to your
+            repository. New glycans may be added, old glycans can be edited, and unused glycans can
+            be removed.
+          </h6>
+        </div>
+        {/* <Title title="Your glycans" /> */}
 
-        <Col className={"col-link-button"}>
-          <Link to="/glycans/addglycan" className="link-button" style={{ width: "150px" }}>
-            Add Glycan
+        <div className="text-center mb-4">
+          <Link to="/glycans/addglycan">
+            <Button className="gg-btn-blue mt-2 gg-mr-20">Add Glycan</Button>
           </Link>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <Link
-            to="/glycans/addMultiple"
-            className="link-button"
-            title="Upload a GAL/XML file wih Glycans"
-            style={{ width: "150px" }}
-          >
-            Upload Glycans
+
+          <Link to="/glycans/addMultiple">
+            <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Glycans</Button>
           </Link>
-        </Col>
+        </div>
 
         <GlygenTable
           columns={[
             {
               Header: "Id",
               accessor: "id",
-              Cell: row => getToolTip(row.original.id),
+              Cell: (row) => getToolTip(row.original.id),
               style: {
-                textAlign: "left"
-              }
+                textAlign: "left",
+              },
             },
             {
               Header: "Internal Id",
               accessor: "internalId",
-              Cell: row => getToolTip(row.original.internalId),
+              Cell: (row) => getToolTip(row.original.internalId),
               style: {
-                textAlign: "left"
-              }
+                textAlign: "left",
+              },
             },
             {
               Header: "GlyTouCan ID",
               accessor: "glytoucanId",
-              Cell: row => getToolTip(row.original.glytoucanId)
+              Cell: (row) => getToolTip(row.original.glytoucanId),
             },
             {
               Header: "Name",
               accessor: "name",
-              Cell: row => getToolTip(row.original.name)
+              Cell: (row) => getToolTip(row.original.name),
             },
             {
               Header: "Structure Image",
               accessor: "cartoon",
               sortable: false,
               // eslint-disable-next-line react/prop-types
-              Cell: row => <StructureImage base64={row.value}></StructureImage>,
-              minWidth: 300
+              Cell: (row) => <StructureImage base64={row.value}></StructureImage>,
+              minWidth: 300,
             },
             {
               Header: "Mass",
               accessor: "mass",
               // eslint-disable-next-line react/prop-types
-              Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
-            }
+              Cell: (row) => (row.value ? parseFloat(row.value).toFixed(2) : ""),
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -107,7 +106,7 @@ const Glycans = props => {
 };
 
 Glycans.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
 };
 
 export { Glycans };

@@ -32,10 +32,13 @@
 .caution-color {
   color: red;
 }
-
-.edit-icon {
-  color: var(--gg-blue);
+.tbl-icon-btn {
+  margin-right: 10px;
+  margin-left: 10px;
 }
+/* .edit-icon {
+  color: var(--gg-blue);
+} */
 .ReactTable.-highlight .rt-tbody .rt-tr:not(.-padRow):hover {
   background-color: #e2e8ef !important;
 }
