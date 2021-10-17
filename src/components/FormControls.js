@@ -87,12 +87,19 @@ const Title = (props) => {
     <div className="content-box-md">
       <h1 className="page-heading">{props.title}</h1>
     </div>
-    // <h2 className="line-break-2 text-center">
-    //   {props.title}
-    //   <br />
-    //   <br />
-    // </h2>
   );
 };
 
-export { FormLabel, Feedback, FormButton, LinkButton, Title, RedirectLink };
+const PageHeading = (props) => {
+  PageHeading.propTypes = {
+    pageHeading: PropTypes.string.isRequired,
+  };
+  return (
+    <div className="content-box-md text-center">
+      <h1 className="page-heading">{props.title}</h1>
+      <h6 className={"summary-panel pt-1"}>{props.subTitle} </h6>
+    </div>
+  );
+};
+
+export { FormLabel, Feedback, FormButton, LinkButton, Title, RedirectLink, PageHeading };

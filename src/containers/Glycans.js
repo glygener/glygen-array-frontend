@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
-// import { Title } from "../components/FormControls";
+import { PageHeading } from "../components/FormControls";
 import { getToolTip } from "../utils/commonUtils";
 
 const Glycans = (props) => {
@@ -22,15 +22,12 @@ const Glycans = (props) => {
       </Helmet>
 
       <div className="page-container">
-        <div className="content-box-md text-center">
-          <h1 className="page-heading">Your Glycans</h1>
-          <h6 className={"summary-panel pt-1"}>
-            The table below displays a list of all glycans that have been uploaded to your
+        <PageHeading
+          title="Your Glycans"
+          subTitle="The table below displays a list of all glycans that have been uploaded to your
             repository. New glycans may be added, old glycans can be edited, and unused glycans can
-            be removed.
-          </h6>
-        </div>
-        {/* <Title title="Your glycans" /> */}
+            be removed."
+        />
 
         <div className="text-center mb-4">
           <Link to="/glycans/addglycan">
