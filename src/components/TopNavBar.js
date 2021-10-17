@@ -15,14 +15,14 @@ const TopNavBar = (props) => {
   const location = useLocation();
   return (
     <React.Fragment>
-      <Navbar collapseOnSelect className="gg-blue topbar" expand="lg">
+      <Navbar collapseOnSelect className="gg-blue-bg topbar" expand="lg">
         <Navbar.Brand>
           <Link to="/">
             <img src={logo} alt="GlyGen logo" />
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="navbar-dark" />
-        <Navbar.Collapse className="gg-blue" id="basic-navbar-nav">
+        <Navbar.Collapse className="gg-blue-bg" id="basic-navbar-nav">
           <Col xs={12} sm={12} md={12} lg={6} xl={8}>
             <Nav activeKey={window.location.pathname}>
               <LinkContainer className="gg-nav-link" to="/" exact>

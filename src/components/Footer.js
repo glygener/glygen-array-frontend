@@ -32,7 +32,7 @@ export default function Footer() {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <div className="gg-blue gg-align-center gg-footer">
+      <div className="gg-blue-bg gg-align-center gg-footer">
         <Container maxWidth="xl" className="justify-content-center">
           <Row className="text-center justify-content-center">
             <Col md={"auto"}>
