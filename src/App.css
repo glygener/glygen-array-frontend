@@ -554,3 +554,10 @@ input[type="number"] {
   cursor: no-drop !important;
   color: var(--gg-blue) !important;
 }
+
+/* ========================================
+              Footer
+  ==========================================*/
+  .gg-footer {
+    margin-top: auto;
+  }
