@@ -420,10 +420,10 @@ const AddProtein = props => {
                   />
                   {protein.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
                   {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
-                  <span className="character-counter" style={{ marginLeft: "80%" }}>
-                    {protein.sequence && protein.sequence.length > 0 ? protein.sequence.length : ""}
+                  <div className="text-right text-muted">
+                    {protein.sequence && protein.sequence.length > 0 ? protein.sequence.length : "0"}
                     /10000
-                  </span>
+                  </div>
                 </Col>
               </Form.Group>
             </>
@@ -463,10 +463,10 @@ const AddProtein = props => {
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                    <span className="character-counter">
-                      {protein.comment && protein.comment.length > 0 ? protein.comment.length : ""}
+                   <div className="text-right text-muted">
+                      {protein.comment && protein.comment.length > 0 ? protein.comment.length : "0"}
                       /2000
-                    </span>
+                    </div>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="publications">

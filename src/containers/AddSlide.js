@@ -243,10 +243,10 @@ const AddSlide = props => {
                   onChange={handleChange}
                   maxLength={2000}
                 />
-                <span className="character-counter">
-                  {slide.description && slide.description.length > 0 ? slide.description.length : ""}
+               <div className="text-right text-muted">
+                  {slide.description && slide.description.length > 0 ? slide.description.length : "0"}
                   /2000
-                </span>
+                </div>
               </Col>
             </Form.Group>
 

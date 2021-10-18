@@ -944,9 +944,9 @@ const MetaData = props => {
               onChange={handleChange}
               maxLength={2000}
             />
-            <span className="character-counter">
-              {metaDataDetails.description === "" ? "" : characterCounter} /2000
-            </span>
+            <div className="text-right text-muted">
+              {metaDataDetails.description === "0" ? "0" : characterCounter} /2000
+            </div>
           </Col>
         </Form.Group>
 

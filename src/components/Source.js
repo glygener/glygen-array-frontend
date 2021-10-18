@@ -135,12 +135,12 @@ const Source = props => {
               onChange={e => props.sourceChange(e)}
               maxLength={2000}
             />
-            <span className="character-counter" style={{ marginLeft: "80%" }}>
+            <div className="text-right text-muted">
               {props.nonCommercial.sourceComment && props.nonCommercial.sourceComment.length > 0
                 ? props.nonCommercial.sourceComment.length
-                : ""}
+                : "0"}
               /2000
-            </span>
+            </div>
           </Col>
         </Form.Group>
       </>

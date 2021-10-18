@@ -413,9 +413,9 @@ const AddLipid = props => {
               isInvalid={validate}
               required
             />
-            <span className="character-counter">
-              {lipid.inChiSequence && lipid.inChiSequence.length > 0 ? lipid.inChiSequence.length : ""}/10000
-            </span>
+           <div className="text-right text-muted">
+              {lipid.inChiSequence && lipid.inChiSequence.length > 0 ? lipid.inChiSequence.length : "0"}/10000
+            </div>
             <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />
           </Col>
         </Form.Group>
@@ -632,10 +632,10 @@ const AddLipid = props => {
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                    <span className="character-counter">
-                      {lipid.comment && lipid.comment.length > 0 ? lipid.comment.length : ""}
+                   <div className="text-right text-muted">
+                      {lipid.comment && lipid.comment.length > 0 ? lipid.comment.length : "0"}
                       /2000
-                    </span>
+                    </div>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="publications">

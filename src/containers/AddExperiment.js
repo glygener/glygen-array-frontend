@@ -361,10 +361,10 @@ const AddExperiment = props => {
                   onChange={handleChange}
                   maxLength={2000}
                 />
-                <span className="character-counter">
-                  {experiment.description && experiment.description.length > 0 ? experiment.description.length : ""}
+                <div className="text-right text-muted">
+                  {experiment.description && experiment.description.length > 0 ? experiment.description.length : "0"}
                   /2000
-                </span>
+                </div>
               </Col>
             </Form.Group>
 

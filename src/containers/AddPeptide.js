@@ -329,10 +329,10 @@ const AddPeptide = props => {
                   {peptide.sequence === "" && <Feedback message="Sequence is required" />}
                   {sequenceError !== "" && <Feedback message={sequenceError} />}
                   <Feedback message="Please Enter Valid Sequence" />
-                  <span className="character-counter" style={{ marginLeft: "80%" }}>
-                    {peptide.sequence && peptide.sequence.length > 0 ? peptide.sequence.length : ""}
+                  <div className="text-right text-muted">
+                    {peptide.sequence && peptide.sequence.length > 0 ? peptide.sequence.length : "0"}
                     /10000
-                  </span>
+                  </div>
                 </Col>
               </Form.Group>
             </>
@@ -372,10 +372,10 @@ const AddPeptide = props => {
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                    <span className="character-counter">
-                      {peptide.comment && peptide.comment.length > 0 ? peptide.comment.length : ""}
+                    <div className="text-right text-muted">
+                      {peptide.comment && peptide.comment.length > 0 ? peptide.comment.length : "0"}
                       /2000
-                    </span>
+                    </div>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="publications">

@@ -381,12 +381,12 @@ const AddGlycanInfoToFeature = props => {
                 onChange={purityInfoChange}
                 maxLength={2000}
               />
-              <span className="character-counter" style={{ marginLeft: "80%" }}>
+              <div className="text-right text-muted">
                 {props.metadata.purity && props.metadata.purity.comment && props.metadata.purity.comment.length > 0
                   ? props.metadata.purity.comment.length
-                  : ""}
+                  : "0"}
                 /2000
-              </span>
+              </div>
             </Col>
           </Form.Group>
         </div>
@@ -660,12 +660,12 @@ const AddGlycanInfoToFeature = props => {
               }}
               maxLength={2000}
             />
-            <span className="character-counter" style={{ marginLeft: "80%" }}>
+           <div className="text-right text-muted">
               {props.addGlycanInfoToFeature.equilibriumComment.length > 0
                 ? props.addGlycanInfoToFeature.equilibriumComment.length
-                : ""}
+                : "0"}
               /2000
-            </span>
+            </div>
           </Col>
         </Form.Group>
       )}

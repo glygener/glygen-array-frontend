@@ -76,14 +76,14 @@ const GridForm = props => {
                 maxLength={2000}
                 disabled={props.publicView}
               />
-              <span className="character-counter">
+             <div className="text-right text-muted">
                 {props.isUpdate
-                  ? props.gridParams.description && props.gridParams.description !== ""
+                  ? props.gridParams.description && props.gridParams.description !== "0"
                     ? props.gridParams.description.length
-                    : ""
+                    : "0"
                   : props.characterCounter}
                 /2000
-              </span>
+              </div>
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="columns">

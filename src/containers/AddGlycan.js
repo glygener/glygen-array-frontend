@@ -208,10 +208,10 @@ const AddGlycan = props => {
               onChange={handleChange}
               maxLength={2000}
             />
-            <span className="character-counter">
-              {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : ""}
+            <div className="text-right text-muted">
+              {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : "0"}
               /2000
-            </span>
+            </div>
           </Col>
         </Form.Group>
       </Form>
@@ -413,10 +413,10 @@ const AddGlycan = props => {
                       maxLength={5000}
                     />
                     <Feedback message="Please Enter Valid Sequence" />
-                    <span className="character-counter" style={{ marginLeft: "80%" }}>
-                      {userSelection.sequence && userSelection.sequence.length > 0 ? userSelection.sequence.length : ""}
+                    <div className="text-right text-muted">
+                      {userSelection.sequence && userSelection.sequence.length > 0 ? userSelection.sequence.length : "0"}
                       /5000
-                    </span>
+                    </div>
                   </Col>
                 </Form.Group>
 
@@ -515,10 +515,10 @@ const AddGlycan = props => {
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                    <span className="character-counter">
-                      {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : ""}
+                    <div className="text-right text-muted">
+                      {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : "0"}
                       /2000
-                    </span>
+                    </div>
                   </Col>
                 </Form.Group>
 

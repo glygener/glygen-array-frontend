@@ -215,10 +215,10 @@ const AddOtherMolecule = props => {
                 onChange={handleChange}
                 maxLength={2000}
               />
-              <span className="character-counter">
-                {otherMolecule.comment && otherMolecule.comment.length > 0 ? otherMolecule.comment.length : ""}
+             <div className="text-right text-muted">
+                {otherMolecule.comment && otherMolecule.comment.length > 0 ? otherMolecule.comment.length : "0"}
                 /2000
-              </span>
+              </div>
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="publications">
