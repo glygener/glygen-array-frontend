@@ -529,7 +529,6 @@ const AddGlycanInfoToFeature = props => {
                 value={props.addGlycanInfoToFeature.maxRangeSelected}
                 isInvalid={maxRangeValid}
                 onChange={e => {
-                  debugger;
                   if (
                     parseInt(e.target.value) > parseInt(props.maxRange) ||
                     parseInt(e.target.value) < 1 ||
@@ -660,7 +659,7 @@ const AddGlycanInfoToFeature = props => {
               }}
               maxLength={2000}
             />
-           <div className="text-right text-muted">
+            <div className="text-right text-muted">
               {props.addGlycanInfoToFeature.equilibriumComment.length > 0
                 ? props.addGlycanInfoToFeature.equilibriumComment.length
                 : "0"}

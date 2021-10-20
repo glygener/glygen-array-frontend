@@ -51,6 +51,7 @@ const GridForm = props => {
                 required
                 isInvalid={props.duplicateName}
                 disabled={props.publicView}
+                maxLength={100}
               />
               <Feedback
                 message={
@@ -76,7 +77,7 @@ const GridForm = props => {
                 maxLength={2000}
                 disabled={props.publicView}
               />
-             <div className="text-right text-muted">
+              <div className="text-right text-muted">
                 {props.isUpdate
                   ? props.gridParams.description && props.gridParams.description !== "0"
                     ? props.gridParams.description.length

@@ -47,6 +47,7 @@ const AddLinker = props => {
   const [disableReset, setDisableReset] = useState(false);
   const [newPubMedId, setNewPubMedId] = useState("");
   const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
+  const [isWscalldone, setIsWscalldone] = useState(true);
   const history = useHistory();
 
   const linkerInitialState = {
@@ -157,7 +158,19 @@ const AddLinker = props => {
       return;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+    if (activeStep === 1) {
+      if (!isWscalldone && linker.inChiSequence !== "") {
+        setShowErrorSummary(false);
+        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+      } else if (linker.pubChemId !== "" || linker.inChiKey !== "") {
+        return;
+      } else {
+        setShowErrorSummary(false);
+        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+      }
+    } else {
+      setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+    }
   };
 
   const handleChange = e => {
@@ -207,6 +220,7 @@ const AddLinker = props => {
 
   function populateLinkerDetails(pubChemId) {
     setShowLoading(true);
+    setIsWscalldone(false);
     wsCall(
       "linkerfrompubchem",
       "GET",
@@ -246,9 +260,11 @@ const AddLinker = props => {
 
     function populateLinkerDetailsError(response) {
       response.json().then(resp => {
+        setIsWscalldone(true);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
       });
+
       setShowLoading(false);
     }
   }
@@ -407,7 +423,7 @@ const AddLinker = props => {
               isInvalid={validate}
               required
             />
-           <div className="text-right text-muted">
+            <div className="text-right text-muted">
               {linker.inChiSequence && linker.inChiSequence.length > 0 ? linker.inChiSequence.length : "0"}/10000
             </div>
             <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />

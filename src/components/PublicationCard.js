@@ -25,7 +25,11 @@ const PublicationCard = props => {
                   <FontAwesomeIcon icon={["fas", "book-open"]} size="sm" title="Book" />
 
                   <span style={{ paddingLeft: "15px" }}>PMID:&nbsp;</span>
-                  <a href={props.uri} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={`https://pubmed.ncbi.nlm.nih.gov/${props.pubmedId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {props.pubmedId}
                   </a>
                 </div>

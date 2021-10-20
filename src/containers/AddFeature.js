@@ -424,7 +424,12 @@ const AddFeature = props => {
       setShowLinkerPicker(false);
       let selectedGlycans = [...featureAddState.rangeGlycans];
 
-      let glycan = selectedGlycans.find(i => i.glycan.index === linkerForSelectedGlycan.glycan.index);
+      let index =
+        linkerForSelectedGlycan && linkerForSelectedGlycan.glycan
+          ? linkerForSelectedGlycan.glycan.index
+          : linkerForSelectedGlycan.index;
+
+      let glycan = selectedGlycans.find(i => i.index === index);
       let glycanIndex = selectedGlycans.indexOf(glycan);
 
       glycan.linker = linker;
@@ -439,7 +444,13 @@ const AddFeature = props => {
 
       let selectedGlycans = [...featureAddState.glycans];
 
-      let glycan = selectedGlycans.find(i => i.glycan.index === linkerForSelectedGlycan.glycan.index);
+      let index =
+        linkerForSelectedGlycan && linkerForSelectedGlycan.glycan
+          ? linkerForSelectedGlycan.glycan.index
+          : linkerForSelectedGlycan.index;
+
+      let glycan = selectedGlycans.find(i => i.glycan.index === index);
+
       let glycanIndex = selectedGlycans.indexOf(glycan);
 
       glycan.linker = linker;
@@ -689,7 +700,7 @@ const AddFeature = props => {
         glycan: []
       }
     ];
-    if (linker.type !== "SMALLMOLECULE") {
+    if (linker.type !== "SMALLMOLECULE" && linker.sequence) {
       valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
       chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
       if (chooseGlycanTableData.length > 0) {
@@ -839,6 +850,7 @@ const AddFeature = props => {
       }
 
       let glycans = {};
+      glycans.type = "LINKEDGLYCAN";
       let reducingEndConfiguration = {};
 
       glycans.glycan = glycanObj;
@@ -860,7 +872,7 @@ const AddFeature = props => {
       }
 
       return {
-        glycans: glycans,
+        glycans: [glycans],
         linker: glycanObj.linker,
         range: range,
         type: "LINKEDGLYCAN"
@@ -869,11 +881,10 @@ const AddFeature = props => {
 
     featureObj = {
       type: type,
-
       name: featureMetaData.name,
       linker: featureAddState.linker,
       ...getKey(type),
-      glycans: [{ glycans: glycans }],
+      glycans: glycans,
       positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.id) {
           map[glycanObj.position] = glycanObj.glycan.id;
@@ -1281,7 +1292,7 @@ const AddFeature = props => {
               Header: "",
               // eslint-disable-next-line react/display-name
               Cell: ({ row, index }) => {
-                return row.glycan && row.glycan.name ? (
+                return row.glycan ? (
                   <>
                     <FontAwesomeIcon
                       key={"delete" + index}
@@ -1598,7 +1609,7 @@ const AddFeature = props => {
                   value={"Pick Glycan"}
                   disabled={
                     (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") &&
-                    featureAddState.glycans.filter(i => i.glycan && i.glycan.name).length > 0
+                    featureAddState.glycans.filter(i => i.glycan).length > 0
                   }
                 />
               )}
@@ -1686,14 +1697,20 @@ const AddFeature = props => {
 
   const handleDeletedSelectedGlycan = deleteRow => {
     let selectedGlycans;
+    let selectedRow;
+    let selectedRowIndex;
+
     if (featureAddState.type === "GLYCO_LIPID") {
       selectedGlycans = [...featureAddState.glycans];
+
+      selectedRow = selectedGlycans.find(e => e.id === deleteRow.id);
     } else if (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") {
       selectedGlycans = [...featureAddState.rangeGlycans];
+
+      selectedRow = selectedGlycans.find(e => e.index === deleteRow.index);
     }
 
-    var selectedRow = selectedGlycans.find(e => e.id === deleteRow.id);
-    var selectedRowIndex = selectedGlycans.indexOf(selectedRow);
+    selectedRowIndex = selectedGlycans.indexOf(selectedRow);
     selectedGlycans.splice(selectedRowIndex, 1);
 
     if (featureAddState.type === "GLYCO_LIPID") {
