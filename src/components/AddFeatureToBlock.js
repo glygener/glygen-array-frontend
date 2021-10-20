@@ -76,7 +76,11 @@ const AddFeatureToBlock = props => {
       return;
     }
 
-    if (activeStep === 1 && featuresSelected.featureSelected.length !== 1) {
+    if (activeStep === 1 && featuresSelected.featureSelected && featuresSelected.featureSelected.length === 1) {
+      stepIncrement += 1;
+    }
+
+    if (activeStep === 1 && featuresSelected.featureSelected.length > 1) {
       if (!validFeatureRatios()) {
         setPageErrorMessage("Total Ratios Should be 100%");
         setShowErrorSummary(true);
@@ -84,8 +88,6 @@ const AddFeatureToBlock = props => {
       } else {
         setShowErrorSummary(false);
       }
-    } else if (activeStep === 1 && featuresSelected.featureSelected.length === 1) {
-      stepIncrement += 1;
     }
 
     if (e.currentTarget.innerText === "FINISH") {
@@ -113,6 +115,7 @@ const AddFeatureToBlock = props => {
       setGroupCounter(groupCounter);
       return;
     }
+
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
 
@@ -418,8 +421,11 @@ const AddFeatureToBlock = props => {
   };
 
   const isStepSkipped = step => {
-    return featuresSelected.featureSelected && featuresSelected.featureSelected.length === 1
-      ? step === 1 && activeStep === 2
+    return featuresSelected.featureSelected &&
+      featuresSelected.featureSelected.length === 1 &&
+      step === 1 &&
+      activeStep === 2
+      ? true
       : false;
   };
 
