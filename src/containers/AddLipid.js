@@ -47,6 +47,7 @@ const AddLipid = props => {
   const [newURL, setNewURL] = useState("");
   const [disableReset, setDisableReset] = useState(false);
   const [newPubMedId, setNewPubMedId] = useState("");
+  const [isWscalldone, setIsWscalldone] = useState(true);
   const history = useHistory();
 
   const lipidInitialState = {
@@ -162,7 +163,19 @@ const AddLipid = props => {
       return;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+    if (activeStep === 1) {
+      if (!isWscalldone && lipid.inChiSequence !== "") {
+        setShowErrorSummary(false);
+        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+      } else if (lipid.pubChemId !== "" || lipid.inChiKey !== "") {
+        return;
+      } else {
+        setShowErrorSummary(false);
+        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+      }
+    } else {
+      setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+    }
   };
 
   const handleChange = e => {
@@ -213,6 +226,7 @@ const AddLipid = props => {
 
   function populateLinkerDetails(pubChemId) {
     setShowLoading(true);
+    setIsWscalldone(false);
     wsCall(
       "linkerfrompubchem",
       "GET",
@@ -252,6 +266,7 @@ const AddLipid = props => {
 
     function populateLinkerDetailsError(response) {
       response.json().then(resp => {
+        setIsWscalldone(true);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
       });
@@ -413,7 +428,7 @@ const AddLipid = props => {
               isInvalid={validate}
               required
             />
-           <div className="text-right text-muted">
+            <div className="text-right text-muted">
               {lipid.inChiSequence && lipid.inChiSequence.length > 0 ? lipid.inChiSequence.length : "0"}/10000
             </div>
             <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />
@@ -632,7 +647,7 @@ const AddLipid = props => {
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                   <div className="text-right text-muted">
+                    <div className="text-right text-muted">
                       {lipid.comment && lipid.comment.length > 0 ? lipid.comment.length : "0"}
                       /2000
                     </div>
