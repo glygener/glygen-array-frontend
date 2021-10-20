@@ -450,38 +450,44 @@ const AddFeatureToBlock = props => {
       case 0:
         return (
           <>
-            <div className="spots-selected-featurepage">
-              <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
-            </div>
-            <div className="glygen-table">
-              <GlygenTable
-                columns={[
-                  {
-                    Header: "Name",
-                    accessor: "name"
-                  },
-                  {
-                    Header: "Feature Id",
-                    accessor: "internalId"
-                  }
-                ]}
-                defaultPageSize={10}
-                defaultSortColumn="id"
-                showCommentsButton
-                showDeleteButton
-                showEditButton
-                showCheckboxColumn
-                commentsRefColumn="description"
-                fetchWS="featurelist"
-                deleteWS=""
-                editUrl=""
-                keyColumn="id"
-                showRowsInfo
-                infoRowsText="Features"
-                checkboxChangeHandler={handleChecboxChange}
-                defaultCheckboxHandler={checkSelection}
-              />
-            </div>
+            {/* <div className="spots-selected-featurepage"> */}
+            <Row>
+              <Col>
+                <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
+              </Col>
+              {/* </div> */}
+              {/* <div className="glygen-table"> */}
+              <Col>
+                <GlygenTable
+                  columns={[
+                    {
+                      Header: "Name",
+                      accessor: "name"
+                    },
+                    {
+                      Header: "Feature Id",
+                      accessor: "internalId"
+                    }
+                  ]}
+                  defaultPageSize={10}
+                  defaultSortColumn="id"
+                  showCommentsButton
+                  showDeleteButton
+                  showEditButton
+                  showCheckboxColumn
+                  commentsRefColumn="description"
+                  fetchWS="featurelist"
+                  deleteWS=""
+                  editUrl=""
+                  keyColumn="id"
+                  showRowsInfo
+                  infoRowsText="Features"
+                  checkboxChangeHandler={handleChecboxChange}
+                  defaultCheckboxHandler={checkSelection}
+                />
+              </Col>
+            </Row>
+            {/* </div> */}
           </>
         );
 
