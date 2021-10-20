@@ -452,12 +452,9 @@ const AddFeatureToBlock = props => {
           <>
             {/* <div className="spots-selected-featurepage"> */}
             <Row>
-              <Col>
-                <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
-              </Col>
               {/* </div> */}
               {/* <div className="glygen-table"> */}
-              <Col>
+              <Col md={8}>
                 <GlygenTable
                   columns={[
                     {
@@ -485,6 +482,9 @@ const AddFeatureToBlock = props => {
                   checkboxChangeHandler={handleChecboxChange}
                   defaultCheckboxHandler={checkSelection}
                 />
+              </Col>
+              <Col md={4}>
+                <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
               </Col>
             </Row>
             {/* </div> */}
