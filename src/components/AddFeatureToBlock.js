@@ -83,8 +83,9 @@ const AddFeatureToBlock = props => {
         return;
       } else {
         setShowErrorSummary(false);
-        stepIncrement += 1;
       }
+    } else if (activeStep === 1 && featuresSelected.featureSelected.length === 1) {
+      stepIncrement += 1;
     }
 
     if (e.currentTarget.innerText === "FINISH") {
@@ -424,14 +425,6 @@ const AddFeatureToBlock = props => {
 
   return (
     <>
-      {/* <Stepper activeStep={activeStep}>
-        {steps.map(label => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper> */}
-
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps = {};
@@ -451,7 +444,7 @@ const AddFeatureToBlock = props => {
       </Stepper>
 
       <div>
-        {activeStep !== 3 && getNavigationButtons("button-div line-break-2")}
+        {activeStep !== 3 && getNavigationButtons("button-div line-break-2 text-center")}
 
         {showErrorSummary === true && (
           <ErrorSummary show={showErrorSummary} form="glycans" errorMessage={pageErrorMessage}></ErrorSummary>
@@ -463,10 +456,11 @@ const AddFeatureToBlock = props => {
           </Typography>
         </div>
 
-        {activeStep !== 3 && getNavigationButtons("button-div line-break-1")}
+        {activeStep !== 3 && getNavigationButtons("button-div line-break-1 text-center")}
       </div>
     </>
   );
+
   function getSteps() {
     return ["Select Features", "Add Feature Ratio", "Add Spot Concentrations", "Spot Metadata", "Review and Add"];
   }
