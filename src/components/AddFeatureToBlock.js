@@ -68,6 +68,7 @@ const AddFeatureToBlock = props => {
     setValidate(false);
     setPageErrorMessage();
     setShowErrorSummary(false);
+    let stepIncrement = 1;
 
     if (!featuresSelected.featureSelected.length) {
       setPageErrorMessage("Please select Features");
@@ -75,13 +76,14 @@ const AddFeatureToBlock = props => {
       return;
     }
 
-    if (activeStep === 1) {
+    if (activeStep === 1 && featuresSelected.featureSelected.length !== 1) {
       if (!validFeatureRatios()) {
         setPageErrorMessage("Total Ratios Should be 100%");
         setShowErrorSummary(true);
         return;
       } else {
         setShowErrorSummary(false);
+        stepIncrement += 1;
       }
     }
 
@@ -110,7 +112,7 @@ const AddFeatureToBlock = props => {
       setGroupCounter(groupCounter);
       return;
     }
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
 
   const handleBack = () => {
@@ -414,14 +416,38 @@ const AddFeatureToBlock = props => {
     );
   };
 
+  const isStepSkipped = step => {
+    return featuresSelected.featureSelected && featuresSelected.featureSelected.length === 1
+      ? step === 1 && activeStep === 2
+      : false;
+  };
+
   return (
     <>
-      <Stepper activeStep={activeStep}>
+      {/* <Stepper activeStep={activeStep}>
         {steps.map(label => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
+      </Stepper> */}
+
+      <Stepper activeStep={activeStep}>
+        {steps.map((label, index) => {
+          const stepProps = {};
+          const labelProps = {};
+
+          if (isStepSkipped(index)) {
+            labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
+            stepProps.completed = false;
+          }
+
+          return (
+            <Step key={label} {...stepProps}>
+              <StepLabel {...labelProps}>{label}</StepLabel>
+            </Step>
+          );
+        })}
       </Stepper>
 
       <div>
@@ -451,9 +477,9 @@ const AddFeatureToBlock = props => {
         return (
           <>
             {/* <div className="spots-selected-featurepage"> */}
+            {/* </div> */}
+            {/* <div className="glygen-table"> */}
             <Row>
-              {/* </div> */}
-              {/* <div className="glygen-table"> */}
               <Col md={8}>
                 <GlygenTable
                   columns={[
@@ -483,7 +509,7 @@ const AddFeatureToBlock = props => {
                   defaultCheckboxHandler={checkSelection}
                 />
               </Col>
-              <Col md={4}>
+              <Col md={4} style={{ marginTop: "15%" }}>
                 <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
               </Col>
             </Row>

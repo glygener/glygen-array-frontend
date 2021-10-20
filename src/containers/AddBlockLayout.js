@@ -599,18 +599,18 @@ const AddBlockLayout = props => {
           </Form>
         )}
         {addFeatures && (
-          <div className="add-feature-div">
-            <AddFeatureToBlock
-              setSpotsSelected={setSpotsSelected}
-              spotsSelected={spotsSelected}
-              setAddFeatures={setAddFeatures}
-              setSpotFeatureCard={setSpotFeatureCard}
-              groupCounter={groupCounter}
-              setGroupCounter={setGroupCounter}
-              spotMetadata={selectedSpotMetadata}
-              spotMetadataList={listSpots}
-            />
-          </div>
+          // <div className="add-feature-div">
+          <AddFeatureToBlock
+            setSpotsSelected={setSpotsSelected}
+            spotsSelected={spotsSelected}
+            setAddFeatures={setAddFeatures}
+            setSpotFeatureCard={setSpotFeatureCard}
+            groupCounter={groupCounter}
+            setGroupCounter={setGroupCounter}
+            spotMetadata={selectedSpotMetadata}
+            spotMetadataList={listSpots}
+          />
+          // </div>
         )}
         <Loading show={showLoading} />
         <ConfirmationModal
