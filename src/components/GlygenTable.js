@@ -78,7 +78,7 @@ const GlygenTable = props => {
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) =>
-        row.value ? (
+        row.value || row.original.description ? (
           <OverlayTrigger
             key={index}
             trigger="click"
@@ -96,7 +96,9 @@ const GlygenTable = props => {
                       : row.original.internalId
                     : ""}
                 </Popover.Title>
-                <Popover.Content className={"popover-body-custom"}>{row.value}</Popover.Content>
+                <Popover.Content className={"popover-body-custom"}>
+                  {row.value ? row.value : row.original.description ? row.original.description : ""}
+                </Popover.Content>
               </Popover>
             }
           >
