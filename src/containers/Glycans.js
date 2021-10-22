@@ -35,7 +35,7 @@ const Glycans = (props) => {
           </Link>
 
           <Link to="/glycans/addMultiple">
-            <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Glycans</Button>
+            <Button className="gg-btn-blue mt-2 gg-ml-20">Add Multiple Glycans</Button>
           </Link>
         </div>
 

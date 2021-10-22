@@ -109,7 +109,7 @@ const GlygenTable = props => {
               key={"comments" + index}
               icon={["fas", "comments"]}
               size="lg"
-              title="Comments"
+              title="Click to see comments"
               className="gg-blue tbl-icon-btn"
               style={{ cursor: "pointer" }}
               // onClick={() => deletePrompt(row.original[props.keyColumn], props.queryParamDelete)}

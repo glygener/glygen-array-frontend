@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import { Loading } from "../components/Loading";
 import { Helmet } from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title, Feedback, FormLabel } from "../components/FormControls";
+import { Title, Feedback, FormLabel, PageHeading } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { useHistory, Link } from "react-router-dom";
@@ -12,8 +12,10 @@ import "../containers/AddMultiSlideLayout.css";
 import ReactTable from "react-table";
 import { StructureImage } from "../components/StructureImage";
 import "../containers/AddMultipleGlycans.css";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
 
-const AddMultipleGlycans = props => {
+const AddMultipleGlycans = (props) => {
   useEffect(() => {
     props.authCheckAgent();
 
@@ -30,6 +32,7 @@ const AddMultipleGlycans = props => {
   const [invalidSequences, setInvalidSequences] = useState();
   const [duplicateSequences, setDuplicateSequences] = useState();
   const [title, setTitle] = useState("Add Multiple Glycans");
+  // const [title, setTitle] = useState("Glycan File Upload");
 
   const history = useHistory();
 
@@ -37,10 +40,13 @@ const AddMultipleGlycans = props => {
 
   const fileDetails = {
     fileType: defaultFileType,
-    glytoucanRegistration: false
+    glytoucanRegistration: false,
   };
 
-  const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
+  const [uploadDetails, setUploadDetails] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    fileDetails
+  );
 
   function handleChange(e) {
     setShowErrorSummary(false);
@@ -58,14 +64,14 @@ const AddMultipleGlycans = props => {
       "POST",
       {
         noGlytoucanRegistration: !uploadDetails.glytoucanRegistration,
-        filetype: encodeURIComponent(uploadDetails.fileType)
+        filetype: encodeURIComponent(uploadDetails.fileType),
       },
       true,
       {
         identifier: uploadedGlycanFile.identifier,
         originalName: uploadedGlycanFile.originalName,
         fileFolder: uploadedGlycanFile.fileFolder,
-        fileFormat: uploadedGlycanFile.fileFormat
+        fileFormat: uploadedGlycanFile.fileFormat,
       },
       glycanUploadSucess,
       glycanUploadError
@@ -75,19 +81,23 @@ const AddMultipleGlycans = props => {
   }
 
   function glycanUploadSucess(response) {
-    response.json().then(resp => {
+    response.json().then((resp) => {
       setShowErrorSummary(false);
       setAddedGlycans(resp.addedGlycans);
       setInvalidSequences(resp.wrongSequences);
       setDuplicateSequences(resp.duplicateSequences);
-      setTitle("Summary for glycan file upload");
+      setTitle("Glycan File Upload Details");
       setShowLoading(false);
     });
   }
   function glycanUploadError(response) {
-    response.json().then(resp => {
-      setTitle("Summary for glycan file upload");
-      resp.error ? setPageErrorMessage("Invalid format. Please try again.") : setPageErrorsJson(resp);
+    response.json().then((resp) => {
+      setTitle("Summary For Glycan File Upload");
+      resp.error
+        ? setPageErrorMessage(
+            "The file is invalid. Please verify the file and format selection before re-uploading."
+          )
+        : setPageErrorsJson(resp);
       setShowErrorSummary(true);
       setShowLoading(false);
     });
@@ -97,16 +107,20 @@ const AddMultipleGlycans = props => {
     let summaryLinks = [
       {
         tableLink: `${(addedGlycans && addedGlycans.length) || 0} glycans successful uploaded`,
-        scrollto: 100
+        scrollto: 100,
       },
       {
-        tableLink: `${(duplicateSequences && duplicateSequences.length) || 0} glycans already exist in library`,
-        scrollto: 550
+        tableLink: `${
+          (duplicateSequences && duplicateSequences.length) || 0
+        } glycans already exist in library`,
+        scrollto: 550,
       },
       {
-        tableLink: `${(invalidSequences && invalidSequences.length) || 0} glycans could not be uploaded`,
-        scrollto: 2500
-      }
+        tableLink: `${
+          (invalidSequences && invalidSequences.length) || 0
+        } glycans could not be uploaded`,
+        scrollto: 2500,
+      },
     ];
 
     return (
@@ -115,7 +129,10 @@ const AddMultipleGlycans = props => {
           {summaryLinks.map((linkGlycans, index) => {
             return (
               <div className={"summar-links"} key={index}>
-                <li style={{ textAlign: "left" }} onClick={() => window.scrollTo(0, linkGlycans.scrollto)}>
+                <li
+                  style={{ textAlign: "left" }}
+                  onClick={() => window.scrollTo(0, linkGlycans.scrollto)}
+                >
                   {linkGlycans.tableLink}
                 </li>
               </div>
@@ -139,30 +156,30 @@ const AddMultipleGlycans = props => {
               : [
                   {
                     Header: "Internal Id",
-                    accessor: "internalId"
+                    accessor: "internalId",
                   },
                   {
                     Header: "GlyTouCan ID",
-                    accessor: "glytoucanId"
+                    accessor: "glytoucanId",
                   },
                   {
                     Header: "Name",
-                    accessor: "name"
+                    accessor: "name",
                   },
                   {
                     Header: "Structure Image",
                     accessor: "cartoon",
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
-                    Cell: row => <StructureImage base64={row.value}></StructureImage>,
-                    minWidth: 300
+                    Cell: (row) => <StructureImage base64={row.value}></StructureImage>,
+                    minWidth: 300,
                   },
                   {
                     Header: "Mass",
                     accessor: "mass",
                     // eslint-disable-next-line react/prop-types
-                    Cell: row => (row.value ? parseFloat(row.value).toFixed(4) : "")
-                  }
+                    Cell: (row) => (row.value ? parseFloat(row.value).toFixed(4) : ""),
+                  },
                 ]
           }
           pageSizeOptions={[5, 10, 25]}
@@ -182,95 +199,119 @@ const AddMultipleGlycans = props => {
         <title>{head.addMultiSlideLayout.title}</title>
         {getMeta(head.addMultiSlideLayout)}
       </Helmet>
+      <Container maxWidth="lg">
+        <div className="page-container">
+          {/* <Title title={title} /> */}
+          <PageHeading
+            title={title}
+            subTitle="You can add multiple glycans to your repository by uploading them."
+          />
+          <Card>
+            <Card.Body>
+              {showErrorSummary === true && (
+                <div
+                  style={{
+                    textAlign: "initial",
+                  }}
+                >
+                  <br />
+                  <h5>File upload failed for following reasons:</h5>
 
-      <div className="page-container">
-        <Title title={title} />
-
-        {showErrorSummary === true && (
-          <div
-            style={{
-              textAlign: "initial"
-            }}
-          >
-            <br />
-            <h5>File upload failed for following reasons:</h5>
-
-            <ErrorSummary
-              show={showErrorSummary}
-              form="glycans"
-              errorJson={pageErrorsJson}
-              errorMessage={pageErrorMessage}
-            ></ErrorSummary>
-          </div>
-        )}
-
-        <Form noValidate onSubmit={e => handleSubmit(e)}>
-          {!duplicateSequences && !addedGlycans && !invalidSequences && (
-            <>
-              <Form.Group as={Row} controlId="fileType">
-                <FormLabel label="Choose File type for upload" className="required-asterik" />
-                <Col md={4}>
-                  <Form.Control
-                    as="select"
-                    name="fileType"
-                    placeholder="fileType"
-                    onChange={handleChange}
-                    required={true}
-                    value={uploadDetails.fileType}
-                  >
-                    <option value={defaultFileType}>Select file type</option>
-                    <option value="Tab separated">Tab Separated</option>
-                    <option value="Library XML">CarbArrayART library (*.xml)</option>
-                    <option value="GlycoWorkbench">GlycoWorkbench (*.gws)</option>
-                    <option value="wurcs">WURCS</option>
-                    <option value="cfg">CFG IUPAC Condensed</option>
-                  </Form.Control>
-                  <Feedback message="Please choose a file type for the file to be uploaded" />
-                </Col>
-              </Form.Group>
-
-              <Col md={{ span: 6, offset: 5 }}>
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                  <Form.Check
-                    type="checkbox"
-                    label={"register in GlyTouCan"}
-                    onChange={e => setUploadDetails({ glytoucanRegistration: e.target.checked })}
-                    name={"glytoucanRegistration"}
-                    checked={uploadDetails.glytoucanRegistration}
-                  />
-                </Form.Group>
-              </Col>
-
-              {uploadDetails.fileType !== defaultFileType && (
-                <Form.Group as={Row} controlId="fileUploader">
-                  <FormLabel label={"Upload Glycan File"} className="required-asterik" />
-                  <Col md={{ offset: 2, span: 8 }}>
-                    <ResumableUploader
-                      history={history}
-                      headerObject={{
-                        Authorization: window.localStorage.getItem("token") || "",
-                        Accept: "*/*"
-                      }}
-                      fileType={fileDetails.fileType}
-                      uploadService={getWsUrl("upload")}
-                      maxFiles={1}
-                      setUploadedFile={setUploadedGlycanFile}
-                      required={true}
-                    />
-                  </Col>
-                </Form.Group>
+                  <ErrorSummary
+                    show={showErrorSummary}
+                    form="glycans"
+                    errorJson={pageErrorsJson}
+                    errorMessage={pageErrorMessage}
+                  ></ErrorSummary>
+                </div>
               )}
-            </>
-          )}
-          &nbsp;&nbsp;
-          {(duplicateSequences || addedGlycans || invalidSequences) && getSummary()}
-          <Row className="line-break-1">
+
+              <Form noValidate onSubmit={(e) => handleSubmit(e)}>
+                {!duplicateSequences && !addedGlycans && !invalidSequences && (
+                  <>
+                    <Form.Group as={Col} controlId="fileType" className="gg-align-center">
+                      <Form.Label className="required-asterik">
+                        <strong>File Type</strong>
+                      </Form.Label>
+
+                      <Form.Control
+                        as="select"
+                        name="fileType"
+                        placeholder="fileType"
+                        onChange={handleChange}
+                        required={true}
+                        value={uploadDetails.fileType}
+                      >
+                        <option value={defaultFileType}>Select file type for upload</option>
+                        <option value="Tab separated">Tab Separated</option>
+                        <option value="Library XML">CarbArrayART library (*.xml)</option>
+                        <option value="GlycoWorkbench">GlycoWorkbench (*.gws)</option>
+                        <option value="wurcs">WURCS</option>
+                        <option value="cfg">CFG IUPAC Condensed</option>
+                      </Form.Control>
+                      <Feedback message="Please choose a file type for the file to be uploaded" />
+                      {/* </Col> */}
+                    </Form.Group>
+
+                    <Col md={{ span: 6, offset: 5 }}>
+                      <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                        <Form.Check
+                          type="checkbox"
+                          label={"register in GlyTouCan"}
+                          onChange={(e) =>
+                            setUploadDetails({ glytoucanRegistration: e.target.checked })
+                          }
+                          name={"glytoucanRegistration"}
+                          checked={uploadDetails.glytoucanRegistration}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    {uploadDetails.fileType !== defaultFileType && (
+                      <Form.Group as={Row} controlId="fileUploader">
+                        <FormLabel label={"Upload Glycan File"} className="required-asterik" />
+                        <Col md={{ offset: 2, span: 8 }}>
+                          <ResumableUploader
+                            history={history}
+                            headerObject={{
+                              Authorization: window.localStorage.getItem("token") || "",
+                              Accept: "*/*",
+                            }}
+                            fileType={fileDetails.fileType}
+                            uploadService={getWsUrl("upload")}
+                            maxFiles={1}
+                            setUploadedFile={setUploadedGlycanFile}
+                            required={true}
+                          />
+                        </Col>
+                      </Form.Group>
+                    )}
+                  </>
+                )}
+                &nbsp;&nbsp;
+                {(duplicateSequences || addedGlycans || invalidSequences) && getSummary()}
+                <div className="text-center mb-4">
+                  <Link to="/glycans">
+                    <Button className="gg-btn-blue mt-2 gg-mr-20"> Back to Glycans</Button>
+                  </Link>
+
+                  {!duplicateSequences && !addedGlycans && !invalidSequences && (
+                    <Button
+                      type="submit"
+                      disabled={!uploadedGlycanFile}
+                      className="gg-btn-blue mt-2 gg-ml-20"
+                    >
+                      Submit
+                    </Button>
+                  )}
+                </div>
+                {/* <Row className="line-break-1">
             <Col style={{ textAlign: "right", marginLeft: "9%" }} md={{ offset: 1 }}>
               <Link
                 to="/glycans"
                 className="link-button"
                 style={{
-                  width: "25%"
+                  width: "25%",
                 }}
               >
                 Back to Glycans
@@ -278,69 +319,86 @@ const AddMultipleGlycans = props => {
             </Col>
             <Col style={{ textAlign: "left" }}>
               {!duplicateSequences && !addedGlycans && !invalidSequences && (
-                <Button type="submit" disabled={!uploadedGlycanFile}>
+                <Button
+                  type="submit"
+                  disabled={!uploadedGlycanFile}
+                  className="gg-btn-blue mt-2 gg-mr-20"
+                >
                   Submit
                 </Button>
               )}
             </Col>
-          </Row>
-          {addedGlycans && (
-            <div style={{ marginTop: "5%" }}>
-              {getTableForGlycans(addedGlycans ? addedGlycans : [], "", "Glycans successful uploaded")}
-            </div>
-          )}
-          {duplicateSequences && (
-            <div style={{ marginTop: "5%", marginBottom: "5%" }}>
-              {getTableForGlycans(duplicateSequences ? duplicateSequences : [], "", "Glycans already exist")}
-            </div>
-          )}
-          {invalidSequences &&
-            getTableForGlycans(
-              invalidSequences ? invalidSequences : [],
-              [
-                {
-                  Header: "Id",
-                  accessor: "id",
-                  minWidth: 80,
-                  Cell: row => {
-                    return row.original.glycan && row.original.glycan.id;
-                  }
-                },
-                {
-                  Header: "Sequence",
-                  accessor: "sequence",
-                  minWidth: 130,
-                  getProps: (state, rowInfo, column) => {
-                    return {
-                      style: {
-                        whiteSpace: "initial"
-                      }
-                    };
-                  },
-                  Cell: row => {
-                    return row.original.glycan && row.original.glycan.sequence;
-                  }
-                },
-                {
-                  Header: "Error message",
-                  accessor: "errorMessage",
-                  minWidth: 80,
-                  Cell: row => {
-                    return (
-                      row.original.error &&
-                      row.original.error.errors &&
-                      row.original.error.errors.map(err => {
-                        return <div style={{ textAlign: "center" }}>{err.defaultMessage}</div>;
-                      })
-                    );
-                  }
-                }
-              ],
-              "Glycan could not be uploaded"
-            )}
-          <Loading show={showLoading}></Loading>
-        </Form>
-      </div>
+          </Row> */}
+                {addedGlycans && (
+                  <div style={{ marginTop: "5%" }}>
+                    {getTableForGlycans(
+                      addedGlycans ? addedGlycans : [],
+                      "",
+                      "Glycans successful uploaded"
+                    )}
+                  </div>
+                )}
+                {duplicateSequences && (
+                  <div style={{ marginTop: "5%", marginBottom: "5%" }}>
+                    {getTableForGlycans(
+                      duplicateSequences ? duplicateSequences : [],
+                      "",
+                      "Glycans already exist"
+                    )}
+                  </div>
+                )}
+                {invalidSequences &&
+                  getTableForGlycans(
+                    invalidSequences ? invalidSequences : [],
+                    [
+                      {
+                        Header: "Id",
+                        accessor: "id",
+                        minWidth: 80,
+                        Cell: (row) => {
+                          return row.original.glycan && row.original.glycan.id;
+                        },
+                      },
+                      {
+                        Header: "Sequence",
+                        accessor: "sequence",
+                        minWidth: 130,
+                        getProps: (state, rowInfo, column) => {
+                          return {
+                            style: {
+                              whiteSpace: "initial",
+                            },
+                          };
+                        },
+                        Cell: (row) => {
+                          return row.original.glycan && row.original.glycan.sequence;
+                        },
+                      },
+                      {
+                        Header: "Error message",
+                        accessor: "errorMessage",
+                        minWidth: 80,
+                        Cell: (row) => {
+                          return (
+                            row.original.error &&
+                            row.original.error.errors &&
+                            row.original.error.errors.map((err) => {
+                              return (
+                                <div style={{ textAlign: "center" }}>{err.defaultMessage}</div>
+                              );
+                            })
+                          );
+                        },
+                      },
+                    ],
+                    "Glycan could not be uploaded"
+                  )}
+                <Loading show={showLoading}></Loading>
+              </Form>
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

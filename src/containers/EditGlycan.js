@@ -149,7 +149,7 @@ const EditGlycan = (props) => {
                     >
                       <strong>GlyTouCan ID</strong>
                     </Form.Label>
-                    <Col xs={12} sm={6} lg={4}>
+                    <Col xs={12} sm={6} lg={8}>
                       <Form.Control
                         type="text"
                         plaintext
@@ -177,7 +177,7 @@ const EditGlycan = (props) => {
                     >
                       <strong>Monoisotopic Mass</strong>
                     </Form.Label>
-                    <Col xs={12} sm={6} lg={4}>
+                    <Col xs={12} sm={6} lg={8}>
                       <Form.Control
                         type="text"
                         plaintext
@@ -207,7 +207,7 @@ const EditGlycan = (props) => {
                     >
                       <strong>Glycan Type</strong>
                     </Form.Label>
-                    <Col xs={12} sm={6} lg={4}>
+                    <Col xs={12} sm={6} lg={8}>
                       <Form.Control
                         type="text"
                         plaintext
@@ -229,7 +229,7 @@ const EditGlycan = (props) => {
                   >
                     <strong>Internal ID</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={4}>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       type="text"
                       placeholder="internal Id"
@@ -276,7 +276,7 @@ const EditGlycan = (props) => {
                       Name
                     </strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={4}>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       type="text"
                       placeholder="name"
@@ -301,10 +301,10 @@ const EditGlycan = (props) => {
                   >
                     <strong>Comment</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={4}>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       as="textarea"
-                      rows={3}
+                      rows={5}
                       placeholder="comment"
                       name="description"
                       value={glycanDetails.description}
@@ -320,128 +320,15 @@ const EditGlycan = (props) => {
                   </Col>
                 </Form.Group>
 
-                {/* Old code */}
+                <div className="text-center mb-4 mt-4">
+                  <Link to="/glycans">
+                    <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                  </Link>
 
-                {/* Internal ID */}
-                {/* <Form.Group as={Row} controlId="internalId">
-                <FormLabel label="Internal Id" />
-                <Col md={4}>
-                  <Form.Control
-                    type="text"
-                    placeholder="internal Id"
-                    name="internalId"
-                    value={glycanDetails.internalId}
-                    onChange={handleChange}
-                    maxLength={30}
-                  />
-                </Col>
-              </Form.Group> */}
-
-                {/* Name */}
-                {/* <Form.Group as={Row} controlId="name">
-                <FormLabel
-                  label="Name"
-                  className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""}
-                />
-                <Col md={4}>
-                  <Form.Control
-                    type="text"
-                    placeholder="name"
-                    name="name"
-                    value={glycanDetails.name}
-                    onChange={handleChange}
-                    required={glycanDetails.type === "UNKNOWN" ? true : false}
-                    maxLength={50}
-                  />
-                  <Feedback message="Please Enter Glycan Name." />
-                </Col>
-              </Form.Group> */}
-
-                {/* Comment */}
-                {/* <Form.Group as={Row} controlId="comment">
-                <FormLabel label="Comment" />
-                <Col md={4}>
-                  <Form.Control
-                    as="textarea"
-                    placeholder="comment"
-                    name="description"
-                    value={glycanDetails.description}
-                    onChange={handleChange}
-                    maxLength={2000}
-                  />
-                  <span className="character-counter" style={{ marginLeft: "80%" }}>
-                    {glycanDetails.description && glycanDetails.description.length > 0
-                      ? glycanDetails.description.length
-                      : ""}
-                    /2000
-                  </span>
-                </Col>
-              </Form.Group> */}
-
-                {/* Image */}
-                {/* {glycanDetails.cartoon && (
-                <Form.Group as={Row} controlId="image">
-                  <FormLabel label="Image" />
-                  <Col md={4}>
-                    <StructureImage
-                      base64={glycanDetails.cartoon}
-                      style={{
-                        maxWidth: "300px",
-                        overflow: "scroll",
-                      }}
-                    />
-                  </Col>
-                </Form.Group>
-              )} */}
-
-                {/* Mass */}
-                {/* {glycanDetails.mass && (
-                <Form.Group as={Row} controlId="mass">
-                  <FormLabel label="mass" />
-                  <Col md={4}>
-                    <Form.Control type="text" plaintext readOnly value={glycanDetails.mass} />
-                  </Col>
-                </Form.Group>
-              )} */}
-
-                {/* GlyTouCan ID */}
-                {/* {glycanDetails.glytoucanId && (
-                <Form.Group as={Row} controlId="glytoucanId">
-                  <FormLabel label="GlyTouCan ID" />
-                  <Col md={4}>
-                    <Form.Control
-                      type="text"
-                      plaintext
-                      readOnly
-                      value={glycanDetails.glytoucanId}
-                    />
-                  </Col>
-                </Form.Group>
-              )} */}
-
-                {/* Glycan Type */}
-                {/* <Form.Group as={Row} controlId="glycanType">
-                <FormLabel label="Type" />
-                <Col md={4}>
-                  <Form.Control
-                    type="text"
-                    plaintext
-                    readOnly
-                    value={getGlycanTypeLabel(glycanDetails.type)}
-                  />
-                </Col>
-              </Form.Group> */}
-                <div className="text-center mb-4">
-                  <Button type="submit" className="gg-btn-blue mt-2 gg-mr-20">
+                  <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
                     Submit
                   </Button>
-
-                  <Link to="/glycans">
-                    <Button className="gg-btn-blue mt-2 gg-ml-20">Cancel</Button>
-                  </Link>
                 </div>
-                {/* <FormButton className="line-break-1" type="submit" label="Submit" />
-              <LinkButton to="/glycans" label="Cancel" /> */}
               </Form>
             </Card.Body>
           </Card>
