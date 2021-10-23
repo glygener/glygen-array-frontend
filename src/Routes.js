@@ -71,6 +71,7 @@ import { OtherMolecules } from "./containers/OtherMolecules";
 import GlycanList from "./public/GlycanList";
 import GlycanDetail from "./public/GlycanDetail";
 import { FeatureView } from "./containers/FeatureView";
+import { AddMultipleGlycanDetails } from "./containers/AddMultipleGlycanDetails";
 
 const Routes = props => {
   const routes = [
@@ -212,7 +213,13 @@ const Routes = props => {
       sidebar: () => getSidemenu("molecules")
     },
     {
-      path: "/glycans/addMultiple",
+      path: "/glycans/addMultipleGlycanDetails",
+      main: () => <AddMultipleGlycanDetails authCheckAgent={props.authCheckAgent} {...props} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/glycans/addMultipleGlycan",
+
       main: () => <AddMultipleGlycans authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },

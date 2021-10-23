@@ -11,7 +11,7 @@ import { head, getMeta } from "../utils/head";
 import { PageHeading } from "../components/FormControls";
 import { getToolTip } from "../utils/commonUtils";
 
-const Glycans = (props) => {
+const Glycans = props => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -34,7 +34,7 @@ const Glycans = (props) => {
             <Button className="gg-btn-blue mt-2 gg-mr-20">Add Glycan</Button>
           </Link>
 
-          <Link to="/glycans/addMultiple">
+          <Link to="/glycans/addMultipleGlycan">
             <Button className="gg-btn-blue mt-2 gg-ml-20">Add Multiple Glycans</Button>
           </Link>
         </div>
@@ -44,43 +44,43 @@ const Glycans = (props) => {
             {
               Header: "Id",
               accessor: "id",
-              Cell: (row) => getToolTip(row.original.id),
+              Cell: row => getToolTip(row.original.id),
               style: {
-                textAlign: "left",
-              },
+                textAlign: "left"
+              }
             },
             {
               Header: "Internal Id",
               accessor: "internalId",
-              Cell: (row) => getToolTip(row.original.internalId),
+              Cell: row => getToolTip(row.original.internalId),
               style: {
-                textAlign: "left",
-              },
+                textAlign: "left"
+              }
             },
             {
               Header: "GlyTouCan ID",
               accessor: "glytoucanId",
-              Cell: (row) => getToolTip(row.original.glytoucanId),
+              Cell: row => getToolTip(row.original.glytoucanId)
             },
             {
               Header: "Name",
               accessor: "name",
-              Cell: (row) => getToolTip(row.original.name),
+              Cell: row => getToolTip(row.original.name)
             },
             {
               Header: "Structure Image",
               accessor: "cartoon",
               sortable: false,
               // eslint-disable-next-line react/prop-types
-              Cell: (row) => <StructureImage base64={row.value}></StructureImage>,
-              minWidth: 300,
+              Cell: row => <StructureImage base64={row.value}></StructureImage>,
+              minWidth: 300
             },
             {
               Header: "Mass",
               accessor: "mass",
               // eslint-disable-next-line react/prop-types
-              Cell: (row) => (row.value ? parseFloat(row.value).toFixed(2) : ""),
-            },
+              Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
+            }
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -103,7 +103,7 @@ const Glycans = (props) => {
 };
 
 Glycans.propTypes = {
-  authCheckAgent: PropTypes.func,
+  authCheckAgent: PropTypes.func
 };
 
 export { Glycans };
