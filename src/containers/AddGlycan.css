@@ -14,30 +14,32 @@
   font-size: medium !important;
   font-feature-settings: normal !important;
 }
-
+/* 
 label.form-check-label {
   display: inline !important;
-}
+} */
+
+
 
 .radioform {
   text-align: left !important;
   padding-left: 45% !important;
-  padding-top: 2%;
+  /* padding-top: 2%; */
 }
 
 .radioform1 {
   text-align: left !important;
-  padding-top: 5%;
+  /* padding-top: 5%; */
 }
 
 .radioform2 {
   text-align: left !important;
-  padding-top: 5%;
+  /* padding-top: 5%; */
 }
 
 .radioform3 {
   text-align: left !important;
-  padding-top: 5%;
+  /* padding-top: 5%; */
 }
 
 .makeStyles-root-1 {
@@ -72,12 +74,12 @@ label.form-check-label {
   height: 38px;
 }
 
-.stepper-button {
+/* .stepper-button {
   height: 38px !important;
   color: white !important;
   background-color: var(--gg-blue) !important;
   margin: 10px 10px 0px 10px !important;
-}
+} */
 
 .add-button {
   min-width: 35px !important;
@@ -87,10 +89,10 @@ label.form-check-label {
   border: 1px solid lightgrey !important;
 }
 
-.stepper-button:disabled {
+/* .stepper-button:disabled {
   color: rgba(0, 0, 0, 0.5) !important;
   background-color: rgba(0, 0, 0, 0.12) !important;
-}
+} */
 
 .button-div {
   padding-right: 0% !important;

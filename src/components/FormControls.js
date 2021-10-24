@@ -3,11 +3,13 @@ import { Form, Button, Col } from "react-bootstrap";
 import "./FormControls.css";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import Checkbox from "@material-ui/core/Checkbox";
+import { withStyles } from "@material-ui/core/styles";
 
-const FormLabel = props => {
+const FormLabel = (props) => {
   FormLabel.propTypes = {
     label: PropTypes.string.isRequired,
-    className: PropTypes.string
+    className: PropTypes.string,
   };
   return (
     <Form.Label column md={{ span: 3, offset: 2 }} className={props.className}>
@@ -16,9 +18,9 @@ const FormLabel = props => {
   );
 };
 
-const Feedback = props => {
+const Feedback = (props) => {
   Feedback.propTypes = {
-    message: PropTypes.string.isRequired
+    message: PropTypes.string.isRequired,
   };
   return (
     <Form.Control.Feedback type="invalid" className={props.className}>
@@ -27,28 +29,33 @@ const Feedback = props => {
   );
 };
 
-const FormButton = props => {
+const FormButton = (props) => {
   FormButton.propTypes = {
     className: PropTypes.string,
     type: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     disabled: PropTypes.bool,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
   };
   return (
     <Col md={{ span: 2, offset: 5 }} className={props.className}>
-      <Button type={props.type} style={{ width: "100%" }} disabled={props.disabled} onClick={props.onClick}>
+      <Button
+        type={props.type}
+        style={{ width: "100%" }}
+        disabled={props.disabled}
+        onClick={props.onClick}
+      >
         {props.label}
       </Button>
     </Col>
   );
 };
 
-const LinkButton = props => {
+const LinkButton = (props) => {
   LinkButton.propTypes = {
     className: PropTypes.string,
     label: PropTypes.string.isRequired,
-    to: PropTypes.string.isRequired
+    to: PropTypes.string.isRequired,
   };
   return (
     <Col md={{ span: 2, offset: 5 }} className={props.className}>
@@ -59,11 +66,11 @@ const LinkButton = props => {
   );
 };
 
-const RedirectLink = props => {
+const RedirectLink = (props) => {
   RedirectLink.propTypes = {
     className: PropTypes.string,
     label: PropTypes.string.isRequired,
-    to: PropTypes.string.isRequired
+    to: PropTypes.string.isRequired,
   };
   return (
     <Col md={{ span: 4, offset: 4 }}>
@@ -74,9 +81,9 @@ const RedirectLink = props => {
   );
 };
 
-const Title = props => {
+const Title = (props) => {
   Title.propTypes = {
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
   };
   return (
     <div className="content-box-md">
@@ -85,9 +92,9 @@ const Title = props => {
   );
 };
 
-const PageHeading = props => {
+const PageHeading = (props) => {
   PageHeading.propTypes = {
-    pageHeading: PropTypes.string
+    pageHeading: PropTypes.string,
   };
   return (
     <div className="content-box-md text-center">
@@ -96,5 +103,23 @@ const PageHeading = props => {
     </div>
   );
 };
+const BlueCheckbox = withStyles({
+  root: {
+    color: "#979797",
+    "&$checked": {
+      color: "#2f78b7",
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
 
-export { FormLabel, Feedback, FormButton, LinkButton, Title, RedirectLink, PageHeading };
+export {
+  FormLabel,
+  Feedback,
+  FormButton,
+  LinkButton,
+  Title,
+  RedirectLink,
+  PageHeading,
+  BlueCheckbox,
+};

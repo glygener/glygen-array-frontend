@@ -154,9 +154,9 @@ input[type]:not(:-ms-input-placeholder) + label {
   transform: scale(0.75) translateY(-100%) translateX(-30px);
 }
 
-.form-check-label {
+/* .form-check-label {
   background-color: #f5f5f5 !important;
-}
+} */
 
 .password-visibility {
   cursor: pointer;
@@ -175,8 +175,8 @@ input[type]:not(:-ms-input-placeholder) + label {
 }
 
 .line-break-1 {
-  margin-bottom: 2em;
-  margin-top: 2em;
+  margin-bottom: 10px;
+  /* margin-top: 2em; */
 }
 
 .line-break-2 {
@@ -362,8 +362,16 @@ input[type]:not(:-ms-input-placeholder) + label {
   color: #2e78b7;
 }
 
+.gg-btn-blue-reg {
+  color: #ffffff !important;
+  background-color: var(--gg-blue) !important;
+  border-color: var(--gg-blue) !important;
+  -webkit-transition: all 0.5s !important;
+  transition: ease-in-out 0.5s !important;
+}
+
 .gg-btn-blue {
-  color: #ffffff;
+  color: #ffffff !important;
   background-color: var(--gg-blue) !important;
   border-color: var(--gg-blue) !important;
   -webkit-transition: all 0.5s !important;
@@ -382,6 +390,7 @@ input[type]:not(:-ms-input-placeholder) + label {
   border-color: var(--gg-blue) !important;
   -webkit-transition: all 0.5s !important;
   transition: ease-in-out 0.5s !important;
+  border: 1px solid !important;
   width: 270px;
 }
 .gg-btn-outline:hover,
@@ -444,7 +453,18 @@ input[type]:not(:-ms-input-placeholder) + label {
   align-items: center;
   /* text-align: right; */
 }
+.gg-btn-outline:disabled,
+.gg-btn-blue:disabled,
+.gg-btn-outline:disabled:hover,
+.gg-btn-blue:disabled:hover {
+  cursor: no-drop !important;
+  /* color: #ffffff !important;
+  background-color: var(--gg-blue) !important; */
+  opacity: 60%;
+  /* border-color: var(--gg-blue) !important; */
+}
 
+.no-drop {cursor: no-drop !important;}
 /* =========================================
                 Card Loader
   ============================================ */
@@ -490,9 +510,9 @@ body > :not(.card) {
   padding-top: 70px !important;
 } */
 
-.MuiPaper-root {
+/* .MuiPaper-root {
   background-color: #f5f5f5 !important;
-}
+} */
 
 .download-btn {
   color: var(--gg-blue);
@@ -515,10 +535,14 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+input[type="radio" i], input[type="check" i] {
+  width: 20px !important;
+  height: 20px !important;
+}
 
 .form-check-input {
   position: inherit !important;
-  margin-right: 5px !important;
+  margin-right: 10px !important;
 }
 
 /* =========================================

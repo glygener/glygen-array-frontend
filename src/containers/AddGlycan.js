@@ -12,24 +12,30 @@ import { useHistory } from "react-router-dom";
 import { isValidNumber } from "../utils/commonUtils";
 import { Loading } from "../components/Loading";
 import { ScrollToTop } from "../components/ScrollToTop";
+import { PageHeading } from "../components/FormControls";
+import { Link } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { BlueCheckbox } from "../components/FormControls";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: "90%"
-  },
-  backButton: {
-    marginRight: theme.spacing(1)
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     width: "90%",
+//   },
+//   backButton: {
+//     marginRight: theme.spacing(1),
+//   },
+//   instructions: {
+//     marginTop: theme.spacing(1),
+//     marginBottom: theme.spacing(1),
+//   },
+// }));
 
-const AddGlycan = props => {
+const AddGlycan = (props) => {
   useEffect(props.authCheckAgent, []);
 
-  const classes = useStyles();
+  // const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
   const [validateName, setValidateName] = useState(false);
@@ -50,7 +56,7 @@ const AddGlycan = props => {
     glytoucanId: "",
     sequence: "",
     glytoucanRegistration: true,
-    sequenceType: "GlycoCT"
+    sequenceType: "GlycoCT",
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -59,7 +65,7 @@ const AddGlycan = props => {
 
   const steps = getSteps();
 
-  const handleNext = e => {
+  const handleNext = (e) => {
     setValidate(false);
     setValidateName(false);
 
@@ -79,7 +85,8 @@ const AddGlycan = props => {
       setInvalidMass(true);
       return;
     } else if (
-      (userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other") &&
+      (userSelection.selectedGlycan === "SequenceDefined" ||
+        userSelection.selectedGlycan === "Other") &&
       activeStep === 1
     ) {
       if (userSelection.sequence === "" || userSelection.sequence.trim().length < 1) {
@@ -104,15 +111,15 @@ const AddGlycan = props => {
       return;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
     setShowErrorSummary(false);
   };
 
-  const handleSelect = e => {
+  const handleSelect = (e) => {
     const newValue = e.target.value;
     if (newValue !== "SequenceDefined") {
       setDefaultCheck(false);
@@ -122,13 +129,17 @@ const AddGlycan = props => {
     setUserSelection({ ...initialState, ...{ selectedGlycan: newValue } });
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setDisableReset(true);
 
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (name === "name" && newValue.trim().length < 1 && userSelection.selectedGlycan !== "SequenceDefined") {
+    if (
+      name === "name" &&
+      newValue.trim().length < 1 &&
+      userSelection.selectedGlycan !== "SequenceDefined"
+    ) {
       setValidateName(true);
     } else if (userSelection.selectedGlycan !== "SequenceDefined" && name === "name") {
       setValidateName(false);
@@ -151,7 +162,7 @@ const AddGlycan = props => {
     }
   };
 
-  const handleClassSelect = e => {
+  const handleClassSelect = (e) => {
     const select = e.target.options[e.target.selectedIndex].value;
     setUserSelection({ sequenceType: select });
   };
@@ -164,31 +175,53 @@ const AddGlycan = props => {
 
   const getUnknownGlycanStep = () => {
     return (
-      <Form className="radioform1">
+      <Form>
+        {/* Name */}
         <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" className={userSelection.selectedGlycan === "Unknown" ? "required-asterik" : ""} />
-          <Col md={4}>
+          <Form.Label
+            column
+            xs={12}
+            sm={6}
+            lg={4}
+            className={
+              userSelection.selectedGlycan === "Unknown"
+                ? "required-asterik text-xs-left text-sm-right text-md-right"
+                : "text-xs-left text-sm-right text-md-right"
+            }
+          >
+            <strong>Name</strong>
+          </Form.Label>
+          <Col xs={12} sm={6} lg={8}>
             <Form.Control
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Enter Name of the glycan"
               value={userSelection.name}
               onChange={handleChange}
               required={true}
               isInvalid={validateName}
               maxLength={50}
             />
-            <Feedback message="Please Enter Glycan Name." />
+            <Feedback message="Please enter Glycan Name." />
           </Col>
         </Form.Group>
 
+        {/* Internal ID */}
         <Form.Group as={Row} controlId="internalID">
-          <FormLabel label="Internal Id" />
-          <Col md={4}>
+          <Form.Label
+            column
+            xs={12}
+            sm={6}
+            lg={4}
+            className="text-xs-left text-sm-right text-md-right"
+          >
+            <strong>Internal ID</strong>
+          </Form.Label>
+          <Col xs={12} sm={6} lg={8}>
             <Form.Control
               type="text"
               name="internalId"
-              placeholder="Internal Id"
+              placeholder="Enter ID used by your group"
               value={userSelection.internalId}
               onChange={handleChange}
               maxLength={30}
@@ -196,20 +229,31 @@ const AddGlycan = props => {
           </Col>
         </Form.Group>
 
+        {/* Comment */}
         <Form.Group as={Row} controlId="comments">
-          <FormLabel label="Comments" />
-          <Col md={4}>
+          <Form.Label
+            column
+            xs={12}
+            sm={6}
+            lg={4}
+            className="text-xs-left text-sm-right text-md-right"
+          >
+            <strong>Comment</strong>
+          </Form.Label>
+          <Col xs={12} sm={6} lg={8}>
             <Form.Control
               as="textarea"
               rows={4}
               name="comment"
-              placeholder="Comments"
+              placeholder="Enter your comments"
               value={userSelection.comment}
               onChange={handleChange}
               maxLength={2000}
             />
             <div className="text-right text-muted">
-              {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : "0"}
+              {userSelection.comment && userSelection.comment.length > 0
+                ? userSelection.comment.length
+                : "0"}
               /2000
             </div>
           </Col>
@@ -224,33 +268,43 @@ const AddGlycan = props => {
         <title>{head.addGlycan.title}</title>
         {getMeta(head.addGlycan)}
       </Helmet>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Add Glycan to Repository"
+            subTitle="Please provide the information for the new glycan."
+          />
+          <Card>
+            <Card.Body>
+              <Stepper activeStep={activeStep}>
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+              {getNavigationButtons()}
 
-      <div className="page-container">
-        <Title title="Add Glycan to Repository" />
-        <Stepper activeStep={activeStep}>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        {getNavigationButtons("button - div text-center")}
-        &nbsp; &nbsp;
-        {showErrorSummary === true && (
-          <ErrorSummary show={showErrorSummary} form="glycans" errorJson={pageErrorsJson}></ErrorSummary>
-        )}
-        <div>
-          <div>
-            <Typography className={classes.instructions} component={"span"} variant={"body2"}>
-              <>
-                {getStepContent(activeStep, validate)}
-                <Loading show={showLoading}></Loading>
-              </>
-            </Typography>
-            {getNavigationButtons("button-div line-break-1 text-center")}
-          </div>
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="glycans"
+                  errorJson={pageErrorsJson}
+                ></ErrorSummary>
+              )}
+              <div className="mt-4 mb-4">
+                <Typography component={"div"} variant="body1">
+                  <>
+                    {getStepContent(activeStep, validate)}
+                    <Loading show={showLoading}></Loading>
+                  </>
+                </Typography>
+              </div>
+              {getNavigationButtons()}
+            </Card.Body>
+          </Card>
         </div>
-      </div>
+      </Container>
     </>
   );
 
@@ -262,175 +316,231 @@ const AddGlycan = props => {
     switch (stepIndex) {
       case 0:
         return (
-          <Form className="radioform">
-            <FormCheck className="line-break-1">
-              <FormCheck.Label>
-                <FormCheck.Input type="radio" value="SequenceDefined" onChange={handleSelect} checked={defaultCheck} />
-                {displayNames.glycan.SEQUENCE_DEFINED}
-              </FormCheck.Label>
-            </FormCheck>
+          <Form>
+            <Row className="gg-align-center">
+              <Col sm="auto">
+                <FormCheck className="line-break-1 gg-align-center">
+                  <FormCheck.Label>
+                    <FormCheck.Input
+                      type="radio"
+                      value="SequenceDefined"
+                      onChange={handleSelect}
+                      checked={defaultCheck}
+                    />
+                    {displayNames.glycan.SEQUENCE_DEFINED}
+                  </FormCheck.Label>
+                </FormCheck>
 
-            <FormCheck>
-              <FormCheck.Label className="disableradio">
-                <FormCheck.Input type="radio" value="CompositionBased" disabled />
-                {displayNames.glycan.COMPOSITION_BASED}
-              </FormCheck.Label>
-            </FormCheck>
+                <FormCheck className="line-break-1">
+                  <FormCheck.Label className="disableradio">
+                    <FormCheck.Input type="radio" value="CompositionBased" disabled />
+                    {displayNames.glycan.COMPOSITION_BASED}
+                  </FormCheck.Label>
+                </FormCheck>
 
-            <FormCheck className="line-break-1">
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="MassDefined"
-                  onChange={handleSelect}
-                  checked={userSelection.selectedGlycan === "MassDefined"}
-                />
-                {displayNames.glycan.MASS_ONLY}
-              </FormCheck.Label>
-            </FormCheck>
+                <FormCheck className="line-break-1">
+                  <FormCheck.Label>
+                    <FormCheck.Input
+                      type="radio"
+                      value="MassDefined"
+                      onChange={handleSelect}
+                      checked={userSelection.selectedGlycan === "MassDefined"}
+                    />
+                    {displayNames.glycan.MASS_ONLY}
+                  </FormCheck.Label>
+                </FormCheck>
 
-            <FormCheck>
-              <FormCheck.Label className="disableradio">
-                <FormCheck.Input type="radio" value="ClassificationBased" disabled label="Classification Based" />
-                {displayNames.glycan.CLASSIFICATION_BASED}
-              </FormCheck.Label>
-            </FormCheck>
+                <FormCheck className="line-break-1">
+                  <FormCheck.Label className="disableradio">
+                    <FormCheck.Input
+                      type="radio"
+                      value="ClassificationBased"
+                      disabled
+                      label="Classification Based"
+                    />
+                    {displayNames.glycan.CLASSIFICATION_BASED}
+                  </FormCheck.Label>
+                </FormCheck>
 
-            <FormCheck className="line-break-1">
-              <FormCheck.Label className="disableradio">
-                <FormCheck.Input type="radio" value="FragmentOnly" disabled />
-                {displayNames.glycan.FRAGMENT_ONLY}
-              </FormCheck.Label>
-            </FormCheck>
+                <FormCheck className="line-break-1">
+                  <FormCheck.Label className="disableradio">
+                    <FormCheck.Input type="radio" value="FragmentOnly" disabled />
+                    {displayNames.glycan.FRAGMENT_ONLY}
+                  </FormCheck.Label>
+                </FormCheck>
 
-            <FormCheck className="line-break-1">
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="Unknown"
-                  onChange={handleSelect}
-                  checked={userSelection.selectedGlycan === "Unknown"}
-                />
-                {displayNames.glycan.UNKNOWN}
-              </FormCheck.Label>
-            </FormCheck>
+                <FormCheck className="line-break-1">
+                  <FormCheck.Label>
+                    <FormCheck.Input
+                      type="radio"
+                      value="Unknown"
+                      onChange={handleSelect}
+                      checked={userSelection.selectedGlycan === "Unknown"}
+                    />
+                    {displayNames.glycan.UNKNOWN}
+                  </FormCheck.Label>
+                </FormCheck>
 
-            <FormCheck>
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="Other"
-                  onChange={handleSelect}
-                  checked={userSelection.selectedGlycan === "Other"}
-                />
-                {displayNames.glycan.OTHER}
-              </FormCheck.Label>
-            </FormCheck>
+                <FormCheck className="line-break-15">
+                  <FormCheck.Label>
+                    <FormCheck.Input
+                      type="radio"
+                      value="Other"
+                      onChange={handleSelect}
+                      checked={userSelection.selectedGlycan === "Other"}
+                    />
+                    {displayNames.glycan.OTHER}
+                  </FormCheck.Label>
+                </FormCheck>
+              </Col>
+            </Row>
           </Form>
         );
       case 1:
         if (activeStep === 1 && userSelection.selectedGlycan !== "Unknown") {
           return (
             <>
-              <Form className="radioform1">
+              <Form>
+                {/* Top Reset/ Clear Fields Button */}
+                <div className="text-center mb-4 mt-1">
+                  <Button
+                    variant="contained"
+                    disabled={!disableReset}
+                    onClick={clearGlytoucanSequence}
+                    // className="gg-btn-outline mt-2"
+                    className="gg-btn-blue mt-2"
+                  >
+                    Clear Fields
+                  </Button>
+                </div>
+
+                {/* Name */}
                 <Form.Group as={Row} controlId="name">
-                  <FormLabel
-                    label="Name"
+                  <Form.Label
+                    column
+                    xs={12}
+                    sm={6}
+                    lg={4}
                     className={
-                      userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
-                        ? "required-asterik"
-                        : ""
+                      userSelection.selectedGlycan === "Unknown" ||
+                      userSelection.selectedGlycan === "Other"
+                        ? "required-asterik text-xs-left text-sm-right text-md-right"
+                        : "text-xs-left text-sm-right text-md-right"
                     }
-                  />
-                  <Col md={4}>
+                  >
+                    <strong>Name</strong>
+                  </Form.Label>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       type="text"
                       name="name"
-                      placeholder="Name"
+                      placeholder="Enter Name of the glycan"
                       value={userSelection.name}
                       onChange={handleChange}
                       isInvalid={
-                        userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
+                        userSelection.selectedGlycan === "Unknown" ||
+                        userSelection.selectedGlycan === "Other"
                           ? validateName
                           : ""
                       }
-                      required={userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"}
+                      required={
+                        userSelection.selectedGlycan === "Unknown" ||
+                        userSelection.selectedGlycan === "Other"
+                      }
                       maxLength={50}
                     />
                     <Feedback message="Name is required." />
                   </Col>
                 </Form.Group>
 
+                {/* GlyTouCan ID */}
                 <Form.Group
                   as={Row}
                   controlId="glytoucanId"
-                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                  className={
+                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                  }
                 >
-                  <FormLabel label="GlyTouCan ID" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="text-xs-left text-sm-right text-md-right"
+                  >
+                    <strong>GlyTouCan ID</strong>
+                  </Form.Label>
+
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       type="text"
                       name="glytoucanId"
-                      placeholder="GlyTouCan ID"
+                      placeholder="Enter GlyTouCan ID"
                       value={userSelection.glytoucanId}
                       onChange={handleChange}
                       onFocus={() => setShowErrorSummary(false)}
                       minLength={8}
                       maxLength={10}
                     />
+
+                    {userSelection.glytoucanId !== "" && userSelection.glytoucanId.length > 7 && (
+                      <Button
+                        variant="contained"
+                        onClick={() => getSequenceFromGlytoucan(userSelection.glytoucanId)}
+                        // className="get-btn"
+                        className="gg-btn-blue-reg mt-3"
+                      >
+                        Get Sequence from Glytoucan
+                      </Button>
+                    )}
                   </Col>
-                  {userSelection.glytoucanId !== "" && userSelection.glytoucanId.length > 7 && (
-                    <Button
-                      variant="contained"
-                      onClick={() => getSequenceFromGlytoucan(userSelection.glytoucanId)}
-                      className="get-btn"
-                    >
-                      Get Sequence from Glytoucan
-                    </Button>
-                  )}
                 </Form.Group>
 
-                <Form.Group
-                  as={Row}
-                  controlId="sequence"
-                  className={
-                    userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
-                      ? ""
-                      : "hide-content"
-                  }
-                >
-                  <FormLabel label="Sequence" className="required-asterik" />
-                  <Col md={4}>
+                {/* Internal ID */}
+                <Form.Group as={Row} controlId="internalID">
+                  <Form.Label
+                    column
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="text-xs-left text-sm-right text-md-right"
+                  >
+                    <strong>Internal ID</strong>
+                  </Form.Label>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
-                      as="textarea"
-                      rows="15"
-                      name="sequence"
-                      placeholder="Sequence"
-                      value={userSelection.sequence}
+                      type="text"
+                      name="internalId"
+                      placeholder="Enter ID used by your group"
+                      value={userSelection.internalId}
                       onChange={handleChange}
-                      required={true}
-                      isInvalid={validate}
-                      maxLength={5000}
+                      maxLength={30}
                     />
-                    <Feedback message="Please Enter Valid Sequence" />
-                    <div className="text-right text-muted">
-                      {userSelection.sequence && userSelection.sequence.length > 0 ? userSelection.sequence.length : "0"}
-                      /5000
-                    </div>
                   </Col>
                 </Form.Group>
 
+                {/* Sequence Type */}
                 <Form.Group
                   as={Row}
                   controlId="sequenceType"
-                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                  className={
+                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                  }
                 >
-                  <FormLabel label="Sequence Type" className="required-asterik" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="required-asterik text-xs-left text-sm-right text-md-right"
+                  >
+                    <strong>Sequence Type</strong>
+                  </Form.Label>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       as="select"
                       name="sequenceType"
-                      placeholder="sequenceType"
+                      placeholder="GlycoCT (first dropdown by default)"
                       value={userSelection.sequenceType}
                       onChange={handleClassSelect}
                       required={true}
@@ -444,96 +554,153 @@ const AddGlycan = props => {
                   </Col>
                 </Form.Group>
 
+                {/* Sequence */}
+                <Form.Group
+                  as={Row}
+                  controlId="sequence"
+                  className={
+                    userSelection.selectedGlycan === "SequenceDefined" ||
+                    userSelection.selectedGlycan === "Other"
+                      ? ""
+                      : "hide-content"
+                  }
+                >
+                  <Form.Label
+                    column
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="required-asterik text-xs-left text-sm-right text-md-right"
+                  >
+                    <strong>Sequence</strong>
+                  </Form.Label>
+                  <Col xs={12} sm={6} lg={8}>
+                    <Form.Control
+                      as="textarea"
+                      rows="5"
+                      name="sequence"
+                      placeholder="Enter Sequence"
+                      value={userSelection.sequence}
+                      onChange={handleChange}
+                      required={true}
+                      isInvalid={validate}
+                      maxLength={5000}
+                    />
+                    <Feedback message="Please enter Valid Sequence" />
+                    <div className="text-right text-muted">
+                      {userSelection.sequence && userSelection.sequence.length > 0
+                        ? userSelection.sequence.length
+                        : "0"}
+                      /5000
+                    </div>
+                  </Col>
+                </Form.Group>
+
+                {/* Monoisotopic Mass */}
                 <Form.Group
                   as={Row}
                   controlId="mass"
                   className={userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"}
                 >
-                  <FormLabel label="Mass" className="required-asterik" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="required-asterik text-xs-left text-sm-right text-md-right"
+                  >
+                    <strong>Monoisotopic Mass</strong>
+                  </Form.Label>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       type="number"
                       name="mass"
-                      placeholder="Mass"
+                      placeholder="Enter Mass of the glycan"
                       value={userSelection.mass}
                       onChange={handleChange}
                       isInvalid={invalidMass}
                       isValid={validate}
                       required={true}
-                      onKeyDown={e => {
+                      onKeyDown={(e) => {
                         isValidNumber(e);
                       }}
                     />
-                    <Feedback message={invalidMass ? "Mass should be greater than 0" : "Please Enter Mass"} />
-                  </Col>
-                </Form.Group>
-
-                <Form.Group
-                  controlId="formBasicCheckbox"
-                  className={
-                    userSelection.selectedGlycan === "SequenceDefined"
-                      ? getGlytoucanRegistration()
-                        ? "hide-content"
-                        : ""
-                      : "hide-content"
-                  }
-                >
-                  <Col md={{ span: 6, offset: 5 }}>
-                    <Form.Check
-                      name="glytoucanRegistration"
-                      type="checkbox"
-                      label="Register for Glytoucan"
-                      checked={userSelection.glytoucanRegistration}
-                      onChange={handleChange}
+                    <Feedback
+                      message={
+                        invalidMass
+                          ? "Monoisotopic Mass should be greater than 0"
+                          : "Please enter Monoisotopic Mass"
+                      }
                     />
                   </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="internalID">
-                  <FormLabel label="Internal Id" />
-                  <Col md={4}>
-                    <Form.Control
-                      type="text"
-                      name="internalId"
-                      placeholder="InternalId"
-                      value={userSelection.internalId}
-                      onChange={handleChange}
-                      maxLength={30}
-                    />
-                  </Col>
-                </Form.Group>
-
+                {/* Comment */}
                 <Form.Group as={Row} controlId="comments">
-                  <FormLabel label="Comments" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="text-xs-left text-sm-right text-md-right"
+                  >
+                    <strong>Comment</strong>
+                  </Form.Label>
+                  <Col xs={12} sm={6} lg={8}>
                     <Form.Control
                       as="textarea"
-                      rows={4}
+                      rows={5}
                       name="comment"
-                      placeholder="Comments"
+                      placeholder="Enter your comments"
                       value={userSelection.comment}
                       onChange={handleChange}
                       maxLength={2000}
                     />
                     <div className="text-right text-muted">
-                      {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : "0"}
+                      {userSelection.comment && userSelection.comment.length > 0
+                        ? userSelection.comment.length
+                        : "0"}
                       /2000
                     </div>
+
+                    {/* Register for GlyTouCan */}
+                    <Form.Group
+                      controlId="formBasicCheckbox"
+                      className={
+                        userSelection.selectedGlycan === "SequenceDefined"
+                          ? getGlytoucanRegistration()
+                            ? "hide-content"
+                            : "mb-0 pb-0"
+                          : "hide-content"
+                      }
+                    >
+                      <FormControlLabel
+                        control={
+                          <BlueCheckbox
+                            name="glytoucanRegistration"
+                            checked={userSelection.glytoucanRegistration}
+                            onChange={handleChange}
+                            size="large"
+                          />
+                        }
+                        label="Register for GlyTouCan"
+                      />
+                    </Form.Group>
                   </Col>
                 </Form.Group>
 
-                <Form.Group as={Row}>
-                  <Col md={{ span: 2, offset: 5 }}>
-                    <Button
-                      variant="contained"
-                      disabled={!disableReset}
-                      onClick={clearGlytoucanSequence}
-                      className="stepper-button"
-                    >
-                      Reset
-                    </Button>
-                  </Col>
-                </Form.Group>
+                {/* Bottom Reset / Clear fields  Button */}
+                <div className="text-center mb-2">
+                  <Button
+                    variant="contained"
+                    disabled={!disableReset}
+                    onClick={clearGlytoucanSequence}
+                    // className="gg-btn-outline mt-2"
+                    className="gg-btn-blue"
+                  >
+                    Clear Fields
+                  </Button>
+                </div>
               </Form>
             </>
           );
@@ -541,19 +708,18 @@ const AddGlycan = props => {
           return (
             <>
               {getUnknownGlycanStep()}
-
-              <Form.Group as={Row}>
-                <Col md={{ span: 1, offset: 5 }}>
-                  <Button
-                    variant="contained"
-                    disabled={!disableReset}
-                    onClick={clearGlytoucanSequence}
-                    className="stepper-button"
-                  >
-                    Reset
-                  </Button>
-                </Col>
-              </Form.Group>
+              {/* Reset Button */}
+              <div className="text-center mb-2">
+                <Button
+                  variant="contained"
+                  disabled={!disableReset}
+                  onClick={clearGlytoucanSequence}
+                  // className="gg-btn-outline mt-2"
+                  className="gg-btn-blue"
+                >
+                  Clear Fields
+                </Button>
+              </div>
             </>
           );
         }
@@ -561,80 +727,181 @@ const AddGlycan = props => {
       case 2:
         return (
           <>
-            <Form className="radioform3">
+            <Form>
+              {/* Name */}
               <Form.Group as={Row} controlId="name">
-                <FormLabel label="Name" />
-                <Col>
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>Name</strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
                   <Form.Control type="text" name="name" value={userSelection.name} disabled />
                 </Col>
               </Form.Group>
 
+              {/* Glycan Type */}
               <Form.Group as={Row} controlId="glycanSelected">
-                <FormLabel label="Glycan Type" />
-                <Col>
-                  <Form.Control type="text" name="glycanType" value={userSelection.selectedGlycan} disabled />
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>Glycan Type</strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
+                  <Form.Control
+                    type="text"
+                    name="glycanType"
+                    value={userSelection.selectedGlycan}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
-              <Form.Group
-                as={Row}
-                controlId="mass"
-                className={userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"}
-              >
-                <FormLabel label="Mass" />
-                <Col>
-                  <Form.Control type="text" name="mass" value={userSelection.mass} disabled />
-                </Col>
-              </Form.Group>
-
+              {/* GlyTouCan ID */}
               <Form.Group
                 as={Row}
                 controlId="glytoucanId"
                 className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
               >
-                <FormLabel label={displayNames.glycan.GLYTOUCAN_ID} />
-                <Col>
-                  <Form.Control type="text" name="glytoucanId" value={userSelection.glytoucanId} disabled />
+                {/* <FormLabel label={displayNames.glycan.GLYTOUCAN_ID} /> */}
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>{displayNames.glycan.GLYTOUCAN_ID} </strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
+                  <Form.Control
+                    type="text"
+                    name="glytoucanId"
+                    value={userSelection.glytoucanId}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
+              {/* Internal ID */}
+              <Form.Group as={Row} controlId="internalId">
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>{displayNames.glycan.INTERNAL_ID}</strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
+                  <Form.Control
+                    type="text"
+                    name="internalId"
+                    value={userSelection.internalId}
+                    disabled
+                  />
+                </Col>
+              </Form.Group>
+
+              {/* Monoisotopic Mass */}
               <Form.Group
                 as={Row}
-                controlId="sequence"
-                className={
-                  userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
-                    ? ""
-                    : "hide-content"
-                }
+                controlId="mass"
+                className={userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"}
               >
-                <FormLabel label={displayNames.glycan.SEQUENCE} />
-                <Col>
-                  <Form.Control as="textarea" rows="15" name="sequence" value={userSelection.sequence} disabled />
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>Monoisotopic Mass</strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
+                  <Form.Control type="text" name="mass" value={userSelection.mass} disabled />
                 </Col>
               </Form.Group>
 
+              {/* Sequence Type */}
               <Form.Group
                 as={Row}
                 controlId="sequenceType"
                 className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
               >
-                <FormLabel label="Sequence Type" />
-                <Col>
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>Sequence Type</strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
                   <Form.Control name="sequenceType" value={userSelection.sequenceType} disabled />
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} controlId="internalId">
-                <FormLabel label={displayNames.glycan.INTERNAL_ID} />
-                <Col>
-                  <Form.Control type="text" name="internalId" value={userSelection.internalId} disabled />
+              {/* Sequence */}
+              <Form.Group
+                as={Row}
+                controlId="sequence"
+                className={
+                  userSelection.selectedGlycan === "SequenceDefined" ||
+                  userSelection.selectedGlycan === "Other"
+                    ? ""
+                    : "hide-content"
+                }
+              >
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>{displayNames.glycan.SEQUENCE}</strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
+                  <Form.Control
+                    as="textarea"
+                    rows={5}
+                    name="sequence"
+                    value={userSelection.sequence}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
+              {/* Comments */}
               <Form.Group as={Row} controlId="comments">
-                <FormLabel label="Comments" />
-                <Col>
-                  <Form.Control as="textarea" rows={4} name="comment" value={userSelection.comment} disabled />
+                <Form.Label
+                  column
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  className="text-xs-left text-sm-right text-md-right"
+                >
+                  <strong>Comment</strong>
+                </Form.Label>
+                <Col xs={12} sm={6} lg={8}>
+                  <Form.Control
+                    as="textarea"
+                    rows={5}
+                    name="comment"
+                    value={userSelection.comment}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
             </Form>
@@ -663,7 +930,7 @@ const AddGlycan = props => {
   }
 
   function checkGlytoucanSuccess(response) {
-    response.text().then(parsedJson => {
+    response.text().then((parsedJson) => {
       setUserSelection({ sequence: parsedJson });
       setRegistrationCheckFlag(false);
       getGlytoucanRegistration();
@@ -674,7 +941,7 @@ const AddGlycan = props => {
   }
 
   function checkGlytoucanFailure(response) {
-    response.json().then(parsedJson => {
+    response.json().then((parsedJson) => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
       setRegistrationCheckFlag(true);
@@ -712,7 +979,7 @@ const AddGlycan = props => {
         name: userSelection.name,
         description: userSelection.comment,
         type: glycanType,
-        mass: userSelection.mass
+        mass: userSelection.mass,
       },
       addGlycanSuccess,
       addGlycanFailure
@@ -727,7 +994,7 @@ const AddGlycan = props => {
   }
 
   function addGlycanFailure(response) {
-    response.json().then(parsedJson => {
+    response.json().then((parsedJson) => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
     });
@@ -735,13 +1002,20 @@ const AddGlycan = props => {
     ScrollToTop();
   }
 
-  function getNavigationButtons(className) {
+  function getNavigationButtons() {
     return (
-      <div className={className}>
-        <Button disabled={activeStep === 0} onClick={handleBack} className="stepper-button">
+      <div className="text-center mb-2">
+        <Link to="/glycans">
+          <Button className="gg-btn-blue mt-2 gg-mr-20">Back to Glycans</Button>
+        </Link>
+        <Button
+          disabled={activeStep === 0}
+          onClick={handleBack}
+          className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20"
+        >
           Back
         </Button>
-        <Button variant="contained" className="stepper-button" onClick={handleNext}>
+        <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
           {activeStep === steps.length - 1 ? "Finish" : "Next"}
         </Button>
       </div>
