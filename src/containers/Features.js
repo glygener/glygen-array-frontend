@@ -64,13 +64,15 @@ const Features = props => {
               accessor: "linker",
               // eslint-disable-next-line react/display-name
               Cell: ({ row, index }) => {
-                return (
+                return row.linker ? (
                   <div key={index}>
                     {
                       row.linker.type
                       // && displayNames.linker[row.linker.type]
                     }
                   </div>
+                ) : (
+                  ""
                 );
               }
             },

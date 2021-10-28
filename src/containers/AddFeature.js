@@ -14,7 +14,6 @@ import ReactTable from "react-table";
 import { StructureImage } from "../components/StructureImage";
 import { getAAPositionsFromSequence } from "../utils/sequence";
 import { wsCall } from "../utils/wsUtils";
-import { useHistory } from "react-router-dom";
 import { Linkers } from "./Linkers";
 import { Peptides } from "./Peptides";
 import { Proteins } from "./Proteins";
@@ -26,6 +25,9 @@ import { getToolTip } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { GlycoPeptides } from "../components/GlycoPeptides";
+import { useHistory } from "react-router-dom";
+import { GlycanInFeatureInfoView } from "../components/GlycanInFeatureInfoView";
+import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -75,6 +77,9 @@ const AddFeature = props => {
   const [glycoLipidGlycanLinkerListStep4, setGlycoLipidGlycanLinkerListStep4] = useState();
   const [glycoProteinPepTideListStep4, setGlycoProteinPepTideListStep4] = useState([{ position: 0 }]);
   const [showGlycoPeptides, setShowGlycoPeptides] = useState(false);
+
+  const [glycanViewInfo, setGlycanViewInfo] = useState(false);
+  const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
 
   const [featureAddState, setFeatureAddState] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
     ...featureAddInitState,
@@ -771,6 +776,7 @@ const AddFeature = props => {
       type: "LINKEDGLYCAN",
 
       name: featureMetaData.name,
+      internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       glycans: featureAddState.glycans.map(glycanObj => {
         let glycanDetails = {};
@@ -793,7 +799,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataTemplate.length > 0 && metadataToSubmit()
+      metadata: metadataToSubmit()
     };
     return featureObj;
   }
@@ -821,6 +827,7 @@ const AddFeature = props => {
       type: "GLYCOLIPID",
 
       name: featureMetaData.name,
+      internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       lipid: featureAddState.lipid,
       glycans: [{ glycans: glycans, type: "LINKEDGLYCAN", linker: glycans[0].linker }],
@@ -882,6 +889,7 @@ const AddFeature = props => {
     featureObj = {
       type: type,
       name: featureMetaData.name,
+      internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       ...getKey(type),
       glycans: glycans,
@@ -1350,6 +1358,11 @@ const AddFeature = props => {
     );
   };
 
+  const getGlycanInfoDisplay = glycan => {
+    setEnableGlycanViewInfoDialog(true);
+    setGlycanViewInfo(glycan.original);
+  };
+
   const getCase3GlycoProteinLinkedPeptideFeature = () => {
     return (
       <>
@@ -1631,7 +1644,7 @@ const AddFeature = props => {
   function getReducingEndState(opensRing) {
     switch (opensRing) {
       case 0:
-        return "Open Ring";
+        return "Anomer/Ring configuration";
       case 1:
         return "Alpha";
       case 2:
@@ -1815,10 +1828,20 @@ const AddFeature = props => {
           showDeleteButton
           customDeleteOnClick
           deleteOnClick={handleDeletedSelectedGlycan}
+          showViewIcon
+          customViewonClick
+          viewOnClick={getGlycanInfoDisplay}
           showPagination={false}
           showRowsInfo={false}
           infoRowsText="Selected Glycans"
         />
+        {enableGlycanViewInfoDialog && (
+          <GlycanInfoViewModal
+            setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
+            enableGlycanViewInfoDialog={enableGlycanViewInfoDialog}
+            glycanViewInfo={glycanViewInfo}
+          />
+        )}
       </>
     );
   };

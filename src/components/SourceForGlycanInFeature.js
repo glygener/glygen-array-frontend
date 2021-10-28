@@ -128,7 +128,7 @@ const SourceForGlycanInFeature = props => {
       }
 
       source.type = "NONCOMMERCIAL";
-      source.batchId = addGlycanInfoToFeature.commercial.batchId;
+      source.batchId = addGlycanInfoToFeature.nonCommercial.batchId;
       source.providerLab = addGlycanInfoToFeature.nonCommercial.providerLab;
       source.method = addGlycanInfoToFeature.nonCommercial.method;
       source.comment = addGlycanInfoToFeature.nonCommercial.sourceComment;

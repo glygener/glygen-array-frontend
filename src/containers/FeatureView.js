@@ -8,25 +8,32 @@ import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
 import { getToolTip } from "../utils/commonUtils";
+import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 
 const FeatureView = props => {
   let { featureId } = useParams();
   const [validated, setValidated] = useState(false);
+  const [glycanViewInfo, setGlycanViewInfo] = useState(false);
+  const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
 
-  useEffect(() => props.authCheckAgent, []);
+  // useEffect(() => props.authCheckAgent, []);
 
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
     }
-    wsCall("getfeature", "GET", [featureId], true, null, getFeatureSuccess, getFeatureFailure);
-  }, [featureId]);
+
+    if (featureId) {
+      wsCall("getfeature", "GET", [featureId], true, null, getFeatureSuccess, getFeatureFailure);
+    }
+  }, [featureId, props]);
 
   function getFeatureSuccess(response) {
     response.json().then(parsedJson => {
       setFeatureDetails(parsedJson);
     });
   }
+
   function getFeatureFailure(response) {
     setValidated(false);
     console.log(response);
@@ -211,10 +218,20 @@ const FeatureView = props => {
           data={featureDetails.glycans}
           keyColumn="id"
           showSearchBox
+          showViewIcon
+          customViewonClick
+          viewOnClick={getGlycanInfoDisplay}
           infoRowsText="Glycans"
           showPagination={false}
           showRowsInfo={false}
         />
+        {enableGlycanViewInfoDialog && (
+          <GlycanInfoViewModal
+            setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
+            enableGlycanViewInfoDialog={enableGlycanViewInfoDialog}
+            glycanViewInfo={glycanViewInfo}
+          />
+        )}
       </>
     );
   };
@@ -222,11 +239,42 @@ const FeatureView = props => {
   const getLinker = () => {
     if (props.linker) {
       if ((props.type !== "LINKED_GLYCAN" && props.linkerSeletion !== "No") || props.type === "LINKED_GLYCAN") {
-        return displayDetails(props.linker, "case4", "Linker");
+        return <> {displayDetails(props.linker, "case4", "Linker") && linkerDetails(props.linker)}</>;
       }
     } else if (featureDetails.linker) {
-      return displayDetails(featureDetails.linker, "view", "Linker");
+      return <> {displayDetails(featureDetails.linker, "view", "Linker") && linkerDetails(featureDetails.linker)}</>;
     }
+  };
+
+  const linkerDetails = linker => {
+    return (
+      <>
+        {linker.imageURL ? (
+          <Form.Group as={Row} controlId="name">
+            <Col md={{ span: 3, offset: 2 }}>
+              <FormLabel label={""} />
+            </Col>
+            <Col md={4}>
+              <StructureImage imgUrl={linker.imageURL}></StructureImage>
+            </Col>
+          </Form.Group>
+        ) : (
+          (linker.description || linker.comment) && (
+            <Form.Group as={Row} controlId="comment">
+              <FormLabel label="Comment" />
+              <Col md={4} className="sequence-label-div">
+                <Form.Control
+                  rows={3}
+                  as="textarea"
+                  plaintext
+                  value={linker.comment ? linker.comment : linker.description ? linker.description : ""}
+                />
+              </Col>
+            </Form.Group>
+          )
+        )}
+      </>
+    );
   };
 
   const getLipid = () => {
@@ -271,12 +319,21 @@ const FeatureView = props => {
                 <Form.Control type="text" disabled value={props.metadata.purity.method} />
               </Col>
             </Form.Group>
-            <Form.Group as={Row} controlId="comment">
-              <FormLabel label="Comment" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.purity.comment} />
-              </Col>
-            </Form.Group>
+
+            {props.metadata.purity.comment && (
+              <Form.Group as={Row} controlId="comment">
+                <FormLabel label="Comment" />
+                <Col md={4}>
+                  <Form.Control
+                    rows={props.metadata.purity.comment.length > 10 ? 3 : 1}
+                    as="textarea"
+                    plaintext
+                    disabled
+                    value={props.metadata.purity.comment}
+                  />
+                </Col>
+              </Form.Group>
+            )}
           </>
         ) : (
           <Form.Group as={Row} controlId="value">
@@ -342,12 +399,20 @@ const FeatureView = props => {
               </Col>
             </Form.Group>
 
-            <Form.Group as={Row} controlId="batchId">
-              <FormLabel label="Comment" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.nonCommercial.sourceComment} />
-              </Col>
-            </Form.Group>
+            {props.metadata.nonCommercial.sourceComment && (
+              <Form.Group as={Row} controlId="comment">
+                <FormLabel label="Comment" />
+                <Col md={4}>
+                  <Form.Control
+                    rows={props.metadata.nonCommercial.sourceComment.length > 10 ? 3 : 1}
+                    as="textarea"
+                    plaintext
+                    disabled
+                    value={props.metadata.nonCommercial.sourceComment}
+                  />
+                </Col>
+              </Form.Group>
+            )}
           </>
         )}
       </>
@@ -404,6 +469,19 @@ const FeatureView = props => {
             />
           </Col>
         </Form.Group>
+
+        <Form.Group as={Row} controlId="featureId">
+          <FormLabel label="FeatureId" />
+          <Col md={4}>
+            <Form.Control
+              type="text"
+              disabled={page === "case4"}
+              plaintext={page === "view"}
+              value={props.metadata ? props.metadata.featureId : featureDetails.internalId}
+            />
+          </Col>
+        </Form.Group>
+
         <Form.Group as={Row} controlId="Type">
           <FormLabel label="Type" />
           <Col md={4}>
@@ -501,17 +579,43 @@ const FeatureView = props => {
             defaultPageSize={5}
             showPagination={false}
             showRowsInfo={false}
+            showViewIcon
+            customViewonClick
+            viewOnClick={getGlycanInfoDisplay}
             infoRowsText="Selected Glycans"
           />
+
+          {enableGlycanViewInfoDialog && (
+            <GlycanInfoViewModal
+              setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
+              enableGlycanViewInfoDialog={enableGlycanViewInfoDialog}
+              glycanViewInfo={glycanViewInfo}
+            />
+          )}
         </div>
       </>
     );
   };
 
+  const getGlycanInfoDisplay = rowSelected => {
+    let glycan;
+
+    if (rowSelected.original.glycans) {
+      debugger;
+      glycan = rowSelected.original.glycans[rowSelected.index];
+    } else {
+      debugger;
+      glycan = rowSelected.original;
+    }
+
+    setEnableGlycanViewInfoDialog(true);
+    setGlycanViewInfo(glycan);
+  };
+
   function getReducingEndState(opensRing) {
     switch (opensRing) {
       case 0:
-        return "Open Ring";
+        return "Anomer/Ring configuration";
       case 1:
         return "Alpha";
       case 2:

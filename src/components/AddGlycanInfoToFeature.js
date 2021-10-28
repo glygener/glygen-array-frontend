@@ -122,7 +122,7 @@ const AddGlycanInfoToFeature = props => {
 
   const opensRingOptions = [
     {
-      displayName: "Open Ring",
+      displayName: "Anomer/Ring configuration",
       value: 0
     },
     {

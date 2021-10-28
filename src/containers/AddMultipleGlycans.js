@@ -80,11 +80,6 @@ const AddMultipleGlycans = props => {
         pathname: "/glycans/addMultipleGlycanDetails",
         state: { uploadResponse: resp }
       });
-
-      // setAddedGlycans(resp.addedGlycans);
-      // setInvalidSequences(resp.wrongSequences);
-      // setDuplicateSequences(resp.duplicateSequences);
-      // setTitle("Glycan File Upload Details");
     });
   }
   function glycanUploadError(response) {

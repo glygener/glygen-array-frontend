@@ -124,7 +124,7 @@ const GlygenTable = props => {
     };
   }
 
-  if (props.showDeleteButton || props.showEditButton) {
+  if (props.showDeleteButton || props.showEditButton || props.showViewIcon) {
     columnsToRender["actionsColumn"] = {
       Header: "Actions",
       style: {
@@ -145,7 +145,11 @@ const GlygenTable = props => {
                     size="lg"
                     color="#45818e"
                     className="tbl-icon-btn"
-                    onClick={() => history.push("/" + props.viewUrl + "/" + row.original[props.keyColumn])}
+                    onClick={() =>
+                      props.customViewonClick
+                        ? props.viewOnClick(row)
+                        : history.push("/" + props.viewUrl + "/" + row.original[props.keyColumn])
+                    }
                   />
                 </Link>
               </LineTooltip>
@@ -575,7 +579,9 @@ GlygenTable.propTypes = {
   deleteOnClick: PropTypes.func,
   customCommentColumn: PropTypes.bool,
   showViewIcon: PropTypes.bool,
-  viewUrl: PropTypes.string
+  viewUrl: PropTypes.string,
+  customViewonClick: PropTypes.bool,
+  viewOnClick: PropTypes.func
 };
 
 GlygenTable.defaultProps = {
