@@ -129,7 +129,7 @@ const EditGlycan = (props) => {
                       column
                       xs={12}
                       sm={6}
-                      lg={4}
+                      lg={3}
                       className="text-xs-left text-sm-right text-md-right"
                     >
                       <strong>Glycan Type</strong>
@@ -156,7 +156,7 @@ const EditGlycan = (props) => {
                       column
                       xs={12}
                       sm={6}
-                      lg={4}
+                      lg={3}
                       className="text-xs-left text-sm-right text-md-right"
                     >
                       <strong>GlyTouCan ID</strong>
@@ -179,7 +179,7 @@ const EditGlycan = (props) => {
                       column
                       xs={12}
                       sm={6}
-                      lg={4}
+                      lg={3}
                       className="text-xs-left text-sm-right text-md-right"
                     >
                       <strong>Monoisotopic Mass</strong>
@@ -201,7 +201,7 @@ const EditGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="text-xs-left text-sm-right text-md-right"
                   >
                     <strong>Internal ID</strong>
@@ -224,7 +224,7 @@ const EditGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="text-xs-left text-sm-right text-md-right"
                   >
                     <strong className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""}>
@@ -251,7 +251,7 @@ const EditGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="text-xs-left text-sm-right text-md-right"
                   >
                     <strong>Comment</strong>

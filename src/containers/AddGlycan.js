@@ -192,7 +192,7 @@ const AddGlycan = (props) => {
             column
             xs={12}
             sm={6}
-            lg={4}
+            lg={3}
             className="text-xs-left text-sm-right text-md-right"
           >
             <strong>Internal ID</strong>
@@ -215,7 +215,7 @@ const AddGlycan = (props) => {
             column
             xs={12}
             sm={6}
-            lg={4}
+            lg={3}
             className={
               userSelection.selectedGlycan === "Unknown"
                 ? "required-asterik text-xs-left text-sm-right text-md-right"
@@ -245,7 +245,7 @@ const AddGlycan = (props) => {
             column
             xs={12}
             sm={6}
-            lg={4}
+            lg={3}
             className="text-xs-left text-sm-right text-md-right"
           >
             <strong>Comment</strong>
@@ -444,7 +444,7 @@ const AddGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="text-xs-left text-sm-right text-md-right"
                   >
                     <strong>GlyTouCan ID</strong>
@@ -485,7 +485,7 @@ const AddGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="required-asterik text-xs-left text-sm-right text-md-right"
                   >
                     <strong>Monoisotopic Mass</strong>
@@ -520,7 +520,7 @@ const AddGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="text-xs-left text-sm-right text-md-right"
                   >
                     <strong>Internal ID</strong>
@@ -543,7 +543,7 @@ const AddGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className={
                       userSelection.selectedGlycan === "Unknown" ||
                       userSelection.selectedGlycan === "Other"
@@ -588,7 +588,7 @@ const AddGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="required-asterik text-xs-left text-sm-right text-md-right"
                   >
                     <strong>Sequence Type</strong>
@@ -626,7 +626,7 @@ const AddGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="required-asterik text-xs-left text-sm-right text-md-right"
                   >
                     <strong>Sequence</strong>
@@ -682,7 +682,7 @@ const AddGlycan = (props) => {
                     column
                     xs={12}
                     sm={6}
-                    lg={4}
+                    lg={3}
                     className="text-xs-left text-sm-right text-md-right"
                   >
                     <strong>Comment</strong>
@@ -751,7 +751,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>Glycan Type</strong>
@@ -776,7 +776,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>{displayNames.glycan.GLYTOUCAN_ID} </strong>
@@ -801,7 +801,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>Monoisotopic Mass</strong>
@@ -817,7 +817,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>{displayNames.glycan.INTERNAL_ID}</strong>
@@ -838,7 +838,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>Name</strong>
@@ -858,7 +858,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>Sequence Type</strong>
@@ -883,7 +883,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>{displayNames.glycan.SEQUENCE}</strong>
@@ -905,7 +905,7 @@ const AddGlycan = (props) => {
                   column
                   xs={12}
                   sm={6}
-                  lg={4}
+                  lg={3}
                   className="text-xs-left text-sm-right text-md-right"
                 >
                   <strong>Comment</strong>
