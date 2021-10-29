@@ -6,6 +6,7 @@ import { externalizeUrl } from "../utils/commonUtils";
 import { Link } from "@material-ui/core";
 import { PublicationCard } from "./PublicationCard";
 import { ViewSourceInfo } from "./ViewSourceInfo";
+import { getReducingEndState } from "../containers/FeatureView";
 
 const GlycanInFeatureInfoView = props => {
   const glycanInfoInit = {
@@ -25,7 +26,6 @@ const GlycanInFeatureInfoView = props => {
   );
 
   useEffect(() => {
-    debugger;
     let source = {};
     let glycanInfo = {};
 
@@ -54,7 +54,6 @@ const GlycanInFeatureInfoView = props => {
 
       setGlycanDetails(glycanInfo);
     } else {
-      debugger;
       glycanInfo = props.glycan;
       if (source.type) {
         glycanInfo.source = source;
@@ -66,8 +65,6 @@ const GlycanInFeatureInfoView = props => {
 
   function getSource(sourceInfo) {
     let source = {};
-    debugger;
-
     if (sourceInfo.type === "COMMERCIAL") {
       let comm = getCommercial(sourceInfo);
       source.commercial = comm;
@@ -208,7 +205,7 @@ const GlycanInFeatureInfoView = props => {
       <Form.Group as={Row} controlId="opensRing">
         <FormLabel label="Opens Ring" />
         <Col md={4}>
-          <Form.Control type="text" disabled value={glycanDetails.glycan.opensRing} />
+          <Form.Control type="text" disabled value={getReducingEndState(glycanDetails.glycan.opensRing)} />
         </Col>
       </Form.Group>
 

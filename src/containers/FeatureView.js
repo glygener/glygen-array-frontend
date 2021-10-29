@@ -181,16 +181,19 @@ const FeatureView = props => {
               accessor: "source.type",
               Cell: row => {
                 return featureDetails.type === "LINKEDGLYCAN"
-                  ? row.original.source.type === "NOTRECORDED"
-                    ? "Not Recorded"
-                    : row.original.source.type === "COMMERCIAL"
-                    ? "Commercial"
-                    : "Non Commercial"
-                  : row.original.glycans[0].source.type === "NOTRECORDED"
-                  ? "Not Recorded"
-                  : row.original.glycans[0].source.type === "COMMERCIAL"
-                  ? "Commercial"
-                  : "Non Commercial";
+                  ? row.original.source &&
+                      (row.original.source.type === "NOTRECORDED"
+                        ? "Not Recorded"
+                        : row.original.source.type === "COMMERCIAL"
+                        ? "Commercial"
+                        : "Non Commercial")
+                  : row.original.glycans[0] &&
+                      row.original.glycans[0].source &&
+                      (row.original.glycans[0].source.type === "NOTRECORDED"
+                        ? "Not Recorded"
+                        : row.original.glycans[0].source.type === "COMMERCIAL"
+                        ? "Commercial"
+                        : "Non Commercial");
               }
             },
             {
