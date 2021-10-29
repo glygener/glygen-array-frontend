@@ -107,7 +107,8 @@ const BlueCheckbox = withStyles({
   root: {
     color: "#979797",
     "&$checked": {
-      color: "#2f78b7",
+      // color: "#2f78b7",
+      color: "var(--gg-blue) !important",
     },
   },
   checked: {},
