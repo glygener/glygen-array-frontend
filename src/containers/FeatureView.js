@@ -11,7 +11,8 @@ import { getToolTip } from "../utils/commonUtils";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 
 const FeatureView = props => {
-  let { featureId } = useParams();
+  let { featureId, editFeature } = useParams();
+
   const [validated, setValidated] = useState(false);
   const [glycanViewInfo, setGlycanViewInfo] = useState(false);
   const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
@@ -463,8 +464,8 @@ const FeatureView = props => {
           <Col md={4}>
             <Form.Control
               type="text"
-              disabled={page === "case4"}
-              plaintext={page === "view"}
+              disabled={page === "case4" && !editFeature}
+              plaintext={page === "view" && !editFeature}
               value={props.metadata ? props.metadata.name : featureDetails.name}
             />
           </Col>
@@ -475,8 +476,8 @@ const FeatureView = props => {
           <Col md={4}>
             <Form.Control
               type="text"
-              disabled={page === "case4"}
-              plaintext={page === "view"}
+              disabled={page === "case4" && !editFeature}
+              plaintext={page === "view" && !editFeature}
               value={props.metadata ? props.metadata.featureId : featureDetails.internalId}
             />
           </Col>
@@ -601,10 +602,8 @@ const FeatureView = props => {
     let glycan;
 
     if (rowSelected.original.glycans) {
-      debugger;
       glycan = rowSelected.original.glycans[rowSelected.index];
     } else {
-      debugger;
       glycan = rowSelected.original;
     }
 
@@ -612,23 +611,7 @@ const FeatureView = props => {
     setGlycanViewInfo(glycan);
   };
 
-  function getReducingEndState(opensRing) {
-    switch (opensRing) {
-      case 0:
-        return "Anomer/Ring configuration";
-      case 1:
-        return "Alpha";
-      case 2:
-        return "Beta";
-      case 3:
-        return "Unknown";
-      case 4:
-        return "Equilibrium";
-
-      default:
-        return "Unknown";
-    }
-  }
+  function handleSubmit() {}
 
   const getFeatureDetails = () => {
     return (
@@ -640,27 +623,28 @@ const FeatureView = props => {
 
         <div className={featureId ? "page-container" : ""}>
           <Title title={featureId ? "Feature View" : ""} />
+          <Form noValidate validated onSubmit={editFeature ? handleSubmit : ""}>
+            {getMetadataNameandId(props.metadata ? "case4" : "view")}
 
-          {getMetadataNameandId(props.metadata ? "case4" : "view")}
+            {getLinker()}
 
-          {getLinker()}
+            {getLipid()}
 
-          {getLipid()}
+            {getPeptide()}
 
-          {getPeptide()}
+            {getProtein()}
 
-          {getProtein()}
+            {props.metadata
+              ? case4Metadata()
+              : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
 
-          {props.metadata
-            ? case4Metadata()
-            : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
+            {props.glycans ? getSelectedGlycanList() : featureDetails.glycans.length > 0 && getGlycanTable()}
+            <br />
 
-          {props.glycans ? getSelectedGlycanList() : featureDetails.glycans.length > 0 && getGlycanTable()}
-          <br />
-
-          {featureDetails && featureDetails.type && <LinkButton to="/features" label="Back" />}
-          <br />
-          <br />
+            {featureDetails && featureDetails.type && <LinkButton to="/features" label="Back" />}
+            <br />
+            <br />
+          </Form>
         </div>
       </>
     );
@@ -668,4 +652,22 @@ const FeatureView = props => {
   return <>{getFeatureDetails()}</>;
 };
 
-export { FeatureView };
+function getReducingEndState(opensRing) {
+  switch (opensRing) {
+    case 0:
+      return "Anomer/Ring configuration";
+    case 1:
+      return "Alpha";
+    case 2:
+      return "Beta";
+    case 3:
+      return "Unknown";
+    case 4:
+      return "Equilibrium";
+
+    default:
+      return "Unknown";
+  }
+}
+
+export { FeatureView, getReducingEndState };

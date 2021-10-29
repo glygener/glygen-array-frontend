@@ -108,7 +108,7 @@ const Features = props => {
           commentsRefColumn="name"
           fetchWS="featurelist"
           deleteWS="featuredelete"
-          editUrl="features/editfeature"
+          editUrl="features/editfeature/:editFeature"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Features"

@@ -317,9 +317,10 @@ const Routes = props => {
     },
 
     /*  features */
+
     {
-      path: "/features/editfeature/:featureId",
-      main: () => <EditFeature {...props} authCheckAgent={props.authCheckAgent} />,
+      path: "/features/editfeature/:editFeature/:featureId",
+      main: () => <FeatureView {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {
