@@ -191,13 +191,13 @@ const AddGlycan = (props) => {
           <Form.Label
             column
             xs={12}
-            sm={6}
+            md={12}
             lg={3}
-            className="text-xs-left text-sm-right text-md-right"
+            className="required-asterik text-xs-left text-md-left text-lg-right"
           >
             <strong>Internal ID</strong>
           </Form.Label>
-          <Col xs={12} sm={6} lg={8}>
+          <Col xs={12} md={12} lg={9} xl={8}>
             <Form.Control
               type="text"
               name="internalId"
@@ -214,17 +214,17 @@ const AddGlycan = (props) => {
           <Form.Label
             column
             xs={12}
-            sm={6}
+            md={12}
             lg={3}
             className={
               userSelection.selectedGlycan === "Unknown"
-                ? "required-asterik text-xs-left text-sm-right text-md-right"
-                : "text-xs-left text-sm-right text-md-right"
+                ? "required-asterik text-xs-left text-md-left text-lg-right"
+                : "text-xs-left text-md-left text-lg-right"
             }
           >
             <strong>Name</strong>
           </Form.Label>
-          <Col xs={12} sm={6} lg={8}>
+          <Col xs={12} md={12} lg={9} xl={8}>
             <Form.Control
               type="text"
               name="name"
@@ -244,13 +244,13 @@ const AddGlycan = (props) => {
           <Form.Label
             column
             xs={12}
-            sm={6}
+            md={12}
             lg={3}
-            className="text-xs-left text-sm-right text-md-right"
+            className="required-asterik text-xs-left text-md-left text-lg-right"
           >
             <strong>Comment</strong>
           </Form.Label>
-          <Col xs={12} sm={6} lg={8}>
+          <Col xs={12} md={12} lg={9} xl={8}>
             <Form.Control
               as="textarea"
               rows={4}
@@ -337,7 +337,9 @@ const AddGlycan = (props) => {
                   />
                   <FormControlLabel value="CompositionBased" control={<Radio />} label="Male" />
                 </RadioGroup> */}
-                <FormCheck className="line-break-1 gg-align-center">
+
+                {/* SEQUENCE_DEFINED */}
+                <FormCheck className="line-break-1">
                   <FormCheck.Label>
                     <FormCheck.Input
                       type="radio"
@@ -349,6 +351,7 @@ const AddGlycan = (props) => {
                   </FormCheck.Label>
                 </FormCheck>
 
+                {/* COMPOSITION_BASED */}
                 <FormCheck className="line-break-1">
                   <FormCheck.Label className="disableradio">
                     <FormCheck.Input type="radio" value="CompositionBased" disabled />
@@ -356,6 +359,7 @@ const AddGlycan = (props) => {
                   </FormCheck.Label>
                 </FormCheck>
 
+                {/* MASS_ONLY */}
                 <FormCheck className="line-break-1">
                   <FormCheck.Label>
                     <FormCheck.Input
@@ -368,6 +372,7 @@ const AddGlycan = (props) => {
                   </FormCheck.Label>
                 </FormCheck>
 
+                {/* CLASSIFICATION_BASED */}
                 <FormCheck className="line-break-1">
                   <FormCheck.Label className="disableradio">
                     <FormCheck.Input
@@ -380,6 +385,7 @@ const AddGlycan = (props) => {
                   </FormCheck.Label>
                 </FormCheck>
 
+                {/* FRAGMENT_ONLY */}
                 <FormCheck className="line-break-1">
                   <FormCheck.Label className="disableradio">
                     <FormCheck.Input type="radio" value="FragmentOnly" disabled />
@@ -387,6 +393,7 @@ const AddGlycan = (props) => {
                   </FormCheck.Label>
                 </FormCheck>
 
+                {/* UNKNOWN */}
                 <FormCheck className="line-break-1">
                   <FormCheck.Label>
                     <FormCheck.Input
@@ -399,6 +406,7 @@ const AddGlycan = (props) => {
                   </FormCheck.Label>
                 </FormCheck>
 
+                {/* OTHER */}
                 <FormCheck className="line-break-15">
                   <FormCheck.Label>
                     <FormCheck.Input
@@ -443,14 +451,14 @@ const AddGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="text-xs-left text-sm-right text-md-right"
+                    className="text-xs-left text-md-left text-lg-right"
                   >
                     <strong>GlyTouCan ID</strong>
                   </Form.Label>
 
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
                       name="glytoucanId"
@@ -484,13 +492,13 @@ const AddGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="required-asterik text-xs-left text-sm-right text-md-right"
+                    className="required-asterik text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Monoisotopic Mass</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="number"
                       name="mass"
@@ -519,13 +527,13 @@ const AddGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="text-xs-left text-sm-right text-md-right"
+                    className="text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Internal ID</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
                       name="internalId"
@@ -542,18 +550,18 @@ const AddGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
                     className={
                       userSelection.selectedGlycan === "Unknown" ||
                       userSelection.selectedGlycan === "Other"
-                        ? "required-asterik text-xs-left text-sm-right text-md-right"
-                        : "text-xs-left text-sm-right text-md-right"
+                        ? "required-asterik text-xs-left text-md-left text-lg-right"
+                        : "text-xs-left text-md-left text-lg-right"
                     }
                   >
                     <strong>Name</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
                       name="name"
@@ -587,13 +595,13 @@ const AddGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="required-asterik text-xs-left text-sm-right text-md-right"
+                    className="required-asterik text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Sequence Type</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as="select"
                       name="sequenceType"
@@ -625,13 +633,13 @@ const AddGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="required-asterik text-xs-left text-sm-right text-md-right"
+                    className="required-asterik text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Sequence</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as="textarea"
                       rows="5"
@@ -681,13 +689,13 @@ const AddGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="text-xs-left text-sm-right text-md-right"
+                    className="text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Comment</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as="textarea"
                       rows={5}
@@ -750,13 +758,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>Glycan Type</strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control
                     type="text"
                     name="glycanType"
@@ -775,13 +783,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>{displayNames.glycan.GLYTOUCAN_ID} </strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control
                     type="text"
                     name="glytoucanId"
@@ -800,13 +808,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>Monoisotopic Mass</strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control type="text" name="mass" value={userSelection.mass} disabled />
                 </Col>
               </Form.Group>
@@ -816,13 +824,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>{displayNames.glycan.INTERNAL_ID}</strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control
                     type="text"
                     name="internalId"
@@ -837,13 +845,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>Name</strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control type="text" name="name" value={userSelection.name} disabled />
                 </Col>
               </Form.Group>
@@ -857,13 +865,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>Sequence Type</strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control name="sequenceType" value={userSelection.sequenceType} disabled />
                 </Col>
               </Form.Group>
@@ -882,13 +890,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>{displayNames.glycan.SEQUENCE}</strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control
                     as="textarea"
                     rows={5}
@@ -904,13 +912,13 @@ const AddGlycan = (props) => {
                 <Form.Label
                   column
                   xs={12}
-                  sm={6}
+                  md={12}
                   lg={3}
-                  className="text-xs-left text-sm-right text-md-right"
+                  className="text-xs-left text-md-left text-lg-right"
                 >
                   <strong>Comment</strong>
                 </Form.Label>
-                <Col xs={12} sm={6} lg={8}>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control
                     as="textarea"
                     rows={5}

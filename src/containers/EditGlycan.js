@@ -128,13 +128,13 @@ const EditGlycan = (props) => {
                     <Form.Label
                       column
                       xs={12}
-                      sm={6}
+                      sm={5}
                       lg={3}
-                      className="text-xs-left text-sm-right text-md-right"
+                      className="text-xs-left text-md-left text-lg-right"
                     >
                       <strong>Glycan Type</strong>
                     </Form.Label>
-                    <Col xs={12} sm={6} lg={8}>
+                    <Col xs={12} sm={7} lg={9} xl={8}>
                       <Form.Control
                         type="text"
                         plaintext
@@ -155,13 +155,13 @@ const EditGlycan = (props) => {
                     <Form.Label
                       column
                       xs={12}
-                      sm={6}
+                      sm={5}
                       lg={3}
-                      className="text-xs-left text-sm-right text-md-right"
+                      className="text-xs-left text-md-left text-lg-right"
                     >
                       <strong>GlyTouCan ID</strong>
                     </Form.Label>
-                    <Col xs={12} sm={6} lg={8}>
+                    <Col xs={12} sm={7} lg={9} xl={8}>
                       <Form.Control
                         type="text"
                         plaintext
@@ -178,13 +178,13 @@ const EditGlycan = (props) => {
                     <Form.Label
                       column
                       xs={12}
-                      sm={6}
+                      sm={5}
                       lg={3}
-                      className="text-xs-left text-sm-right text-md-right"
+                      className="text-xs-left text-md-left text-lg-right"
                     >
                       <strong>Monoisotopic Mass</strong>
                     </Form.Label>
-                    <Col xs={12} sm={6} lg={8}>
+                    <Col xs={12} sm={7} lg={9} xl={8}>
                       <Form.Control
                         type="text"
                         plaintext
@@ -200,13 +200,13 @@ const EditGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="text-xs-left text-sm-right text-md-right"
+                    className="text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Internal ID</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
                       placeholder="internal Id"
@@ -223,15 +223,15 @@ const EditGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="text-xs-left text-sm-right text-md-right"
+                    className="text-xs-left text-md-left text-lg-right"
                   >
                     <strong className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""}>
                       Name
                     </strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
                       placeholder="name"
@@ -250,13 +250,13 @@ const EditGlycan = (props) => {
                   <Form.Label
                     column
                     xs={12}
-                    sm={6}
+                    md={12}
                     lg={3}
-                    className="text-xs-left text-sm-right text-md-right"
+                    className="text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Comment</strong>
                   </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as="textarea"
                       rows={5}
