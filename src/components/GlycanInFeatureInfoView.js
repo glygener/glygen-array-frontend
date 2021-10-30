@@ -61,7 +61,7 @@ const GlycanInFeatureInfoView = props => {
 
       setGlycanDetails({ glycan: glycanInfo });
     }
-  }, [props]);
+  }, []);
 
   function getSource(sourceInfo) {
     let source = {};

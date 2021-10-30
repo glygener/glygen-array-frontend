@@ -27,7 +27,7 @@ const FeatureView = props => {
     if (featureId) {
       wsCall("getfeature", "GET", [featureId], true, null, getFeatureSuccess, getFeatureFailure);
     }
-  }, [featureId, props]);
+  }, [featureId]);
 
   function getFeatureSuccess(response) {
     response.json().then(parsedJson => {
@@ -243,23 +243,25 @@ const FeatureView = props => {
   const getLinker = () => {
     if (props.linker) {
       if ((props.type !== "LINKED_GLYCAN" && props.linkerSeletion !== "No") || props.type === "LINKED_GLYCAN") {
-        return <> {displayDetails(props.linker, "case4", "Linker") && linkerDetails(props.linker)}</>;
+        return <> {displayDetails(props.linker, "case4", "Linker") && linkerDetails(props.linker, "case4")}</>;
       }
     } else if (featureDetails.linker) {
-      return <> {displayDetails(featureDetails.linker, "view", "Linker") && linkerDetails(featureDetails.linker)}</>;
+      return (
+        <> {displayDetails(featureDetails.linker, "view", "Linker") && linkerDetails(featureDetails.linker, "view")}</>
+      );
     }
   };
 
-  const linkerDetails = linker => {
+  const linkerDetails = (linker, page) => {
     return (
       <>
         {linker.imageURL ? (
-          <Form.Group as={Row} controlId="name">
+          <Form.Group as={Row} controlId="image">
             <Col md={{ span: 3, offset: 2 }}>
               <FormLabel label={""} />
             </Col>
             <Col md={4}>
-              <StructureImage imgUrl={linker.imageURL}></StructureImage>
+              <StructureImage imgUrl={linker.imageURL} />
             </Col>
           </Form.Group>
         ) : (
@@ -270,7 +272,8 @@ const FeatureView = props => {
                 <Form.Control
                   rows={3}
                   as="textarea"
-                  plaintext
+                  disabled={page === "case4"}
+                  plaintext={page === "view"}
                   value={linker.comment ? linker.comment : linker.description ? linker.description : ""}
                 />
               </Col>
@@ -306,11 +309,12 @@ const FeatureView = props => {
   };
 
   const case4Metadata = () => {
+    debugger;
     return (
       <>
         {props.metadata.purity.purityNotSpecified === "specify" ? (
           <>
-            <FormLabel label="Purity" className={"metadata-descriptor-title "} />
+            <FormLabel label="Purity" className={"metadata-descriptor-title"} />
             <Form.Group as={Row} controlId="value">
               <FormLabel label="Value" />
               <Col md={4}>
@@ -341,7 +345,7 @@ const FeatureView = props => {
           </>
         ) : (
           <Form.Group as={Row} controlId="value">
-            <FormLabel label="Purity" className={"metadata-descriptor-title "} />
+            <FormLabel label="Purity" />
             <Col md={4}>
               <Form.Control type="text" disabled value={"Not Recorded"} />
             </Col>
@@ -350,7 +354,7 @@ const FeatureView = props => {
 
         {props.metadata.source === "notSpecified" && (
           <Form.Group as={Row} controlId="value">
-            <FormLabel label="Source" className={"metadata-descriptor-title "} />
+            <FormLabel label="Source" />
             <Col md={4}>
               <Form.Control type="text" disabled value={"Not Recorded"} />
             </Col>
