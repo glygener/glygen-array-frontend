@@ -746,9 +746,9 @@ const AddFeature = props => {
 
     function addFeatureError(response) {
       response.json().then(responseJson => {
-        setPageErrorsJson(responseJson);
-        setErrorMessage("");
         setShowErrorSummary(true);
+        setErrorMessage("");
+        setPageErrorsJson(responseJson);
         setShowLoading(false);
       });
     }
@@ -1719,20 +1719,18 @@ const AddFeature = props => {
     let selectedRow;
     let selectedRowIndex;
 
-    if (featureAddState.type === "GLYCO_LIPID") {
+    if (featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN") {
       selectedGlycans = [...featureAddState.glycans];
-
       selectedRow = selectedGlycans.find(e => e.id === deleteRow.id);
     } else if (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") {
       selectedGlycans = [...featureAddState.rangeGlycans];
-
       selectedRow = selectedGlycans.find(e => e.index === deleteRow.index);
     }
 
     selectedRowIndex = selectedGlycans.indexOf(selectedRow);
     selectedGlycans.splice(selectedRowIndex, 1);
 
-    if (featureAddState.type === "GLYCO_LIPID") {
+    if (featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN") {
       setFeatureAddState({ glycans: selectedGlycans });
     } else if (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") {
       setFeatureAddState({ rangeGlycans: selectedGlycans });
@@ -1849,6 +1847,7 @@ const AddFeature = props => {
   const getCase4 = () => {
     return (
       <FeatureView
+        getSelectedLinkerInformation={getSelectedLinkerInformation}
         linker={featureAddState.linker}
         peptide={featureAddState.peptide}
         protein={featureAddState.protein}

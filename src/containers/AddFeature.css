@@ -28,3 +28,7 @@
   font-weight: bold;
   padding-bottom: 30px !important;
 }
+
+.toggleContainer {
+  height: 100px !important;
+}
