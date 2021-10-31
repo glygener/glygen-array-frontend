@@ -987,7 +987,7 @@ const AddFeature = props => {
               <FormLabel label={""} />
             </Col>
             <Col md={4}>
-              <StructureImage base64={currentGlycanSelection.cartoon}></StructureImage>
+              <StructureImage base64={currentGlycanSelection.cartoon} />
             </Col>
           </Form.Group>
         </Form>

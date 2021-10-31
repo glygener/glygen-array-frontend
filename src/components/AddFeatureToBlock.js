@@ -84,7 +84,7 @@ const AddFeatureToBlock = props => {
       } else {
         setShowErrorSummary(false);
       }
-    } else if (activeStep === 1 && featuresSelected.featureSelected && featuresSelected.featureSelected.length === 1) {
+    } else if (activeStep === 0 && featuresSelected.featureSelected.length === 1) {
       stepIncrement += 1;
     }
 
@@ -118,10 +118,16 @@ const AddFeatureToBlock = props => {
   };
 
   const handleBack = () => {
+    let stepDecrement = 1;
     setPageErrorMessage();
     setShowErrorSummary(false);
     activeStep === 0 && setAddFeatures(false);
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+
+    if (activeStep === 2 && featuresSelected.featureSelected.length === 1) {
+      stepDecrement += 1;
+    }
+
+    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
   };
 
   const handleChange = e => {
@@ -319,6 +325,7 @@ const AddFeatureToBlock = props => {
   };
 
   const getMetadata = () => {
+    debugger;
     return (
       <MetaData
         metaID={metadataId}
