@@ -40,24 +40,16 @@ const Linkers = props => {
         <GlygenTable
           columns={[
             {
-              Header: displayNames.linker.PUBCHEM_ID,
-              accessor: "pubChemId",
-              // eslint-disable-next-line react/prop-types
-              Cell: row =>
-                row.value && !props.isImported ? (
-                  <a href={row.original.pubChemUrl} target="_blank" rel="noopener noreferrer">
-                    {getToolTip(row.value)}
-                  </a>
-                ) : (
-                  getToolTip(row.value)
-                ),
-              minWidth: 70
-            },
-            {
               Header: "Name",
               accessor: "name",
               Cell: row => getToolTip(row.original.name),
               minWidth: 50
+            },
+            {
+              Header: displayNames.linker.PUBCHEM_ID,
+              accessor: "pubChemId",
+              Cell: row => getToolTip(row.original.pubChemId),
+              minWidth: 70
             },
             {
               Header: displayNames.linker.STRUCTURE,
@@ -65,13 +57,6 @@ const Linkers = props => {
               // eslint-disable-next-line react/prop-types
               Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
               minWidth: 150
-            },
-            {
-              Header: "Mass",
-              accessor: "mass",
-              // eslint-disable-next-line react/prop-types
-              Cell: row => (row.value ? parseFloat(row.value).toFixed(4) : ""),
-              minWidth: 70
             }
           ]}
           defaultPageSize={10}

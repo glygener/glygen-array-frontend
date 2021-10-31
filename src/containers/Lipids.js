@@ -42,12 +42,14 @@ const Lipids = props => {
             {
               Header: "Name",
               accessor: "name",
-              Cell: row => getToolTip(row.original.name)
+              Cell: row => getToolTip(row.original.name),
+              minWidth: 50
             },
             {
               Header: "PubChem ID",
               accessor: "pubChemId",
-              Cell: row => getToolTip(row.original.pubChemId)
+              Cell: row => getToolTip(row.original.pubChemId),
+              minWidth: 70
             },
             {
               Header: displayNames.linker.STRUCTURE,
@@ -56,12 +58,6 @@ const Lipids = props => {
               // eslint-disable-next-line react/prop-types
               Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
               minWidth: 150
-            },
-            {
-              Header: "Mass",
-              accessor: "mass",
-              // eslint-disable-next-line react/prop-types
-              Cell: row => (row.value ? parseFloat(row.value).toFixed(4) : "")
             }
           ]}
           defaultPageSize={10}
