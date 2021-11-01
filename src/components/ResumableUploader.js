@@ -4,14 +4,14 @@ import Paper from "@material-ui/core/Paper";
 import { ReactResumableJs } from "./ReactResumableJS";
 import { Button, Form } from "react-bootstrap";
 
-const ResumableUploader = props => {
+const ResumableUploader = (props) => {
   const [maxFiles, setMaxFiles] = useState();
 
   const fileState = {
     files: [],
     message: "",
     fileId: "",
-    description: ""
+    description: "",
   };
 
   const [fileStateReducer, setFileStateReducer] = useReducer(
@@ -31,7 +31,7 @@ const ResumableUploader = props => {
     setFileStateReducer({
       files: files,
       message: obj.statusCode,
-      fileId: obj.assignedFileName
+      fileId: obj.assignedFileName,
     });
 
     props.setUploadedFile && props.setUploadedFile(obj.file);
@@ -41,7 +41,7 @@ const ResumableUploader = props => {
     setFileStateReducer({ files: [], message: 400, fileId: "" });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     props.onProcessFile(fileStateReducer.fileId);
   };
@@ -63,7 +63,7 @@ const ResumableUploader = props => {
             testChunks={true}
             testMethod="GET"
             headerObject={props.headerObject}
-            textLabel="Choose upload file"
+            // textLabel="Choose upload file"
             startButton={true}
             cancelButton={true}
             pauseButton={true}
@@ -72,10 +72,10 @@ const ResumableUploader = props => {
             onFileSuccess={(file, message) => {
               setFiles(file, message);
             }}
-            onFileRemoved={file => {
+            onFileRemoved={(file) => {
               // fetch()
               setFileStateReducer({
-                message: ""
+                message: "",
               });
               return file;
             }}
@@ -86,11 +86,15 @@ const ResumableUploader = props => {
 
         {props.enableSubmit && (
           <>
-            <Button type="submit" disabled={!fileStateReducer.message || fileStateReducer.message !== 200}>
-              Submit
-            </Button>
-            <Button style={{ marginLeft: "20px" }} onClick={handleClose}>
+            <Button className="gg-btn-blue mt-2 gg-mr-20" onClick={handleClose}>
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={!fileStateReducer.message || fileStateReducer.message !== 200}
+              className="gg-btn-blue mt-2 gg-ml-20"
+            >
+              Submit
             </Button>
           </>
         )}
@@ -99,7 +103,7 @@ const ResumableUploader = props => {
   };
 
   return props.enableSubmit ? (
-    <Paper style={{ padding: "15px", marginTop: "10px" }}>{getUploadForm()}</Paper>
+    <Paper style5={{ padding: "15px", marginTop: "10px" }}>{getUploadForm()}</Paper>
   ) : (
     getUploadForm()
   );
@@ -114,7 +118,7 @@ ResumableUploader.propTypes = {
   onProcessFile: PropTypes.func,
   setUploadedFile: PropTypes.func,
   enableSubmit: PropTypes.bool,
-  filetypes: PropTypes.array
+  filetypes: PropTypes.array,
 };
 
 export { ResumableUploader };

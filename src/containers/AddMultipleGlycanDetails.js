@@ -6,11 +6,13 @@ import { StructureImage } from "../components/StructureImage";
 import { PageHeading } from "../components/FormControls";
 import Container from "@material-ui/core/Container";
 import { Card, Button } from "react-bootstrap";
+import { addCommas } from "../utils/commonUtils";
 
-const AddMultipleGlycanDetails = props => {
+const AddMultipleGlycanDetails = (props) => {
   const history = useHistory();
 
-  let uploadResponse = history.location && history.location.state && history.location.state.uploadResponse;
+  let uploadResponse =
+    history.location && history.location.state && history.location.state.uploadResponse;
   let addedGlycans = uploadResponse.addedGlycans;
   let wrongSequences = uploadResponse.wrongSequences;
   let duplicateSequences = uploadResponse.duplicateSequences;
@@ -18,50 +20,53 @@ const AddMultipleGlycanDetails = props => {
   const getTableForGlycans = (data, columns, sectionTitle) => {
     return (
       <>
-        <h4>{sectionTitle}</h4>
-        <br />
-        <ReactTable
-          data={data}
-          columns={
-            columns
-              ? columns
-              : [
-                  {
-                    Header: "Internal Id",
-                    accessor: "internalId"
-                  },
-                  {
-                    Header: "GlyTouCan ID",
-                    accessor: "glytoucanId"
-                  },
-                  {
-                    Header: "Name",
-                    accessor: "name"
-                  },
-                  {
-                    Header: "Structure Image",
-                    accessor: "cartoon",
-                    sortable: false,
-                    // eslint-disable-next-line react/prop-types
-                    Cell: row => row.value && <StructureImage base64={row.value} />,
-                    minWidth: 300
-                  },
-                  {
-                    Header: "Mass",
-                    accessor: "mass",
-                    // eslint-disable-next-line react/prop-types
-                    Cell: row => (row.value ? parseFloat(row.value).toFixed(4) : "")
-                  }
-                ]
-          }
-          pageSizeOptions={[5, 10, 25]}
-          defaultPageSize={5}
-          pageSize={5}
-          // loading={loading}
-          keyColumn="id"
-          showPaginationTop
-          sortable={true}
-        />
+        <h3 className="text-center content-box-sm">{sectionTitle}</h3>
+        <div className="mb-4">
+          <ReactTable
+            data={data}
+            columns={
+              columns
+                ? columns
+                : [
+                    {
+                      Header: "Internal ID",
+                      accessor: "internalId",
+                    },
+                    {
+                      Header: "GlyTouCan ID",
+                      accessor: "glytoucanId",
+                    },
+                    {
+                      Header: "Glycan Name",
+                      accessor: "name",
+                    },
+                    {
+                      Header: "Structure Image",
+                      accessor: "cartoon",
+                      sortable: false,
+                      // eslint-disable-next-line react/prop-types
+                      Cell: (row) => row.value && <StructureImage base64={row.value} />,
+                      minWidth: 200,
+                    },
+                    {
+                      Header: "Monoisotopic Mass (Da)",
+                      accessor: "mass",
+                      headerStyle: { whiteSpace: "pre-wrap" },
+
+                      // eslint-disable-next-line react/prop-types
+                      Cell: (row) => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : ""),
+                    },
+                  ]
+            }
+            pageSizeOptions={[5, 10, 25]}
+            defaultPageSize={5}
+            pageSize={5}
+            //loading={loading}
+            keyColumn="id"
+            showPaginationTop
+            sortable={true}
+          />
+        </div>
       </>
     );
   };
@@ -70,14 +75,22 @@ const AddMultipleGlycanDetails = props => {
     return (
       <>
         {addedGlycans && (
-          <div style={{ marginTop: "5%" }}>
-            {getTableForGlycans(addedGlycans ? addedGlycans : [], "", "Glycans successful uploaded")}
+          <div>
+            {getTableForGlycans(
+              addedGlycans ? addedGlycans : [],
+              "",
+              "Glycans Were Unable To Be Uploaded"
+            )}
           </div>
         )}
 
         {duplicateSequences && (
-          <div style={{ marginTop: "5%", marginBottom: "5%" }}>
-            {getTableForGlycans(duplicateSequences ? duplicateSequences : [], "", "Glycans already exist")}
+          <div>
+            {getTableForGlycans(
+              duplicateSequences ? duplicateSequences : [],
+              "",
+              "Glycans Are Already Exist In The Library"
+            )}
           </div>
         )}
 
@@ -86,12 +99,12 @@ const AddMultipleGlycanDetails = props => {
             wrongSequences ? wrongSequences : [],
             [
               {
-                Header: "Id",
+                Header: "ID",
                 accessor: "id",
                 minWidth: 80,
-                Cell: row => {
+                Cell: (row) => {
                   return row.original.glycan && row.original.glycan.id;
-                }
+                },
               },
               {
                 Header: "Sequence",
@@ -100,30 +113,30 @@ const AddMultipleGlycanDetails = props => {
                 getProps: (state, rowInfo, column) => {
                   return {
                     style: {
-                      whiteSpace: "initial"
-                    }
+                      whiteSpace: "initial",
+                    },
                   };
                 },
-                Cell: row => {
+                Cell: (row) => {
                   return row.original.glycan && row.original.glycan.sequence;
-                }
+                },
               },
               {
                 Header: "Error message",
                 accessor: "errorMessage",
                 minWidth: 80,
-                Cell: row => {
+                Cell: (row) => {
                   return (
                     row.original.error &&
                     row.original.error.errors &&
-                    row.original.error.errors.map(err => {
+                    row.original.error.errors.map((err) => {
                       return <div style={{ textAlign: "center" }}>{err.defaultMessage}</div>;
                     })
                   );
-                }
-              }
+                },
+              },
             ],
-            "Glycan could not be uploaded"
+            "Glycans Were Unable To Be Uploaded"
           )}
       </>
     );
@@ -132,27 +145,35 @@ const AddMultipleGlycanDetails = props => {
   const getSummary = () => {
     let summaryLinks = [
       {
-        tableLink: `${(addedGlycans && addedGlycans.length) || 0} glycans successful uploaded`,
-        scrollto: 100
+        tableLink: (addedGlycans && addedGlycans.length) || 0,
+        descriptioin: "glycans have been successfully uploaded.",
+        scrollto: 100,
       },
       {
-        tableLink: `${(duplicateSequences && duplicateSequences.length) || 0} glycans already exist in library`,
-        scrollto: 550
+        tableLink: (duplicateSequences && duplicateSequences.length) || 0,
+        descriptioin: "glycans are already exist in the library.",
+        scrollto: 550,
       },
       {
-        tableLink: `${(wrongSequences && wrongSequences.length) || 0} glycans could not be uploaded`,
-        scrollto: 2500
-      }
+        tableLink: `${(wrongSequences && wrongSequences.length) || 0} `,
+        descriptioin: "glycans were unable to be uploaded.",
+        scrollto: 2500,
+      },
     ];
 
     return (
       <>
+        <h4>Summary Of Glycan Tables</h4>
+
         <ul>
           {summaryLinks.map((linkGlycans, index) => {
             return (
-              <div className={"summar-links"} key={index}>
-                <li style={{ textAlign: "left" }} onClick={() => window.scrollTo(0, linkGlycans.scrollto)}>
-                  {linkGlycans.tableLink}
+              <div className="summar-links" key={index}>
+                <li onClick={() => window.scrollTo(0, linkGlycans.scrollto)}>
+                  <span style={{ fontSize: "20px" }}>
+                    <strong>{linkGlycans.tableLink}</strong>
+                  </span>{" "}
+                  {linkGlycans.descriptioin}
                 </li>
               </div>
             );
@@ -164,17 +185,21 @@ const AddMultipleGlycanDetails = props => {
 
   return (
     <>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title={"Glycan File Upload Details"} />
+          <div className="text-center mb-4">
+            <Link to="/glycans">
+              <Button className="gg-btn-blue mt-2 gg-mr-20"> Back to Glycans</Button>
+            </Link>
+          </div>
           <Card>
             <Card.Body>
               {(duplicateSequences || addedGlycans || wrongSequences) && getSummary()}
               {details()}
             </Card.Body>
           </Card>
-          <div className="text-center mb-4">
-            &nbsp;&nbsp;
+          <div className="text-center mt-4 mb-4">
             <Link to="/glycans">
               <Button className="gg-btn-blue mt-2 gg-mr-20"> Back to Glycans</Button>
             </Link>

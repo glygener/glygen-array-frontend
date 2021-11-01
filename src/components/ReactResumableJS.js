@@ -5,6 +5,7 @@ import Resumablejs from "resumablejs";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import "./ReactResumable.css";
+import Button from "react-bootstrap/Button";
 
 export class ReactResumableJs extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ export class ReactResumableJs extends React.Component {
       messageStatus: "",
       fileList: { files: [] },
       isPaused: false,
-      isUploading: false
+      isUploading: false,
     };
 
     this.resumable = null;
@@ -46,7 +47,7 @@ export class ReactResumableJs extends React.Component {
       simultaneousUploads: this.props.simultaneousUploads,
       fileParameterName: this.props.fileParameterName,
       generateUniqueIdentifier: this.props.generateUniqueIdentifier,
-      forceChunkSize: this.props.forceChunkSize
+      forceChunkSize: this.props.forceChunkSize,
     });
 
     if (typeof this.props.maxFilesErrorCallback === "function") {
@@ -60,9 +61,9 @@ export class ReactResumableJs extends React.Component {
       ResumableField.assignDrop(this.dropZone);
     }
 
-    ResumableField.on("fileAdded", file => {
+    ResumableField.on("fileAdded", (file) => {
       this.setState({
-        messageStatus: this.props.fileAddedMessage || " Starting upload! "
+        messageStatus: this.props.fileAddedMessage || " Starting upload! ",
       });
 
       if (typeof this.props.onFileAdded === "function") {
@@ -86,7 +87,7 @@ export class ReactResumableJs extends React.Component {
       this.setState(
         {
           fileList: { files: currentFiles },
-          messageStatus: this.props.completedMessage + file.fileName || fileServer
+          messageStatus: this.props.completedMessage + file.fileName || fileServer,
         },
         () => {
           if (typeof this.props.onFileSuccess === "function") {
@@ -98,18 +99,18 @@ export class ReactResumableJs extends React.Component {
 
     ResumableField.on("progress", () => {
       this.setState({
-        isUploading: ResumableField.isUploading()
+        isUploading: ResumableField.isUploading(),
       });
 
       if (ResumableField.progress() * 100 < 100) {
         this.setState({
           messageStatus: parseInt(ResumableField.progress() * 100, 10) + "%",
-          progressBar: ResumableField.progress() * 100
+          progressBar: ResumableField.progress() * 100,
         });
       } else {
         setTimeout(() => {
           this.setState({
-            progressBar: 0
+            progressBar: 0,
           });
         }, 1000);
       }
@@ -130,7 +131,7 @@ export class ReactResumableJs extends React.Component {
     currentFileList = currentFileList.splice(0, index);
 
     this.setState({
-      fileList: { files: currentFileList }
+      fileList: { files: currentFileList },
     });
 
     this.props.onFileRemoved(file);
@@ -152,9 +153,13 @@ export class ReactResumableJs extends React.Component {
         return (
           <li className="thumbnail" key={uniqID}>
             <label id={"media_" + uniqID}>{media}</label>
-            <a onClick={event => this.removeFile(event, file, index)} href="#">
-              [Remove]
-            </a>
+            <Button
+              className={"lnk-btn ml-2"}
+              variant="link"
+              onClick={(event) => this.removeFile(event, file, index)}
+            >
+              Remove
+            </Button>
           </li>
         );
       } else if (file.file.type.indexOf("image") > -1)
@@ -166,40 +171,49 @@ export class ReactResumableJs extends React.Component {
           return (
             <li className="thumbnail" key={uniqID}>
               <label id={"media_" + uniqID}>{media}</label>
-              <a
-                onClick={event => {
+              <Button
+                className={"lnk-btn ml-2"}
+                variant="link"
+                onClick={(event) => {
                   this.removeFile(event, file, index);
                 }}
-                href="#"
               >
-                [Remove]
-              </a>
+                Remove
+              </Button>
             </li>
           );
         } else {
           let fileReader = new FileReader();
           fileReader.readAsDataURL(originFile);
-          fileReader.onload = event => {
+          fileReader.onload = (event) => {
             media = '<img class="image" width="80" src="' + event.target.result + '"/>';
             document.querySelector("#media_" + uniqID).innerHTML = media;
           };
           return (
             <li className="thumbnail" key={uniqID}>
               <label id={"media_" + uniqID} />
-              <a onClick={event => this.removeFile(event, file, index)} href="#">
-                [Remove]
-              </a>
+              <Button
+                className={"lnk-btn ml-2"}
+                variant="link"
+                onClick={(event) => this.removeFile(event, file, index)}
+              >
+                Remove
+              </Button>
             </li>
           );
         }
       else {
-        media = <label className="document">{originFile.name}</label>;
+        media = <label className="document mb-0 pb-0">{originFile.name}</label>;
         return (
-          <li className="thumbnail" key={uniqID}>
+          <li className="thumbnail mb-0 pb-0 pt-2" key={uniqID}>
             <label id={"media_" + uniqID}>{media}</label>
-            <a onClick={event => this.removeFile(event, file, index)} href="#">
-              [Remove]
-            </a>
+            <Button
+              className={"lnk-btn ml-2"}
+              variant="link"
+              onClick={(event) => this.removeFile(event, file, index)}
+            >
+              Remove
+            </Button>
           </li>
         );
       }
@@ -212,7 +226,7 @@ export class ReactResumableJs extends React.Component {
     this.resumable.cancel();
 
     this.setState({
-      fileList: { files: [] }
+      fileList: { files: [] },
     });
 
     this.props.onCancelUpload();
@@ -222,13 +236,13 @@ export class ReactResumableJs extends React.Component {
     if (!this.state.isPaused) {
       this.resumable.pause();
       this.setState({
-        isPaused: true
+        isPaused: true,
       });
       this.props.onPauseUpload();
     } else {
       this.resumable.upload();
       this.setState({
-        isPaused: false
+        isPaused: false,
       });
       this.props.onResumeUpload();
     }
@@ -237,7 +251,7 @@ export class ReactResumableJs extends React.Component {
   startUpload = () => {
     this.resumable.upload();
     this.setState({
-      isPaused: false
+      isPaused: false,
     });
     this.props.onStartUpload();
   };
@@ -275,7 +289,10 @@ export class ReactResumableJs extends React.Component {
 
     let cancelButton = null;
     if (this.props.cancelButton) {
-      if (typeof this.props.cancelButton === "string" || typeof this.props.cancelButton === "boolean")
+      if (
+        typeof this.props.cancelButton === "string" ||
+        typeof this.props.cancelButton === "boolean"
+      )
         cancelButton = (
           <label>
             <button onClick={this.cancelUpload}>{this.props.cancelButton && "Cancel"}</button>
@@ -298,24 +315,31 @@ export class ReactResumableJs extends React.Component {
     }
 
     return (
-      <div id={this.props.dropTargetID} ref={node => (this.dropZone = node)}>
+      <div id={this.props.dropTargetID} ref={(node) => (this.dropZone = node)}>
         {}
         <label
           style={{ disabled: this.props.disableInput ? true : false }}
-          className={this.props.disableInput ? "btn file-upload disabled" : "btn file-upload"}
+          className={
+            this.props.disableInput
+              ? "btn file-upload pl-0 ml-0 mb-0 pb-0 disabled"
+              : "btn file-upload pl-0 ml-0 mb-0 pb-0"
+          }
         >
           {textLabel}
           <input
-            ref={node => (this.uploader = node)}
+            ref={(node) => (this.uploader = node)}
             type="file"
             id={this.props.uploaderID}
-            className={"btn" + (this.state.fileList.files.length > 0 ? " file-input-no-file-chosen-hider" : "")}
+            className={
+              "btn ml-0 pl-0 mb-0 pb-0" +
+              (this.state.fileList.files.length > 0 ? " file-input-no-file-chosen-hider" : "")
+            }
             name={this.props.uploaderID + "-upload"}
             accept={this.props.fileAccept || "*/*"}
             disabled={this.props.disableInput || false}
           />
         </label>
-        <br />
+        {/* <br /> */}
         <div style={{ outline: this.state.progressBar === 0 ? "none" : "2px solid black" }}>
           <div
             className="progress"
@@ -345,19 +369,19 @@ ReactResumableJs.defaultProps = {
   onUploadErrorCallback: (file, errorCount) => {
     console.log("error", file, errorCount);
   },
-  onFileRemoved: function(file) {
+  onFileRemoved: function (file) {
     return file;
   },
-  onCancelUpload: function() {
+  onCancelUpload: function () {
     return true;
   },
-  onPauseUpload: function() {
+  onPauseUpload: function () {
     return true;
   },
-  onResumeUpload: function() {
+  onResumeUpload: function () {
     return true;
   },
-  onStartUpload: function() {
+  onStartUpload: function () {
     return true;
   },
   disableDragAndDrop: false,
@@ -374,5 +398,5 @@ ReactResumableJs.defaultProps = {
   pauseButton: null,
   previousText: "",
   headerObject: {},
-  forceChunkSize: true
+  forceChunkSize: true,
 };

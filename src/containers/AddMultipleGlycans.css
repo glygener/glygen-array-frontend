@@ -4,7 +4,7 @@
 } */
 
 .summar-links {
-  color: #007bff;
+  color: var(--gg-blue);
   text-decoration: none;
   background-color: transparent;
   width: fit-content;
