@@ -5,12 +5,12 @@ import "./Contribute.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Col } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { getToolTip } from "../utils/commonUtils";
+import { PageHeading } from "../components/FormControls";
 
-const Peptides = props => {
+const Peptides = (props) => {
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
@@ -25,28 +25,28 @@ const Peptides = props => {
       </Helmet>
 
       <div className={!props.isImported ? "page-container" : ""}>
-        <Title title="Peptides" />
+        <PageHeading title="Peptides" subTitle="The subheader placeholder." />
 
-        <Col className={"col-link-button"}>
+        <div className="text-center mb-4">
           {!props.isImported && (
-            <Link to="/peptides/addpeptide" className="link-button" style={{ width: "150px" }}>
-              Add Peptide
+            <Link to="/peptides/addpeptide">
+              <Button className="gg-btn-blue mt-2 gg-mr-20">Add Peptide</Button>
             </Link>
           )}
-        </Col>
+        </div>
 
         <GlygenTable
           columns={[
             {
               Header: "Name",
               accessor: "name",
-              Cell: row => getToolTip(row.original.name)
+              Cell: (row) => getToolTip(row.original.name),
             },
             {
               Header: "Sequence",
               accessor: "sequence",
-              Cell: row => getToolTip(row.original.sequence)
-            }
+              Cell: (row) => getToolTip(row.original.sequence),
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -80,7 +80,7 @@ const Peptides = props => {
 };
 
 Peptides.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
 };
 
 export { Peptides };

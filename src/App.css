@@ -105,7 +105,9 @@ hr {
 .gg-align-center {
   justify-content: center !important;
 }
-
+.gg-align-left {
+  justify-content: flex-start !important;
+}
 /* ========================================
                Bootstrap Card
   ==========================================*/
@@ -405,6 +407,7 @@ input[type]:not(:-ms-input-placeholder) + label {
   border-color: var(--gg-blue) !important;
   -webkit-transition: all 0.5s !important;
   transition: ease-in-out 0.5s !important;
+  border: 1px solid !important;
 }
 
 .gg-btn-outline-white {

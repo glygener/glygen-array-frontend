@@ -14,23 +14,23 @@
   },
 
   "peptide": {
-    "SEQUENCE": "Sequence defined peptide",
-    "UNKNOWN": "Unknown peptide"
+    "SEQUENCE": "Sequence Defined Peptide",
+    "UNKNOWN": "Unknown Peptide"
   },
 
   "protein": {
-    "SEQUENCE": "Sequence defined protein",
-    "UNKNOWN": "Unknown protein"
+    "SEQUENCE": "Sequence Defined Protein",
+    "UNKNOWN": "Unknown Protein"
   },
 
   "lipid": {
-    "SEQUENCE": "Sequence defined lipid",
-    "UNKNOWN": "Unknown lipid"
+    "SEQUENCE": "Sequence Defined Lipid",
+    "UNKNOWN": "Unknown Lipid"
   },
 
   "linker": {
-    "SEQUENCE": "Sequence defined linker",
-    "UNKNOWN": "Unknown linker",
+    "SEQUENCE": "Sequence Defined Linker",
+    "UNKNOWN": "Unknown Linker",
     "LINKER": "Linker",
     "PUBCHEM_ID": "PubChem ID",
     "STRUCTURE": "Structure Image",
@@ -48,7 +48,7 @@
     "GLYCOLIPID": "GlycoLipid",
     "GLYCOPEPTIDE": "GlycoPeptide",
     "GLYCOPROTEIN": "GlycoProtein",
-    "GPLINKEDGLYCOPEPTIDE,": "GlycoProtein linked GlycoPeptide",
+    "GPLINKEDGLYCOPEPTIDE,": "GlycoProtein Linked GlycoPeptide",
     "CONTROL": "Control",
     "NEGATIVE_CONTROL": "Negative Control",
     "COMPOUND": "Organic Compound",

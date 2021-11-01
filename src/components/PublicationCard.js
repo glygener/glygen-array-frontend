@@ -1,17 +1,19 @@
 import React from "react";
 import "../components/PublicationCard.css";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
-const PublicationCard = props => {
+const PublicationCard = (props) => {
   return (
     <>
-      <table>
-        <tbody>
-          <tr className="table-row" key={props.pubIndex + "tr"}>
-            <td key={props.pubIndex}>
+      <table hover fluid className="table-striped mr-4 mb-3">
+        <tbody className="table-body">
+          <tr className="table-row p-3" key={props.pubIndex + "tr"}>
+            <td key={props.pubIndex} className="pt-3 pb-3 pl-2">
               <div>
-                <h5 style={{ marginBottom: "3px", fontSize: "1.25rem", color: "#4a4a4a" }}>
+                <h5 style={{ marginBottom: "3px" }}>
                   <strong>{props.title}</strong>
                 </h5>
               </div>
@@ -37,13 +39,22 @@ const PublicationCard = props => {
             </td>
             {props.enableDelete && (
               <td>
-                <FontAwesomeIcon
-                  icon={["far", "trash-alt"]}
-                  size="xs"
-                  title="Delete"
-                  className="caution-color table-btn"
-                  onClick={() => props.deletePublication(props.id ? props.id : props.pubmedId, "deletePublication")}
-                />
+                <LineTooltip text="Delete Publication">
+                  <Link>
+                    <FontAwesomeIcon
+                      icon={["far", "trash-alt"]}
+                      alt="Delete publication"
+                      size="lg"
+                      className="caution-color tbl-icon-btn"
+                      onClick={() =>
+                        props.deletePublication(
+                          props.id ? props.id : props.pubmedId,
+                          "deletePublication"
+                        )
+                      }
+                    />
+                  </Link>
+                </LineTooltip>
               </td>
             )}
           </tr>
@@ -68,7 +79,7 @@ PublicationCard.propTypes = {
   doiId: PropTypes.string,
   uri: PropTypes.string,
   enableDelete: PropTypes.bool,
-  deletePublication: PropTypes.func
+  deletePublication: PropTypes.func,
 };
 
 export { PublicationCard };

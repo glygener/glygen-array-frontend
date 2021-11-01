@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Checkbox from "@material-ui/core/Checkbox";
 import { withStyles } from "@material-ui/core/styles";
+import Radio from "@material-ui/core/Radio";
 
 const FormLabel = (props) => {
   FormLabel.propTypes = {
@@ -114,6 +115,13 @@ const BlueCheckbox = withStyles({
   checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
+const BlueRadio = withStyles({
+  root: {
+    color: "#979797",
+  },
+  checked: { color: "var(--gg-blue) !important" },
+})((props) => <Radio color="default" {...props} />);
+
 export {
   FormLabel,
   Feedback,
@@ -123,4 +131,5 @@ export {
   RedirectLink,
   PageHeading,
   BlueCheckbox,
+  BlueRadio,
 };

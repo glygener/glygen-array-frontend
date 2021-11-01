@@ -1,7 +1,7 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
-import { Form, FormCheck, Row, Col } from "react-bootstrap";
-import { FormLabel, Feedback, Title } from "../components/FormControls";
+import { Form, Row, Col } from "react-bootstrap";
+import { Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -12,29 +12,45 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
-import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
+import {
+  csvToArray,
+  isValidURL,
+  externalizeUrl,
+  isValidNumber,
+  numberLengthCheck,
+} from "../utils/commonUtils";
+import { Button, Step, StepLabel, Stepper, Typography, makeStyles } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
 import { ViewSourceInfo } from "../components/ViewSourceInfo";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { Image } from "react-bootstrap";
+import plusIcon from "../images/icons/plus.svg";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import { BlueRadio } from "../components/FormControls";
+import { Link } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: "90%"
-  },
-  backButton: {
-    marginRight: theme.spacing(1)
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     width: "90%",
+//   },
+//   backButton: {
+//     marginRight: theme.spacing(1),
+//   },
+//   instructions: {
+//     marginTop: theme.spacing(1),
+//     marginBottom: theme.spacing(1),
+//   },
+// }));
 
-const AddPeptide = props => {
+const AddPeptide = (props) => {
   useEffect(props.authCheckAgent, []);
 
-  const classes = useStyles();
+  // const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
   const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
@@ -57,7 +73,7 @@ const AddPeptide = props => {
     urls: [],
     source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -66,15 +82,15 @@ const AddPeptide = props => {
   const reviewFields = {
     name: { label: "Name", type: "text", length: 100 },
     sequence: { label: "Sequence", type: "textarea" },
-    comment: { label: "Comments", type: "textarea", length: 10000 }
+    comment: { label: "Comment", type: "textarea", length: 10000 },
   };
 
-  const sourceSelection = e => {
+  const sourceSelection = (e) => {
     const newValue = e.target.value;
     setPeptide({ source: newValue });
   };
 
-  const sourceChange = e => {
+  const sourceChange = (e) => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -98,7 +114,7 @@ const AddPeptide = props => {
 
   const steps = getSteps();
 
-  const handleNext = e => {
+  const handleNext = (e) => {
     setValidate(false);
     var stepIncrement = 1;
 
@@ -139,10 +155,10 @@ const AddPeptide = props => {
       return;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+    setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -161,40 +177,53 @@ const AddPeptide = props => {
         stepDecrement += 1;
       }
     }
-    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
+    setActiveStep((prevActiveStep) => prevActiveStep - stepDecrement);
   };
 
-  const handleSelect = e => {
+  const handleSelect = (e) => {
     const newValue = e.target.value;
     setPeptide({ ...peptideInitialState, ...{ selectedPeptide: newValue } });
   };
 
   function getSteps() {
-    return ["Select the Peptide Type", "Type Specific Peptide Info", "Generic Peptide Info", "Review and Add"];
+    return [
+      "Select the Peptide Type",
+      "Type Specific Peptide Info",
+      "Generic Peptide Info",
+      "Review and Add",
+    ];
   }
 
   function addPublication() {
     let publications = peptide.publications;
-    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
+      wsCall(
+        "getpublication",
+        "GET",
+        [newPubMedId],
+        true,
+        null,
+        addPublicationSuccess,
+        addPublicationError
+      );
     } else {
       setNewPubMedId("");
     }
 
     function addPublicationSuccess(response) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         setShowErrorSummary(false);
         setPeptide({
-          publications: peptide.publications.concat([responseJson])
+          publications: peptide.publications.concat([responseJson]),
         });
         setNewPubMedId("");
       });
     }
 
     function addPublicationError(response) {
-      response.text().then(resp => {
+      response.text().then((resp) => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -207,7 +236,7 @@ const AddPeptide = props => {
 
   function deletePublication(id, wscall) {
     const publications = peptide.publications;
-    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     setPeptide({ publications: publications });
@@ -216,7 +245,7 @@ const AddPeptide = props => {
   function addURL() {
     var listUrls = peptide.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find(i => i === urlEntered);
+    const urlExists = listUrls.find((i) => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -232,41 +261,45 @@ const AddPeptide = props => {
     setNewURL("");
   }
 
-  const urlWidget = enableDelete => {
+  const urlWidget = (enableDelete) => {
     return (
       <>
         {peptide.urls && peptide.urls.length > 0
           ? peptide.urls.map((url, index) => {
               return (
-                <Row style={{ marginTop: "8px" }} key={index}>
+                <Row key={index}>
                   <Col
                     md={10}
                     style={{
-                      wordBreak: "break-all"
+                      wordBreak: "break-all",
                     }}
+                    className="pb-2"
                   >
-                    <Link
-                      style={{ fontSize: "0.9em" }}
+                    <a
                       href={externalizeUrl(url)}
                       target="_blank"
                       rel="external noopener noreferrer"
                     >
                       {url}
-                    </Link>
+                    </a>
                   </Col>
                   {enableDelete && (
-                    <Col style={{ marginTop: "2px", textAlign: "center" }} md={2}>
-                      <FontAwesomeIcon
-                        icon={["far", "trash-alt"]}
-                        size="xs"
-                        title="Delete Url"
-                        className="caution-color table-btn"
-                        onClick={() => {
-                          const listUrls = peptide.urls;
-                          listUrls.splice(index, 1);
-                          setPeptide({ urls: listUrls });
-                        }}
-                      />
+                    <Col className="pb-2 text-center" md={2}>
+                      <LineTooltip text="Delete URL">
+                        <Link>
+                          <FontAwesomeIcon
+                            icon={["far", "trash-alt"]}
+                            alt="Delete url"
+                            size="lg"
+                            className="caution-color tbl-icon-btn"
+                            onClick={() => {
+                              const listUrls = peptide.urls;
+                              listUrls.splice(index, 1);
+                              setPeptide({ urls: listUrls });
+                            }}
+                          />
+                        </Link>
+                      </LineTooltip>
                     </Col>
                   )}
                 </Row>
@@ -281,30 +314,29 @@ const AddPeptide = props => {
     switch (stepIndex) {
       case 0:
         return (
-          <Form className="radioform">
-            <FormCheck className="line-break-1">
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="SequenceDefined"
+          <Form>
+            <Row className="gg-align-center">
+              <Col sm="auto">
+                <RadioGroup
+                  name="peptide-type"
                   onChange={handleSelect}
-                  checked={peptide.selectedPeptide === "SequenceDefined"}
-                />
-                {displayNames.peptide.SEQUENCE}
-              </FormCheck.Label>
-            </FormCheck>
-
-            <FormCheck>
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="Unknown"
-                  onChange={handleSelect}
-                  checked={peptide.selectedPeptide === "Unknown"}
-                />
-                {displayNames.peptide.UNKNOWN}
-              </FormCheck.Label>
-            </FormCheck>
+                  value={peptide.selectedPeptide}
+                >
+                  {/* SEQUENCE_DEFINED */}
+                  <FormControlLabel
+                    value="SequenceDefined"
+                    control={<BlueRadio />}
+                    label={displayNames.peptide.SEQUENCE}
+                  />
+                  {/* UNKNOWN */}
+                  <FormControlLabel
+                    value="Unknown"
+                    control={<BlueRadio />}
+                    label={displayNames.peptide.UNKNOWN}
+                  />
+                </RadioGroup>
+              </Col>
+            </Row>
           </Form>
         );
       case 1:
@@ -312,27 +344,43 @@ const AddPeptide = props => {
           return (
             <>
               <Form.Group as={Row} controlId="sequence">
-                <FormLabel label="Sequence" className="required-asterik" />
-                <Col md={6}>
+                <Form.Label
+                  column
+                  xs={12}
+                  md={12}
+                  lg={3}
+                  xl={2}
+                  className="required-asterik text-xs-left text-md-left text-lg-right"
+                >
+                  <strong>Sequence</strong>
+                </Form.Label>
+                <Col xs={12} md={12} lg={9}>
                   <Form.Control
                     as="textarea"
-                    rows="15"
+                    rows="5"
                     name="sequence"
-                    placeholder="Sequence"
+                    placeholder="Enter Peptide Sequence"
                     value={peptide.sequence}
                     onChange={handleChange}
                     className="sequence-text-area"
-                    isInvalid={validatedSpecificDetails && (peptide.sequence === "" || sequenceError !== "")}
+                    isInvalid={
+                      validatedSpecificDetails && (peptide.sequence === "" || sequenceError !== "")
+                    }
                     spellCheck="false"
                     maxLength={10000}
                   />
                   {peptide.sequence === "" && <Feedback message="Sequence is required" />}
                   {sequenceError !== "" && <Feedback message={sequenceError} />}
                   <Feedback message="Please Enter Valid Sequence" />
-                  <div className="text-right text-muted">
-                    {peptide.sequence && peptide.sequence.length > 0 ? peptide.sequence.length : "0"}
-                    /10000
-                  </div>
+                  <Row>
+                    <Col className="gg-align-left"> Example: RQIK-RQIK-hgf</Col>
+                    <Col className="text-right text-muted">
+                      {peptide.sequence && peptide.sequence.length > 0
+                        ? peptide.sequence.length
+                        : "0"}
+                      /10000
+                    </Col>
+                  </Row>
                 </Col>
               </Form.Group>
             </>
@@ -345,12 +393,20 @@ const AddPeptide = props => {
             <>
               <Form noValidate className="radioform2" validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
-                  <FormLabel label="Name" className="required-asterik" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    md={12}
+                    lg={3}
+                    className="required-asterik text-xs-left text-md-left text-lg-right"
+                  >
+                    <strong>Name</strong>
+                  </Form.Label>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
                       name="name"
-                      placeholder="name"
+                      placeholder="Enter Name of the peptide"
                       value={peptide.name}
                       onChange={handleChange}
                       isInvalid={validate}
@@ -361,13 +417,21 @@ const AddPeptide = props => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="comments">
-                  <FormLabel label="Comments" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    md={12}
+                    lg={3}
+                    className="text-xs-left text-md-left text-lg-right"
+                  >
+                    <strong>Comment</strong>
+                  </Form.Label>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as="textarea"
                       rows={4}
                       name="comment"
-                      placeholder="Comments"
+                      placeholder="Enter Comment"
                       value={peptide.comment}
                       onChange={handleChange}
                       maxLength={2000}
@@ -378,12 +442,65 @@ const AddPeptide = props => {
                     </div>
                   </Col>
                 </Form.Group>
+                <Form.Group as={Row} controlId="urls">
+                  <Form.Label
+                    column
+                    xs={12}
+                    md={12}
+                    lg={3}
+                    className="text-xs-left text-md-left text-lg-right"
+                  >
+                    <strong>URLs</strong>
+                  </Form.Label>
+                  <Col xs={12} md={12} lg={9} xl={8}>
+                    {urlWidget(true)}
+                    <Row>
+                      <Col md={10}>
+                        <Form.Control
+                          as="input"
+                          name="urls"
+                          placeholder="Enter the URL and click +"
+                          value={newURL}
+                          onChange={(e) => {
+                            setNewURL(e.target.value);
+                            setInvalidUrls(false);
+                          }}
+                          maxLength={2048}
+                          isInvalid={invalidUrls}
+                        />
+                        <Feedback message="Please enter a unique URL." />
+                      </Col>
+                      <Col md={1}>
+                        <Button onClick={addURL} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add URL">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Form.Group>
                 <Form.Group as={Row} controlId="publications">
-                  <FormLabel label="Publications" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    md={12}
+                    lg={3}
+                    className="text-xs-left text-md-left text-lg-right"
+                  >
+                    <strong>Publications</strong>
+                  </Form.Label>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     {peptide.publications.map((pub, index) => {
                       return (
-                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
+                        <PublicationCard
+                          key={index}
+                          {...pub}
+                          enableDelete
+                          deletePublication={deletePublication}
+                        />
                       );
                     })}
                     <Row>
@@ -391,92 +508,69 @@ const AddPeptide = props => {
                         <Form.Control
                           type="number"
                           name="publication"
-                          placeholder="Enter a Pubmed ID and click +"
+                          placeholder="Enter the Pubmed ID and click +"
                           value={newPubMedId}
-                          onChange={e => setNewPubMedId(e.target.value)}
+                          onChange={(e) => setNewPubMedId(e.target.value)}
                           maxLength={100}
-                          onKeyDown={e => {
+                          onKeyDown={(e) => {
                             isValidNumber(e);
                           }}
-                          onInput={e => {
+                          onInput={(e) => {
                             numberLengthCheck(e);
                           }}
                         />
                       </Col>
                       <Col md={1}>
-                        <Button variant="contained" onClick={addPublication} className="add-button">
-                          +
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="urls">
-                  <FormLabel label="URLs" />
-                  <Col md={4}>
-                    {urlWidget(true)}
-                    <Row>
-                      <Col md={10}>
-                        <Form.Control
-                          as="input"
-                          name="urls"
-                          placeholder="Enter URL and click +"
-                          value={newURL}
-                          onChange={e => {
-                            setNewURL(e.target.value);
-                            setInvalidUrls(false);
-                          }}
-                          maxLength={2048}
-                          isInvalid={invalidUrls}
-                        />
-                        <Feedback message="Please check the url entered" />
-                      </Col>
-                      <Col md={1}>
-                        <Button variant="contained" onClick={addURL} className="add-button">
-                          +
+                        <Button onClick={addPublication} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add Publication">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
                         </Button>
                       </Col>
                     </Row>
                   </Col>
                 </Form.Group>
                 <Row>
-                  <FormLabel label="Source" />
-                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"commercial"}
-                        label={"Commercial"}
-                        onChange={sourceSelection}
-                        checked={peptide.source === "commercial"}
+                  <Form.Label
+                    column
+                    xs={12}
+                    md={12}
+                    lg={3}
+                    className="text-xs-left text-md-left text-lg-right"
+                  >
+                    <strong>Source</strong>
+                  </Form.Label>
+                  <Col xs={12} md={12} lg={8}>
+                    <RadioGroup
+                      row
+                      name="glycan-type"
+                      onChange={sourceSelection}
+                      value={peptide.source}
+                    >
+                      {/* Commercial */}
+                      <FormControlLabel
+                        value="commercial"
+                        control={<BlueRadio />}
+                        label="Commercial"
                       />
-                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp; &nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        label={"Non Commercial"}
-                        value={"nonCommercial"}
-                        onChange={sourceSelection}
-                        checked={peptide.source === "nonCommercial"}
+                      {/* Non Commercial */}
+                      <FormControlLabel
+                        value="nonCommercial"
+                        control={<BlueRadio />}
+                        label="Non Commercial"
                       />
-                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"notSpecified"}
-                        label={"Not Specified"}
-                        onChange={sourceSelection}
-                        checked={peptide.source === "notSpecified"}
+                      {/* Not Specified */}
+                      <FormControlLabel
+                        value="notSpecified"
+                        control={<BlueRadio />}
+                        label="Not Specified"
                       />
-                      {"Not Specified"}
-                    </Form.Check.Label>
+                    </RadioGroup>
                   </Col>
                 </Row>
-                &nbsp;&nbsp;&nbsp;
+
                 {peptide.source === "commercial" ? (
                   <Source
                     isCommercial
@@ -501,16 +595,25 @@ const AddPeptide = props => {
       case 3:
         return (
           <Form className="radioform2">
-            {Object.keys(reviewFields).map(key =>
+            {Object.keys(reviewFields).map((key) =>
               key === "sequence" && peptide.selectedPeptide === "Unknown" ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
-                  <FormLabel label={reviewFields[key].label} />
-                  <Col md={6}>
+                  {/* <FormLabel label={reviewFields[key].label} /> */}
+                  <Form.Label
+                    column
+                    xs={12}
+                    md={12}
+                    lg={3}
+                    className="text-xs-left text-md-left text-lg-right"
+                  >
+                    <strong>{reviewFields[key].label}</strong>
+                  </Form.Label>
+                  <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
-                      rows={key === "sequence" ? "15" : "4"}
+                      rows={key === "sequence" ? "10" : "4"}
                       name={key}
                       placeholder={""}
                       value={peptide[key]}
@@ -521,43 +624,56 @@ const AddPeptide = props => {
                 </Form.Group>
               )
             )}
-
-            {peptide.publications && peptide.publications.length > 0 && (
-              <Form.Group as={Row} controlId="publications">
-                <FormLabel label="Publications" />
-                <Col md={4}>
-                  {peptide.publications && peptide.publications.length > 0
-                    ? peptide.publications.map(pub => {
-                        return (
-                          <li>
-                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
-                          </li>
-                        );
-                      })
-                    : ""}
-                </Col>
-              </Form.Group>
-            )}
-
             {peptide.urls && peptide.urls.length > 0 && (
               <Form.Group as={Row} controlId="urls">
-                <FormLabel label="Urls" />
-                <Col md={4}>
+                <Form.Label
+                  column
+                  xs={12}
+                  md={12}
+                  lg={3}
+                  className="text-xs-left text-md-left text-lg-right"
+                >
+                  <strong>URLs</strong>
+                </Form.Label>
+                <Col xs={12} md={12} lg={9} xl={8}>
                   {peptide.urls.map((url, index) => {
                     return (
-                      <li style={{ marginTop: "8px" }} key={index}>
-                        <Link
-                          style={{ fontSize: "0.9em" }}
+                      <div key={index}>
+                        <a
                           href={externalizeUrl(url)}
                           target="_blank"
                           rel="external noopener noreferrer"
                         >
                           {url}
-                        </Link>
-                        <br />
-                      </li>
+                        </a>
+                      </div>
                     );
                   })}
+                </Col>
+              </Form.Group>
+            )}
+
+            {peptide.publications && peptide.publications.length > 0 && (
+              <Form.Group as={Row} controlId="publications">
+                <Form.Label
+                  column
+                  xs={12}
+                  md={12}
+                  lg={3}
+                  className="text-xs-left text-md-left text-lg-right"
+                >
+                  <strong>Publication</strong>
+                </Form.Label>
+                <Col xs={12} md={12} lg={9} xl={8}>
+                  {peptide.publications && peptide.publications.length > 0
+                    ? peptide.publications.map((pub) => {
+                        return (
+                          <div>
+                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
+                          </div>
+                        );
+                      })
+                    : ""}
                 </Col>
               </Form.Group>
             )}
@@ -577,11 +693,18 @@ const AddPeptide = props => {
 
   function getNavigationButtons(className) {
     return (
-      <div className={className}>
-        <Button disabled={activeStep === 0} onClick={handleBack} className="stepper-button">
+      <div className="text-center mb-2">
+        <Link to="/peptides">
+          <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Peptides</Button>
+        </Link>
+        <Button
+          disabled={activeStep === 0}
+          onClick={handleBack}
+          className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20"
+        >
           Back
         </Button>
-        <Button variant="contained" className="stepper-button" onClick={handleNext}>
+        <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
           {activeStep === steps.length - 1 ? "Finish" : "Next"}
         </Button>
       </div>
@@ -594,7 +717,7 @@ const AddPeptide = props => {
     let unknownPeptide = peptide.selectedPeptide === "Unknown" ? true : false;
 
     var source = {
-      type: "NOTRECORDED"
+      type: "NOTRECORDED",
     };
 
     if (peptide.source === "commercial") {
@@ -610,7 +733,8 @@ const AddPeptide = props => {
       source.comment = peptide.nonCommercial.sourceComment;
     }
 
-    var peptideObj = peptide.selectedPeptide === "Unknown" ? getUnknownSubmitData() : getPeptideSubmitData();
+    var peptideObj =
+      peptide.selectedPeptide === "Unknown" ? getUnknownSubmitData() : getPeptideSubmitData();
 
     wsCall(
       "addlinker",
@@ -618,12 +742,12 @@ const AddPeptide = props => {
       { unknown: unknownPeptide },
       true,
       peptideObj,
-      response => history.push("/peptides"),
+      (response) => history.push("/peptides"),
       addPeptideFailure
     );
 
     function addPeptideFailure(response) {
-      response.json().then(parsedJson => {
+      response.json().then((parsedJson) => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
       });
@@ -638,7 +762,7 @@ const AddPeptide = props => {
         publications: peptide.publications,
         urls: peptide.urls,
         sequence: peptide.sequence.trim(),
-        source: source
+        source: source,
       };
 
       return peptideseq;
@@ -652,14 +776,14 @@ const AddPeptide = props => {
         publications: peptide.publications,
         urls: peptide.urls,
         sequence: "",
-        source: source
+        source: source,
       };
 
       return unknownpep;
     }
   }
 
-  const isStepSkipped = step => {
+  const isStepSkipped = (step) => {
     return peptide.selectedPeptide === "Unknown" && step === 1 && activeStep === 2;
   };
 
@@ -669,43 +793,50 @@ const AddPeptide = props => {
         <title>{head.addPeptide.title}</title>
         {getMeta(head.addPeptide)}
       </Helmet>
-
-      <div className="page-container">
-        <Title title="Add Peptide to Repository" />
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const stepProps = {};
-            const labelProps = {};
-            if (isStepSkipped(index)) {
-              labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
-              stepProps.completed = false;
-            }
-            return (
-              <Step key={label} {...stepProps}>
-                <StepLabel {...labelProps}>{label}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-        {getNavigationButtons("button - div text-center")}
-        &nbsp; &nbsp;
-        {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="linkers"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Add Peptide to Repository"
+            subTitle="Please provide the information for the new peptide."
           />
-        )}
-        <div>
-          <div>
-            <Typography className={classes.instructions} component={"span"} variant={"body2"}>
-              {getStepContent(activeStep, validate)}
-            </Typography>
-            {getNavigationButtons("button-div line-break-1 text-center")}
-          </div>
+          <Card>
+            <Card.Body>
+              <Stepper activeStep={activeStep}>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  if (isStepSkipped(index)) {
+                    labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              {getNavigationButtons()}
+
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="linkers"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                />
+              )}
+
+              <div className="mt-4 mb-4">
+                <Typography component={"div"} variant="body1">
+                  {getStepContent(activeStep, validate)}
+                </Typography>
+                {getNavigationButtons()}
+              </div>
+            </Card.Body>
+          </Card>
         </div>
-      </div>
+      </Container>
       <Loading show={showLoading} />
     </>
   );

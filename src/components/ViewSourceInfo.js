@@ -1,14 +1,22 @@
 import React from "react";
 import { Form, Row, Col } from "react-bootstrap";
-import { FormLabel } from "../components/FormControls";
 
-const ViewSourceInfo = props => {
+const ViewSourceInfo = (props) => {
   return (
     <>
       {(props.source === "notSpecified" || props.source === "NOTRECORDED") && (
         <Form.Group as={Row} controlId="value">
-          <FormLabel label="Source" />
-          <Col md={4}>
+          <Form.Label
+            column
+            xs={12}
+            md={12}
+            lg={3}
+            className="text-xs-left text-md-left text-lg-right"
+          >
+            Source
+            {/* <strong>Source</strong> */}
+          </Form.Label>
+          <Col xs={12} md={12} lg={9} xl={8}>
             <Form.Control
               type="text"
               disabled
@@ -22,10 +30,40 @@ const ViewSourceInfo = props => {
 
       {(props.source === "commercial" || props.source === "COMMERCIAL") && (
         <>
-          <FormLabel label="Source" className={"metadata-descriptor-title "} />
+          {/* <FormLabel label="Source" className={"metadata-descriptor-title "} /> */}
+          <Form.Group as={Row} controlId="value">
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={3}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Source
+              {/* <strong>Source</strong> */}
+            </Form.Label>
+            <Col xs={12} md={12} lg={9} xl={8}>
+              <Form.Control
+                type="text"
+                disabled
+                plaintext={props.isUpdate}
+                readOnly={props.isUpdate}
+                value={"Commercial"}
+              />
+            </Col>
+          </Form.Group>
           <Form.Group as={Row} controlId="vendor">
-            <FormLabel label="Vendor" />
-            <Col md={4}>
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={5}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Vendor
+              {/* <strong>Vendor</strong> */}
+            </Form.Label>
+            <Col xs={12} md={10} lg={7} xl={6}>
               <Form.Control
                 type="text"
                 disabled
@@ -36,8 +74,17 @@ const ViewSourceInfo = props => {
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="catalogueNumber">
-            <FormLabel label="Catalogue Number" />
-            <Col md={4}>
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={5}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Catalogue Number
+              {/* <strong>Catalogue Number</strong> */}
+            </Form.Label>
+            <Col xs={12} md={10} lg={7} xl={6}>
               <Form.Control
                 type="text"
                 disabled
@@ -48,8 +95,17 @@ const ViewSourceInfo = props => {
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="batchId">
-            <FormLabel label=" Batch Id" />
-            <Col md={4}>
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={5}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Batch ID
+              {/* <strong>Batch ID</strong> */}
+            </Form.Label>
+            <Col xs={12} md={10} lg={7} xl={6}>
               <Form.Control
                 type="text"
                 disabled
@@ -64,10 +120,40 @@ const ViewSourceInfo = props => {
 
       {(props.source === "nonCommercial" || props.source === "NONCOMMERCIAL") && (
         <>
-          <FormLabel label="Source" className={"metadata-descriptor-title "} />
+          {/* <FormLabel label="Source" className={"metadata-descriptor-title "} /> */}
+          <Form.Group as={Row} controlId="value">
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={3}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Source
+              {/* <strong>Source</strong> */}
+            </Form.Label>
+            <Col xs={12} md={12} lg={9} xl={8}>
+              <Form.Control
+                type="text"
+                disabled
+                plaintext={props.isUpdate}
+                readOnly={props.isUpdate}
+                value={"Non Commercial"}
+              />
+            </Col>
+          </Form.Group>
           <Form.Group as={Row} controlId="providerLab">
-            <FormLabel label="Provider Lab" />
-            <Col md={4}>
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={5}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Provider Lab
+              {/* <strong>Provider Lab</strong> */}
+            </Form.Label>
+            <Col xs={12} md={10} lg={7} xl={6}>
               <Form.Control
                 type="text"
                 disabled
@@ -78,8 +164,17 @@ const ViewSourceInfo = props => {
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="method">
-            <FormLabel label="Method" />
-            <Col md={4}>
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={5}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Method
+              {/* <strong>Method</strong> */}
+            </Form.Label>
+            <Col xs={12} md={10} lg={7} xl={6}>
               <Form.Control
                 type="text"
                 disabled
@@ -90,8 +185,17 @@ const ViewSourceInfo = props => {
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="batchId">
-            <FormLabel label="Batch Id" />
-            <Col md={4}>
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={5}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Batch ID
+              {/* <strong>Batch ID</strong> */}
+            </Form.Label>
+            <Col xs={12} md={10} lg={7} xl={6}>
               <Form.Control
                 type="text"
                 disabled
@@ -103,11 +207,21 @@ const ViewSourceInfo = props => {
           </Form.Group>
 
           <Form.Group as={Row} controlId="batchId">
-            <FormLabel label="Comment" />
-            <Col md={4}>
+            <Form.Label
+              column
+              xs={12}
+              md={12}
+              lg={5}
+              className="text-xs-left text-md-left text-lg-right"
+            >
+              Source Comment
+              {/* <strong>Source Comment</strong> */}
+            </Form.Label>
+            <Col xs={12} md={10} lg={7} xl={6}>
               <Form.Control
-                type="text"
+                as="textarea"
                 disabled
+                rows={4}
                 plaintext={props.isUpdate}
                 readOnly={props.isUpdate}
                 value={props.nonCommercial.sourceComment}
