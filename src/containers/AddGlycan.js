@@ -1,16 +1,8 @@
 import React, { useReducer, useState, useEffect } from "react";
-import {
-  Button,
-  makeStyles,
-  Step,
-  StepLabel,
-  Stepper,
-  Typography,
-  useFormControl,
-} from "@material-ui/core";
+import { Button, makeStyles, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
 import "../containers/AddGlycan.css";
-import { Form, FormCheck, Row, Col } from "react-bootstrap";
-import { Feedback, Title } from "../components/FormControls";
+import { Form, Row, Col } from "react-bootstrap";
+import { Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -26,8 +18,8 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
-import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import { BlueRadio } from "../components/FormControls";
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -71,7 +63,7 @@ const AddGlycan = (props) => {
 
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [userSelection, setUserSelection] = useReducer(reducer, initialState);
-  const [defaultCheck, setDefaultCheck] = useState(true);
+  // const [defaultCheck, setDefaultCheck] = useState(true);
 
   const steps = getSteps();
 
@@ -131,11 +123,11 @@ const AddGlycan = (props) => {
 
   const handleSelect = (e) => {
     const newValue = e.target.value;
-    if (newValue !== "SequenceDefined") {
-      setDefaultCheck(false);
-    } else {
-      setDefaultCheck(true);
-    }
+    // if (newValue !== "SequenceDefined") {
+    //   setDefaultCheck(false);
+    // } else {
+    //   setDefaultCheck(true);
+    // }
     setUserSelection({ ...initialState, ...{ selectedGlycan: newValue } });
   };
 
@@ -255,7 +247,7 @@ const AddGlycan = (props) => {
               as="textarea"
               rows={4}
               name="comment"
-              placeholder="Enter your comments"
+              placeholder="Enter Comment"
               value={userSelection.comment}
               onChange={handleChange}
               maxLength={2000}
@@ -329,95 +321,57 @@ const AddGlycan = (props) => {
           <Form>
             <Row className="gg-align-center">
               <Col sm="auto">
-                {/* <RadioGroup name="use-radio-group" onChange={handleSelect} checked={defaultCheck}>
+                <RadioGroup
+                  name="glycan-type"
+                  onChange={handleSelect}
+                  defaultValue="SequenceDefined"
+                >
+                  {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
-                    control={<Radio />}
+                    control={<BlueRadio />}
                     label={displayNames.glycan.SEQUENCE_DEFINED}
                   />
-                  <FormControlLabel value="CompositionBased" control={<Radio />} label="Male" />
-                </RadioGroup> */}
-
-                {/* SEQUENCE_DEFINED */}
-                <FormCheck className="line-break-1">
-                  <FormCheck.Label>
-                    <FormCheck.Input
-                      type="radio"
-                      value="SequenceDefined"
-                      onChange={handleSelect}
-                      checked={defaultCheck}
-                    />
-                    {displayNames.glycan.SEQUENCE_DEFINED}
-                  </FormCheck.Label>
-                </FormCheck>
-
-                {/* COMPOSITION_BASED */}
-                <FormCheck className="line-break-1">
-                  <FormCheck.Label className="disableradio">
-                    <FormCheck.Input type="radio" value="CompositionBased" disabled />
-                    {displayNames.glycan.COMPOSITION_BASED}
-                  </FormCheck.Label>
-                </FormCheck>
-
-                {/* MASS_ONLY */}
-                <FormCheck className="line-break-1">
-                  <FormCheck.Label>
-                    <FormCheck.Input
-                      type="radio"
-                      value="MassDefined"
-                      onChange={handleSelect}
-                      checked={userSelection.selectedGlycan === "MassDefined"}
-                    />
-                    {displayNames.glycan.MASS_ONLY}
-                  </FormCheck.Label>
-                </FormCheck>
-
-                {/* CLASSIFICATION_BASED */}
-                <FormCheck className="line-break-1">
-                  <FormCheck.Label className="disableradio">
-                    <FormCheck.Input
-                      type="radio"
-                      value="ClassificationBased"
-                      disabled
-                      label="Classification Based"
-                    />
-                    {displayNames.glycan.CLASSIFICATION_BASED}
-                  </FormCheck.Label>
-                </FormCheck>
-
-                {/* FRAGMENT_ONLY */}
-                <FormCheck className="line-break-1">
-                  <FormCheck.Label className="disableradio">
-                    <FormCheck.Input type="radio" value="FragmentOnly" disabled />
-                    {displayNames.glycan.FRAGMENT_ONLY}
-                  </FormCheck.Label>
-                </FormCheck>
-
-                {/* UNKNOWN */}
-                <FormCheck className="line-break-1">
-                  <FormCheck.Label>
-                    <FormCheck.Input
-                      type="radio"
-                      value="Unknown"
-                      onChange={handleSelect}
-                      checked={userSelection.selectedGlycan === "Unknown"}
-                    />
-                    {displayNames.glycan.UNKNOWN}
-                  </FormCheck.Label>
-                </FormCheck>
-
-                {/* OTHER */}
-                <FormCheck className="line-break-15">
-                  <FormCheck.Label>
-                    <FormCheck.Input
-                      type="radio"
-                      value="Other"
-                      onChange={handleSelect}
-                      checked={userSelection.selectedGlycan === "Other"}
-                    />
-                    {displayNames.glycan.OTHER}
-                  </FormCheck.Label>
-                </FormCheck>
+                  {/* COMPOSITION_BASED */}
+                  <FormControlLabel
+                    value="CompositionBased"
+                    disabled
+                    control={<BlueRadio />}
+                    label={displayNames.glycan.COMPOSITION_BASED}
+                  />
+                  {/* MASS_ONLY */}
+                  <FormControlLabel
+                    control={<BlueRadio />}
+                    value="MassDefined"
+                    label={displayNames.glycan.MASS_ONLY}
+                  />
+                  {/* CLASSIFICATION_BASED */}
+                  <FormControlLabel
+                    value="ClassificationBased"
+                    disabled
+                    control={<BlueRadio />}
+                    label={displayNames.glycan.CLASSIFICATION_BASED}
+                  />
+                  {/* FRAGMENT_ONLY */}
+                  <FormControlLabel
+                    value="FragmentOnly"
+                    disabled
+                    control={<BlueRadio />}
+                    label={displayNames.glycan.FRAGMENT_ONLY}
+                  />
+                  {/* UNKNOWN */}
+                  <FormControlLabel
+                    value="Unknown"
+                    control={<BlueRadio />}
+                    label={displayNames.glycan.UNKNOWN}
+                  />
+                  {/* OTHER */}
+                  <FormControlLabel
+                    value="Other"
+                    control={<BlueRadio />}
+                    label={displayNames.glycan.OTHER}
+                  />
+                </RadioGroup>
               </Col>
             </Row>
           </Form>
@@ -433,7 +387,6 @@ const AddGlycan = (props) => {
                     variant="contained"
                     disabled={!disableReset}
                     onClick={clearGlytoucanSequence}
-                    // className="gg-btn-outline mt-2"
                     className="gg-btn-blue mt-2"
                   >
                     Clear Fields
@@ -474,7 +427,6 @@ const AddGlycan = (props) => {
                       <Button
                         variant="contained"
                         onClick={() => getSequenceFromGlytoucan(userSelection.glytoucanId)}
-                        // className="get-btn"
                         className="gg-btn-blue-reg mt-3"
                       >
                         Get Sequence from Glytoucan
@@ -644,7 +596,7 @@ const AddGlycan = (props) => {
                       as="textarea"
                       rows="5"
                       name="sequence"
-                      placeholder="Enter Sequence"
+                      placeholder="Enter glycan sequence"
                       value={userSelection.sequence}
                       onChange={handleChange}
                       required={true}
@@ -698,9 +650,9 @@ const AddGlycan = (props) => {
                   <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as="textarea"
-                      rows={5}
+                      rows={4}
                       name="comment"
-                      placeholder="Enter your comments"
+                      placeholder="Enter Comment"
                       value={userSelection.comment}
                       onChange={handleChange}
                       maxLength={2000}
@@ -720,7 +672,6 @@ const AddGlycan = (props) => {
                     variant="contained"
                     disabled={!disableReset}
                     onClick={clearGlytoucanSequence}
-                    // className="gg-btn-outline mt-2"
                     className="gg-btn-blue"
                   >
                     Clear Fields
@@ -739,7 +690,6 @@ const AddGlycan = (props) => {
                   variant="contained"
                   disabled={!disableReset}
                   onClick={clearGlytoucanSequence}
-                  // className="gg-btn-outline mt-2"
                   className="gg-btn-blue"
                 >
                   Clear Fields
@@ -899,7 +849,7 @@ const AddGlycan = (props) => {
                 <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control
                     as="textarea"
-                    rows={5}
+                    rows={4}
                     name="sequence"
                     value={userSelection.sequence}
                     disabled
@@ -921,7 +871,7 @@ const AddGlycan = (props) => {
                 <Col xs={12} md={12} lg={9} xl={8}>
                   <Form.Control
                     as="textarea"
-                    rows={5}
+                    rows={4}
                     name="comment"
                     value={userSelection.comment}
                     disabled

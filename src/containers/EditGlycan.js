@@ -69,16 +69,16 @@ const EditGlycan = (props) => {
   function getGlycanTypeLabel(type) {
     switch (type) {
       case "SEQUENCE_DEFINED":
-        return "Sequence defined glycan";
+        return "Sequence Defined Glycan";
       case "UNKNOWN":
-        return "Unknown glycan";
+        return "Unknown Glycan";
       case "MASS_ONLY":
-        return "Mass defined glycan";
+        return "Mass Defined Glycan";
       case "OTHER":
-        return "Other glycan";
+        return "Other Glycan";
 
       default:
-        return "Sequence defined glycan";
+        return "Sequence Defined Glycan";
     }
   }
 
@@ -209,7 +209,7 @@ const EditGlycan = (props) => {
                   <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
-                      placeholder="internal Id"
+                      placeholder="Enter Internal ID"
                       name="internalId"
                       value={glycanDetails.internalId}
                       onChange={handleChange}
@@ -234,7 +234,7 @@ const EditGlycan = (props) => {
                   <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       type="text"
-                      placeholder="name"
+                      placeholder="Enter Name of the glycan"
                       name="name"
                       value={glycanDetails.name}
                       onChange={handleChange}
@@ -259,8 +259,8 @@ const EditGlycan = (props) => {
                   <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
                       as="textarea"
-                      rows={5}
-                      placeholder="comment"
+                      rows={4}
+                      placeholder="Enter Comment"
                       name="description"
                       value={glycanDetails.description}
                       onChange={handleChange}
