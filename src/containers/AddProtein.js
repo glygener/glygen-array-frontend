@@ -12,26 +12,32 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import {
+  csvToArray,
+  isValidURL,
+  externalizeUrl,
+  isValidNumber,
+  numberLengthCheck,
+} from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
 import { ViewSourceInfo } from "../components/ViewSourceInfo";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    width: "90%"
+    width: "90%",
   },
   backButton: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   instructions: {
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }));
 
-const AddProtein = props => {
+const AddProtein = (props) => {
   useEffect(props.authCheckAgent, []);
 
   const classes = useStyles();
@@ -60,7 +66,7 @@ const AddProtein = props => {
     urls: [],
     source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -71,15 +77,15 @@ const AddProtein = props => {
     sequence: { label: "Sequence", type: "textarea" },
     comment: { label: "Comments", type: "textarea", length: 10000 },
     uniProtId: { label: "UniProt Id", type: "text", length: 100 },
-    pdbIds: { label: "PDB Ids", type: "text" }
+    pdbIds: { label: "PDB Ids", type: "text" },
   };
 
-  const sourceSelection = e => {
+  const sourceSelection = (e) => {
     const newValue = e.target.value;
     setProtein({ source: newValue });
   };
 
-  const sourceChange = e => {
+  const sourceChange = (e) => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -103,7 +109,7 @@ const AddProtein = props => {
 
   const steps = getSteps();
 
-  const handleNext = e => {
+  const handleNext = (e) => {
     setValidate(false);
     var stepIncrement = 1;
 
@@ -144,10 +150,10 @@ const AddProtein = props => {
       return;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+    setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setValidate(false);
     const name = e.target.name;
     const newValue = e.target.value;
@@ -173,39 +179,52 @@ const AddProtein = props => {
         stepDecrement += 1;
       }
     }
-    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
+    setActiveStep((prevActiveStep) => prevActiveStep - stepDecrement);
   };
 
-  const handleSelect = e => {
+  const handleSelect = (e) => {
     const newValue = e.target.value;
     setProtein({ ...proteinInitialState, ...{ selectedProtein: newValue } });
   };
 
   function getSteps() {
-    return ["Select the Protein Type", "Type Specific Protein Info", "Generic Protein Info", "Review and Add"];
+    return [
+      "Select the Protein Type",
+      "Type Specific Protein Info",
+      "Generic Protein Info",
+      "Review and Add",
+    ];
   }
   function addPublication() {
     let publications = protein.publications;
-    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
+      wsCall(
+        "getpublication",
+        "GET",
+        [newPubMedId],
+        true,
+        null,
+        addPublicationSuccess,
+        addPublicationError
+      );
     } else {
       setNewPubMedId("");
     }
 
     function addPublicationSuccess(response) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         setShowErrorSummary(false);
         setProtein({
-          publications: protein.publications.concat([responseJson])
+          publications: protein.publications.concat([responseJson]),
         });
         setNewPubMedId("");
       });
     }
 
     function addPublicationError(response) {
-      response.text().then(resp => {
+      response.text().then((resp) => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -230,9 +249,9 @@ const AddProtein = props => {
     );
 
     function getSequenceFromUniprotSuccess(response) {
-      response.text().then(sequence => {
+      response.text().then((sequence) => {
         setProtein({
-          sequence: sequence
+          sequence: sequence,
         });
       });
       setShowLoading(false);
@@ -242,7 +261,7 @@ const AddProtein = props => {
     function getSequenceFromUniprotError(response) {
       let status = response.status;
 
-      response.text().then(function(text) {
+      response.text().then(function (text) {
         if (text) {
           setPageErrorMessage(JSON.parse(text));
         } else {
@@ -259,7 +278,7 @@ const AddProtein = props => {
 
   function deletePublication(id, wscall) {
     const publications = protein.publications;
-    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     setProtein({ publications: publications });
@@ -268,7 +287,7 @@ const AddProtein = props => {
   function addURL() {
     var listUrls = protein.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find(i => i === urlEntered);
+    const urlExists = listUrls.find((i) => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -284,7 +303,7 @@ const AddProtein = props => {
     setNewURL("");
   }
 
-  const urlWidget = enableDelete => {
+  const urlWidget = (enableDelete) => {
     return (
       <>
         {protein.urls && protein.urls.length > 0
@@ -294,7 +313,7 @@ const AddProtein = props => {
                   <Col
                     md={10}
                     style={{
-                      wordBreak: "break-all"
+                      wordBreak: "break-all",
                     }}
                   >
                     <Link
@@ -378,7 +397,9 @@ const AddProtein = props => {
                 {protein.uniProtId !== "" && (
                   <Button
                     variant="contained"
-                    onClick={() => getSequenceFromUniprot(encodeURIComponent(protein.uniProtId.trim()))}
+                    onClick={() =>
+                      getSequenceFromUniprot(encodeURIComponent(protein.uniProtId.trim()))
+                    }
                     className="get-btn "
                   >
                     Get Sequence from Uniprot
@@ -393,10 +414,10 @@ const AddProtein = props => {
                     name="pdbIds"
                     placeholder="PDB Ids separated by ';'"
                     value={protein.pdbIds.join(";")}
-                    onChange={e => {
+                    onChange={(e) => {
                       setShowErrorSummary(false);
                       setProtein({
-                        pdbIds: csvToArray(e.target.value)
+                        pdbIds: csvToArray(e.target.value),
                       });
                     }}
                     maxLength={100}
@@ -414,14 +435,18 @@ const AddProtein = props => {
                     value={protein.sequence}
                     onChange={handleChange}
                     className="sequence-text-area"
-                    isInvalid={validatedSpecificDetails && (protein.sequence === "" || sequenceError !== "")}
+                    isInvalid={
+                      validatedSpecificDetails && (protein.sequence === "" || sequenceError !== "")
+                    }
                     spellCheck="false"
                     maxLength={10000}
                   />
                   {protein.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
                   {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
                   <div className="text-right text-muted">
-                    {protein.sequence && protein.sequence.length > 0 ? protein.sequence.length : "0"}
+                    {protein.sequence && protein.sequence.length > 0
+                      ? protein.sequence.length
+                      : "0"}
                     /10000
                   </div>
                 </Col>
@@ -463,7 +488,7 @@ const AddProtein = props => {
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                   <div className="text-right text-muted">
+                    <div className="text-right text-muted">
                       {protein.comment && protein.comment.length > 0 ? protein.comment.length : "0"}
                       /2000
                     </div>
@@ -474,7 +499,12 @@ const AddProtein = props => {
                   <Col md={4}>
                     {protein.publications.map((pub, index) => {
                       return (
-                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
+                        <PublicationCard
+                          key={index}
+                          {...pub}
+                          enableDelete
+                          deletePublication={deletePublication}
+                        />
                       );
                     })}
                     <Row>
@@ -484,12 +514,12 @@ const AddProtein = props => {
                           name="publication"
                           placeholder="Enter a Pubmed ID and click +"
                           value={newPubMedId}
-                          onChange={e => setNewPubMedId(e.target.value)}
+                          onChange={(e) => setNewPubMedId(e.target.value)}
                           maxLength={100}
-                          onKeyDown={e => {
+                          onKeyDown={(e) => {
                             isValidNumber(e);
                           }}
-                          onInput={e => {
+                          onInput={(e) => {
                             numberLengthCheck(e);
                           }}
                         />
@@ -513,14 +543,14 @@ const AddProtein = props => {
                           name="urls"
                           placeholder="Enter URL and click +"
                           value={newURL}
-                          onChange={e => {
+                          onChange={(e) => {
                             setNewURL(e.target.value);
                             setInvalidUrls(false);
                           }}
                           maxLength={2048}
                           isInvalid={invalidUrls}
                         />
-                        <Feedback message="Please check the url entered" />
+                        <Feedback message="Please enter a unique URL." />
                       </Col>
                       <Col md={1}>
                         <Button variant="contained" onClick={addURL} className="add-button">
@@ -593,7 +623,7 @@ const AddProtein = props => {
       case 3:
         return (
           <Form className="radioform2">
-            {Object.keys(reviewFields).map(key =>
+            {Object.keys(reviewFields).map((key) =>
               (key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
               protein.selectedProtein === "Unknown" ? (
                 ""
@@ -620,7 +650,7 @@ const AddProtein = props => {
                 <FormLabel label="Publications" />
                 <Col md={4}>
                   {protein.publications && protein.publications.length > 0
-                    ? protein.publications.map(pub => {
+                    ? protein.publications.map((pub) => {
                         return (
                           <li>
                             <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
@@ -689,7 +719,7 @@ const AddProtein = props => {
     let unknownProtien = protein.selectedProtein === "Unknown" ? true : false;
 
     var source = {
-      type: "NOTRECORDED"
+      type: "NOTRECORDED",
     };
 
     if (protein.source === "commercial") {
@@ -712,7 +742,7 @@ const AddProtein = props => {
       publications: protein.publications,
       urls: protein.urls,
       sequence: protein.sequence.trim(),
-      source: source
+      source: source,
     };
 
     wsCall(
@@ -721,20 +751,22 @@ const AddProtein = props => {
       { unknown: unknownProtien },
       true,
       proteinObj,
-      response => history.push("/proteins"),
+      (response) => history.push("/proteins"),
       addProteinFailure
     );
 
     function addProteinFailure(response) {
-      response.json().then(parsedJson => {
+      response.json().then((parsedJson) => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
       });
     }
   }
 
-  const isStepSkipped = step => {
-    return protein.selectedProtein === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
+  const isStepSkipped = (step) => {
+    return (
+      protein.selectedProtein === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3)
+    );
   };
 
   return (

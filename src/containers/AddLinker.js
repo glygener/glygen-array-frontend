@@ -11,26 +11,32 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import {
+  csvToArray,
+  isValidURL,
+  externalizeUrl,
+  isValidNumber,
+  numberLengthCheck,
+} from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
 import { ViewSourceInfo } from "../components/ViewSourceInfo";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    width: "90%"
+    width: "90%",
   },
   backButton: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   instructions: {
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }));
 
-const AddLinker = props => {
+const AddLinker = (props) => {
   useEffect(props.authCheckAgent, []);
 
   const classes = useStyles();
@@ -67,7 +73,7 @@ const AddLinker = props => {
     urls: [],
     source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -83,15 +89,15 @@ const AddLinker = props => {
     canonicalSmiles: { label: "Canonical SMILES", type: "text" },
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comments", type: "textarea", length: 10000 }
+    comment: { label: "Comments", type: "textarea", length: 10000 },
   };
 
-  const sourceSelection = e => {
+  const sourceSelection = (e) => {
     const newValue = e.target.value;
     setLinker({ source: newValue });
   };
 
-  const sourceChange = e => {
+  const sourceChange = (e) => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -115,7 +121,7 @@ const AddLinker = props => {
 
   const steps = getSteps();
 
-  const handleNext = e => {
+  const handleNext = (e) => {
     setValidate(false);
     var stepIncrement = 1;
 
@@ -161,19 +167,19 @@ const AddLinker = props => {
     if (activeStep === 1) {
       if (!isWscalldone && linker.inChiSequence !== "") {
         setShowErrorSummary(false);
-        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+        setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
       } else if (linker.pubChemId !== "" || linker.inChiKey !== "") {
         return;
       } else {
         setShowErrorSummary(false);
-        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+        setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
       }
     } else {
-      setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+      setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
     }
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setDisableReset(true);
 
     const name = e.target.name;
@@ -204,10 +210,10 @@ const AddLinker = props => {
         stepDecrement += 1;
       }
     }
-    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
+    setActiveStep((prevActiveStep) => prevActiveStep - stepDecrement);
   };
 
-  const handleSelect = e => {
+  const handleSelect = (e) => {
     setDisableReset(true);
     setDisablePubChemFields(false);
     const newValue = e.target.value;
@@ -215,7 +221,12 @@ const AddLinker = props => {
   };
 
   function getSteps() {
-    return ["Select the Linker Type", "Type Specific Linker Info", "Generic Linker Info", "Review and Add"];
+    return [
+      "Select the Linker Type",
+      "Type Specific Linker Info",
+      "Generic Linker Info",
+      "Review and Add",
+    ];
   }
 
   function populateLinkerDetails(pubChemId) {
@@ -232,7 +243,7 @@ const AddLinker = props => {
     );
 
     function populateLinkerDetailsSuccess(response) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         setLinker({
           type: responseJson.type,
           pubChemId: responseJson.pubChemId,
@@ -246,7 +257,7 @@ const AddLinker = props => {
           isomericSmiles: responseJson.isomericSmiles,
           canonicalSmiles: responseJson.smiles,
           mass: responseJson.mass,
-          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`]
+          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`],
         });
 
         setShowErrorSummary(false);
@@ -259,7 +270,7 @@ const AddLinker = props => {
     }
 
     function populateLinkerDetailsError(response) {
-      response.json().then(resp => {
+      response.json().then((resp) => {
         setIsWscalldone(true);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
@@ -271,7 +282,7 @@ const AddLinker = props => {
 
   function deletePublication(id, wscall) {
     const publications = linker.publications;
-    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     setLinker({ publications: publications });
@@ -280,7 +291,7 @@ const AddLinker = props => {
   function addURL() {
     var listUrls = linker.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find(i => i === urlEntered);
+    const urlExists = listUrls.find((i) => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -296,7 +307,7 @@ const AddLinker = props => {
     setNewURL("");
   }
 
-  const urlWidget = enableDelete => {
+  const urlWidget = (enableDelete) => {
     return (
       <>
         {linker.urls && linker.urls.length > 0
@@ -306,7 +317,7 @@ const AddLinker = props => {
                   <Col
                     md={10}
                     style={{
-                      wordBreak: "break-all"
+                      wordBreak: "break-all",
                     }}
                   >
                     <Link
@@ -350,26 +361,34 @@ const AddLinker = props => {
 
   function addPublication() {
     let publications = linker.publications;
-    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
+      wsCall(
+        "getpublication",
+        "GET",
+        [newPubMedId],
+        true,
+        null,
+        addPublicationSuccess,
+        addPublicationError
+      );
     } else {
       setNewPubMedId("");
     }
 
     function addPublicationSuccess(response) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         setShowErrorSummary(false);
         setLinker({
-          publications: linker.publications.concat([responseJson])
+          publications: linker.publications.concat([responseJson]),
         });
         setNewPubMedId("");
       });
     }
 
     function addPublicationError(response) {
-      response.text().then(resp => {
+      response.text().then((resp) => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -400,7 +419,9 @@ const AddLinker = props => {
           {linker.inChiKey !== "" && !disablePubChemFields && (
             <Button
               variant="contained"
-              onClick={() => populateLinkerDetails(encodeURIComponent(linker.inChiKey && linker.inChiKey.trim()))}
+              onClick={() =>
+                populateLinkerDetails(encodeURIComponent(linker.inChiKey && linker.inChiKey.trim()))
+              }
               className="get-btn "
             >
               Get Details from PubChem
@@ -424,7 +445,10 @@ const AddLinker = props => {
               required
             />
             <div className="text-right text-muted">
-              {linker.inChiSequence && linker.inChiSequence.length > 0 ? linker.inChiSequence.length : "0"}/10000
+              {linker.inChiSequence && linker.inChiSequence.length > 0
+                ? linker.inChiSequence.length
+                : "0"}
+              /10000
             </div>
             <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />
           </Col>
@@ -454,7 +478,7 @@ const AddLinker = props => {
               value={linker.mass}
               onChange={handleChange}
               disabled={disablePubChemFields}
-              onKeyDown={e => isValidNumber(e)}
+              onKeyDown={(e) => isValidNumber(e)}
               isInvalid={invalidMass}
             />
             <Feedback message={`Mass is Invalid`} />
@@ -508,7 +532,9 @@ const AddLinker = props => {
             <Button
               variant="contained"
               onClick={() =>
-                populateLinkerDetails(encodeURIComponent(linker.canonicalSmiles && linker.canonicalSmiles.trim()))
+                populateLinkerDetails(
+                  encodeURIComponent(linker.canonicalSmiles && linker.canonicalSmiles.trim())
+                )
               }
               className="get-btn "
             >
@@ -566,7 +592,7 @@ const AddLinker = props => {
                         value={linker.pubChemId}
                         onChange={handleChange}
                         disabled={disablePubChemFields}
-                        onKeyDown={e => {
+                        onKeyDown={(e) => {
                           if (e.key.length === 1) {
                             if (e.key !== "v" && e.key !== "V") {
                               isValidNumber(e);
@@ -574,7 +600,7 @@ const AddLinker = props => {
                           }
                         }}
                         maxLength={12}
-                        onInput={e => {
+                        onInput={(e) => {
                           numberLengthCheck(e);
                         }}
                       />
@@ -582,7 +608,9 @@ const AddLinker = props => {
                     {linker.pubChemId !== "" && !disablePubChemFields && (
                       <Button
                         variant="contained"
-                        onClick={() => populateLinkerDetails(encodeURIComponent(linker.pubChemId.trim()))}
+                        onClick={() =>
+                          populateLinkerDetails(encodeURIComponent(linker.pubChemId.trim()))
+                        }
                         className="get-btn "
                       >
                         Get Details from PubChem
@@ -653,7 +681,12 @@ const AddLinker = props => {
                   <Col md={4}>
                     {linker.publications.map((pub, index) => {
                       return (
-                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
+                        <PublicationCard
+                          key={index}
+                          {...pub}
+                          enableDelete
+                          deletePublication={deletePublication}
+                        />
                       );
                     })}
                     <Row>
@@ -663,12 +696,12 @@ const AddLinker = props => {
                           name="publication"
                           placeholder="Enter a Pubmed ID and click +"
                           value={newPubMedId}
-                          onChange={e => setNewPubMedId(e.target.value)}
+                          onChange={(e) => setNewPubMedId(e.target.value)}
                           maxLength={100}
-                          onKeyDown={e => {
+                          onKeyDown={(e) => {
                             isValidNumber(e);
                           }}
-                          onInput={e => {
+                          onInput={(e) => {
                             numberLengthCheck(e);
                           }}
                         />
@@ -692,14 +725,14 @@ const AddLinker = props => {
                           name="urls"
                           placeholder="Enter URL and click +"
                           value={newURL}
-                          onChange={e => {
+                          onChange={(e) => {
                             setNewURL(e.target.value);
                             setInvalidUrls(false);
                           }}
                           maxLength={2048}
                           isInvalid={invalidUrls}
                         />
-                        <Feedback message="Please check the url entered" />
+                        <Feedback message="Please enter a unique URL." />
                       </Col>
                       <Col md={1}>
                         <Button variant="contained" onClick={addURL} className="add-button">
@@ -772,7 +805,7 @@ const AddLinker = props => {
       case 3:
         return (
           <Form className="radioform2">
-            {Object.keys(reviewFields).map(key =>
+            {Object.keys(reviewFields).map((key) =>
               (key === "pubChemId" ||
                 key === "inChiKey" ||
                 key === "inChiSequence" ||
@@ -805,7 +838,7 @@ const AddLinker = props => {
                 <FormLabel label="Publications" />
                 <Col md={4}>
                   {linker.publications && linker.publications.length > 0
-                    ? linker.publications.map(pub => {
+                    ? linker.publications.map((pub) => {
                         return (
                           <li>
                             <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
@@ -874,7 +907,7 @@ const AddLinker = props => {
     let unknownLinker = linker.selectedLinker === "Unknown" ? true : false;
 
     var source = {
-      type: "NOTRECORDED"
+      type: "NOTRECORDED",
     };
 
     if (linker.source === "commercial") {
@@ -905,7 +938,7 @@ const AddLinker = props => {
       comment: linker.comment,
       publications: linker.publications,
       urls: linker.urls,
-      source: source
+      source: source,
     };
 
     wsCall(
@@ -914,20 +947,22 @@ const AddLinker = props => {
       { unknown: unknownLinker },
       true,
       linkerObj,
-      response => history.push("/linkers"),
+      (response) => history.push("/linkers"),
       addLinkerFailure
     );
 
     function addLinkerFailure(response) {
-      response.json().then(parsedJson => {
+      response.json().then((parsedJson) => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
       });
     }
   }
 
-  const isStepSkipped = step => {
-    return linker.selectedLinker === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
+  const isStepSkipped = (step) => {
+    return (
+      linker.selectedLinker === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3)
+    );
   };
 
   return (
