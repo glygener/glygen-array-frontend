@@ -31,6 +31,7 @@ const GlygenTable = props => {
   const [selectedIdMakePublic, setSelectedIdMakePublic] = useState("");
   const [showMakePublicModal, setShowMakePublicModal] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [customOffset, setCustomOffset] = useState(false);
 
   var columnsToRender = Object.assign({}, props.columns);
 
@@ -399,6 +400,7 @@ const GlygenTable = props => {
           }*/
 
           if (props.fetchWS) {
+            debugger;
             setShowLoading(true);
             var sortColumn = state.sorted.length > 0 ? state.sorted[0].id : props.defaultSortColumn;
             var sortOrder = state.sorted.length > 0 ? (state.sorted[0].desc === false ? 1 : 0) : props.defaultSortOrder;
@@ -408,7 +410,7 @@ const GlygenTable = props => {
               {
                 urlParams: props.urlParams || [],
                 qsParams: {
-                  offset: state.page * state.pageSize,
+                  offset: customOffset ? 0 : state.page * state.pageSize,
                   limit: state.pageSize,
                   sortBy: sortColumn,
                   order: sortOrder,
@@ -484,10 +486,17 @@ const GlygenTable = props => {
 
   function fetchSuccess(response, state) {
     response.json().then(responseJson => {
-      setData(responseJson.rows);
-      setRows(responseJson.total);
-      setPages(Math.ceil(responseJson.total / state.pageSize));
-      setShowLoading(false);
+      debugger;
+      if (searchFilter !== "" && responseJson.total < 10 && !customOffset) {
+        setCustomOffset(true);
+        tableElement.fireFetchData();
+      } else {
+        setCustomOffset(false);
+        setData(responseJson.rows);
+        setRows(responseJson.total);
+        setPages(Math.ceil(responseJson.total / state.pageSize));
+        setShowLoading(false);
+      }
     });
   }
 
