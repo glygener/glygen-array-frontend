@@ -3,13 +3,7 @@ import { Row, Col, Form, Button } from "react-bootstrap";
 import { FormLabel, Feedback } from "../components/FormControls";
 import { Source } from "./Source";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  csvToArray,
-  isValidURL,
-  externalizeUrl,
-  isValidNumber,
-  numberLengthCheck,
-} from "../utils/commonUtils";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import MultiToggle from "react-multi-toggle";
 import { Link } from "@material-ui/core";
 import { wsCall } from "../utils/wsUtils";
@@ -18,7 +12,7 @@ import { PublicationCard } from "./PublicationCard";
 import { Loading } from "./Loading";
 import "../containers/AddFeature.css";
 
-const AddGlycanInfoToFeature = (props) => {
+const AddGlycanInfoToFeature = props => {
   const [invalidUrls, setInvalidUrls] = useState(false);
   const [newURL, setNewURL] = useState("");
   const [newPubMedId, setNewPubMedId] = useState("");
@@ -55,7 +49,7 @@ const AddGlycanInfoToFeature = (props) => {
     }
   };
 
-  const sourceInfoChangeForMetadata = (e) => {
+  const sourceInfoChangeForMetadata = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -80,7 +74,7 @@ const AddGlycanInfoToFeature = (props) => {
     }
   };
 
-  const purityInfoChange = (e) => {
+  const purityInfoChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
     let purityDetails;
@@ -128,28 +122,28 @@ const AddGlycanInfoToFeature = (props) => {
 
   const opensRingOptions = [
     {
-      displayName: "Anomer/Ring configuration",
-      value: 0,
+      displayName: "Open Ring",
+      value: 0
     },
     {
       displayName: "Alpha",
-      value: 1,
+      value: 1
     },
     {
       displayName: "Beta",
-      value: 2,
+      value: 2
     },
     {
       displayName: "Unknown",
-      value: 3,
+      value: 3
     },
     {
       displayName: "Equilibrium",
-      value: 4,
-    },
+      value: 4
+    }
   ];
 
-  const urlWidget = (enableDelete) => {
+  const urlWidget = enableDelete => {
     return (
       <>
         {props.addGlycanInfoToFeature.urls && props.addGlycanInfoToFeature.urls.length > 0
@@ -192,7 +186,7 @@ const AddGlycanInfoToFeature = (props) => {
   function addURL() {
     var listUrls = props.addGlycanInfoToFeature.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find((i) => i === urlEntered);
+    const urlExists = listUrls.find(i => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -210,28 +204,20 @@ const AddGlycanInfoToFeature = (props) => {
 
   function addPublication() {
     let publications = props.addGlycanInfoToFeature.papers;
-    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
       setShowLoading(true);
-      wsCall(
-        "getpublication",
-        "GET",
-        [newPubMedId],
-        true,
-        null,
-        addPublicationSuccess,
-        addPublicationError
-      );
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
     } else {
       setNewPubMedId("");
     }
 
     function addPublicationSuccess(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         setShowErrorSummary(false);
         props.setAddGlycanInfoToFeature({
-          papers: props.addGlycanInfoToFeature.papers.concat([responseJson]),
+          papers: props.addGlycanInfoToFeature.papers.concat([responseJson])
         });
         setNewPubMedId("");
       });
@@ -239,7 +225,7 @@ const AddGlycanInfoToFeature = (props) => {
     }
 
     function addPublicationError(response) {
-      response.text().then((resp) => {
+      response.text().then(resp => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -253,7 +239,7 @@ const AddGlycanInfoToFeature = (props) => {
 
   function deletePublication(id, wscall) {
     const publications = props.addGlycanInfoToFeature.papers;
-    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     props.setAddGlycanInfoToFeature({ papers: publications });
@@ -271,7 +257,7 @@ const AddGlycanInfoToFeature = (props) => {
                 name="name"
                 placeholder="Name"
                 value={props.metadata.name}
-                onChange={(e) => {
+                onChange={e => {
                   props.setMetadata({ name: e.target.value });
                   props.setMetadata({ invalidName: false });
                 }}
@@ -291,7 +277,7 @@ const AddGlycanInfoToFeature = (props) => {
                 name="featureId"
                 placeholder="Feature Id"
                 value={props.metadata.featureId}
-                onChange={(e) => {
+                onChange={e => {
                   props.setMetadata({ featureId: e.target.value });
                   props.setMetadata({ validateFeatureId: false });
                 }}
@@ -398,9 +384,7 @@ const AddGlycanInfoToFeature = (props) => {
                 maxLength={2000}
               />
               <div className="text-right text-muted">
-                {props.metadata.purity &&
-                props.metadata.purity.comment &&
-                props.metadata.purity.comment.length > 0
+                {props.metadata.purity && props.metadata.purity.comment && props.metadata.purity.comment.length > 0
                   ? props.metadata.purity.comment.length
                   : "0"}
                 /2000
@@ -412,12 +396,12 @@ const AddGlycanInfoToFeature = (props) => {
     );
   };
 
-  const getSourceOptions = (sourceProp) => {
+  const getSourceOptions = sourceProp => {
     return (
       <>
         <Row
           style={{
-            marginTop: "1em",
+            marginTop: "1em"
           }}
         >
           <FormLabel label="Source" className={"metadata-descriptor-title "} />
@@ -462,13 +446,7 @@ const AddGlycanInfoToFeature = (props) => {
     );
   };
 
-  const getCommercialSourceWizard = (
-    sourceChange,
-    validate,
-    commercial,
-    isMetadata,
-    notRecorded
-  ) => {
+  const getCommercialSourceWizard = (sourceChange, validate, commercial, isMetadata, notRecorded) => {
     return (
       <>
         <Source
@@ -483,13 +461,7 @@ const AddGlycanInfoToFeature = (props) => {
     );
   };
 
-  const getNonCommercialSourceWizard = (
-    sourceChange,
-    validate,
-    nonCommercial,
-    isMetadata,
-    notRecorded
-  ) => {
+  const getNonCommercialSourceWizard = (sourceChange, validate, nonCommercial, isMetadata, notRecorded) => {
     return (
       <>
         <Source
@@ -522,13 +494,12 @@ const AddGlycanInfoToFeature = (props) => {
                 placeholder={"min range"}
                 value={props.addGlycanInfoToFeature.minRangeSelected}
                 isInvalid={minRangeValid}
-                onChange={(e) => {
+                onChange={e => {
                   if (
                     parseInt(e.target.value) > parseInt(props.maxRange) ||
                     parseInt(e.target.value) < 1 ||
                     (props.addGlycanInfoToFeature.maxRangeSelected !== "" &&
-                      parseInt(e.target.value) >
-                        parseInt(props.addGlycanInfoToFeature.maxRangeSelected))
+                      parseInt(e.target.value) > parseInt(props.addGlycanInfoToFeature.maxRangeSelected))
                   ) {
                     setMinRangeValid(true);
                   } else {
@@ -537,7 +508,7 @@ const AddGlycanInfoToFeature = (props) => {
                   props.setAddGlycanInfoToFeature({ minRangeSelected: e.target.value });
                 }}
                 min={1}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key.length === 1) {
                     if (e.key !== "v" && e.key !== "V") {
                       isValidNumber(e);
@@ -559,12 +530,11 @@ const AddGlycanInfoToFeature = (props) => {
                 placeholder={"max range"}
                 value={props.addGlycanInfoToFeature.maxRangeSelected}
                 isInvalid={maxRangeValid}
-                onChange={(e) => {
+                onChange={e => {
                   if (
                     parseInt(e.target.value) > parseInt(props.maxRange) ||
                     parseInt(e.target.value) < 1 ||
-                    parseInt(e.target.value) <
-                      parseInt(props.addGlycanInfoToFeature.minRangeSelected)
+                    parseInt(e.target.value) < parseInt(props.addGlycanInfoToFeature.minRangeSelected)
                   ) {
                     setMaxRangeValid(true);
                   } else {
@@ -573,7 +543,7 @@ const AddGlycanInfoToFeature = (props) => {
                   props.setAddGlycanInfoToFeature({ maxRangeSelected: e.target.value });
                 }}
                 min={1}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key.length === 1) {
                     if (e.key !== "v" && e.key !== "V") {
                       isValidNumber(e);
@@ -611,14 +581,14 @@ const AddGlycanInfoToFeature = (props) => {
                 name="urls"
                 placeholder="Enter URL and click +"
                 value={newURL}
-                onChange={(e) => {
+                onChange={e => {
                   setNewURL(e.target.value);
                   setInvalidUrls(false);
                 }}
                 maxLength={2048}
                 isInvalid={invalidUrls}
               />
-              <Feedback message="Please enter a unique URL." />
+              <Feedback message="Please enter a valid and unique URL." />
             </Col>
             <Col md={1}>
               <Button variant="contained" onClick={addURL} className="add-button">
@@ -633,14 +603,7 @@ const AddGlycanInfoToFeature = (props) => {
         <FormLabel label="Papers" />
         <Col md={6}>
           {props.addGlycanInfoToFeature.papers.map((pub, index) => {
-            return (
-              <PublicationCard
-                key={index}
-                {...pub}
-                enableDelete
-                deletePublication={deletePublication}
-              />
-            );
+            return <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />;
           })}
           <Row>
             <Col md={10}>
@@ -649,12 +612,12 @@ const AddGlycanInfoToFeature = (props) => {
                 name="papers"
                 placeholder="Enter name of the Paper and click +"
                 value={newPubMedId}
-                onChange={(e) => setNewPubMedId(e.target.value)}
+                onChange={e => setNewPubMedId(e.target.value)}
                 maxLength={100}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   isValidNumber(e);
                 }}
-                onInput={(e) => {
+                onInput={e => {
                   numberLengthCheck(e);
                 }}
               />
@@ -669,12 +632,12 @@ const AddGlycanInfoToFeature = (props) => {
       </Form.Group>
 
       <Form.Group as={Row} controlId="opensRing">
-        <FormLabel label={"Opens Ring"} />
+        <FormLabel label={"Anomer/Ring configuration"} />
         <Col md={6}>
           <MultiToggle
             options={opensRingOptions}
             selectedOption={props.addGlycanInfoToFeature.opensRing}
-            onSelectOption={(value) => {
+            onSelectOption={value => {
               props.setAddGlycanInfoToFeature({ opensRing: value });
             }}
           />
@@ -690,10 +653,10 @@ const AddGlycanInfoToFeature = (props) => {
               name={"equilibriumComment"}
               placeholder={"equilibrium comment"}
               value={props.addGlycanInfoToFeature.equilibriumComment}
-              onChange={(e) => {
+              onChange={e => {
                 const name = e.target.name;
                 props.setAddGlycanInfoToFeature({
-                  [name]: e.target.value,
+                  [name]: e.target.value
                 });
               }}
               maxLength={2000}
@@ -716,9 +679,7 @@ const AddGlycanInfoToFeature = (props) => {
         className="radioform2"
         validated={
           props.isMetadata
-            ? props.metadata.validatedCommNonComm ||
-              props.metadata.validateValue ||
-              props.metadata.validateMethod
+            ? props.metadata.validatedCommNonComm || props.metadata.validateValue || props.metadata.validateMethod
             : props.addGlycanInfoToFeature.validatedCommNonComm
         }
       >
@@ -727,7 +688,7 @@ const AddGlycanInfoToFeature = (props) => {
             {getMetadataNameandId()}
             <Row
               style={{
-                marginTop: "1em",
+                marginTop: "1em"
               }}
             >
               <FormLabel label="Purity" className={"metadata-descriptor-title "} />

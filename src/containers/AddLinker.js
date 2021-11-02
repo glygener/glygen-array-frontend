@@ -732,7 +732,7 @@ const AddLinker = (props) => {
                           maxLength={2048}
                           isInvalid={invalidUrls}
                         />
-                        <Feedback message="Please enter a unique URL." />
+                        <Feedback message="Please enter a valid and unique URL." />
                       </Col>
                       <Col md={1}>
                         <Button variant="contained" onClick={addURL} className="add-button">
