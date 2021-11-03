@@ -118,6 +118,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/addfeature";
     case "getfeature":
       return ws_base_array + "/getfeature";
+    case "updatefeature":
+      return ws_base_array + "/updateFeature";
     case "unitlevels":
       return ws_base_util + "/unitLevels";
     case "availablemetadataname":

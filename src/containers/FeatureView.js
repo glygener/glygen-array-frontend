@@ -1,21 +1,30 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { wsCall } from "../utils/wsUtils";
 import { useParams } from "react-router-dom";
-import { Row, Col, Form, Table } from "react-bootstrap";
-import { FormLabel, Title, LinkButton } from "../components/FormControls";
+import { Row, Col, Form, Table, Button, Card } from "react-bootstrap";
+import { FormLabel, Title, Feedback } from "../components/FormControls";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
 import { getToolTip } from "../utils/commonUtils";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
+import { useHistory, Link } from "react-router-dom";
+import { ErrorSummary } from "../components/ErrorSummary";
+import { Loading } from "../components/Loading";
+import Container from "@material-ui/core/Container";
 
 const FeatureView = props => {
   let { featureId, editFeature } = useParams();
+  const history = useHistory();
+  const [showLoading, setShowLoading] = useState(false);
 
   const [validated, setValidated] = useState(false);
   const [glycanViewInfo, setGlycanViewInfo] = useState(false);
   const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   // useEffect(() => props.authCheckAgent, []);
 
@@ -25,6 +34,7 @@ const FeatureView = props => {
     }
 
     if (featureId) {
+      setShowLoading(true);
       wsCall("getfeature", "GET", [featureId], true, null, getFeatureSuccess, getFeatureFailure);
     }
   }, [featureId]);
@@ -33,14 +43,17 @@ const FeatureView = props => {
     response.json().then(parsedJson => {
       setFeatureDetails(parsedJson);
     });
+    setShowLoading(false);
   }
 
   function getFeatureFailure(response) {
     setValidated(false);
     console.log(response);
+    setShowLoading(false);
   }
 
   const [featureDetails, setFeatureDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
+    id: "",
     featureId: "",
     internalId: "",
     name: "",
@@ -52,67 +65,6 @@ const FeatureView = props => {
     isLipidLinkedToSurfaceUsingLinker: "No",
     metadata: {}
   });
-
-  const getFeatureTypeTable = (featureTypeData, label) => {
-    return (
-      <>
-        <div>
-          <h3>{getTypeTableLabel(label)}</h3>
-          &nbsp;
-          <Table bordered hover size="sm">
-            <thead>
-              <th>Name</th>
-              <th>type</th>
-              <th>sequence</th>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{featureTypeData.id}</td>
-                <td>{featureTypeData.type}</td>
-                <td>{featureTypeData.sequence}</td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-      </>
-    );
-  };
-
-  // function getType(type) {
-  //   switch (type) {
-  //     case "LINKEDGLYCAN":
-  //       return getFeatureTypeTable(featureDetails.linker, "LINKEDGLYCAN");
-  //     case "GLYCOLIPID":
-  //       return getFeatureTypeTable(featureDetails.lipid, "GLYCOLIPID");
-  //     case "GLYCOPEPTIDE":
-  //       return getFeatureTypeTable(featureDetails.linker, "GLYCOPEPTIDE");
-  //     case "GLYCOPROTEIN":
-  //       return getFeatureTypeTable(featureDetails.lipid, "GLYCOPROTEIN");
-  //     case "GPLINKEDGLYCOPEPTIDE":
-  //       return getFeatureTypeTable(featureDetails.lipid, "GPLINKEDGLYCOPEPTIDE");
-
-  //     default:
-  //       return getFeatureTypeTable(featureDetails.linker, "LINKEDGLYCAN");
-  //   }
-  // }
-
-  function getTypeTableLabel(type) {
-    switch (type) {
-      case "LINKEDGLYCAN":
-        return "Linker";
-      case "GLYCOLIPID":
-        return "Lipid";
-      case "GLYCOPEPTIDE":
-        return "Peptide";
-      case "GLYCOPROTEIN":
-        return "Protein";
-      case "GPLINKEDGLYCOPEPTIDE":
-        return "GlycoProtein linked GlycoPeptide";
-
-      default:
-        return "Linker";
-    }
-  }
 
   const getMetadataTable = () => {
     let metadata = featureDetails.metadata;
@@ -160,7 +112,9 @@ const FeatureView = props => {
               Header: "Name",
               accessor: "name",
               Cell: row =>
-                featureDetails.type === "LINKEDGLYCAN" ? row.original.glycan.name : row.original.glycans[0].glycan.name
+                featureDetails.type === "LINKEDGLYCAN"
+                  ? getToolTip(row.original.glycan.name)
+                  : getToolTip(row.original.glycans[0].glycan.name)
             },
             {
               Header: "Structure Image",
@@ -183,17 +137,17 @@ const FeatureView = props => {
                 return featureDetails.type === "LINKEDGLYCAN"
                   ? row.original.source &&
                       (row.original.source.type === "NOTRECORDED"
-                        ? "Not Recorded"
+                        ? getToolTip("Not Recorded")
                         : row.original.source.type === "COMMERCIAL"
-                        ? "Commercial"
-                        : "Non Commercial")
+                        ? getToolTip("Commercial")
+                        : getToolTip("Non Commercial"))
                   : row.original.glycans[0] &&
                       row.original.glycans[0].source &&
                       (row.original.glycans[0].source.type === "NOTRECORDED"
-                        ? "Not Recorded"
+                        ? getToolTip("Not Recorded")
                         : row.original.glycans[0].source.type === "COMMERCIAL"
-                        ? "Commercial"
-                        : "Non Commercial");
+                        ? getToolTip("Commercial")
+                        : getToolTip("Non Commercial"));
               }
             },
             {
@@ -201,8 +155,8 @@ const FeatureView = props => {
               accessor: "opensRing",
               Cell: row => {
                 return featureDetails.type === "LINKEDGLYCAN"
-                  ? row.original.reducingEndConfiguration.type
-                  : row.original.glycans[0].reducingEndConfiguration.type;
+                  ? getToolTip(row.original.reducingEndConfiguration.type)
+                  : getToolTip(row.original.glycans[0].reducingEndConfiguration.type);
               }
             },
             ...(featureDetails.type === "GLYCOLIPID"
@@ -211,7 +165,7 @@ const FeatureView = props => {
                     Header: "Linker",
                     accessor: "linker",
                     Cell: (row, index) => {
-                      return row.original.linker ? row.original.linker.name : "";
+                      return row.original.linker ? getToolTip(row.original.linker.name) : "";
                     },
                     minWidth: 150
                   }
@@ -309,7 +263,6 @@ const FeatureView = props => {
   };
 
   const case4Metadata = () => {
-    debugger;
     return (
       <>
         {props.metadata.purity.purityNotSpecified === "specify" ? (
@@ -463,30 +416,48 @@ const FeatureView = props => {
     );
   };
 
+  const handleChange = e => {
+    let name = e.target.name;
+    let value = e.target.value;
+
+    setFeatureDetails({ [name]: value });
+    setShowErrorSummary(false);
+  };
+
   const getMetadataNameandId = page => {
     return (
       <>
         <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" />
+          <FormLabel label="Name" className={editFeature ? "required-asterik" : ""} />
           <Col md={4}>
             <Form.Control
               type="text"
+              name="name"
               disabled={page === "case4" && !editFeature}
               plaintext={page === "view" && !editFeature}
               value={props.metadata ? props.metadata.name : featureDetails.name}
+              onChange={editFeature ? handleChange : {}}
+              maxLength={50}
+              required
             />
+            <Feedback message={"Name is required"} />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="featureId">
-          <FormLabel label="FeatureId" />
+          <FormLabel label="FeatureId" className={editFeature ? "required-asterik" : ""} />
           <Col md={4}>
             <Form.Control
               type="text"
+              name="internalId"
               disabled={page === "case4" && !editFeature}
               plaintext={page === "view" && !editFeature}
               value={props.metadata ? props.metadata.featureId : featureDetails.internalId}
+              onChange={editFeature ? handleChange : {}}
+              maxLength={30}
+              required
             />
+            <Feedback message={"Feature Id is required"} />
           </Col>
         </Form.Group>
 
@@ -497,7 +468,7 @@ const FeatureView = props => {
               type="text"
               disabled={page === "case4"}
               plaintext={page === "view"}
-              value={props.type ? props.type : featureDetails.type}
+              defaultValue={props.type ? props.type : featureDetails.type}
             />
           </Col>
         </Form.Group>
@@ -618,7 +589,38 @@ const FeatureView = props => {
     setGlycanViewInfo(glycan);
   };
 
-  function handleSubmit() {}
+  function handleSubmit(e) {
+    setValidated(true);
+    if (e.currentTarget.checkValidity()) {
+      wsCall(
+        "updatefeature",
+        "POST",
+        null,
+        true,
+        {
+          id: featureDetails.id,
+          name: featureDetails.name,
+          internalId: featureDetails.internalId,
+          type: featureDetails.type
+        },
+        updateFeatureSuccess,
+        updateFeatureFailure
+      );
+    }
+    e.preventDefault();
+
+    function updateFeatureSuccess() {
+      history.push("/features");
+    }
+
+    function updateFeatureFailure(response) {
+      response.json().then(parsedJson => {
+        setShowErrorSummary(true);
+        setErrorMessage("");
+        setPageErrorsJson(parsedJson);
+      });
+    }
+  }
 
   const getFeatureDetails = () => {
     return (
@@ -628,31 +630,53 @@ const FeatureView = props => {
           {getMeta(head.viewFeature)}
         </Helmet>
 
-        <div className={featureId ? "page-container" : ""}>
-          <Title title={featureId ? "Feature View" : ""} />
-          <Form noValidate validated onSubmit={editFeature ? handleSubmit : ""}>
-            {getMetadataNameandId(props.metadata ? "case4" : "view")}
+        <Container maxWidth="lg">
+          <div className={featureId ? "page-container" : ""}>
+            <Title title={editFeature ? "Edit Feature" : "Feature View"} />
+            <Card>
+              <Card.Body>
+                {<Loading show={showLoading} />}
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="feature"
+                  errorJson={pageErrorsJson}
+                  errorMessage={errorMessage}
+                />
 
-            {getLinker()}
+                <Form noValidate validated={validated} onSubmit={editFeature ? handleSubmit : ""}>
+                  {getMetadataNameandId(props.metadata ? "case4" : "view")}
 
-            {getLipid()}
+                  {getLinker()}
 
-            {getPeptide()}
+                  {getLipid()}
 
-            {getProtein()}
+                  {getPeptide()}
 
-            {props.metadata
-              ? case4Metadata()
-              : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
+                  {getProtein()}
 
-            {props.glycans ? getSelectedGlycanList() : featureDetails.glycans.length > 0 && getGlycanTable()}
-            <br />
+                  {props.metadata
+                    ? case4Metadata()
+                    : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
 
-            {featureDetails && featureDetails.type && <LinkButton to="/features" label="Back" />}
-            <br />
-            <br />
-          </Form>
-        </div>
+                  {props.glycans ? getSelectedGlycanList() : featureDetails.glycans.length > 0 && getGlycanTable()}
+                  <br />
+
+                  <div className="text-center mb-4 mt-4">
+                    {featureDetails && featureDetails.type && (
+                      <Link to="/features">
+                        <Button className="gg-btn-blue mt-2 gg-mr-20">{editFeature ? "Cancel" : "Back"}</Button>
+                      </Link>
+                    )}
+
+                    <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+                      Submit
+                    </Button>
+                  </div>
+                </Form>
+              </Card.Body>
+            </Card>
+          </div>
+        </Container>
       </>
     );
   };

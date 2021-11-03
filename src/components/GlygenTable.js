@@ -400,7 +400,6 @@ const GlygenTable = props => {
           }*/
 
           if (props.fetchWS) {
-            debugger;
             setShowLoading(true);
             var sortColumn = state.sorted.length > 0 ? state.sorted[0].id : props.defaultSortColumn;
             var sortOrder = state.sorted.length > 0 ? (state.sorted[0].desc === false ? 1 : 0) : props.defaultSortOrder;
@@ -486,7 +485,6 @@ const GlygenTable = props => {
 
   function fetchSuccess(response, state) {
     response.json().then(responseJson => {
-      debugger;
       if (searchFilter !== "" && responseJson.total < 10 && !customOffset) {
         setCustomOffset(true);
         tableElement.fireFetchData();

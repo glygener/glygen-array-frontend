@@ -55,8 +55,8 @@ const ErrorSummary = props => {
           <>
             {listSummary}
             <ul>
-              {listAlerts.map(line => {
-                return <li>{line}</li>;
+              {listAlerts.map((line, index) => {
+                return <li key={index}>{line}</li>;
               })}
             </ul>
           </>
