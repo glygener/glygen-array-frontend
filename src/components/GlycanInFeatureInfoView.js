@@ -203,7 +203,7 @@ const GlycanInFeatureInfoView = props => {
       )}
 
       <Form.Group as={Row} controlId="opensRing">
-        <FormLabel label="Opens Ring" />
+        <FormLabel label="Anomer/Ring configuration" />
         <Col md={4}>
           <Form.Control type="text" disabled value={getReducingEndState(glycanDetails.glycan.opensRing)} />
         </Col>

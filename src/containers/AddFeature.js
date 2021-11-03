@@ -26,7 +26,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { GlycoPeptides } from "../components/GlycoPeptides";
 import { useHistory } from "react-router-dom";
-import { GlycanInFeatureInfoView } from "../components/GlycanInFeatureInfoView";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 
 const AddFeature = props => {
@@ -1644,7 +1643,7 @@ const AddFeature = props => {
   function getReducingEndState(opensRing) {
     switch (opensRing) {
       case 0:
-        return "Anomer/Ring configuration";
+        return "Open Ring";
       case 1:
         return "Alpha";
       case 2:

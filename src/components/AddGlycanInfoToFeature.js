@@ -207,7 +207,6 @@ const AddGlycanInfoToFeature = props => {
     let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      setShowLoading(true);
       wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
     } else {
       setNewPubMedId("");
@@ -221,7 +220,6 @@ const AddGlycanInfoToFeature = props => {
         });
         setNewPubMedId("");
       });
-      setShowLoading(false);
     }
 
     function addPublicationError(response) {
@@ -233,7 +231,6 @@ const AddGlycanInfoToFeature = props => {
         }
         setShowErrorSummary(true);
       });
-      setShowLoading(false);
     }
   }
 
@@ -670,9 +667,13 @@ const AddGlycanInfoToFeature = props => {
           </Col>
         </Form.Group>
       )}
+      <Loading show={showLoading} />
     </>
   ) : props.step3 ? (
-    getRange()
+    <>
+      {getRange()}
+      <Loading show={showLoading} />
+    </>
   ) : (
     <>
       <Form

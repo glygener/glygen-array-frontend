@@ -4,7 +4,7 @@ import { Feedback } from "../components/FormControls";
 import { BlueCheckbox } from "../components/FormControls";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-const Source = (props) => {
+const Source = props => {
   const getCommercial = () => {
     return (
       <>
@@ -23,10 +23,10 @@ const Source = (props) => {
             <Form.Control
               name="vendor"
               type="text"
-              placeholder="Entter Vendor name"
+              placeholder="Enter Vendor name"
               value={props.commercial.vendor}
               isInvalid={props.validate}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
               disabled={props.commercial.vendorNotRecorded}
               required
             />
@@ -60,13 +60,7 @@ const Source = (props) => {
         </Form.Group>
 
         <Form.Group as={Row} controlId="cataloguenumber">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={5}
-            className="text-xs-left text-md-left text-lg-right"
-          >
+          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
             Catalogue Number
             {/* <strong>Catalogue Number</strong> */}
           </Form.Label>
@@ -76,19 +70,13 @@ const Source = (props) => {
               type="text"
               placeholder="Enter Catalogue Number"
               value={props.commercial.catalogueNumber}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
             />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="batchId">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={5}
-            className="text-xs-left text-md-left text-lg-right"
-          >
+          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
             Batch ID
             {/* <strong>Batch ID</strong> */}
           </Form.Label>
@@ -98,7 +86,7 @@ const Source = (props) => {
               type="text"
               placeholder="Enter Batch ID"
               value={props.commercial.batchId}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
             />
           </Col>
         </Form.Group>
@@ -127,7 +115,7 @@ const Source = (props) => {
               placeholder="Enter Provider Lab name"
               value={props.nonCommercial.providerLab}
               isInvalid={props.validate}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
               disabled={props.nonCommercial.providerLabNotRecorded}
               required
             />
@@ -161,13 +149,7 @@ const Source = (props) => {
         </Form.Group>
 
         <Form.Group as={Row} controlId="batchId">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={5}
-            className="text-xs-left text-md-left text-lg-right"
-          >
+          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
             Batch ID
             {/* <strong>Batch ID</strong> */}
           </Form.Label>
@@ -176,20 +158,14 @@ const Source = (props) => {
               name="batchId"
               type="text"
               placeholder="Enter Batch ID"
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
               value={props.nonCommercial.batchId}
             />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="method">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={5}
-            className="text-xs-left text-md-left text-lg-right"
-          >
+          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
             Method
             {/* <strong>Method</strong> */}
           </Form.Label>
@@ -199,19 +175,13 @@ const Source = (props) => {
               type="text"
               placeholder="Enter Method"
               value={props.nonCommercial.method}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
             />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="comment">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={5}
-            className="text-xs-left text-md-left text-lg-right"
-          >
+          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
             Source Comment
             {/* <strong>Source Comment</strong> */}
           </Form.Label>
@@ -222,7 +192,7 @@ const Source = (props) => {
               name="sourceComment"
               placeholder="Enter Source Comment"
               value={props.nonCommercial.sourceComment}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
               maxLength={2000}
             />
             <div className="text-right text-muted">

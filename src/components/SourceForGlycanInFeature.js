@@ -325,6 +325,8 @@ const SourceForGlycanInFeature = props => {
               closeModal();
             }}
             dialogClassName="my-modal"
+            scrollable
+            animation
           >
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>

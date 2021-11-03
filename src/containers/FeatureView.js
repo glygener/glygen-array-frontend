@@ -662,7 +662,7 @@ const FeatureView = props => {
 function getReducingEndState(opensRing) {
   switch (opensRing) {
     case 0:
-      return "Anomer/Ring configuration";
+      return "Open Ring";
     case 1:
       return "Alpha";
     case 2:
