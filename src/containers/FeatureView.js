@@ -668,9 +668,11 @@ const FeatureView = props => {
                       </Link>
                     )}
 
-                    <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-                      Submit
-                    </Button>
+                    {editFeature && (
+                      <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+                        Submit
+                      </Button>
+                    )}
                   </div>
                 </Form>
               </Card.Body>
