@@ -783,6 +783,9 @@ const AddFeature = props => {
 
         glycanDetails.glycan = glycanObj;
 
+        glycanDetails.urls = glycanObj.urls;
+        glycanDetails.publications = glycanObj.papers;
+
         reducingEndConfiguration.type = glycanObj.opensRing;
         reducingEndConfiguration.comment = glycanObj.opensRing === 4 ? glycanObj.equilibriumComment : "";
         glycanDetails.reducingEndConfiguration = reducingEndConfiguration;
