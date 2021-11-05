@@ -26,7 +26,7 @@ const Source = props => {
               placeholder="Enter Vendor name"
               value={props.commercial.vendor}
               isInvalid={props.validate}
-              onChange={e => props.sourceChange(e)}
+              onChange={(e) => props.sourceChange(e)}
               disabled={props.commercial.vendorNotRecorded}
               required
             />
@@ -62,7 +62,6 @@ const Source = props => {
         <Form.Group as={Row} controlId="cataloguenumber">
           <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
             Catalogue Number
-            {/* <strong>Catalogue Number</strong> */}
           </Form.Label>
           <Col xs={12} md={10} lg={7} xl={6}>
             <Form.Control
@@ -70,7 +69,7 @@ const Source = props => {
               type="text"
               placeholder="Enter Catalogue Number"
               value={props.commercial.catalogueNumber}
-              onChange={e => props.sourceChange(e)}
+              onChange={(e) => props.sourceChange(e)}
             />
           </Col>
         </Form.Group>
@@ -86,7 +85,7 @@ const Source = props => {
               type="text"
               placeholder="Enter Batch ID"
               value={props.commercial.batchId}
-              onChange={e => props.sourceChange(e)}
+              onChange={(e) => props.sourceChange(e)}
             />
           </Col>
         </Form.Group>

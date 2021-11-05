@@ -727,14 +727,13 @@ const AddPeptide = (props) => {
       source.batchId = peptide.commercial.batchId;
     } else if (peptide.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
-      source.batchId = peptide.commercial.batchId;
+      source.batchId = peptide.nonCommercial.batchId;
       source.providerLab = peptide.nonCommercial.providerLab;
       source.method = peptide.nonCommercial.method;
       source.comment = peptide.nonCommercial.sourceComment;
     }
 
-    var peptideObj =
-      peptide.selectedPeptide === "Unknown" ? getUnknownSubmitData() : getPeptideSubmitData();
+    var peptideObj = peptide.selectedPeptide === "Unknown" ? getUnknownSubmitData() : getPeptideSubmitData();
 
     wsCall(
       "addlinker",
@@ -828,9 +827,7 @@ const AddPeptide = (props) => {
               )}
 
               <div className="mt-4 mb-4">
-                <Typography component={"div"} variant="body1">
-                  {getStepContent(activeStep, validate)}
-                </Typography>
+                <span>{getStepContent(activeStep, validate)}</span>
                 {getNavigationButtons()}
               </div>
             </Card.Body>

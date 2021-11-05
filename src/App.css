@@ -596,3 +596,23 @@ input[type="radio" i], input[type="check" i] {
   .gg-footer {
     margin-top: auto;
   }
+
+  /* =============================== */
+  .text-overflow {
+    display: block;
+    padding: 9px 0;
+    /* margin-bottom: 25px; */
+    /* line-height: 1.42857143; */
+    /* background-color: rgba(0, 0, 0, 0.05); */
+    overflow: auto;
+    word-break: break-all;
+    word-wrap: break-word;
+    /* border: 1px solid #ddd;
+    border-radius: 4px; */
+    overflow-x: "scroll";
+    white-space: pre-line;
+  }
+
+  .text-max-height {
+    max-height: 150px !important;
+  }
