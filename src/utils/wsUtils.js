@@ -112,6 +112,8 @@ export function getWsUrl(ws) {
       return ws_base_util + "/getSequenceFromUniprot";
     case "featurelist":
       return ws_base_array + "/listFeatures";
+    case "featurelistbytype":
+      return ws_base_array + "/listFeaturesByType";
     case "featuredelete":
       return ws_base_array + "/deletefeature";
     case "addfeature":

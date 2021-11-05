@@ -205,7 +205,15 @@ const GlycanInFeatureInfoView = props => {
       <Form.Group as={Row} controlId="opensRing">
         <FormLabel label="Anomer/Ring configuration" />
         <Col md={4}>
-          <Form.Control type="text" disabled value={getReducingEndState(glycanDetails.glycan.opensRing)} />
+          <Form.Control
+            type="text"
+            disabled
+            value={
+              isNaN(glycanDetails.glycan.opensRing)
+                ? glycanDetails.glycan.opensRing
+                : getReducingEndState(glycanDetails.glycan.opensRing)
+            }
+          />
         </Col>
       </Form.Group>
 
