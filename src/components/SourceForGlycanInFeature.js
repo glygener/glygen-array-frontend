@@ -138,30 +138,12 @@ const SourceForGlycanInFeature = props => {
     selectedRow.urls = addGlycanInfoToFeature.urls;
     selectedRow.papers = addGlycanInfoToFeature.papers;
     selectedRow.opensRing = addGlycanInfoToFeature.opensRing;
+
     let glycansWithIndex;
     let currentMaxIndex;
 
     if (props.featureAddState.positionDetails.isPosition) {
-      glycansWithIndex = glycansList.filter(i => i.glycan && i.glycan.index >= 0);
-
-      if (glycansWithIndex.length > 0) {
-        // currentMaxIndex = Math.max(
-        //   ...glycansList.map(i => {
-        //     return i.glycan.index;
-        //   }),
-        //   0
-        // );
-
-        let indexes = [];
-
-        glycansList.forEach(i => {
-          if (i.index >= 0) {
-            indexes.push(i.glycan.index);
-          }
-        });
-
-        currentMaxIndex = Math.max(...indexes);
-      }
+      selectedRow.index = props.featureAddState.positionDetails.number;
     } else if (props.featureAddState.type !== "GLYCO_LIPID") {
       glycansWithIndex = glycansList.filter(i => i.index >= 0);
 
@@ -176,12 +158,12 @@ const SourceForGlycanInFeature = props => {
 
         currentMaxIndex = Math.max(...indexes);
       }
-    }
 
-    if (currentMaxIndex >= 0) {
-      selectedRow.index = currentMaxIndex + 1;
-    } else {
-      selectedRow.index = 0;
+      if (currentMaxIndex >= 0) {
+        selectedRow.index = currentMaxIndex + 1;
+      } else {
+        selectedRow.index = 0;
+      }
     }
 
     if (addGlycanInfoToFeature.opensRing === 4) {
