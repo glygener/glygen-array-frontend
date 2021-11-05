@@ -272,10 +272,7 @@ const AddGlycan = (props) => {
       </Helmet>
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading
-            title="Add Glycan to Repository"
-            subTitle="Please provide the information for the new glycan."
-          />
+          <PageHeading title="Add Glycan to Repository" subTitle="Please provide the information for the new glycan." />
           <Card>
             <Card.Body>
               <Stepper activeStep={activeStep}>
@@ -288,13 +285,9 @@ const AddGlycan = (props) => {
               {getNavigationButtons()}
 
               {showErrorSummary === true && (
-                <ErrorSummary
-                  show={showErrorSummary}
-                  form="glycans"
-                  errorJson={pageErrorsJson}
-                ></ErrorSummary>
+                <ErrorSummary show={showErrorSummary} form="glycans" errorJson={pageErrorsJson}></ErrorSummary>
               )}
-              <div className="mt-4 mb-4">
+              <div className5="mt-4 mb-4">
                 <Typography component={"div"} variant="body1">
                   <>
                     {getStepContent(activeStep, validate)}
