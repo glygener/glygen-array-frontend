@@ -110,11 +110,7 @@ const EditGlycan = (props) => {
               <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
                 {/* image */}
                 {glycanDetails.cartoon && (
-                  <Form.Group
-                    as={Row}
-                    controlId="image"
-                    className="gg-align-center text-center mb-0"
-                  >
+                  <Form.Group as={Row} controlId="image" className="gg-align-center text-center mb-0">
                     {/* <FormLabel label="Image" /> */}
                     <Col md={8}>
                       <StructureImage base64={glycanDetails.cartoon} style={{ minWidth: "20%" }} />
@@ -123,51 +119,25 @@ const EditGlycan = (props) => {
                 )}
 
                 {/* Glycan Type */}
-                {glycanDetails.glytoucanId && (
-                  <Form.Group as={Row} controlId="glycanType" className="gg-align-center mb-0 pb-0">
-                    <Form.Label
-                      column
-                      xs={12}
-                      sm={5}
-                      lg={3}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>Glycan Type</strong>
-                    </Form.Label>
-                    <Col xs={12} sm={7} lg={9} xl={8}>
-                      <Form.Control
-                        type="text"
-                        plaintext
-                        readOnly
-                        value={getGlycanTypeLabel(glycanDetails.type)}
-                      />
-                    </Col>
-                  </Form.Group>
-                )}
+                {/* {glycanDetails.glytoucanId && ( */}
+                <Form.Group as={Row} controlId="glycanType" className="gg-align-center mb-0 pb-0">
+                  <Form.Label column xs={12} sm={5} lg={3} className="text-xs-left text-md-left text-lg-right">
+                    <strong>Glycan Type</strong>
+                  </Form.Label>
+                  <Col xs={12} sm={7} lg={9} xl={8}>
+                    <Form.Control type="text" plaintext readOnly value={getGlycanTypeLabel(glycanDetails.type)} />
+                  </Col>
+                </Form.Group>
+                {/* )} */}
 
                 {/* GlyTouCan ID */}
                 {glycanDetails.glytoucanId && (
-                  <Form.Group
-                    as={Row}
-                    controlId="glytoucanId"
-                    className="gg-align-center mb-0 pb-0"
-                  >
-                    <Form.Label
-                      column
-                      xs={12}
-                      sm={5}
-                      lg={3}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
+                  <Form.Group as={Row} controlId="glytoucanId" className="gg-align-center mb-0 pb-0">
+                    <Form.Label column xs={12} sm={5} lg={3} className="text-xs-left text-md-left text-lg-right">
                       <strong>GlyTouCan ID</strong>
                     </Form.Label>
                     <Col xs={12} sm={7} lg={9} xl={8}>
-                      <Form.Control
-                        type="text"
-                        plaintext
-                        readOnly
-                        value={glycanDetails.glytoucanId}
-                      />
+                      <Form.Control type="text" plaintext readOnly value={glycanDetails.glytoucanId} />
                     </Col>
                   </Form.Group>
                 )}
@@ -175,13 +145,7 @@ const EditGlycan = (props) => {
                 {/* Mass */}
                 {glycanDetails.mass && (
                   <Form.Group as={Row} controlId="mass" className="gg-align-center">
-                    <Form.Label
-                      column
-                      xs={12}
-                      sm={5}
-                      lg={3}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
+                    <Form.Label column xs={12} sm={5} lg={3} className="text-xs-left text-md-left text-lg-right">
                       <strong>Monoisotopic Mass</strong>
                     </Form.Label>
                     <Col xs={12} sm={7} lg={9} xl={8}>
@@ -197,13 +161,7 @@ const EditGlycan = (props) => {
 
                 {/* Internal ID */}
                 <Form.Group as={Row} className="mb-3 gg-align-center" controlId="internalId">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>Internal ID</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
@@ -220,16 +178,8 @@ const EditGlycan = (props) => {
 
                 {/* Name */}
                 <Form.Group as={Row} controlId="name" className="gg-align-center">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
-                    <strong className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""}>
-                      Name
-                    </strong>
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                    <strong className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""}>Name</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
                     <Form.Control
@@ -247,13 +197,7 @@ const EditGlycan = (props) => {
 
                 {/* Comment */}
                 <Form.Group as={Row} controlId="comment" className="gg-align-center">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>Comment</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>

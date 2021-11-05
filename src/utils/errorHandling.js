@@ -32,7 +32,7 @@ const FORM_ERROR_MESSAGES = {
   glycans: {
     Duplicate_sequence: "You already have another glycan in your collection with that sequence.",
     Duplicate_internalId:
-      "The same Internal ID might be found in another glycan in your collection. Please use a different Internal Id.",
+      "The same Internal ID is already used by another glycan in your collection. Please use a different Internal Id.",
     Duplicate_name:
       "The name of another glycan in your collection is the same as this one. Please use a different name.",
     NotValid_sequence:
