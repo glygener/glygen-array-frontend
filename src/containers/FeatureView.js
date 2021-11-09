@@ -13,6 +13,7 @@ import { useHistory, Link } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Loading } from "../components/Loading";
 import Container from "@material-ui/core/Container";
+import { GlycoPeptides } from "../components/GlycoPeptides";
 
 const FeatureView = props => {
   let { featureId, editFeature } = useParams();
@@ -576,6 +577,18 @@ const FeatureView = props => {
     );
   };
 
+  const getGlycoProteinLinkedPeptide = () => {
+    return (
+      <>
+        <GlycoPeptides
+          data={props.rangeGlycoPeptides.length > 0 ? props.rangeGlycoPeptides : props.glycoPeptides}
+          customViewonClick
+          viewOnClick={props.viewGlycoPeptide}
+        />
+      </>
+    );
+  };
+
   const getGlycanInfoDisplay = rowSelected => {
     let glycan;
 
@@ -658,7 +671,12 @@ const FeatureView = props => {
                     ? case4Metadata()
                     : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
 
-                  {props.glycans ? getSelectedGlycanList() : featureDetails.glycans.length > 0 && getGlycanTable()}
+                  {props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
+                  (props.rangeGlycoPeptides || props.glycoPeptides)
+                    ? getGlycoProteinLinkedPeptide()
+                    : props.glycans
+                    ? getSelectedGlycanList()
+                    : featureDetails.glycans.length > 0 && getGlycanTable()}
                   <br />
 
                   <div className="text-center mb-4 mt-4">

@@ -15,16 +15,34 @@ const GlycoPeptides = props => {
             Header: "Name",
             accessor: "name",
             // eslint-disable-next-line react/display-name
-            Cell: ({ row }, index) => <div key={index}>{row.name ? getToolTip(row.name) : row.id}</div>
+            Cell: row => {
+              return row.name
+                ? getToolTip(row.name)
+                : row.original && row.original.glycoPeptide
+                ? getToolTip(row.original.glycoPeptide.name)
+                : row.original && row.original.name;
+            }
           },
           {
             Header: "Feature Id",
-            accessor: "internalId"
+            accessor: "internalId",
+            Cell: row => {
+              return row.internalId
+                ? getToolTip(row.internalId)
+                : row.original && row.original.glycoPeptide
+                ? getToolTip(row.original.glycoPeptide.internalId)
+                : row.original && row.original.internalId;
+            }
           },
           {
             Header: "Type",
             accessor: "type",
-            Cell: row => getToolTip(displayNames.feature[row.value])
+            Cell: row =>
+              row.value
+                ? getToolTip(displayNames.feature[row.value])
+                : row.original && row.original.glycoPeptide
+                ? getToolTip(displayNames.feature[row.original.glycoPeptide.type])
+                : row.original && getToolTip(displayNames.feature[row.original.type])
           },
           {
             Header: "Linker",
@@ -44,17 +62,28 @@ const GlycoPeptides = props => {
             accessor: "linker",
             // eslint-disable-next-line react/display-name
             Cell: ({ row, index }) => {
-              return <div key={index}>{getToolTip(row.linker.type)}</div>;
+              return row.original && row.original.glycoPeptide && row.original.glycoPeptide.linker ? (
+                <div key={index}>{getToolTip(row.original.glycoPeptide.linker.type)}</div>
+              ) : (
+                <div key={index}>{getToolTip(row.linker && row.linker.type)}</div>
+              );
             }
           }
         ]}
         defaultPageSize={10}
-        showSearchBox
-        viewUrl="features/viewFeature"
-        commentsRefColumn="description"
-        fetchWS="featurelistbytype"
         keyColumn="id"
         showRowsInfo
+        showSearchBox
+        showViewIcon
+        showDeleteButton={props.showDeleteButton}
+        customDeleteOnClick={props.customDeleteOnClick}
+        deleteOnClick={props.deleteOnClick}
+        viewUrl="features/viewFeature"
+        customViewonClick
+        viewOnClick={props.viewOnClick}
+        commentsRefColumn="description"
+        data={props.data}
+        fetchWS={!props.data ? "featurelistbytype" : ""}
         infoRowsText="Glyco Peptides"
         paramTypeValue={"GLYCOPEPTIDE"}
         selectButtonHeader={props.selectButtonHeader}

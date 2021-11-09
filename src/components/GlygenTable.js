@@ -436,8 +436,13 @@ const GlygenTable = props => {
           } else if (props.fetchWSCallFunction) {
             props.fetchWSCallFunction();
           } else if (props.data) {
-            setData(props.data.rows);
-            setRows(props.data.total);
+            if (props.data.rows) {
+              setData(props.data.rows);
+              setRows(props.data.total);
+            } else {
+              setData(props.data);
+              setRows(props.data.length);
+            }
             // setPages(Math.ceil(props.data.total / state.pageSize));
           } else {
             setPageErrorMessage("GlygenTable must subscribe to one of these two props: ws or wsCallFunction");

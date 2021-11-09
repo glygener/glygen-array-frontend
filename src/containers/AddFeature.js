@@ -119,7 +119,6 @@ const AddFeature = props => {
   const [onlyMyLinkers, setOnlyMyLinkers] = useState(false);
   var [rowSelected, setRowSelected] = useState([]);
   var [currentGlycanSelection, setCurrentGlycanSelection] = useState();
-  var [currentPeptideSelection, setCurrentPeptideSelection] = useState();
 
   const generalSteps = [
     "Select Feature Type",
@@ -353,13 +352,16 @@ const AddFeature = props => {
     } else if (activeStep === 3) {
       let count = 0;
 
-      if (
-        featureAddState.type === "GLYCO_PEPTIDE" ||
-        featureAddState.type === "GLYCO_PROTEIN" ||
-        featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
-      ) {
+      if (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") {
         if (featureAddState.rangeGlycans.length < 1) {
           let unfilledPositions = featureAddState.glycans.filter(i => !i.glycan);
+          if (unfilledPositions.length > 0) {
+            count++;
+          }
+        }
+      } else if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
+        if (featureAddState.rangeGlycoPeptides.length < 1) {
+          let unfilledPositions = featureAddState.glycoPeptides.filter(i => !i.glycoPeptide);
           if (unfilledPositions.length > 0) {
             count++;
           }
@@ -371,8 +373,12 @@ const AddFeature = props => {
       }
 
       if (count > 0) {
+        if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
+          setErrorMessage("GlycoPeptide selection is required.");
+        } else {
+          setErrorMessage("Glycan selection is required.");
+        }
         setPageErrorsJson({});
-        setErrorMessage("Glycan selection is required.");
         setShowErrorSummary(true);
         return;
       } else {
@@ -516,6 +522,10 @@ const AddFeature = props => {
   const handleProteinSelect = protein => {
     setFeatureAddState({ protein: protein });
     setLinkerValidated(false);
+
+    if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
+      setFeatureAddState({ glycoPeptides: [] });
+    }
 
     ScrollToTop();
   };
@@ -736,16 +746,17 @@ const AddFeature = props => {
     var chooseGlycanTableData = [{ glycan: [] }];
 
     if (linker.type !== "SMALLMOLECULE" && linker.sequence) {
-      valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
       chooseGlycanTableData = getAAPositionsFromSequence(linker.sequence);
 
-      if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
+      if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" && featureAddState.glycoPeptides.length === 0) {
+        valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
         if (chooseGlycanTableData.length > 0) {
           valid = true; //attachable position for glycoPeptide found
           chooseGlycanTableData.forEach(e => (e["glycoPeptide"] = undefined));
         }
         setFeatureAddState({ glycoPeptides: chooseGlycanTableData });
-      } else {
+      } else if (featureAddState.glycans.length === 0) {
+        valid = false; //if linker is protein/peptide, then invalidate until a valid attachable position is found
         if (chooseGlycanTableData.length > 0) {
           valid = true; //attachable position for glycan found
           chooseGlycanTableData.forEach(e => (e["glycan"] = undefined));
@@ -774,7 +785,7 @@ const AddFeature = props => {
     } else if (featureAddState.type === "GLYCO_PROTEIN") {
       featureObj = getGlycoData(featureObj, "GLYCOPROTEIN");
     } else if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
-      featureObj = getGlycoData(featureObj, "GLYCOPROTEINLINKEDGLYCOPEPTIDE");
+      featureObj = getGlycoProteinLinkedPeptide(featureObj, "GPLINKEDGLYCOPEPTIDE");
     }
 
     setShowLoading(true);
@@ -940,6 +951,57 @@ const AddFeature = props => {
       positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.id) {
           map[glycanObj.position] = glycanObj.glycan.id;
+        }
+        return map;
+      }, {}),
+
+      metadata: metadataTemplate.length > 0 && metadataToSubmit()
+    };
+
+    return featureObj;
+  }
+
+  function getGlycoProteinLinkedPeptide(featureObj, type) {
+    debugger;
+    let glycoPeptides =
+      featureAddState.rangeGlycoPeptides.length > 0
+        ? featureAddState.rangeGlycoPeptides
+        : featureAddState.glycoPeptides;
+
+    let glycoPep = glycoPeptides.map(gp => {
+      let range;
+      let glycoPeptideObj;
+      if (featureAddState.rangeGlycans.length > 0) {
+        glycoPeptideObj = gp;
+      } else {
+        glycoPeptideObj = gp.glycoPeptide;
+      }
+
+      if (featureAddState.rangeGlycans.length > 0) {
+        range = {
+          min: glycoPeptideObj.min,
+          max: glycoPeptideObj.max
+        };
+      }
+
+      return {
+        glycoPeptides: glycoPeptideObj,
+        linker: glycoPeptideObj.linker,
+        range: range,
+        type: "GLYCOPEPTIDE"
+      };
+    });
+
+    featureObj = {
+      type: type,
+      name: featureMetaData.name,
+      internalId: featureMetaData.featureId,
+      linker: featureAddState.linker,
+      protein: featureAddState.protein,
+      peptides: [glycoPep],
+      positionMap: featureAddState.glycoPeptides.reduce((map, glycoPeptideObj) => {
+        if (glycoPeptideObj && glycoPeptideObj.glycoPeptide && glycoPeptideObj.glycoPeptide.id) {
+          map[glycoPeptideObj.position] = glycoPeptideObj.glycoPeptide.id;
         }
         return map;
       }, {}),
@@ -1509,7 +1571,7 @@ const AddFeature = props => {
                         setFeatureAddState({ positionDetails: positionSelected });
                       }}
                       value={"Pick Glyco Peptide"}
-                      disabled={featureAddState.rangeGlycans.length > 0}
+                      disabled={featureAddState.rangeGlycoPeptides.length > 0}
                     />
                   </>
                 );
@@ -1524,6 +1586,27 @@ const AddFeature = props => {
         {showGlycoPeptides && getGlycoPeptides()}
       </>
     );
+  };
+
+  const deleteGlycoPeptideLinkedProteinSelection = row => {
+    let glycoPeptidesList = featureAddState.rangeGlycoPeptides;
+
+    let selectedGlycoPep = glycoPeptidesList.find(e => e.index === row.index);
+    let selectedIndex = glycoPeptidesList.indexOf(selectedGlycoPep);
+    glycoPeptidesList.splice(selectedIndex, 1);
+
+    setFeatureAddState({ rangeGlycoPeptides: glycoPeptidesList });
+  };
+
+  const viewGlycoPeptide = row => {
+    let glycoPeptideId =
+      row.original && row.original.glycoPeptide
+        ? row.original.glycoPeptide.id
+        : row.original && row.original.id
+        ? row.original.id
+        : row.id;
+
+    window.open(`/features/viewFeature/${glycoPeptideId}`, "_blank");
   };
 
   const getGlycoPeptides = () => {
@@ -1541,8 +1624,11 @@ const AddFeature = props => {
           </Modal.Header>
           <Modal.Body>
             <GlycoPeptides
+              customViewonClick
+              viewOnClick={viewGlycoPeptide}
               selectButtonHeader="Select"
-              showSelectButton={true}
+              showSelectButton
+              // ={featureAddState.rangeGlycoPeptides.length > 0 ? false : true}
               selectButtonHandler={
                 featureAddState.positionDetails.isPosition
                   ? handleGlycoPeptideSelectionForPosition
@@ -1677,43 +1763,84 @@ const AddFeature = props => {
                 : ""
             }
           />
+        ) : featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ? (
+          getSelectedGlycoPeptideListWizard()
         ) : (
-          <>
-            <div style={{ textAlign: "center", marginTop: "50px" }}>
-              <h3>{"List of glycans"}</h3>
-              <p>
-                {"Add one or more glycans to the linker by clicking ‘Pick Glycan’ and providing the glycan details."}
-              </p>
-            </div>
-            <div>
-              {((featureAddState.type === "GLYCO_LIPID" && featureAddState.glycans.length < 1) ||
-                featureAddState.type === "GLYCO_PEPTIDE" ||
-                featureAddState.type === "GLYCO_PROTEIN" ||
-                featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ||
-                featureAddState.type === "LINKED_GLYCAN") && (
-                <input
-                  type="button"
-                  onClick={() => {
-                    let pd = featureAddState.positionDetails;
-                    pd.isPosition = false;
-                    setFeatureAddState({ positionDetails: pd });
-                    setShowGlycanPicker(true);
-                  }}
-                  value={"Pick Glycan"}
-                  disabled={
-                    (featureAddState.type === "GLYCO_PEPTIDE" ||
-                      featureAddState.type === "GLYCO_PROTEIN" ||
-                      featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") &&
-                    featureAddState.glycans.filter(i => i.glycan).length > 0
-                  }
-                />
-              )}
-            </div>
-            &nbsp;&nbsp;
-            {getSelectedGlycanList()}
-          </>
+          getSelectedGlycanListWizard()
         )}
       </>
+    );
+  };
+
+  const getSelectedGlycanListWizard = () => {
+    return (
+      <>
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h3>{"List of glycans"}</h3>
+          <p>{"Add one or more glycans to the linker by clicking ‘Pick Glycan’ and providing the glycan details."}</p>
+        </div>
+        <div>
+          {((featureAddState.type === "GLYCO_LIPID" && featureAddState.glycans.length < 1) ||
+            featureAddState.type === "GLYCO_PEPTIDE" ||
+            featureAddState.type === "GLYCO_PROTEIN" ||
+            featureAddState.type === "LINKED_GLYCAN") && (
+            <input
+              type="button"
+              onClick={() => {
+                let pd = featureAddState.positionDetails;
+                pd.isPosition = false;
+                setFeatureAddState({ positionDetails: pd });
+                setShowGlycanPicker(true);
+              }}
+              value={"Pick Glycan"}
+              disabled={
+                (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") &&
+                featureAddState.glycans.filter(i => i.glycan).length > 0
+              }
+            />
+          )}
+        </div>
+        &nbsp;&nbsp;
+        {getSelectedGlycanList()}
+      </>
+    );
+  };
+
+  const getSelectedGlycoPeptideListWizard = () => {
+    return (
+      <>
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h3>{"List of GlycoPeptides"}</h3>
+          <p>{"Add one or more glycopeptides to the protein by clicking ‘Pick GlycoPeptide."}</p>
+        </div>
+        <div>
+          <input
+            type="button"
+            onClick={() => {
+              let pd = featureAddState.positionDetails;
+              pd.isPosition = false;
+              setFeatureAddState({ positionDetails: pd });
+              setShowGlycoPeptides(true);
+            }}
+            value={"Pick Glyco Peptide"}
+            disabled={featureAddState.glycoPeptides.filter(i => i.glycoPeptide).length > 0}
+          />
+        </div>
+        {featureAddState.rangeGlycoPeptides.length > 0 && getRangeGlycoPeptidesList()}
+      </>
+    );
+  };
+
+  const getRangeGlycoPeptidesList = () => {
+    return (
+      <GlycoPeptides
+        data={featureAddState.rangeGlycoPeptides}
+        customViewonClick
+        viewOnClick={viewGlycoPeptide}
+        showDeleteButton
+        customDeleteOnClick
+        deleteOnClick={deleteGlycoPeptideLinkedProteinSelection}
+      />
     );
   };
 
@@ -1792,35 +1919,37 @@ const AddFeature = props => {
 
   const handleGlycoPeptideSelectGPLGP = glycoPeptide => {
     let glycoPeptideList;
+    let glycoPeptidesWithIndex;
+    let currentMaxIndex;
 
-    if (!featureAddState.positionDetails.isPosition) {
-      glycoPeptideList = [...featureAddState.rangeGlycoPeptides];
-    } else {
-      glycoPeptideList = [...featureAddState.glycoPeptides];
+    glycoPeptideList = [...featureAddState.rangeGlycoPeptides];
+    glycoPeptidesWithIndex = glycoPeptideList.filter(i => i.index >= 0);
+
+    if (glycoPeptidesWithIndex.length > 0) {
+      let indexes = [];
+      glycoPeptideList.forEach(i => {
+        if (i.index >= 0) {
+          indexes.push(i.index);
+        }
+      });
+      currentMaxIndex = Math.max(...indexes);
     }
 
-    if (!currentPeptideSelection) {
-      glycoPeptideList.push(glycoPeptide);
-      setCurrentPeptideSelection(glycoPeptide);
+    if (currentMaxIndex >= 0) {
+      glycoPeptide.index = currentMaxIndex + 1;
     } else {
-      var selectedRow = glycoPeptideList.find(e => e.id === currentPeptideSelection.id);
-      var selectedRowIndex = glycoPeptideList.indexOf(selectedRow);
-      glycoPeptideList[selectedRowIndex] = glycoPeptide;
-      setCurrentPeptideSelection(glycoPeptide);
+      glycoPeptide.index = 0;
     }
 
-    if (!featureAddState.positionDetails.isPosition) {
-      setFeatureAddState({ rangeGlycoPeptides: glycoPeptideList });
-    } else {
-      setFeatureAddState({ glycoPeptides: glycoPeptideList });
-    }
+    glycoPeptideList.push(glycoPeptide);
 
+    setFeatureAddState({ rangeGlycoPeptides: glycoPeptideList });
     setErrorMessage("");
     setShowErrorSummary(false);
+    setShowGlycoPeptides(false);
   };
 
   const handleGlycoPeptideSelectionForPosition = glycoPeptide => {
-    debugger;
     let glycoPeptidesList = [...featureAddState.glycoPeptides];
 
     let peptideObj = {};
@@ -1832,7 +1961,6 @@ const AddFeature = props => {
     peptideObj.glycoPeptide = glycoPeptide;
     glycoPeptidesList[selectedRowIndex] = peptideObj;
 
-    setCurrentPeptideSelection(glycoPeptide);
     setFeatureAddState({ glycoPeptides: glycoPeptidesList });
     setShowGlycoPeptides(false);
   };
@@ -1907,9 +2035,7 @@ const AddFeature = props => {
               }
             },
 
-            ...(featureAddState.type === "GLYCO_PEPTIDE" ||
-            featureAddState.type === "GLYCO_PROTEIN" ||
-            featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+            ...(featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN"
               ? [
                   {
                     Header: "Range",
@@ -1923,8 +2049,7 @@ const AddFeature = props => {
 
             ...(featureAddState.type === "GLYCO_LIPID" ||
             featureAddState.type === "GLYCO_PEPTIDE" ||
-            featureAddState.type === "GLYCO_PROTEIN" ||
-            featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+            featureAddState.type === "GLYCO_PROTEIN"
               ? [
                   {
                     Header: "Linker",
@@ -1990,10 +2115,11 @@ const AddFeature = props => {
         linkerSeletion={featureAddState.isLipidLinkedToSurfaceUsingLinker}
         metadata={featureMetaData}
         rangeGlycans={featureAddState.rangeGlycans}
+        rangeGlycoPeptides={featureAddState.rangeGlycoPeptides}
+        viewGlycoPeptide={viewGlycoPeptide}
+        glycoPeptides={featureAddState.glycoPeptides}
         glycans={
-          (featureAddState.type === "GLYCO_PEPTIDE" ||
-            featureAddState.type === "GLYCO_PROTEIN" ||
-            featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") &&
+          (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") &&
           featureAddState.rangeGlycans.length > 0
             ? featureAddState.rangeGlycans
             : featureAddState.glycans
