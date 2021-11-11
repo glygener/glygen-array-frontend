@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
 import { getToolTip } from "../utils/commonUtils";
+import { Row, Col, Form } from "react-bootstrap";
+import { Button } from "@material-ui/core";
 
 const GlycoPeptides = props => {
   return (
@@ -44,31 +46,96 @@ const GlycoPeptides = props => {
                 ? getToolTip(displayNames.feature[row.original.glycoPeptide.type])
                 : row.original && getToolTip(displayNames.feature[row.original.type])
           },
-          {
-            Header: "Linker",
-            accessor: "linker",
-            // eslint-disable-next-line react/display-name
-            Cell: ({ value, index }) =>
-              value && value.name ? (
-                <Link key={index} to={"/linkers/editlinker/" + value.id} target="_blank">
-                  {getToolTip(value.name)}
-                </Link>
-              ) : (
-                ""
-              )
-          },
-          {
-            Header: "Linker Type",
-            accessor: "linker",
-            // eslint-disable-next-line react/display-name
-            Cell: ({ row, index }) => {
-              return row.original && row.original.glycoPeptide && row.original.glycoPeptide.linker ? (
-                <div key={index}>{getToolTip(row.original.glycoPeptide.linker.type)}</div>
-              ) : (
-                <div key={index}>{getToolTip(row.linker && row.linker.type)}</div>
-              );
-            }
-          }
+          ...(!props.data
+            ? [
+                {
+                  Header: "Linker",
+                  accessor: "linker",
+                  // eslint-disable-next-line react/display-name
+                  Cell: ({ value, index }) => {
+                    return value && value.name ? (
+                      <Link key={index} to={"/linkers/editlinker/" + value.id} target="_blank">
+                        {getToolTip(value.name)}
+                      </Link>
+                    ) : (
+                      ""
+                    );
+                  }
+                }
+              ]
+            : []),
+          ...(props.LinkerandRange
+            ? [
+                {
+                  Header: "Linker",
+                  // eslint-disable-next-line react/display-name
+                  Cell: ({ row, index }) =>
+                    row.original && row.original.glycoPeptide && row.original.glycoPeptide.linker ? (
+                      <Link
+                        key={index}
+                        to={"/linkers/editlinker/" + row.original.glycoPeptide.linker.id}
+                        target="_blank"
+                      >
+                        {getToolTip(row.original.glycoPeptide.linker.id)}
+                      </Link>
+                    ) : (
+                      <Button
+                        style={{
+                          backgroundColor: "lightgray"
+                        }}
+                        onClick={() => {
+                          props.setShowLinkerPicker(true);
+                          props.setLinkerForSelectedGlycan(row.original);
+                        }}
+                        disabled={row.original && !row.original.glycoPeptide}
+                      >
+                        Add linker
+                      </Button>
+                    )
+                },
+                {
+                  Header: "Range",
+                  // eslint-disable-next-line react/display-name
+                  Cell: ({ row, index }) => {
+                    return row.original &&
+                      row.original.glycoPeptide &&
+                      row.original.glycoPeptide.maxRange &&
+                      row.original.glycoPeptide.minRange ? (
+                      <div key={index}>
+                        {getToolTip(row.original.glycoPeptide.maxRange)}-
+                        {getToolTip(row.original.glycoPeptide.minRange)}
+                      </div>
+                    ) : (
+                      <>
+                        <Row>
+                          <Col>
+                            <Form.Control
+                              type="text"
+                              name="maxRange"
+                              placeholder={"enter max range"}
+                              value={row.original && row.original.glycoPeptide && row.original.glycoPeptide.maxRange}
+                              onChange={e => props.handleRange(e)}
+                            />
+                          </Col>
+                        </Row>
+                        &nbsp;
+                        <Row>
+                          <Col>
+                            <Form.Control
+                              type="text"
+                              name="minRange"
+                              placeholder={"enter min range"}
+                              value={row.original && row.original.glycoPeptide && row.original.glycoPeptide.minRange}
+                              onChange={e => props.handleRange(e)}
+                            />
+                          </Col>
+                        </Row>
+                      </>
+                    );
+                  }
+                }
+              ]
+            : [])
         ]}
         defaultPageSize={10}
         keyColumn="id"

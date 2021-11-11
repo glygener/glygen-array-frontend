@@ -971,25 +971,29 @@ const AddFeature = props => {
     let glycoPep = glycoPeptides.map(gp => {
       let range;
       let glycoPeptideObj;
-      if (featureAddState.rangeGlycans.length > 0) {
+
+      if (featureAddState.rangeGlycoPeptides.length > 0) {
         glycoPeptideObj = gp;
       } else {
         glycoPeptideObj = gp.glycoPeptide;
       }
 
-      if (featureAddState.rangeGlycans.length > 0) {
+      if (featureAddState.rangeGlycoPeptides.length > 0) {
         range = {
           min: glycoPeptideObj.min,
           max: glycoPeptideObj.max
         };
+
+        glycoPeptideObj.range = range;
       }
 
-      return {
-        glycoPeptides: glycoPeptideObj,
-        linker: glycoPeptideObj.linker,
-        range: range,
-        type: "GLYCOPEPTIDE"
-      };
+      return glycoPeptideObj;
+      // return {
+      // glycoPeptides: glycoPeptideObj,
+      // linker: glycoPeptideObj.linker,
+      // range: range,
+      // type: "GLYCOPEPTIDE"
+      // };
     });
 
     featureObj = {
@@ -998,7 +1002,7 @@ const AddFeature = props => {
       internalId: featureMetaData.featureId,
       linker: featureAddState.linker,
       protein: featureAddState.protein,
-      peptides: [glycoPep],
+      peptides: glycoPep,
       positionMap: featureAddState.glycoPeptides.reduce((map, glycoPeptideObj) => {
         if (glycoPeptideObj && glycoPeptideObj.glycoPeptide && glycoPeptideObj.glycoPeptide.id) {
           map[glycoPeptideObj.position] = glycoPeptideObj.glycoPeptide.id;
@@ -1831,6 +1835,14 @@ const AddFeature = props => {
     );
   };
 
+  const handleRange = e => {
+    debugger;
+  };
+
+  // const pickRangeGlycoPeptides = () => {
+  //   showGlycoPeptides && <Modal />;
+  // };
+
   const getRangeGlycoPeptidesList = () => {
     return (
       <GlycoPeptides
@@ -1840,6 +1852,9 @@ const AddFeature = props => {
         showDeleteButton
         customDeleteOnClick
         deleteOnClick={deleteGlycoPeptideLinkedProteinSelection}
+        handleRange={handleRange}
+        setShowLinkerPicker={setShowLinkerPicker}
+        setLinkerForSelectedGlycoPeptide={setLinkerForSelectedGlycoPeptide}
       />
     );
   };

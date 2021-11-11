@@ -509,16 +509,21 @@ const FeatureView = props => {
                 accessor: "source.type",
                 Cell: row => {
                   return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
-                    ? row.original.glycan.source.type === "NOTRECORDED"
-                      ? getToolTip("Not Recorded")
-                      : row.original.glycan.source.type === "COMMERCIAL"
-                      ? getToolTip("Commercial")
-                      : getToolTip("Non Commercial")
-                    : row.original.source.type === "NOTRECORDED"
-                    ? getToolTip("Not Recorded")
-                    : row.original.source.type === "COMMERCIAL"
-                    ? getToolTip("Commercial")
-                    : getToolTip("Non Commercial");
+                    ? row.original &&
+                        row.original.glycan &&
+                        row.original.glycan.source &&
+                        (row.original.glycan.source.type === "NOTRECORDED"
+                          ? getToolTip("Not Recorded")
+                          : row.original.glycan.source.type === "COMMERCIAL"
+                          ? getToolTip("Commercial")
+                          : getToolTip("Non Commercial"))
+                    : row.original &&
+                        row.original.source &&
+                        (row.original.source.type === "NOTRECORDED"
+                          ? getToolTip("Not Recorded")
+                          : row.original.source.type === "COMMERCIAL"
+                          ? getToolTip("Commercial")
+                          : getToolTip("Non Commercial"));
                 }
               },
               {
