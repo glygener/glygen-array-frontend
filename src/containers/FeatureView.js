@@ -487,7 +487,8 @@ const FeatureView = props => {
                 Header: "Name",
                 accessor: "name",
                 Cell: row => {
-                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
+                  return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
+                    props.rangeGlycans.length === 0
                     ? getToolTip(row.original.glycan.name)
                     : getToolTip(row.original.name);
                 }
@@ -496,7 +497,8 @@ const FeatureView = props => {
                 Header: "Structure Image",
                 accessor: "cartoon",
                 Cell: row => {
-                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0 ? (
+                  return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
+                    props.rangeGlycans.length === 0 ? (
                     <StructureImage base64={row.original.glycan.cartoon} />
                   ) : (
                     <StructureImage base64={row.value} />
@@ -508,7 +510,8 @@ const FeatureView = props => {
                 Header: "Source",
                 accessor: "source.type",
                 Cell: row => {
-                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
+                  return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
+                    props.rangeGlycans.length === 0
                     ? row.original &&
                         row.original.glycan &&
                         row.original.glycan.source &&
@@ -530,12 +533,13 @@ const FeatureView = props => {
                 Header: "Reducing end state",
                 accessor: "opensRing",
                 Cell: row => {
-                  return props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length === 0
+                  return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
+                    props.rangeGlycans.length === 0
                     ? getToolTip(getReducingEndState(row.original.glycan.opensRing))
                     : getToolTip(getReducingEndState(row.value));
                 }
               },
-              ...(props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length > 0
+              ...((props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
                 ? [
                     {
                       Header: "Range",
@@ -547,7 +551,8 @@ const FeatureView = props => {
                   ]
                 : []),
 
-              ...(props.type === "GLYCO_LIPID" || (props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length > 0)
+              ...(props.type === "GLYCO_LIPID" ||
+              ((props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0)
                 ? [
                     {
                       Header: "Linker",
@@ -560,7 +565,11 @@ const FeatureView = props => {
                   ]
                 : [])
             ]}
-            data={props.type === "GLYCO_PEPTIDE" && props.rangeGlycans.length > 0 ? props.rangeGlycans : props.glycans}
+            data={
+              (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
+                ? props.rangeGlycans
+                : props.glycans
+            }
             defaultPageSize={5}
             showPagination={false}
             showRowsInfo={false}
@@ -599,6 +608,9 @@ const FeatureView = props => {
 
     if (rowSelected.original.glycans) {
       glycan = rowSelected.original.glycans[rowSelected.index];
+    }
+    if (props.positionDetails && props.positionDetails.isPosition) {
+      glycan = rowSelected.original.glycan;
     } else {
       glycan = rowSelected.original;
     }

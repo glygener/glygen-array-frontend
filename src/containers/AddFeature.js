@@ -2121,6 +2121,7 @@ const AddFeature = props => {
   const getCase4 = () => {
     return (
       <FeatureView
+        positionDetails={featureAddState.positionDetails}
         getSelectedLinkerInformation={getSelectedLinkerInformation}
         linker={featureAddState.linker}
         peptide={featureAddState.peptide}

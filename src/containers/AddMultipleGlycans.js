@@ -14,7 +14,7 @@ import Container from "@material-ui/core/Container";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
 
-const AddMultipleGlycans = (props) => {
+const AddMultipleGlycans = props => {
   useEffect(() => {
     props.authCheckAgent();
 
@@ -36,13 +36,10 @@ const AddMultipleGlycans = (props) => {
 
   const fileDetails = {
     fileType: defaultFileType,
-    glytoucanRegistration: false,
+    glytoucanRegistration: false
   };
 
-  const [uploadDetails, setUploadDetails] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    fileDetails
-  );
+  const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
 
   function handleChange(e) {
     setShowErrorSummary(false);
@@ -52,6 +49,7 @@ const AddMultipleGlycans = (props) => {
   }
 
   function handleSubmit(e) {
+    debugger;
     setShowLoading(true);
     setShowErrorSummary(false);
 
@@ -60,14 +58,14 @@ const AddMultipleGlycans = (props) => {
       "POST",
       {
         noGlytoucanRegistration: !uploadDetails.glytoucanRegistration,
-        filetype: encodeURIComponent(uploadDetails.fileType),
+        filetype: encodeURIComponent(uploadDetails.fileType)
       },
       true,
       {
         identifier: uploadedGlycanFile.identifier,
         originalName: uploadedGlycanFile.originalName,
         fileFolder: uploadedGlycanFile.fileFolder,
-        fileFormat: uploadedGlycanFile.fileFormat,
+        fileFormat: uploadedGlycanFile.fileFormat
       },
       glycanUploadSucess,
       glycanUploadError
@@ -77,23 +75,21 @@ const AddMultipleGlycans = (props) => {
   }
 
   function glycanUploadSucess(response) {
-    response.json().then((resp) => {
+    response.json().then(resp => {
       setShowErrorSummary(false);
       setShowLoading(false);
 
       history.push({
         pathname: "/glycans/addMultipleGlycanDetails",
-        state: { uploadResponse: resp },
+        state: { uploadResponse: resp }
       });
     });
   }
   function glycanUploadError(response) {
-    response.json().then((resp) => {
+    response.json().then(resp => {
       setTitle("Glycan File Upload Details");
       resp.error
-        ? setPageErrorMessage(
-            "The file is invalid. Please verify the file and format selection before re-uploading."
-          )
+        ? setPageErrorMessage("The file is invalid. Please verify the file and format selection before re-uploading.")
         : setPageErrorsJson(resp);
       setShowErrorSummary(true);
       setShowLoading(false);
@@ -123,7 +119,7 @@ const AddMultipleGlycans = (props) => {
                 ></ErrorSummary>
               )}
 
-              <Form noValidate onSubmit={(e) => handleSubmit(e)}>
+              <Form noValidate onSubmit={e => handleSubmit(e)}>
                 {/* File type */}
                 <Form.Group as={Row} controlId="fileType">
                   <Form.Label
@@ -171,7 +167,7 @@ const AddMultipleGlycans = (props) => {
                       history={history}
                       headerObject={{
                         Authorization: window.localStorage.getItem("token") || "",
-                        Accept: "*/*",
+                        Accept: "*/*"
                       }}
                       fileType={fileDetails.fileType}
                       uploadService={getWsUrl("upload")}
@@ -185,9 +181,7 @@ const AddMultipleGlycans = (props) => {
                           <BlueCheckbox
                             name="glytoucanRegistration"
                             checked={uploadDetails.glytoucanRegistration}
-                            onChange={(e) =>
-                              setUploadDetails({ glytoucanRegistration: e.target.checked })
-                            }
+                            onChange={e => setUploadDetails({ glytoucanRegistration: e.target.checked })}
                             size="large"
                           />
                         }
@@ -199,10 +193,7 @@ const AddMultipleGlycans = (props) => {
 
                 <div className="text-center mb-4">
                   <Link to="/glycans">
-                    <Button className="gg-btn-blue5 gg-btn-outline mt-2 gg-mr-20">
-                      {" "}
-                      Back to Glycans
-                    </Button>
+                    <Button className="gg-btn-blue5 gg-btn-outline mt-2 gg-mr-20"> Back to Glycans</Button>
                   </Link>
 
                   <Button

@@ -8,11 +8,10 @@ import Container from "@material-ui/core/Container";
 import { Card, Button } from "react-bootstrap";
 import { addCommas } from "../utils/commonUtils";
 
-const AddMultipleGlycanDetails = (props) => {
+const AddMultipleGlycanDetails = props => {
   const history = useHistory();
 
-  let uploadResponse =
-    history.location && history.location.state && history.location.state.uploadResponse;
+  let uploadResponse = history.location && history.location.state && history.location.state.uploadResponse;
   let addedGlycans = uploadResponse.addedGlycans;
   let wrongSequences = uploadResponse.wrongSequences;
   let duplicateSequences = uploadResponse.duplicateSequences;
@@ -30,23 +29,23 @@ const AddMultipleGlycanDetails = (props) => {
                 : [
                     {
                       Header: "Internal ID",
-                      accessor: "internalId",
+                      accessor: "internalId"
                     },
                     {
                       Header: "GlyTouCan ID",
-                      accessor: "glytoucanId",
+                      accessor: "glytoucanId"
                     },
                     {
                       Header: "Glycan Name",
-                      accessor: "name",
+                      accessor: "name"
                     },
                     {
                       Header: "Structure Image",
                       accessor: "cartoon",
                       sortable: false,
                       // eslint-disable-next-line react/prop-types
-                      Cell: (row) => row.value && <StructureImage base64={row.value} />,
-                      minWidth: 200,
+                      Cell: row => row.value && <StructureImage base64={row.value} />,
+                      minWidth: 200
                     },
                     {
                       Header: "Monoisotopic Mass (Da)",
@@ -54,8 +53,8 @@ const AddMultipleGlycanDetails = (props) => {
                       headerStyle: { whiteSpace: "pre-wrap" },
 
                       // eslint-disable-next-line react/prop-types
-                      Cell: (row) => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : ""),
-                    },
+                      Cell: row => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : "")
+                    }
                   ]
             }
             pageSizeOptions={[5, 10, 25]}
@@ -75,13 +74,7 @@ const AddMultipleGlycanDetails = (props) => {
     return (
       <>
         {addedGlycans && (
-          <div>
-            {getTableForGlycans(
-              addedGlycans ? addedGlycans : [],
-              "",
-              "Glycans Were Unable To Be Uploaded"
-            )}
-          </div>
+          <div>{getTableForGlycans(addedGlycans ? addedGlycans : [], "", "Glycans Were Unable To Be Uploaded")}</div>
         )}
 
         {duplicateSequences && (
@@ -102,9 +95,9 @@ const AddMultipleGlycanDetails = (props) => {
                 Header: "ID",
                 accessor: "id",
                 minWidth: 80,
-                Cell: (row) => {
+                Cell: row => {
                   return row.original.glycan && row.original.glycan.id;
-                },
+                }
               },
               {
                 Header: "Sequence",
@@ -113,28 +106,28 @@ const AddMultipleGlycanDetails = (props) => {
                 getProps: (state, rowInfo, column) => {
                   return {
                     style: {
-                      whiteSpace: "initial",
-                    },
+                      whiteSpace: "initial"
+                    }
                   };
                 },
-                Cell: (row) => {
+                Cell: row => {
                   return row.original.glycan && row.original.glycan.sequence;
-                },
+                }
               },
               {
                 Header: "Error message",
                 accessor: "errorMessage",
                 minWidth: 80,
-                Cell: (row) => {
+                Cell: row => {
                   return (
                     row.original.error &&
                     row.original.error.errors &&
-                    row.original.error.errors.map((err) => {
+                    row.original.error.errors.map(err => {
                       return <div style={{ textAlign: "center" }}>{err.defaultMessage}</div>;
                     })
                   );
-                },
-              },
+                }
+              }
             ],
             "Glycans Were Unable To Be Uploaded"
           )}
@@ -147,18 +140,18 @@ const AddMultipleGlycanDetails = (props) => {
       {
         tableLink: (addedGlycans && addedGlycans.length) || 0,
         descriptioin: "glycans have been successfully uploaded.",
-        scrollto: 100,
+        scrollto: 100
       },
       {
         tableLink: (duplicateSequences && duplicateSequences.length) || 0,
         descriptioin: "glycans are already exist in the library.",
-        scrollto: 550,
+        scrollto: 550
       },
       {
         tableLink: `${(wrongSequences && wrongSequences.length) || 0} `,
         descriptioin: "glycans were unable to be uploaded.",
-        scrollto: 2500,
-      },
+        scrollto: 2500
+      }
     ];
 
     return (
