@@ -180,10 +180,10 @@ const EditLinker = (props) => {
                 </Form.Group>
 
                 <Form.Group as={Row} controlId="linkerType">
-                  <Form.Label column xs={12} md={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                  <Form.Label column xs={5} md={4} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>Linker Type</strong>
                   </Form.Label>
-                  <Col xs={12} md={12} lg={9}>
+                  <Col xs={7} md={8} lg={9}>
                     <Form.Control
                       type="text"
                       plaintext
