@@ -20,6 +20,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
+import moleculeExamples from "../appData/moleculeExamples";
+import ExampleSequenceControl from "../components/ExampleSequenceControl";
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -87,8 +89,7 @@ const AddGlycan = (props) => {
       setInvalidMass(true);
       return;
     } else if (
-      (userSelection.selectedGlycan === "SequenceDefined" ||
-        userSelection.selectedGlycan === "Other") &&
+      (userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other") &&
       activeStep === 1
     ) {
       if (userSelection.sequence === "" || userSelection.sequence.trim().length < 1) {
@@ -137,11 +138,7 @@ const AddGlycan = (props) => {
     const name = e.target.name;
     const newValue = e.target.value;
 
-    if (
-      name === "name" &&
-      newValue.trim().length < 1 &&
-      userSelection.selectedGlycan !== "SequenceDefined"
-    ) {
+    if (name === "name" && newValue.trim().length < 1 && userSelection.selectedGlycan !== "SequenceDefined") {
       setValidateName(true);
     } else if (userSelection.selectedGlycan !== "SequenceDefined" && name === "name") {
       setValidateName(false);
@@ -253,9 +250,7 @@ const AddGlycan = (props) => {
               maxLength={2000}
             />
             <div className="text-right text-muted">
-              {userSelection.comment && userSelection.comment.length > 0
-                ? userSelection.comment.length
-                : "0"}
+              {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : "0"}
               /2000
             </div>
           </Col>
@@ -303,31 +298,33 @@ const AddGlycan = (props) => {
   function getSteps() {
     return ["Select the Glycan Type", "Add Glycan Information", "Review and Add"];
   }
-  // function getGlycanType(typeIndex) {
-  //   switch (typeIndex) {
-  //     case 0:
-  //       return `${displayNames.glycan.SEQUENCE_DEFINED}`;
-  //     case 1:
-  //       return `${displayNames.glycan.COMPOSITION_BASED}`;
-  //     case 2:
-  //       return `${displayNames.glycan.CLASSIFICATION_BASED}`;
-  //     case 3:
-  //       return `${displayNames.glycan.FRAGMENT_ONLY}`;
-  //     case 4:
-  //       return `${displayNames.glycan.UNKNOWN}`;
-  //     case 5:
-  //       return `${displayNames.glycan.OTHER}`;
-  //     default:
-  //       return "Unknown typeIndex";
-  //   }
-  // }
+  function getGlycanType(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${displayNames.glycan.SEQUENCE_DEFINED}`;
+      case "MassDefined":
+        return `${displayNames.glycan.MASS_ONLY}`;
+      case "CompositionBased":
+        return `${displayNames.glycan.COMPOSITION_BASED}`;
+      case "ClassificationBased":
+        return `${displayNames.glycan.CLASSIFICATION_BASED}`;
+      case "FragmentOnly":
+        return `${displayNames.glycan.FRAGMENT_ONLY}`;
+      case "Unknown":
+        return `${displayNames.glycan.UNKNOWN}`;
+      case "Other":
+        return `${displayNames.glycan.OTHER}`;
+      default:
+        return "Unknown typeIndex";
+    }
+  }
 
   function getStepLabel(stepIndex) {
     switch (stepIndex) {
       case 0:
         return "Select the Glycan Type";
       case 1:
-        return `Add ${userSelection.selectedGlycan} Glycan Information`;
+        return `Add ${getGlycanType(userSelection.selectedGlycan)} Glycan Type Information`;
       case 2:
         return "Review and Add Glycan to Repository";
       default:
@@ -342,7 +339,7 @@ const AddGlycan = (props) => {
           <Form>
             <Row className="gg-align-center">
               <Col sm="auto">
-                <RadioGroup name="glycan-type" onChange={handleSelect} defaultValue="SequenceDefined">
+                <RadioGroup name="glycan-type" onChange={handleSelect} value={userSelection.selectedGlycan}>
                   {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
@@ -585,12 +582,24 @@ const AddGlycan = (props) => {
                       maxLength={5000}
                     />
                     <Feedback message="Please enter Valid Sequence" />
-                    <div className="text-right text-muted">
-                      {userSelection.sequence && userSelection.sequence.length > 0
-                        ? userSelection.sequence.length
-                        : "0"}
-                      /5000
-                    </div>
+                    <Row>
+                      <Col className="gg-align-left">
+                        {userSelection.sequenceType && (
+                          <ExampleSequenceControl
+                            setInputValue={(id) => {
+                              setUserSelection({ sequence: id });
+                            }}
+                            inputValue={moleculeExamples.glycan[userSelection.sequenceType].examples}
+                          />
+                        )}
+                      </Col>
+                      <Col className="text-right text-muted">
+                        {userSelection.sequence && userSelection.sequence.length > 0
+                          ? userSelection.sequence.length
+                          : "0"}
+                        /5000
+                      </Col>
+                    </Row>
                     {/* Register for GlyTouCan */}
                     <Form.Group
                       controlId="formBasicCheckbox"
@@ -598,7 +607,7 @@ const AddGlycan = (props) => {
                         userSelection.selectedGlycan === "SequenceDefined"
                           ? getGlytoucanRegistration()
                             ? "hide-content"
-                            : "mb-0 pb-0"
+                            : "mb-0 pb-0 mt-2"
                           : "hide-content"
                       }
                     >

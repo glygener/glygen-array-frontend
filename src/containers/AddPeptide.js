@@ -33,6 +33,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 import { Link } from "react-router-dom";
+import ExampleExploreControl from "../components/ExampleExploreControl";
+import moleculeExamples from "../appData/moleculeExamples";
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -185,22 +187,34 @@ const AddPeptide = (props) => {
     setPeptide({ ...peptideInitialState, ...{ selectedPeptide: newValue } });
   };
 
+  const clearFields = () => {
+    setPeptide({ ...peptideInitialState, ...{ selectedPeptide: peptide.selectedPeptide } });
+    // setRegistrationCheckFlag(true);
+    // setDisableReset(false);
+  };
+
   function getSteps() {
-    return [
-      "Select the Peptide Type",
-      "Type Specific Peptide Info",
-      "Generic Peptide Info",
-      "Review and Add",
-    ];
+    return ["Peptide Type", "Type Specific Peptide Information", "Generic Peptide Information", "Review and Add"];
+  }
+
+  function getPeptideType(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${displayNames.peptide.SEQUENCE}`;
+      case "Unknown":
+        return `${displayNames.peptide.UNKNOWN}`;
+      default:
+        return "Unknown typeIndex";
+    }
   }
   function getStepLabel(stepIndex) {
     switch (stepIndex) {
       case 0:
         return "Select the Peptide Type";
       case 1:
-        return "Add Type Specific Peptide Info";
+        return `Add Type Specific Peptide Information (${getPeptideType(peptide.selectedPeptide)})`;
       case 2:
-        return "Add Generic Peptide Info";
+        return `Add Generic Peptide Information (${getPeptideType(peptide.selectedPeptide)})`;
       case 3:
         return "Review and Add Peptide to Repository";
       default:
@@ -365,7 +379,13 @@ const AddPeptide = (props) => {
                   {sequenceError !== "" && <Feedback message={sequenceError} />}
                   <Feedback message="Please Enter Valid Sequence" />
                   <Row>
-                    <Col className="gg-align-left"> Example: RQIK-RQIK-hgf</Col>
+                    <Col className="gg-align-left">
+                      <ExampleExploreControl
+                        setInputValue={funcSetInputValues}
+                        inputValue={moleculeExamples.peptide.examples}
+                        // inputValue={advancedSearch.glycan_id.examples}
+                      />
+                    </Col>
                     <Col className="text-right text-muted">
                       {peptide.sequence && peptide.sequence.length > 0 ? peptide.sequence.length : "0"}
                       /10000
@@ -627,6 +647,14 @@ const AddPeptide = (props) => {
         </Button>
       </div>
     );
+  }
+
+  /**
+   * Function to set glycan id value.
+   * @param {string} glycanSearchSuccess - input glycan id value.
+   **/
+  function funcSetInputValues(value) {
+    setPeptide({ sequence: value });
   }
 
   function addPeptide(e) {

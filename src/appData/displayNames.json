@@ -14,23 +14,23 @@
   },
 
   "peptide": {
-    "SEQUENCE": "Sequence Defined Peptide",
-    "UNKNOWN": "Unknown Peptide"
+    "SEQUENCE": "Sequence Defined",
+    "UNKNOWN": "Unknown"
   },
 
   "protein": {
-    "SEQUENCE": "Sequence Defined Protein",
-    "UNKNOWN": "Unknown Protein"
+    "SEQUENCE": "Sequence Defined",
+    "UNKNOWN": "Unknown"
   },
 
   "lipid": {
-    "SEQUENCE": "Sequence Defined Lipid",
-    "UNKNOWN": "Unknown Lipid"
+    "SEQUENCE": "Sequence Defined",
+    "UNKNOWN": "Unknown"
   },
 
   "linker": {
-    "SEQUENCE": "Sequence Defined Linker",
-    "UNKNOWN": "Unknown Linker",
+    "SEQUENCE": "Sequence Defined",
+    "UNKNOWN": "Unknown",
     "LINKER": "Linker",
     "PUBCHEM_ID": "PubChem ID",
     "STRUCTURE": "Structure Image",

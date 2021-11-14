@@ -1,0 +1,58 @@
+{
+  "peptide":{
+    "examples": [
+      {
+        "example": {
+          "name": "Example",
+          "id": "GRQIK-RQIK-hgf"
+        }
+      }
+    ]
+  },
+  "glycan": {
+    "IUPAC": {
+      "examples": [
+        {
+          "orderID": 102,
+          "example": {
+            "name": "CFG IUPAC Example",
+            "id": "Galb1-3GlcNAcb"
+          }
+        }
+      ]
+    },
+    "GlycoCT": {
+      "examples": [
+        {
+          "orderID": 103,
+          "example": {
+            "name": "GlycoCT Example",
+            "id": "RES\n1b:b-dglc-HEX-1:5\n2s:n-acetyl\n3b:b-dgal-HEX-1:5\nLIN\n1:1d(2+1)2n\n2:1o(3+1)3d"
+          }
+        }
+      ]
+    },
+    "GlycoWorkbench": {
+      "examples": [
+        {
+          "orderID": 101,
+          "example": {
+            "name": "GWS Example",
+            "id": "freeEnd--?b1D-GlcNAc,p--3b1D-Gal,p$MONO,perMe,Na,0,freeEnd"
+          }
+        }
+      ]
+    },
+    "Wurcs": {
+      "examples": [
+        {
+          "orderID": 100,
+          "example": {
+            "name": "WURCS Example",
+            "id": "WURCS=2.0/2,2,1/[a2122h-1b_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1"
+          }
+        }
+      ]
+    }
+  }
+}
