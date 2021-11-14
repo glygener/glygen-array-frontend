@@ -195,6 +195,9 @@ input[type]:not(:-ms-input-placeholder) + label {
   background-color: var(--gg-blue) !important;
   color: white !important;
 }
+.btn-to-lower {
+  text-transform: none !important;
+}
 
 .form-control:valid {
   background-image: none !important;

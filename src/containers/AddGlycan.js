@@ -275,7 +275,7 @@ const AddGlycan = (props) => {
           <PageHeading title="Add Glycan to Repository" subTitle="Please provide the information for the new glycan." />
           <Card>
             <Card.Body>
-              <Stepper activeStep={activeStep}>
+              <Stepper className="steper-responsive5 text-center" activeStep={activeStep} alternativeLabel>
                 {steps.map((label) => (
                   <Step key={label}>
                     <StepLabel>{label}</StepLabel>
@@ -283,17 +283,14 @@ const AddGlycan = (props) => {
                 ))}
               </Stepper>
               {getNavigationButtons()}
+              <h5 className="text-center gg-blue mt-4">{getStepLabel(activeStep)}</h5>
 
               {showErrorSummary === true && (
                 <ErrorSummary show={showErrorSummary} form="glycans" errorJson={pageErrorsJson}></ErrorSummary>
               )}
-              <div className5="mt-4 mb-4">
-                <Typography component={"div"} variant="body1">
-                  <>
-                    {getStepContent(activeStep, validate)}
-                    <Loading show={showLoading}></Loading>
-                  </>
-                </Typography>
+              <div className="mt-4 mb-4">
+                {getStepContent(activeStep, validate)}
+                <Loading show={showLoading}></Loading>
               </div>
               {getNavigationButtons()}
             </Card.Body>
@@ -306,6 +303,37 @@ const AddGlycan = (props) => {
   function getSteps() {
     return ["Select the Glycan Type", "Add Glycan Information", "Review and Add"];
   }
+  // function getGlycanType(typeIndex) {
+  //   switch (typeIndex) {
+  //     case 0:
+  //       return `${displayNames.glycan.SEQUENCE_DEFINED}`;
+  //     case 1:
+  //       return `${displayNames.glycan.COMPOSITION_BASED}`;
+  //     case 2:
+  //       return `${displayNames.glycan.CLASSIFICATION_BASED}`;
+  //     case 3:
+  //       return `${displayNames.glycan.FRAGMENT_ONLY}`;
+  //     case 4:
+  //       return `${displayNames.glycan.UNKNOWN}`;
+  //     case 5:
+  //       return `${displayNames.glycan.OTHER}`;
+  //     default:
+  //       return "Unknown typeIndex";
+  //   }
+  // }
+
+  function getStepLabel(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return "Select the Glycan Type";
+      case 1:
+        return `Add ${userSelection.selectedGlycan} Glycan Information`;
+      case 2:
+        return "Review and Add Glycan to Repository";
+      default:
+        return "Unknown stepIndex";
+    }
+  }
 
   function getStepContent(stepIndex, validate) {
     switch (stepIndex) {
@@ -314,11 +342,7 @@ const AddGlycan = (props) => {
           <Form>
             <Row className="gg-align-center">
               <Col sm="auto">
-                <RadioGroup
-                  name="glycan-type"
-                  onChange={handleSelect}
-                  defaultValue="SequenceDefined"
-                >
+                <RadioGroup name="glycan-type" onChange={handleSelect} defaultValue="SequenceDefined">
                   {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
@@ -333,11 +357,7 @@ const AddGlycan = (props) => {
                     label={displayNames.glycan.COMPOSITION_BASED}
                   />
                   {/* MASS_ONLY */}
-                  <FormControlLabel
-                    control={<BlueRadio />}
-                    value="MassDefined"
-                    label={displayNames.glycan.MASS_ONLY}
-                  />
+                  <FormControlLabel control={<BlueRadio />} value="MassDefined" label={displayNames.glycan.MASS_ONLY} />
                   {/* CLASSIFICATION_BASED */}
                   <FormControlLabel
                     value="ClassificationBased"
@@ -353,17 +373,9 @@ const AddGlycan = (props) => {
                     label={displayNames.glycan.FRAGMENT_ONLY}
                   />
                   {/* UNKNOWN */}
-                  <FormControlLabel
-                    value="Unknown"
-                    control={<BlueRadio />}
-                    label={displayNames.glycan.UNKNOWN}
-                  />
+                  <FormControlLabel value="Unknown" control={<BlueRadio />} label={displayNames.glycan.UNKNOWN} />
                   {/* OTHER */}
-                  <FormControlLabel
-                    value="Other"
-                    control={<BlueRadio />}
-                    label={displayNames.glycan.OTHER}
-                  />
+                  <FormControlLabel value="Other" control={<BlueRadio />} label={displayNames.glycan.OTHER} />
                 </RadioGroup>
               </Col>
             </Row>
@@ -375,32 +387,24 @@ const AddGlycan = (props) => {
             <>
               <Form>
                 {/* Top Reset/ Clear Fields Button */}
-                <div className="text-center mb-4 mt-1">
+                {/* <div className="text-center">
                   <Button
                     variant="contained"
                     disabled={!disableReset}
                     onClick={clearGlytoucanSequence}
-                    className="gg-btn-blue mt-2"
+                    className="gg-btn-blue mt-3"
                   >
                     Clear Fields
                   </Button>
-                </div>
+                </div> */}
 
                 {/* GlyTouCan ID */}
                 <Form.Group
                   as={Row}
                   controlId="glytoucanId"
-                  className={
-                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
-                  }
+                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
                 >
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>GlyTouCan ID</strong>
                   </Form.Label>
 
@@ -420,9 +424,9 @@ const AddGlycan = (props) => {
                       <Button
                         variant="contained"
                         onClick={() => getSequenceFromGlytoucan(userSelection.glytoucanId)}
-                        className="gg-btn-blue-reg mt-3"
+                        className="gg-btn-blue-reg btn-to-lower mt-3"
                       >
-                        Get Sequence from Glytoucan
+                        Insert Sequence from GlyTouCan
                       </Button>
                     )}
                   </Col>
@@ -459,9 +463,7 @@ const AddGlycan = (props) => {
                     />
                     <Feedback
                       message={
-                        invalidMass
-                          ? "Monoisotopic Mass should be greater than 0"
-                          : "Please enter Monoisotopic Mass"
+                        invalidMass ? "Monoisotopic Mass should be greater than 0" : "Please enter Monoisotopic Mass"
                       }
                     />
                   </Col>
@@ -469,13 +471,7 @@ const AddGlycan = (props) => {
 
                 {/* Internal ID */}
                 <Form.Group as={Row} controlId="internalID">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>Internal ID</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
@@ -498,8 +494,7 @@ const AddGlycan = (props) => {
                     md={12}
                     lg={3}
                     className={
-                      userSelection.selectedGlycan === "Unknown" ||
-                      userSelection.selectedGlycan === "Other"
+                      userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
                         ? "required-asterik text-xs-left text-md-left text-lg-right"
                         : "text-xs-left text-md-left text-lg-right"
                     }
@@ -514,15 +509,11 @@ const AddGlycan = (props) => {
                       value={userSelection.name}
                       onChange={handleChange}
                       isInvalid={
-                        userSelection.selectedGlycan === "Unknown" ||
-                        userSelection.selectedGlycan === "Other"
+                        userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
                           ? validateName
                           : ""
                       }
-                      required={
-                        userSelection.selectedGlycan === "Unknown" ||
-                        userSelection.selectedGlycan === "Other"
-                      }
+                      required={userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"}
                       maxLength={50}
                     />
                     <Feedback message="Name is required." />
@@ -533,9 +524,7 @@ const AddGlycan = (props) => {
                 <Form.Group
                   as={Row}
                   controlId="sequenceType"
-                  className={
-                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
-                  }
+                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
                 >
                   <Form.Label
                     column
@@ -569,8 +558,7 @@ const AddGlycan = (props) => {
                   as={Row}
                   controlId="sequence"
                   className={
-                    userSelection.selectedGlycan === "SequenceDefined" ||
-                    userSelection.selectedGlycan === "Other"
+                    userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
                       ? ""
                       : "hide-content"
                   }
@@ -631,13 +619,7 @@ const AddGlycan = (props) => {
 
                 {/* Comment */}
                 <Form.Group as={Row} controlId="comments">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>Comment</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
@@ -651,9 +633,7 @@ const AddGlycan = (props) => {
                       maxLength={2000}
                     />
                     <div className="text-right text-muted">
-                      {userSelection.comment && userSelection.comment.length > 0
-                        ? userSelection.comment.length
-                        : "0"}
+                      {userSelection.comment && userSelection.comment.length > 0 ? userSelection.comment.length : "0"}
                       /2000
                     </div>
                   </Col>
@@ -665,7 +645,7 @@ const AddGlycan = (props) => {
                     variant="contained"
                     disabled={!disableReset}
                     onClick={clearGlytoucanSequence}
-                    className="gg-btn-blue"
+                    className="gg-btn-blue btn-to-lower"
                   >
                     Clear Fields
                   </Button>
@@ -683,7 +663,7 @@ const AddGlycan = (props) => {
                   variant="contained"
                   disabled={!disableReset}
                   onClick={clearGlytoucanSequence}
-                  className="gg-btn-blue"
+                  className="gg-btn-blue btn-to-lower"
                 >
                   Clear Fields
                 </Button>
@@ -698,22 +678,11 @@ const AddGlycan = (props) => {
             <Form>
               {/* Glycan Type */}
               <Form.Group as={Row} controlId="glycanSelected">
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>Glycan Type</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
-                  <Form.Control
-                    type="text"
-                    name="glycanType"
-                    value={userSelection.selectedGlycan}
-                    disabled
-                  />
+                  <Form.Control type="text" name="glycanType" value={userSelection.selectedGlycan} disabled />
                 </Col>
               </Form.Group>
 
@@ -723,22 +692,11 @@ const AddGlycan = (props) => {
                 controlId="glytoucanId"
                 className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
               >
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>{displayNames.glycan.GLYTOUCAN_ID} </strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
-                  <Form.Control
-                    type="text"
-                    name="glytoucanId"
-                    value={userSelection.glytoucanId}
-                    disabled
-                  />
+                  <Form.Control type="text" name="glytoucanId" value={userSelection.glytoucanId} disabled />
                 </Col>
               </Form.Group>
 
@@ -748,13 +706,7 @@ const AddGlycan = (props) => {
                 controlId="mass"
                 className={userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"}
               >
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>Monoisotopic Mass</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
@@ -764,34 +716,17 @@ const AddGlycan = (props) => {
 
               {/* Internal ID */}
               <Form.Group as={Row} controlId="internalId">
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>{displayNames.glycan.INTERNAL_ID}</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
-                  <Form.Control
-                    type="text"
-                    name="internalId"
-                    value={userSelection.internalId}
-                    disabled
-                  />
+                  <Form.Control type="text" name="internalId" value={userSelection.internalId} disabled />
                 </Col>
               </Form.Group>
 
               {/* Name */}
               <Form.Group as={Row} controlId="name">
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>Name</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
@@ -805,13 +740,7 @@ const AddGlycan = (props) => {
                 controlId="sequenceType"
                 className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
               >
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>Sequence Type</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
@@ -824,51 +753,26 @@ const AddGlycan = (props) => {
                 as={Row}
                 controlId="sequence"
                 className={
-                  userSelection.selectedGlycan === "SequenceDefined" ||
-                  userSelection.selectedGlycan === "Other"
+                  userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
                     ? ""
                     : "hide-content"
                 }
               >
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>{displayNames.glycan.SEQUENCE}</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
-                  <Form.Control
-                    as="textarea"
-                    rows={4}
-                    name="sequence"
-                    value={userSelection.sequence}
-                    disabled
-                  />
+                  <Form.Control as="textarea" rows={4} name="sequence" value={userSelection.sequence} disabled />
                 </Col>
               </Form.Group>
 
               {/* Comments */}
               <Form.Group as={Row} controlId="comments">
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>Comment</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
-                  <Form.Control
-                    as="textarea"
-                    rows={4}
-                    name="comment"
-                    value={userSelection.comment}
-                    disabled
-                  />
+                  <Form.Control as="textarea" rows={4} name="comment" value={userSelection.comment} disabled />
                 </Col>
               </Form.Group>
             </Form>
@@ -973,17 +877,13 @@ const AddGlycan = (props) => {
     return (
       <div className="text-center mb-2">
         <Link to="/glycans">
-          <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Glycans</Button>
+          <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Glycans</Button>
         </Link>
-        <Button
-          disabled={activeStep === 0}
-          onClick={handleBack}
-          className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20"
-        >
+        <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
         </Button>
         <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
-          {activeStep === steps.length - 1 ? "Finish" : "Next"}
+          {activeStep === steps.length - 1 ? "Submit" : "Next"}
         </Button>
       </div>
     );

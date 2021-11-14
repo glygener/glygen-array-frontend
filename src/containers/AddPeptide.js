@@ -193,21 +193,27 @@ const AddPeptide = (props) => {
       "Review and Add",
     ];
   }
+  function getStepLabel(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return "Select the Peptide Type";
+      case 1:
+        return "Add Type Specific Peptide Info";
+      case 2:
+        return "Add Generic Peptide Info";
+      case 3:
+        return "Review and Add Peptide to Repository";
+      default:
+        return "Unknown stepIndex";
+    }
+  }
 
   function addPublication() {
     let publications = peptide.publications;
     let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall(
-        "getpublication",
-        "GET",
-        [newPubMedId],
-        true,
-        null,
-        addPublicationSuccess,
-        addPublicationError
-      );
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
     } else {
       setNewPubMedId("");
     }
@@ -275,11 +281,7 @@ const AddPeptide = (props) => {
                     }}
                     className="pb-2"
                   >
-                    <a
-                      href={externalizeUrl(url)}
-                      target="_blank"
-                      rel="external noopener noreferrer"
-                    >
+                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                       {url}
                     </a>
                   </Col>
@@ -317,11 +319,7 @@ const AddPeptide = (props) => {
           <Form>
             <Row className="gg-align-center">
               <Col sm="auto">
-                <RadioGroup
-                  name="peptide-type"
-                  onChange={handleSelect}
-                  value={peptide.selectedPeptide}
-                >
+                <RadioGroup name="peptide-type" onChange={handleSelect} value={peptide.selectedPeptide}>
                   {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
@@ -329,11 +327,7 @@ const AddPeptide = (props) => {
                     label={displayNames.peptide.SEQUENCE}
                   />
                   {/* UNKNOWN */}
-                  <FormControlLabel
-                    value="Unknown"
-                    control={<BlueRadio />}
-                    label={displayNames.peptide.UNKNOWN}
-                  />
+                  <FormControlLabel value="Unknown" control={<BlueRadio />} label={displayNames.peptide.UNKNOWN} />
                 </RadioGroup>
               </Col>
             </Row>
@@ -363,9 +357,7 @@ const AddPeptide = (props) => {
                     value={peptide.sequence}
                     onChange={handleChange}
                     className="sequence-text-area"
-                    isInvalid={
-                      validatedSpecificDetails && (peptide.sequence === "" || sequenceError !== "")
-                    }
+                    isInvalid={validatedSpecificDetails && (peptide.sequence === "" || sequenceError !== "")}
                     spellCheck="false"
                     maxLength={10000}
                   />
@@ -375,9 +367,7 @@ const AddPeptide = (props) => {
                   <Row>
                     <Col className="gg-align-left"> Example: RQIK-RQIK-hgf</Col>
                     <Col className="text-right text-muted">
-                      {peptide.sequence && peptide.sequence.length > 0
-                        ? peptide.sequence.length
-                        : "0"}
+                      {peptide.sequence && peptide.sequence.length > 0 ? peptide.sequence.length : "0"}
                       /10000
                     </Col>
                   </Row>
@@ -417,13 +407,7 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="comments">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>Comment</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
@@ -443,13 +427,7 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="urls">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>URLs</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
@@ -483,24 +461,13 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="publications">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>Publications</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
                     {peptide.publications.map((pub, index) => {
                       return (
-                        <PublicationCard
-                          key={index}
-                          {...pub}
-                          enableDelete
-                          deletePublication={deletePublication}
-                        />
+                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
                       );
                     })}
                     <Row>
@@ -533,40 +500,17 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Row>
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>Source</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={8}>
-                    <RadioGroup
-                      row
-                      name="glycan-type"
-                      onChange={sourceSelection}
-                      value={peptide.source}
-                    >
+                    <RadioGroup row name="glycan-type" onChange={sourceSelection} value={peptide.source}>
                       {/* Commercial */}
-                      <FormControlLabel
-                        value="commercial"
-                        control={<BlueRadio />}
-                        label="Commercial"
-                      />
+                      <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
                       {/* Non Commercial */}
-                      <FormControlLabel
-                        value="nonCommercial"
-                        control={<BlueRadio />}
-                        label="Non Commercial"
-                      />
+                      <FormControlLabel value="nonCommercial" control={<BlueRadio />} label="Non Commercial" />
                       {/* Not Specified */}
-                      <FormControlLabel
-                        value="notSpecified"
-                        control={<BlueRadio />}
-                        label="Not Specified"
-                      />
+                      <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
                     </RadioGroup>
                   </Col>
                 </Row>
@@ -601,13 +545,7 @@ const AddPeptide = (props) => {
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
                   {/* <FormLabel label={reviewFields[key].label} /> */}
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="text-xs-left text-md-left text-lg-right"
-                  >
+                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                     <strong>{reviewFields[key].label}</strong>
                   </Form.Label>
                   <Col xs={12} md={12} lg={9} xl={8}>
@@ -626,24 +564,14 @@ const AddPeptide = (props) => {
             )}
             {peptide.urls && peptide.urls.length > 0 && (
               <Form.Group as={Row} controlId="urls">
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>URLs</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
                   {peptide.urls.map((url, index) => {
                     return (
                       <div key={index}>
-                        <a
-                          href={externalizeUrl(url)}
-                          target="_blank"
-                          rel="external noopener noreferrer"
-                        >
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                           {url}
                         </a>
                       </div>
@@ -655,13 +583,7 @@ const AddPeptide = (props) => {
 
             {peptide.publications && peptide.publications.length > 0 && (
               <Form.Group as={Row} controlId="publications">
-                <Form.Label
-                  column
-                  xs={12}
-                  md={12}
-                  lg={3}
-                  className="text-xs-left text-md-left text-lg-right"
-                >
+                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
                   <strong>Publication</strong>
                 </Form.Label>
                 <Col xs={12} md={12} lg={9} xl={8}>
@@ -695,17 +617,13 @@ const AddPeptide = (props) => {
     return (
       <div className="text-center mb-2">
         <Link to="/peptides">
-          <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Peptides</Button>
+          <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Peptides</Button>
         </Link>
-        <Button
-          disabled={activeStep === 0}
-          onClick={handleBack}
-          className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20"
-        >
+        <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
         </Button>
         <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
-          {activeStep === steps.length - 1 ? "Finish" : "Next"}
+          {activeStep === steps.length - 1 ? "Submit" : "Next"}
         </Button>
       </div>
     );
@@ -800,12 +718,12 @@ const AddPeptide = (props) => {
           />
           <Card>
             <Card.Body>
-              <Stepper activeStep={activeStep}>
+              <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
                 {steps.map((label, index) => {
                   const stepProps = {};
                   const labelProps = {};
                   if (isStepSkipped(index)) {
-                    labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
+                    labelProps.optional = <Typography variant="caption">Unknown Peptide</Typography>;
                     stepProps.completed = false;
                   }
                   return (
@@ -816,6 +734,7 @@ const AddPeptide = (props) => {
                 })}
               </Stepper>
               {getNavigationButtons()}
+              <h5 className="text-center gg-blue mt-4">{getStepLabel(activeStep)}</h5>
 
               {showErrorSummary === true && (
                 <ErrorSummary
