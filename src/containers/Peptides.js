@@ -9,6 +9,8 @@ import { Button } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import { getToolTip } from "../utils/commonUtils";
 import { PageHeading } from "../components/FormControls";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
 
 const Peptides = (props) => {
   useEffect(() => {
@@ -24,57 +26,65 @@ const Peptides = (props) => {
         {getMeta(head.peptides)}
       </Helmet>
 
-      <div className={!props.isImported ? "page-container" : ""}>
-        <PageHeading title="Peptides" subTitle="The subheader placeholder." />
+      <Container maxWidth="xl">
+        <div className={!props.isImported ? "page-container" : ""}>
+          <PageHeading
+            title="Your Peptides"
+            subTitle="The table below displays a list of all peptides that have been uploaded to your repository. New peptides may be added, old peptides can be edited, and unused peptides can be removed."
+          />
+          <Card>
+            <Card.Body>
+              <div className="text-center mb-4">
+                {!props.isImported && (
+                  <Link to="/peptides/addpeptide">
+                    <Button className="gg-btn-blue mt-2 gg-mr-20">Add Peptide</Button>
+                  </Link>
+                )}
+              </div>
 
-        <div className="text-center mb-4">
-          {!props.isImported && (
-            <Link to="/peptides/addpeptide">
-              <Button className="gg-btn-blue mt-2 gg-mr-20">Add Peptide</Button>
-            </Link>
-          )}
+              <GlygenTable
+                columns={[
+                  {
+                    Header: "Name",
+                    accessor: "name",
+                    Cell: (row) => getToolTip(row.original.name),
+                  },
+                  {
+                    Header: "Sequence",
+                    accessor: "sequence",
+                    Cell: (row) => getToolTip(row.original.sequence),
+                  },
+                ]}
+                defaultPageSize={10}
+                defaultSortColumn="id"
+                showCommentsButton
+                customCommentColumn
+                showSearchBox
+                commentsRefColumn="comment"
+                deleteWS="linkerdelete"
+                editUrl="peptides/editlinker"
+                keyColumn="id"
+                showRowsInfo
+                infoRowsText="Peptides"
+                showDeleteButton={props.isImported ? false : true}
+                showEditButton={props.isImported ? false : true}
+                fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
+                paramTypeValue={"PEPTIDE"}
+                isModal={props.isModal}
+                selectButtonHeader={props.selectButtonHeader ? "Select" : ""}
+                showSelectButton={props.showSelectButton}
+                selectButtonHandler={props.selectButtonHandler}
+                showOnlyMyLinkersOrGlycansCheckBox={props.showOnlyMyLinkersOrGlycansCheckBox}
+                handleChangeForOnlyMyLinkersGlycans={props.handleChangeForOnlyMyLinkersGlycans}
+                onlyMyLinkersGlycans={props.onlyMyLinkersGlycans}
+                onlyMyLinkersGlycansCheckBoxLabel={
+                  props.onlyMyLinkersGlycansCheckBoxLabel ? props.onlyMyLinkersGlycansCheckBoxLabel : ""
+                }
+              />
+            </Card.Body>
+          </Card>
         </div>
-
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name",
-              Cell: (row) => getToolTip(row.original.name),
-            },
-            {
-              Header: "Sequence",
-              accessor: "sequence",
-              Cell: (row) => getToolTip(row.original.sequence),
-            },
-          ]}
-          defaultPageSize={10}
-          defaultSortColumn="id"
-          showCommentsButton
-          customCommentColumn
-          showSearchBox
-          commentsRefColumn="comment"
-          deleteWS="linkerdelete"
-          editUrl="peptides/editlinker"
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Peptides"
-          showDeleteButton={props.isImported ? false : true}
-          showEditButton={props.isImported ? false : true}
-          fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
-          paramTypeValue={"PEPTIDE"}
-          isModal={props.isModal}
-          selectButtonHeader={props.selectButtonHeader ? "Select" : ""}
-          showSelectButton={props.showSelectButton}
-          selectButtonHandler={props.selectButtonHandler}
-          showOnlyMyLinkersOrGlycansCheckBox={props.showOnlyMyLinkersOrGlycansCheckBox}
-          handleChangeForOnlyMyLinkersGlycans={props.handleChangeForOnlyMyLinkersGlycans}
-          onlyMyLinkersGlycans={props.onlyMyLinkersGlycans}
-          onlyMyLinkersGlycansCheckBoxLabel={
-            props.onlyMyLinkersGlycansCheckBoxLabel ? props.onlyMyLinkersGlycansCheckBoxLabel : ""
-          }
-        />
-      </div>
+      </Container>
     </>
   );
 };
