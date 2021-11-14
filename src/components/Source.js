@@ -9,17 +9,11 @@ const Source = props => {
     return (
       <>
         <Form.Group as={Row} controlId={"vendor"}>
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={5}
-            className="required-asterik text-xs-left text-md-left text-lg-right"
-          >
+          <Form.Label column xs={12} lg={5} xl={4} className="required-asterik text-xs-left text-md-left text-lg-right">
             Vendor
             {/* <strong>Vendor</strong> */}
           </Form.Label>
-          <Col xs={12} md={10} lg={7} xl={6}>
+          <Col xs={12} md={10} lg={7}>
             <Form.Control
               name="vendor"
               type="text"
@@ -35,14 +29,6 @@ const Source = props => {
           {props.isMetadata && (
             <Col>
               <Form.Group className="mb-3" controlId={"vendorCheckBox"}>
-                {/* It can be deleted
-                <Form.Check
-                  type="checkbox"
-                  label={"not reported"}
-                  onChange={props.commercialNotRecordedChange}
-                  checked={props.commercial["vendorNotRecorded"]}
-                  // defaultChecked={props.commercial["vendorNotRecorded"]}
-                /> */}
                 <FormControlLabel
                   control={
                     <BlueCheckbox
@@ -60,10 +46,10 @@ const Source = props => {
         </Form.Group>
 
         <Form.Group as={Row} controlId="cataloguenumber">
-          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
+          <Form.Label column xs={12} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
             Catalogue Number
           </Form.Label>
-          <Col xs={12} md={10} lg={7} xl={6}>
+          <Col xs={12} md={10} lg={7}>
             <Form.Control
               name="catalogueNumber"
               type="text"
@@ -75,11 +61,11 @@ const Source = props => {
         </Form.Group>
 
         <Form.Group as={Row} controlId="batchId">
-          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
+          <Form.Label column xs={12} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
             Batch ID
             {/* <strong>Batch ID</strong> */}
           </Form.Label>
-          <Col xs={12} md={10} lg={7} xl={6}>
+          <Col xs={12} md={10} lg={7}>
             <Form.Control
               name="batchId"
               type="text"
@@ -97,24 +83,18 @@ const Source = props => {
     return (
       <>
         <Form.Group as={Row} controlId="providerlab">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={5}
-            className="required-asterik text-xs-left text-md-left text-lg-right"
-          >
+          <Form.Label column xs={12} lg={5} xl={4} className="required-asterik text-xs-left text-md-left text-lg-right">
             Provider Lab
             {/* <strong>Provider Lab</strong> */}
           </Form.Label>
-          <Col xs={12} md={10} lg={7} xl={6}>
+          <Col xs={12} md={10} lg={7}>
             <Form.Control
               name="providerLab"
               type="text"
               placeholder="Enter Provider Lab name"
               value={props.nonCommercial.providerLab}
               isInvalid={props.validate}
-              onChange={e => props.sourceChange(e)}
+              onChange={(e) => props.sourceChange(e)}
               disabled={props.nonCommercial.providerLabNotRecorded}
               required
             />
@@ -123,14 +103,6 @@ const Source = props => {
           {props.isMetadata && (
             <Col>
               <Form.Group className="mb-3" controlId="providerLabCheckBox">
-                {/* Can be deleted
-                <Form.Check
-                  type="checkbox"
-                  label={"not reported"}
-                  onChange={props.nonCommercialNotRecordedChange}
-                  checked={props.nonCommercial["providerLabNotRecorded"]}
-                  // defaultChecked={props.nonCommercial["providerLabNotRecorded"]}
-                /> */}
                 <FormControlLabel
                   control={
                     <BlueCheckbox
@@ -148,50 +120,50 @@ const Source = props => {
         </Form.Group>
 
         <Form.Group as={Row} controlId="batchId">
-          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
+          <Form.Label column xs={12} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
             Batch ID
             {/* <strong>Batch ID</strong> */}
           </Form.Label>
-          <Col xs={12} md={10} lg={7} xl={6}>
+          <Col xs={12} md={10} lg={7}>
             <Form.Control
               name="batchId"
               type="text"
               placeholder="Enter Batch ID"
-              onChange={e => props.sourceChange(e)}
+              onChange={(e) => props.sourceChange(e)}
               value={props.nonCommercial.batchId}
             />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="method">
-          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
+          <Form.Label column xs={12} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
             Method
             {/* <strong>Method</strong> */}
           </Form.Label>
-          <Col xs={12} md={10} lg={7} xl={6}>
+          <Col xs={12} md={10} lg={7}>
             <Form.Control
               name="method"
               type="text"
               placeholder="Enter Method"
               value={props.nonCommercial.method}
-              onChange={e => props.sourceChange(e)}
+              onChange={(e) => props.sourceChange(e)}
             />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="comment">
-          <Form.Label column xs={12} md={12} lg={5} className="text-xs-left text-md-left text-lg-right">
+          <Form.Label column xs={12} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
             Source Comment
             {/* <strong>Source Comment</strong> */}
           </Form.Label>
-          <Col xs={12} md={10} lg={7} xl={6}>
+          <Col xs={12} md={10} lg={7}>
             <Form.Control
               as="textarea"
               rows={4}
               name="sourceComment"
               placeholder="Enter Source Comment"
               value={props.nonCommercial.sourceComment}
-              onChange={e => props.sourceChange(e)}
+              onChange={(e) => props.sourceChange(e)}
               maxLength={2000}
             />
             <div className="text-right text-muted">

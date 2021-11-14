@@ -354,15 +354,14 @@ const AddPeptide = (props) => {
               <Form.Group as={Row} controlId="sequence">
                 <Form.Label
                   column
-                  xs={12}
-                  md={12}
+                  xs={12} 
                   lg={3}
                   xl={2}
                   className="required-asterik text-xs-left text-md-left text-lg-right"
                 >
                   <strong>Sequence</strong>
                 </Form.Label>
-                <Col xs={12} md={12} lg={9}>
+                <Col xs={12} lg={9}>
                   <Form.Control
                     as="textarea"
                     rows="5"
@@ -405,14 +404,14 @@ const AddPeptide = (props) => {
                 <Form.Group as={Row} controlId="name">
                   <Form.Label
                     column
-                    xs={12}
-                    md={12}
+                    xs={12} 
                     lg={3}
+                    xl={2}
                     className="required-asterik text-xs-left text-md-left text-lg-right"
                   >
                     <strong>Name</strong>
                   </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
                     <Form.Control
                       type="text"
                       name="name"
@@ -427,10 +426,10 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="comments">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>Comment</strong>
                   </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
                     <Form.Control
                       as="textarea"
                       rows={4}
@@ -447,10 +446,10 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="urls">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>URLs</strong>
                   </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
                     {urlWidget(true)}
                     <Row>
                       <Col md={10}>
@@ -481,10 +480,10 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="publications">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>Publications</strong>
                   </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
                     {peptide.publications.map((pub, index) => {
                       return (
                         <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
@@ -520,10 +519,10 @@ const AddPeptide = (props) => {
                   </Col>
                 </Form.Group>
                 <Row>
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>Source</strong>
                   </Form.Label>
-                  <Col xs={12} md={12} lg={8}>
+                  <Col xs={12} lg={9}>
                     <RadioGroup row name="glycan-type" onChange={sourceSelection} value={peptide.source}>
                       {/* Commercial */}
                       <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
@@ -558,17 +557,16 @@ const AddPeptide = (props) => {
         }
       case 3:
         return (
-          <Form className="radioform2">
+          <Form>
             {Object.keys(reviewFields).map((key) =>
               key === "sequence" && peptide.selectedPeptide === "Unknown" ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
-                  {/* <FormLabel label={reviewFields[key].label} /> */}
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>{reviewFields[key].label}</strong>
                   </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
                     <Form.Control
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
                       rows={key === "sequence" ? "10" : "4"}
@@ -584,10 +582,10 @@ const AddPeptide = (props) => {
             )}
             {peptide.urls && peptide.urls.length > 0 && (
               <Form.Group as={Row} controlId="urls">
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                   <strong>URLs</strong>
                 </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+                <Col xs={12} lg={9}>
                   {peptide.urls.map((url, index) => {
                     return (
                       <div key={index}>
@@ -603,10 +601,10 @@ const AddPeptide = (props) => {
 
             {peptide.publications && peptide.publications.length > 0 && (
               <Form.Group as={Row} controlId="publications">
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
+                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                   <strong>Publication</strong>
                 </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+                <Col xs={12} lg={9}>
                   {peptide.publications && peptide.publications.length > 0
                     ? peptide.publications.map((pub) => {
                         return (

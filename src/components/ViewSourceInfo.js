@@ -24,10 +24,10 @@ const ViewSourceInfo = (props) => {
       {(props.source === "commercial" || props.source === "COMMERCIAL") && (
         <>
           <Form.Group as={Row} controlId="value" className={props.className}>
-            <Form.Label column xs={4} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+            <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
               <strong>Source</strong>
             </Form.Label>
-            <Col xs={8} lg={9}>
+            <Col xs={12} lg={9}>
               <Form.Control
                 type="text"
                 disabled
@@ -41,7 +41,7 @@ const ViewSourceInfo = (props) => {
             <Form.Label column xs={4} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
               Vendor
             </Form.Label>
-            <Col xs={8} lg={7} xl={6}>
+            <Col xs={8} lg={7}>
               <Form.Control
                 type="text"
                 disabled
@@ -55,7 +55,7 @@ const ViewSourceInfo = (props) => {
             <Form.Label column xs={4} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
               Catalogue Number
             </Form.Label>
-            <Col xs={8} lg={7} xl={6}>
+            <Col xs={8} lg={7}>
               <Form.Control
                 type="text"
                 disabled
@@ -69,7 +69,7 @@ const ViewSourceInfo = (props) => {
             <Form.Label column xs={4} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
               Batch ID
             </Form.Label>
-            <Col xs={8} lg={7} xl={6}>
+            <Col xs={8} lg={7}>
               <Form.Control
                 type="text"
                 disabled
@@ -85,10 +85,10 @@ const ViewSourceInfo = (props) => {
       {(props.source === "nonCommercial" || props.source === "NONCOMMERCIAL") && (
         <>
           <Form.Group as={Row} controlId="value" className={props.className}>
-            <Form.Label column xs={4} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+            <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
               <strong>Source</strong>
             </Form.Label>
-            <Col xs={8} lg={9}>
+            <Col xs={12} lg={9}>
               <Form.Control
                 type="text"
                 disabled
@@ -102,7 +102,7 @@ const ViewSourceInfo = (props) => {
             <Form.Label column xs={4} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
               Provider Lab
             </Form.Label>
-            <Col xs={8} lg={7} xl={6}>
+            <Col xs={8} lg={7}>
               <Form.Control
                 type="text"
                 disabled
@@ -116,7 +116,7 @@ const ViewSourceInfo = (props) => {
             <Form.Label column xs={4} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
               Method
             </Form.Label>
-            <Col xs={8} lg={7} xl={6}>
+            <Col xs={8} lg={7}>
               <Form.Control
                 type="text"
                 disabled
@@ -130,7 +130,7 @@ const ViewSourceInfo = (props) => {
             <Form.Label column xs={4} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
               Batch ID
             </Form.Label>
-            <Col xs={8} lg={7} xl={6}>
+            <Col xs={8} lg={7}>
               <Form.Control
                 type="text"
                 disabled
@@ -145,16 +145,17 @@ const ViewSourceInfo = (props) => {
             <Form.Label column xs={12} lg={5} xl={4} className="text-xs-left text-md-left text-lg-right">
               Source Comment
             </Form.Label>
-            <Col xs={12} lg={7} xl={7}>
-              <div className="text-overflow text-max-height">{props.nonCommercial.sourceComment}</div>
-              {/* <Form.Control
+            <Col xs={12} lg={7}>
+              {/* <div className="text-overflow text-max-height">{props.nonCommercial.sourceComment}</div> */}
+              <Form.Control
                 as="textarea"
                 disabled
-                rows={4}
+                // rows={4}
+                className="text-overflow text-max-height"
                 plaintext={props.isUpdate}
                 readOnly={props.isUpdate}
                 value={props.nonCommercial.sourceComment}
-              /> */}
+              />
             </Col>
           </Form.Group>
         </>
