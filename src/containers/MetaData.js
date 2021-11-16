@@ -10,7 +10,6 @@ import { Descriptors } from "../components/Descriptors";
 import "../containers/MetaData.css";
 import { useHistory, Prompt } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Loading } from "../components/Loading";
 import { Form, Row, Col, Button, Popover, OverlayTrigger, Alert } from "react-bootstrap";
 import { DragDropContext } from "react-beautiful-dnd";
 
@@ -464,15 +463,16 @@ const MetaData = props => {
       </option>
     );
 
-    descriptors.forEach(descriptor => {
-      if (!descriptor.group && descriptor.maxOccurrence > 0) {
-        const occurrances = sortOptions.filter(i => i === descriptor.name);
-        occurrances.length < 1 && sortOptions.push(descriptor.name);
-      } else if (descriptor.maxOccurrence > 0) {
-        const occurrances = sortOptions.filter(i => i === descriptor.name);
-        occurrances.length < 1 && sortOptions.push(descriptor.name);
-      }
-    });
+    descriptors &&
+      descriptors.forEach(descriptor => {
+        if (!descriptor.group && descriptor.maxOccurrence > 0) {
+          const occurrances = sortOptions.filter(i => i === descriptor.name);
+          occurrances.length < 1 && sortOptions.push(descriptor.name);
+        } else if (descriptor.maxOccurrence > 0) {
+          const occurrances = sortOptions.filter(i => i === descriptor.name);
+          occurrances.length < 1 && sortOptions.push(descriptor.name);
+        }
+      });
 
     sortOptions.sort().forEach((element, index) => {
       options.push(
@@ -866,48 +866,35 @@ const MetaData = props => {
     );
   };
 
-  const getListTemplate = (
-    <Form.Group as={Row} controlId="type">
-      {(sampleModel && sampleModel.length > 1) ||
-      (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
-        <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
-      ) : (
-        ""
-      )}
-      <Col md={6}>
-        {(sampleModel && sampleModel.length > 1) ||
-        (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
-          <Form.Control
-            as="select"
-            name="selectedtemplate"
-            value={metaDataDetails.selectedtemplate}
-            onChange={handleChange}
-            isInvalid={errorType}
-            disabled={isUpdate || props.isCopy}
-            required
-          >
-            {!isUpdate && !props.isCopy ? (
-              <>
-                <option value="select">Select</option>
-                {sampleModel.map((element, index) => {
-                  return (
-                    <option key={index} value={element.name}>
-                      {element.name}
-                    </option>
-                  );
-                })}
-              </>
-            ) : (
-              <option value={metaDataDetails.selectedtemplate}>{metaDataDetails.selectedtemplate}</option>
+  const getListTemplate = () => {
+    return (
+      <>
+        <Form.Group as={Row} controlId="type">
+          {(sampleModel && sampleModel.length > 1) ||
+            (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default") && (
+              <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+            ))}
+          <Col md={6}>
+            {((sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ||
+              sampleModel.length > 0) && (
+              <Form.Control
+                as="select"
+                name="selectedtemplate"
+                value={metaDataDetails.selectedtemplate}
+                onChange={handleChange}
+                isInvalid={errorType}
+                disabled={isUpdate || props.isCopy}
+                required
+              >
+                <option value={metaDataDetails.selectedtemplate}>{metaDataDetails.selectedtemplate}</option>
+              </Form.Control>
             )}
-          </Form.Control>
-        ) : (
-          ""
-        )}
-        <Feedback message={`${props.metadataType} Type is required`} />
-      </Col>
-    </Form.Group>
-  );
+            <Feedback message={`${props.metadataType} Type is required`} />
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
 
   const getStartMetadataPage = () => {
     return (
@@ -950,7 +937,34 @@ const MetaData = props => {
           </Col>
         </Form.Group>
 
-        {getListTemplate}
+        {(!isUpdate || !props.isCopy) && (
+          <Form.Group as={Row} controlId="description">
+            <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+            <Col md={6}>
+              <Form.Control
+                as="select"
+                name="selectedtemplate"
+                value={metaDataDetails.selectedtemplate}
+                onChange={handleChange}
+                isInvalid={errorType}
+                disabled={isUpdate || props.isCopy}
+                required
+              >
+                <option value="select">Select</option>
+                {sampleModel.map((element, index) => {
+                  return (
+                    <option key={index} value={element.name}>
+                      {element.name}
+                    </option>
+                  );
+                })}
+              </Form.Control>
+              <Feedback message={`${props.metadataType} Type is required`} />
+            </Col>
+          </Form.Group>
+        )}
+
+        {isUpdate && props.isCopy && getListTemplate()}
       </>
     );
   };
@@ -1238,6 +1252,7 @@ const MetaData = props => {
   }
 
   function getListTemplatesSuccess(response) {
+    debugger;
     response.json().then(responseJson => {
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
@@ -1280,6 +1295,7 @@ const MetaData = props => {
   }
 
   function getSampleTemplateSuccess(response) {
+    debugger;
     response.json().then(responseJson => {
       setMetaDataDetails({
         type: responseJson.name
@@ -1295,69 +1311,73 @@ const MetaData = props => {
   }
 
   function setSampleUpdateData() {
+    debugger;
     let sampleModelUpdate = sampleModel;
 
-    metaDataDetails.sample.descriptors.forEach(generalDsc => {
-      let simpleDescs;
+    metaDataDetails.sample.descriptorGroups &&
+      metaDataDetails.sample.descriptors.forEach(generalDsc => {
+        let simpleDescs;
 
-      if (generalDsc.key && generalDsc.key.id) {
-        simpleDescs = sampleModelUpdate.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
-      }
-
-      if (simpleDescs) {
-        simpleDescs.value = generalDsc.value;
-        simpleDescs.unit = generalDsc.unit ? generalDsc.unit : "";
-      }
-    });
-
-    metaDataDetails.sample.descriptorGroups.forEach(group => {
-      let templateDescriptorGroup;
-      let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.order === group.order);
-
-      if (!tempDescGroup) {
-        templateDescriptorGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
-
-        var newElement = JSON.parse(JSON.stringify(templateDescriptorGroup));
-        newElement.id = "newlyAddedItems" + templateDescriptorGroup.id;
-        newElement.isNewlyAdded = true;
-        newElement.order = group.order;
-        newElement.group &&
-          newElement.descriptors.forEach(e => {
-            e.id = "newlyAddedItems" + e.id;
-          });
-
-        sampleModelUpdate.descriptors.push(newElement);
-      } else {
-        templateDescriptorGroup = tempDescGroup;
-      }
-
-      if (templateDescriptorGroup.descriptors) {
-        if (!templateDescriptorGroup.mandatory && !tempDescGroup) {
-          templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
-          templateDescriptorGroup.isNewlyAdded = true;
+        if (generalDsc.key && generalDsc.key.id) {
+          simpleDescs = sampleModelUpdate.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
         }
-        group.descriptors.forEach(descriptor => {
-          const subdescriptor =
-            templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === descriptor.key.id);
-          if (subdescriptor && !subdescriptor.group) {
-            subdescriptor.value = descriptor.value;
-            subdescriptor.unit = descriptor.unit ? descriptor.unit : "";
-          } else {
-            if (subdescriptor && !subdescriptor.mandatory) {
-              subdescriptor.id = "newlyAddedItems" + subdescriptor.id;
-              subdescriptor.isNewlyAdded = true;
-            }
-            descriptor.group &&
-              descriptor.descriptors.forEach(subGroupDesc => {
-                const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
-                subGrp.value = subGroupDesc.value;
-                subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
-              });
+
+        if (simpleDescs) {
+          simpleDescs.value = generalDsc.value;
+          simpleDescs.unit = generalDsc.unit ? generalDsc.unit : "";
+        }
+      });
+
+    metaDataDetails.sample.descriptorGroups &&
+      metaDataDetails.sample.descriptorGroups.forEach(group => {
+        let templateDescriptorGroup;
+        let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.order === group.order);
+
+        if (!tempDescGroup) {
+          templateDescriptorGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
+
+          var newElement = JSON.parse(JSON.stringify(templateDescriptorGroup));
+          newElement.id = "newlyAddedItems" + templateDescriptorGroup.id;
+          newElement.isNewlyAdded = true;
+          newElement.order = group.order;
+          newElement.group &&
+            newElement.descriptors.forEach(e => {
+              e.id = "newlyAddedItems" + e.id;
+            });
+
+          sampleModelUpdate.descriptors.push(newElement);
+        } else {
+          templateDescriptorGroup = tempDescGroup;
+        }
+
+        if (templateDescriptorGroup.descriptors) {
+          if (!templateDescriptorGroup.mandatory && !tempDescGroup) {
+            templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
+            templateDescriptorGroup.isNewlyAdded = true;
           }
-        });
-      }
-    });
-    setSampleModel(sampleModelUpdate);
+          group.descriptors.forEach(descriptor => {
+            const subdescriptor =
+              templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === descriptor.key.id);
+            if (subdescriptor && !subdescriptor.group) {
+              subdescriptor.value = descriptor.value;
+              subdescriptor.unit = descriptor.unit ? descriptor.unit : "";
+            } else {
+              if (subdescriptor && !subdescriptor.mandatory) {
+                subdescriptor.id = "newlyAddedItems" + subdescriptor.id;
+                subdescriptor.isNewlyAdded = true;
+              }
+              descriptor.group &&
+                descriptor.descriptors.forEach(subGroupDesc => {
+                  const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
+                  subGrp.value = subGroupDesc.value;
+                  subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
+                });
+            }
+          });
+        }
+      });
+
+    sampleModelUpdate.length > 0 && setSampleModel(sampleModelUpdate);
   }
 
   function setAssayMetadataUpdate() {
@@ -1484,9 +1504,9 @@ const MetaData = props => {
     setShowErrorSummary(true);
   }
 
-  if (sampleModel.length < 1) {
-    return <Loading show={true} />;
-  }
+  // if (sampleModel.length < 1) {
+  //   return <Loading show={true} />;
+  // }
 
   const getButtonsForImportedPage = () => {
     return (
