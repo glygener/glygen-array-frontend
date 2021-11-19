@@ -8,7 +8,7 @@ import { LineTooltip } from "../components/tooltip/LineTooltip";
 const PublicationCard = (props) => {
   return (
     <>
-      <table hover fluid className="table-striped mr-4 mb-3">
+      <table hover fluid="true" className="table-striped mb-3">
         <tbody className="table-body">
           <tr className="table-row p-3" key={props.pubIndex + "tr"}>
             <td key={props.pubIndex} className="pt-3 pb-3 pl-2">
@@ -46,12 +46,7 @@ const PublicationCard = (props) => {
                       alt="Delete publication"
                       size="lg"
                       className="caution-color tbl-icon-btn"
-                      onClick={() =>
-                        props.deletePublication(
-                          props.id ? props.id : props.pubmedId,
-                          "deletePublication"
-                        )
-                      }
+                      onClick={() => props.deletePublication(props.id ? props.id : props.pubmedId, "deletePublication")}
                     />
                   </Link>
                 </LineTooltip>

@@ -109,7 +109,7 @@ const AddGlycan = (props) => {
       }
     }
 
-    if (e.currentTarget.innerText === "FINISH") {
+    if (e.currentTarget.innerText === "SUBMIT") {
       addGlycan(e);
       return;
     }
@@ -296,7 +296,7 @@ const AddGlycan = (props) => {
   );
 
   function getSteps() {
-    return ["Select the Glycan Type", "Add Glycan Information", "Review and Add"];
+    return ["Glycan Type", "Glycan Information", "Review and Add"];
   }
   function getGlycanType(typeIndex) {
     switch (typeIndex) {
@@ -423,7 +423,7 @@ const AddGlycan = (props) => {
                         onClick={() => getSequenceFromGlytoucan(userSelection.glytoucanId)}
                         className="gg-btn-blue-reg btn-to-lower mt-3"
                       >
-                        Insert Sequence from GlyTouCan
+                        Insert Information from GlyTouCan
                       </Button>
                     )}
                   </Col>

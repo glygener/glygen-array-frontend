@@ -150,7 +150,7 @@ const ViewSourceInfo = (props) => {
               <Form.Control
                 as="textarea"
                 disabled
-                // rows={4}
+                rows={4}
                 className="text-overflow text-max-height"
                 plaintext={props.isUpdate}
                 readOnly={props.isUpdate}

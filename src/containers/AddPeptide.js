@@ -65,12 +65,15 @@ const AddPeptide = (props) => {
   const [newPubMedId, setNewPubMedId] = useState("");
   const [invalidUrls, setInvalidUrls] = useState(false);
   const [newURL, setNewURL] = useState("");
+  const [disableReset, setDisableReset] = useState(false);
+  const [disableResetSecondStep, setDisableResetSecondStep] = useState(false);
   const history = useHistory();
 
   const peptideInitialState = {
     selectedPeptide: "SequenceDefined",
     name: "",
     sequence: "",
+    comment: "",
     publications: [],
     urls: [],
     source: "notSpecified",
@@ -152,7 +155,7 @@ const AddPeptide = (props) => {
       if (count > 0) {
         return;
       }
-    } else if (e.currentTarget.innerText === "FINISH") {
+    } else if (e.currentTarget.innerText === "SUBMIT") {
       addPeptide(e);
       return;
     }
@@ -166,6 +169,12 @@ const AddPeptide = (props) => {
 
     setPeptide({ [name]: newValue });
     setValidate(false);
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
+    }
   };
 
   const handleBack = () => {
@@ -188,13 +197,30 @@ const AddPeptide = (props) => {
   };
 
   const clearFields = () => {
-    setPeptide({ ...peptideInitialState, ...{ selectedPeptide: peptide.selectedPeptide } });
-    // setRegistrationCheckFlag(true);
-    // setDisableReset(false);
+    if (activeStep === 1) {
+      setPeptide({ ...peptideInitialState, ...{ selectedPeptide: peptide.selectedPeptide } });
+
+      setDisableReset(false);
+    }
+    if (activeStep === 2) {
+      setPeptide({
+        ...peptideInitialState,
+        commercial: peptideInitialState.commercial,
+        nonCommercial: peptideInitialState.nonCommercial,
+        ...{
+          selectedPeptide: peptide.selectedPeptide,
+          sequence: peptide.sequence,
+          source: peptide.source,
+        },
+      });
+      setNewURL("");
+      setNewPubMedId("");
+      setDisableResetSecondStep(false);
+    }
   };
 
   function getSteps() {
-    return ["Peptide Type", "Type Specific Peptide Information", "Generic Peptide Information", "Review and Add"];
+    return ["Peptide Type", "Type Specific Information", "Generic Information", "Review and Add"];
   }
 
   function getPeptideType(typeIndex) {
@@ -239,6 +265,12 @@ const AddPeptide = (props) => {
           publications: peptide.publications.concat([responseJson]),
         });
         setNewPubMedId("");
+        if (activeStep === 1) {
+          setDisableReset(true);
+        }
+        if (activeStep === 2) {
+          setDisableResetSecondStep(true);
+        }
       });
     }
 
@@ -354,7 +386,7 @@ const AddPeptide = (props) => {
               <Form.Group as={Row} controlId="sequence">
                 <Form.Label
                   column
-                  xs={12} 
+                  xs={12}
                   lg={3}
                   xl={2}
                   className="required-asterik text-xs-left text-md-left text-lg-right"
@@ -382,7 +414,6 @@ const AddPeptide = (props) => {
                       <ExampleExploreControl
                         setInputValue={funcSetInputValues}
                         inputValue={moleculeExamples.peptide.examples}
-                        // inputValue={advancedSearch.glycan_id.examples}
                       />
                     </Col>
                     <Col className="text-right text-muted">
@@ -392,6 +423,17 @@ const AddPeptide = (props) => {
                   </Row>
                 </Col>
               </Form.Group>
+              {/* Bottom Reset / Clear fields  Button */}
+              <div className="text-center mb-2">
+                <Button
+                  variant="contained"
+                  disabled={!disableReset}
+                  onClick={clearFields}
+                  className="gg-btn-blue btn-to-lower"
+                >
+                  Clear Fields
+                </Button>
+              </div>
             </>
           );
         }
@@ -404,7 +446,7 @@ const AddPeptide = (props) => {
                 <Form.Group as={Row} controlId="name">
                   <Form.Label
                     column
-                    xs={12} 
+                    xs={12}
                     lg={3}
                     xl={2}
                     className="required-asterik text-xs-left text-md-left text-lg-right"
@@ -551,6 +593,17 @@ const AddPeptide = (props) => {
                     />
                   )
                 )}
+                {/* Bottom Reset / Clear fields  Button */}
+                <div className="text-center mb-2">
+                  <Button
+                    variant="contained"
+                    disabled={!disableResetSecondStep}
+                    onClick={clearFields}
+                    className="gg-btn-blue btn-to-lower"
+                  >
+                    Clear Fields
+                  </Button>
+                </div>
               </Form>
             </>
           );
@@ -653,6 +706,12 @@ const AddPeptide = (props) => {
    **/
   function funcSetInputValues(value) {
     setPeptide({ sequence: value });
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
+    }
   }
 
   function addPeptide(e) {
