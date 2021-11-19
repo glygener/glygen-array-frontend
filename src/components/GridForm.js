@@ -150,6 +150,7 @@ const GridForm = props => {
                   name="spotMetadataSelected"
                   value={props.selectedSpotMetadata.value}
                   onChange={props.handleSpotSelection.bind(this)}
+                  readOnly={props.isUpdate || props.publicView}
                   required
                 >
                   <option value="">Select</option>
@@ -166,13 +167,15 @@ const GridForm = props => {
             </Form.Group>
           )}
 
-          <Button
-            className={props.loadGrid ? "hide-content" : "line-break-2"}
-            name="createGrid"
-            onClick={() => props.validateForm()}
-          >
-            Create Grid
-          </Button>
+          <div className="button - div text-center">
+            <Button
+              className={props.loadGrid ? "hide-content" : "line-break-2"}
+              name="createGrid"
+              onClick={() => props.validateForm()}
+            >
+              Create Grid
+            </Button>
+          </div>
         </Card.Body>
       </Accordion.Collapse>
     </Card>

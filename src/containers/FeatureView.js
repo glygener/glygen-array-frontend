@@ -606,11 +606,10 @@ const FeatureView = props => {
   const getGlycanInfoDisplay = rowSelected => {
     let glycan;
 
-    if (rowSelected.original.glycans) {
-      glycan = rowSelected.original.glycans[rowSelected.index];
-    }
     if (props.positionDetails && props.positionDetails.isPosition) {
       glycan = rowSelected.original.glycan;
+    } else if (rowSelected.original.glycans) {
+      glycan = rowSelected.original.glycans[rowSelected.index];
     } else {
       glycan = rowSelected.original;
     }

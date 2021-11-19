@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes, { array, arrayOf } from "prop-types";
+import PropTypes, { arrayOf } from "prop-types";
 import { Popover, Card, Row, Col, Container } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import "./SpotInformation.css";
@@ -59,22 +59,24 @@ const SpotInformation = props => {
                         >
                           <Col> Glycans</Col>
                           <Col>
-                            {element.feature.glycans.map((element, index) =>
-                              element.cartoon ? (
-                                <StructureImage
-                                  key={index}
-                                  base64={element.cartoon}
-                                  style={{
-                                    maxWidth: "100px",
-                                    overflow: "scroll"
-                                  }}
-                                />
-                              ) : (
-                                <div key={index}>
-                                  <Col>{"No Image"}</Col>
-                                </div>
-                              )
-                            )}
+                            {element.feature &&
+                              element.feature.glycans &&
+                              element.feature.glycans.map((element, index) =>
+                                element.glycan && element.glycan.cartoon ? (
+                                  <StructureImage
+                                    key={index}
+                                    base64={element.glycan.cartoon}
+                                    style={{
+                                      maxWidth: "100px",
+                                      overflow: "scroll"
+                                    }}
+                                  />
+                                ) : (
+                                  <div key={index}>
+                                    <Col>{"No Image"}</Col>
+                                  </div>
+                                )
+                              )}
                           </Col>
                         </Row>
                         {/* <FeatureCard feature={element.feature} showName={false}></FeatureCard> */}

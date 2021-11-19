@@ -21,8 +21,8 @@ const AddGlycanInfoToFeature = props => {
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showLoading, setShowLoading] = useState(false);
 
-  const [minRangeValid, setMinRangeValid] = useState(false);
-  const [maxRangeValid, setMaxRangeValid] = useState(false);
+  const [minRangeInValid, setMinRangeInValid] = useState(false);
+  const [maxRangeInValid, setMaxRangeInValid] = useState(false);
 
   const sourceInfoChange = (e, glycanId) => {
     const name = e.target.name;
@@ -476,7 +476,7 @@ const AddGlycanInfoToFeature = props => {
   const getRange = () => {
     return (
       <>
-        <Form noValidate validated={minRangeValid && maxRangeValid}>
+        <Form noValidate validated={minRangeInValid && maxRangeInValid}>
           <Form.Group as={Row} controlId="range">
             <FormLabel label="Range" className={"metadata-descriptor-title "} />
           </Form.Group>
@@ -490,7 +490,7 @@ const AddGlycanInfoToFeature = props => {
                 name={"minRange"}
                 placeholder={"min range"}
                 value={props.addGlycanInfoToFeature.minRangeSelected}
-                isInvalid={minRangeValid}
+                isInvalid={minRangeInValid}
                 onChange={e => {
                   if (
                     parseInt(e.target.value) > parseInt(props.maxRange) ||
@@ -498,9 +498,9 @@ const AddGlycanInfoToFeature = props => {
                     (props.addGlycanInfoToFeature.maxRangeSelected !== "" &&
                       parseInt(e.target.value) > parseInt(props.addGlycanInfoToFeature.maxRangeSelected))
                   ) {
-                    setMinRangeValid(true);
+                    setMinRangeInValid(true);
                   } else {
-                    setMinRangeValid(false);
+                    setMinRangeInValid(false);
                   }
                   props.setAddGlycanInfoToFeature({ minRangeSelected: e.target.value });
                 }}
@@ -526,16 +526,16 @@ const AddGlycanInfoToFeature = props => {
                 name={"maxRange"}
                 placeholder={"max range"}
                 value={props.addGlycanInfoToFeature.maxRangeSelected}
-                isInvalid={maxRangeValid}
+                isInvalid={maxRangeInValid}
                 onChange={e => {
                   if (
                     parseInt(e.target.value) > parseInt(props.maxRange) ||
                     parseInt(e.target.value) < 1 ||
                     parseInt(e.target.value) < parseInt(props.addGlycanInfoToFeature.minRangeSelected)
                   ) {
-                    setMaxRangeValid(true);
+                    setMaxRangeInValid(true);
                   } else {
-                    setMaxRangeValid(false);
+                    setMaxRangeInValid(false);
                   }
                   props.setAddGlycanInfoToFeature({ maxRangeSelected: e.target.value });
                 }}

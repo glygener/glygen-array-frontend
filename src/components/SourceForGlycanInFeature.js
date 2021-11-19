@@ -174,8 +174,16 @@ const SourceForGlycanInFeature = props => {
       (props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
       !props.featureAddState.positionDetails.isPosition
     ) {
-      selectedRow.min = addGlycanInfoToFeature.minRangeSelected;
-      selectedRow.max = addGlycanInfoToFeature.maxRangeSelected;
+      if (props.maxRange > addGlycanInfoToFeature.minRangeSelected && addGlycanInfoToFeature.minRangeSelected > 0) {
+        selectedRow.min = addGlycanInfoToFeature.minRangeSelected;
+      }
+
+      if (
+        props.maxRange >= addGlycanInfoToFeature.maxRangeSelected &&
+        addGlycanInfoToFeature.maxRangeSelected > addGlycanInfoToFeature.minRangeSelected
+      ) {
+        selectedRow.max = addGlycanInfoToFeature.maxRangeSelected;
+      }
 
       glycansList[selectedRowIndex] = selectedRow;
       props.setFeatureAddState({

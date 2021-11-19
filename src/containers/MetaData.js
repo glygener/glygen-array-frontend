@@ -739,6 +739,7 @@ const MetaData = props => {
   };
 
   const loadDescriptorsAndGroups = () => {
+    debugger;
     return (
       <>
         <Descriptors
@@ -1278,6 +1279,7 @@ const MetaData = props => {
   }
 
   function getSampleForUpdateSuccess(response) {
+    debugger;
     response.json().then(responseJson => {
       setMetaDataDetails({
         name: props.isCopy ? "" : responseJson.name,
@@ -1302,6 +1304,7 @@ const MetaData = props => {
       });
 
       if (props.importedInAPage && props.importedPageData && props.importedPageData.id) {
+        debugger;
         setSampleModel(props.importedPageData);
       } else {
         setSampleModel(responseJson);
@@ -1314,7 +1317,7 @@ const MetaData = props => {
     debugger;
     let sampleModelUpdate = sampleModel;
 
-    metaDataDetails.sample.descriptorGroups &&
+    if (sampleModel.descriptors && sampleModel.descriptors.length > 0) {
       metaDataDetails.sample.descriptors.forEach(generalDsc => {
         let simpleDescs;
 
@@ -1328,7 +1331,6 @@ const MetaData = props => {
         }
       });
 
-    metaDataDetails.sample.descriptorGroups &&
       metaDataDetails.sample.descriptorGroups.forEach(group => {
         let templateDescriptorGroup;
         let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.order === group.order);
@@ -1368,16 +1370,19 @@ const MetaData = props => {
               }
               descriptor.group &&
                 descriptor.descriptors.forEach(subGroupDesc => {
-                  const subGrp = subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
-                  subGrp.value = subGroupDesc.value;
-                  subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
+                  if (subdescriptor && subdescriptor.group) {
+                    const subGrp =
+                      subdescriptor.group && subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
+                    subGrp.value = subGroupDesc.value;
+                    subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
+                  }
                 });
             }
           });
         }
       });
-
-    sampleModelUpdate.length > 0 && setSampleModel(sampleModelUpdate);
+      // sampleModelUpdate.descriptors && sampleModelUpdate.descriptors.length > 0 && setSampleModel(sampleModelUpdate);
+    }
   }
 
   function setAssayMetadataUpdate() {
@@ -1610,6 +1615,8 @@ const MetaData = props => {
                 {props.metadataType !== "Assay" &&
                   !loadDataOnFirstNextInUpdate &&
                   !props.importedPageData.id &&
+                  sampleModel.descriptors &&
+                  sampleModel.descriptors.length &&
                   setSampleUpdateData()}
 
                 {props.metadataType === "Assay" &&
@@ -1617,9 +1624,10 @@ const MetaData = props => {
                   !props.importedPageData.id &&
                   setAssayMetadataUpdate()}
 
-                {props.importPageContent && props.importPageContent()}
-
-                {getMetaData()}
+                {props.importedPageData.id &&
+                  sampleModel.descriptors &&
+                  sampleModel.descriptors.length > 0 &&
+                  getMetaData()}
               </Col>
               <Col md={2} style={{ marginLeft: "-35px" }}>
                 <div className={"addon-setting"}>{getAddons()}</div>
@@ -1651,8 +1659,7 @@ MetaData.propTypes = {
   setImportedPageDataToSubmit: PropTypes.func,
   handleBack: PropTypes.func,
   handleNext: PropTypes.func,
-  idChange: PropTypes.bool,
-  importPageContent: PropTypes.func
+  idChange: PropTypes.bool
 };
 
 export { MetaData };

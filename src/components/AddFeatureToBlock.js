@@ -325,7 +325,6 @@ const AddFeatureToBlock = props => {
   };
 
   const getMetadata = () => {
-    debugger;
     return (
       <MetaData
         metaID={metadataId}
@@ -391,25 +390,30 @@ const AddFeatureToBlock = props => {
                   }}
                   name="linker"
                   key={index}
-                  value={row.original.linker && row.original.linker.name ? row.original.linker.name : ""}
+                  value={
+                    row.original && row.original.linker && row.original.linker.name ? row.original.linker.name : ""
+                  }
                   disabled
                 />
               )
             },
             {
               Header: "Sequence",
-              Cell: (row, index) =>
-                row.original.glycans.map(element => (
-                  <StructureImage
-                    key={index}
-                    base64={element.cartoon}
-                    style={{
-                      maxWidth: "100px",
-                      overflow: "scroll"
-                    }}
-                  />
-                )),
-              minWidth: 300
+              Cell: (row, index) => {
+                return row.original && row.original.glycans
+                  ? row.original.glycans.map(element => (
+                      <StructureImage
+                        key={index}
+                        base64={element.glycan ? element.glycan.cartoon : element.cartoon}
+                        style={{
+                          maxWidth: "100px",
+                          overflow: "scroll"
+                        }}
+                      />
+                    ))
+                  : "";
+              },
+              minWidth: 250
             }
           ]}
           pageSizeOptions={[5, 10, 25]}

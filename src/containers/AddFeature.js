@@ -25,7 +25,7 @@ import { getToolTip } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { GlycoPeptides } from "../components/GlycoPeptides";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 
 const AddFeature = props => {
@@ -78,7 +78,6 @@ const AddFeature = props => {
   const [glycoProteinPepTideListStep4, setGlycoProteinPepTideListStep4] = useState([{ position: 0 }]);
   const [showGlycoPeptides, setShowGlycoPeptides] = useState(false);
   const [linkerForSelectedGlycan, setLinkerForSelectedGlycan] = useState();
-  const [linkerForSelectedGlycoPeptide, setLinkerForSelectedGlycoPeptide] = useState();
 
   const [glycanViewInfo, setGlycanViewInfo] = useState(false);
   const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
@@ -485,26 +484,6 @@ const AddFeature = props => {
     }
   };
 
-  const handleLinkerSelectForGlycoPeptide = linker => {
-    if (featureAddState.positionDetails.isPosition) {
-      setShowLinkerPicker(false);
-
-      let selectedGlycoPeptides = [...featureAddState.glycoPeptides];
-
-      let index =
-        linkerForSelectedGlycoPeptide && linkerForSelectedGlycoPeptide.glycoPeptide
-          ? linkerForSelectedGlycoPeptide.glycoPeptide.index
-          : linkerForSelectedGlycoPeptide.index;
-
-      let glycoPeptide = selectedGlycoPeptides.find(i => i.glycoPeptide && i.glycoPeptide.index === index);
-      let glycanIndex = selectedGlycoPeptides.indexOf(glycoPeptide);
-
-      glycoPeptide.linker = linker;
-      selectedGlycoPeptides[glycanIndex] = glycoPeptide;
-      setFeatureAddState({ glycoPeptides: selectedGlycoPeptides });
-    }
-  };
-
   const handleLipidSelect = lipid => {
     setFeatureAddState({ lipid: lipid });
     setLinkerValidated(false);
@@ -599,13 +578,7 @@ const AddFeature = props => {
           onlyMyLinkersGlycans={onlyMyLinkers}
           onlyMyLinkersGlycansCheckBoxLabel={"Show all available linkers"}
           isImported
-          selectButtonHandler={
-            featureAddState.type !== "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
-              ? handleLinkerSelect
-              : activeStep < 2
-              ? handleLinkerSelect
-              : handleLinkerSelectForGlycoPeptide
-          }
+          selectButtonHandler={handleLinkerSelect}
         />
       </>
     );
@@ -1514,24 +1487,27 @@ const AddFeature = props => {
             },
             {
               Header: "Linker",
-              accessor: "linker",
+              accessor: "glycoPeptide",
               Cell: (row, index) => {
-                return row.original.linker ? (
-                  getToolTip(row.original.linker.name)
+                return row.value && row.value.linker ? (
+                  <Link key={index} to={"/linkers/editlinker/" + row.value.id} target="_blank">
+                    {getToolTip(row.value.linker.name)}
+                  </Link>
                 ) : (
-                  <Button
-                    style={{
-                      backgroundColor: "lightgray"
-                    }}
-                    onClick={() => {
-                      setLinkerForSelectedGlycoPeptide(row.original);
-                      setShowLinkerPicker(true);
-                    }}
-                    disabled={!row.original.glycoPeptide}
-                  >
-                    Add linker
-                  </Button>
+                  "No Linker Selected"
                 );
+                //   <Button
+                //     style={{
+                //       backgroundColor: "lightgray"
+                //     }}
+                //     onClick={() => {
+                //       setLinkerForSelectedGlycoPeptide(row.original);
+                //       setShowLinkerPicker(true);
+                //     }}
+                //     disabled={!row.original.glycoPeptide}
+                //   >
+                //     Add linker
+                //   </Button>
               },
               minWidth: 150
             },
@@ -1587,7 +1563,7 @@ const AddFeature = props => {
           showPagination={false}
           showSearchBox
         />
-        {showGlycoPeptides && getGlycoPeptides()}
+        {showGlycoPeptides && getGlycoPeptidesModal()}
       </>
     );
   };
@@ -1603,6 +1579,7 @@ const AddFeature = props => {
   };
 
   const viewGlycoPeptide = row => {
+    debugger;
     let glycoPeptideId =
       row.original && row.original.glycoPeptide
         ? row.original.glycoPeptide.id
@@ -1613,7 +1590,26 @@ const AddFeature = props => {
     window.open(`/features/viewFeature/${glycoPeptideId}`, "_blank");
   };
 
-  const getGlycoPeptides = () => {
+  const glycoPeptideList = () => {
+    return (
+      <>
+        <GlycoPeptides
+          customViewonClick
+          viewOnClick={viewGlycoPeptide}
+          selectButtonHeader="Select"
+          showSelectButton
+          // ={featureAddState.rangeGlycoPeptides.length > 0 ? false : true}
+          selectButtonHandler={
+            featureAddState.positionDetails.isPosition
+              ? handleGlycoPeptideSelectionForPosition
+              : handleGlycoPeptideSelectGPLGP
+          }
+        />
+      </>
+    );
+  };
+
+  const getGlycoPeptidesModal = () => {
     return (
       <>
         <Modal
@@ -1626,20 +1622,7 @@ const AddFeature = props => {
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">Pick GlycoPeptide:</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <GlycoPeptides
-              customViewonClick
-              viewOnClick={viewGlycoPeptide}
-              selectButtonHeader="Select"
-              showSelectButton
-              // ={featureAddState.rangeGlycoPeptides.length > 0 ? false : true}
-              selectButtonHandler={
-                featureAddState.positionDetails.isPosition
-                  ? handleGlycoPeptideSelectionForPosition
-                  : handleGlycoPeptideSelectGPLGP
-              }
-            />
-          </Modal.Body>
+          <Modal.Body>{glycoPeptideList()}</Modal.Body>
           <Modal.Footer>
             <Button onClick={() => setShowGlycoPeptides(false)}>Close</Button>
           </Modal.Footer>
@@ -1760,9 +1743,10 @@ const AddFeature = props => {
             setCurrentGlycanSelection={setCurrentGlycanSelection}
             displaySelectedGlycanInfoInFeature={displaySelectedGlycanInfoInFeature}
             maxRange={
-              featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+              featureAddState.type === "GLYCO_PEPTIDE"
                 ? featureAddState.peptide.sequence.length
-                : featureAddState.type === "GLYCO_PROTEIN"
+                : featureAddState.type === "GLYCO_PROTEIN" ||
+                  featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
                 ? featureAddState.protein.sequence.length
                 : ""
             }
@@ -1835,13 +1819,9 @@ const AddFeature = props => {
     );
   };
 
-  const handleRange = e => {
+  const handleRange = (e, row) => {
     debugger;
   };
-
-  // const pickRangeGlycoPeptides = () => {
-  //   showGlycoPeptides && <Modal />;
-  // };
 
   const getRangeGlycoPeptidesList = () => {
     return (
@@ -1852,9 +1832,9 @@ const AddFeature = props => {
         showDeleteButton
         customDeleteOnClick
         deleteOnClick={deleteGlycoPeptideLinkedProteinSelection}
+        LinkerandRange
         handleRange={handleRange}
         setShowLinkerPicker={setShowLinkerPicker}
-        setLinkerForSelectedGlycoPeptide={setLinkerForSelectedGlycoPeptide}
       />
     );
   };
@@ -2019,7 +1999,13 @@ const AddFeature = props => {
             {
               Header: "Name",
               accessor: "name",
-              Cell: row => getToolTip(row.original.name)
+              Cell: row => getToolTip(row.original.name),
+              sortMethod: (a, b) => {
+                if ((a !== null && a.length) === (b !== null && b.length)) {
+                  return a > b ? 1 : -1;
+                }
+                return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
+              }
             },
             {
               Header: "Structure Image",
@@ -2027,6 +2013,7 @@ const AddFeature = props => {
               Cell: row => {
                 return row.value ? <StructureImage base64={row.value} /> : "";
               },
+              sortable: false,
               minWidth: 300
             },
             {
@@ -2040,6 +2027,12 @@ const AddFeature = props => {
                     ? getToolTip("Commercial")
                     : getToolTip("Non Commercial")
                   : "";
+              },
+              sortMethod: (a, b) => {
+                if (a && a.length === b && b.length) {
+                  return a > b ? 1 : -1;
+                }
+                return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
               }
             },
             {
@@ -2047,6 +2040,12 @@ const AddFeature = props => {
               accessor: "opensRing",
               Cell: row => {
                 return getToolTip(getReducingEndState(row.value));
+              },
+              sortMethod: (a, b) => {
+                if (a.length === b.length) {
+                  return a > b ? 1 : -1;
+                }
+                return a.length > b.length ? 1 : -1;
               }
             },
 
@@ -2056,7 +2055,15 @@ const AddFeature = props => {
                     Header: "Range",
                     accessor: "range",
                     Cell: row => {
-                      return getToolTip(`${row.original.min} - ${row.original.max}`);
+                      return row.original && row.original.min && row.original.max
+                        ? getToolTip(`${row.original.min} - ${row.original.max}`)
+                        : "";
+                    },
+                    sortMethod: (a, b) => {
+                      if (a && a.length === b && b.length) {
+                        return a > b ? 1 : -1;
+                      }
+                      return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
                     }
                   }
                 ]
@@ -2085,6 +2092,12 @@ const AddFeature = props => {
                           Add linker
                         </Button>
                       );
+                    },
+                    sortMethod: (a, b) => {
+                      if (a && a.length === b && b.length) {
+                        return a > b ? 1 : -1;
+                      }
+                      return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
                     },
                     minWidth: 150
                   }

@@ -458,7 +458,7 @@ const AddBlockLayout = props => {
 
   const getButtons = () => {
     return (
-      <div className="line-break-1">
+      <div className="button - div text-center" style={{ marginTop: "1em" }}>
         <Button onClick={() => removeDuplicateSpots()} disabled={spotsSelected.length < 1}>
           Add Features
         </Button>
@@ -472,7 +472,7 @@ const AddBlockLayout = props => {
 
   const getUpdateButtons = () => {
     return (
-      <div className="line-break-1">
+      <div className="button - div text-center">
         <Button disabled={!enableUpdateButton} type="submit">
           Update Block
         </Button>
@@ -529,7 +529,7 @@ const AddBlockLayout = props => {
               selectedSpotMetadata={selectedSpotMetadata}
               spotList={listSpots}
               handleSpotSelection={handleSpotSelectionChange}
-              enableSpotMetadataSelection={true}
+              enableSpotMetadataSelection={!isUpdateBlock}
             />
 
             {!props.publicView ? loadGrid && (isUpdateBlock ? getUpdateButtons() : getButtons()) : ""}
@@ -549,12 +549,9 @@ const AddBlockLayout = props => {
                     </div>
                     <div
                       style={{
-                        paddingBottom: "30px",
-                        marginLeft: "343px"
+                        paddingBottom: "30px"
                       }}
-                    >
-                      {!props.publicView ? (isUpdateBlock ? getUpdateButtons() : getButtons()) : ""}
-                    </div>
+                    ></div>
                   </Col>
 
                   <Col md={4} style={{ paddingBottom: "10%" }}>
@@ -594,6 +591,7 @@ const AddBlockLayout = props => {
                     )}
                   </Col>
                 </Row>
+                {!props.publicView ? (isUpdateBlock ? getUpdateButtons() : getButtons()) : ""}
               </>
             )}
           </Form>
@@ -685,10 +683,11 @@ const AddBlockLayout = props => {
           group: element.groupAssigned,
           concentration: element.selectedConcentration,
           ratioMap: getFeaturetoRatioMap(element.selectedFeatures),
-          metadata: element.spotMetadata
+          metadata: element.metadata
         });
       }
     });
+
     return spots;
   }
 
@@ -747,9 +746,9 @@ const AddBlockLayout = props => {
 
   function getBlockLayoutSuccess(response) {
     response.json().then(parsedResponse => {
+      debugger;
       setBlockLayoutData(parsedResponse);
       console.log(parsedResponse);
-      // setSelectedSpot();
     });
     setShowLoading(false);
   }
