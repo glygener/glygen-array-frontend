@@ -36,23 +36,10 @@ import { Link } from "react-router-dom";
 import ExampleExploreControl from "../components/ExampleExploreControl";
 import moleculeExamples from "../appData/moleculeExamples";
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     width: "90%",
-//   },
-//   backButton: {
-//     marginRight: theme.spacing(1),
-//   },
-//   instructions: {
-//     marginTop: theme.spacing(1),
-//     marginBottom: theme.spacing(1),
-//   },
-// }));
 
 const AddPeptide = (props) => {
   useEffect(props.authCheckAgent, []);
 
-  // const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
   const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
@@ -114,6 +101,12 @@ const AddPeptide = (props) => {
       let nonComm = peptide.nonCommercial;
       nonComm[name] = newValue;
       setPeptide({ [peptide.nonCommercial]: nonComm });
+    }
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
     }
   };
 
@@ -337,7 +330,7 @@ const AddPeptide = (props) => {
                         <Link>
                           <FontAwesomeIcon
                             icon={["far", "trash-alt"]}
-                            alt="Delete url"
+                            alt="Delete URL"
                             size="lg"
                             className="caution-color tbl-icon-btn"
                             onClick={() => {
@@ -424,7 +417,7 @@ const AddPeptide = (props) => {
                 </Col>
               </Form.Group>
               {/* Bottom Reset / Clear fields  Button */}
-              <div className="text-center mb-2">
+              <div className="text-center mb-2 mt-2">
                 <Button
                   variant="contained"
                   disabled={!disableReset}
@@ -442,7 +435,7 @@ const AddPeptide = (props) => {
         if (activeStep === 2) {
           return (
             <>
-              <Form noValidate className="radioform2" validated={validate && validatedCommNonComm}>
+              <Form noValidate validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
                   <Form.Label
                     column
@@ -565,7 +558,7 @@ const AddPeptide = (props) => {
                     <strong>Source</strong>
                   </Form.Label>
                   <Col xs={12} lg={9}>
-                    <RadioGroup row name="glycan-type" onChange={sourceSelection} value={peptide.source}>
+                    <RadioGroup row name="peptide-type" onChange={sourceSelection} value={peptide.source}>
                       {/* Commercial */}
                       <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
                       {/* Non Commercial */}

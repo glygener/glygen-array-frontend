@@ -1,7 +1,7 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
-import { Form, FormCheck, Row, Col } from "react-bootstrap";
-import { FormLabel, Feedback, Title } from "../components/FormControls";
+import { Form, Row, Col } from "react-bootstrap";
+import { Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -12,35 +12,27 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  csvToArray,
-  isValidURL,
-  externalizeUrl,
-  isValidNumber,
-  numberLengthCheck,
-} from "../utils/commonUtils";
-import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import { Button, Step, StepLabel, Stepper, Typography, makeStyles } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
 import { ViewSourceInfo } from "../components/ViewSourceInfo";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "90%",
-  },
-  backButton: {
-    marginRight: theme.spacing(1),
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-}));
+import moleculeExamples from "../appData/moleculeExamples";
+import ExampleExploreControl from "../components/ExampleExploreControl";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Link } from "react-router-dom";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import { BlueRadio } from "../components/FormControls";
+import { Image } from "react-bootstrap";
+import plusIcon from "../images/icons/plus.svg";
 
 const AddProtein = (props) => {
   useEffect(props.authCheckAgent, []);
 
-  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
   const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
@@ -53,6 +45,8 @@ const AddProtein = (props) => {
   const [newPubMedId, setNewPubMedId] = useState("");
   const [invalidUrls, setInvalidUrls] = useState(false);
   const [newURL, setNewURL] = useState("");
+  const [disableReset, setDisableReset] = useState(false);
+  const [disableResetSecondStep, setDisableResetSecondStep] = useState(false);
   const history = useHistory();
 
   const proteinInitialState = {
@@ -105,6 +99,12 @@ const AddProtein = (props) => {
       nonComm[name] = newValue;
       setProtein({ [protein.nonCommercial]: nonComm });
     }
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
+    }
   };
 
   const steps = getSteps();
@@ -145,7 +145,7 @@ const AddProtein = (props) => {
       if (count > 0) {
         return;
       }
-    } else if (e.currentTarget.innerText === "FINISH") {
+    } else if (e.currentTarget.innerText === "SUBMIT") {
       addProtein(e);
       return;
     }
@@ -161,8 +161,13 @@ const AddProtein = (props) => {
     if ((name === "uniProtId" || name === "sequence") && newValue !== "") {
       setShowErrorSummary(false);
     }
-
     setProtein({ [name]: newValue.trim() });
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
+    }
   };
 
   const handleBack = () => {
@@ -187,28 +192,64 @@ const AddProtein = (props) => {
     setProtein({ ...proteinInitialState, ...{ selectedProtein: newValue } });
   };
 
+  const clearFields = () => {
+    if (activeStep === 1) {
+      setProtein({ ...proteinInitialState, ...{ selectedPeptide: protein.selectedPeptide } });
+
+      setDisableReset(false);
+    }
+    if (activeStep === 2) {
+      setProtein({
+        ...proteinInitialState,
+        commercial: proteinInitialState.commercial,
+        nonCommercial: proteinInitialState.nonCommercial,
+        ...{
+          selectedPeptide: protein.selectedPeptide,
+          sequence: protein.sequence,
+          source: protein.source,
+          uniProtId: protein.uniProtId,
+          pdbIds: protein.pdbIds,
+        },
+      });
+      setNewURL("");
+      setNewPubMedId("");
+      setDisableResetSecondStep(false);
+    }
+  };
+
   function getSteps() {
-    return [
-      "Select the Protein Type",
-      "Type Specific Protein Info",
-      "Generic Protein Info",
-      "Review and Add",
-    ];
+    return ["Protein Type", "Type Specific Information", "Generic Information", "Review and Add"];
+  }
+  function getPeptideType(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${displayNames.protein.SEQUENCE}`;
+      case "Unknown":
+        return `${displayNames.protein.UNKNOWN}`;
+      default:
+        return "Unknown typeIndex";
+    }
+  }
+  function getStepLabel(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return "Select the Protein Type";
+      case 1:
+        return `Add Type Specific Protein Information (${getPeptideType(protein.selectedProtein)})`;
+      case 2:
+        return `Add Generic Protein Information (${getPeptideType(protein.selectedProtein)})`;
+      case 3:
+        return "Review and Add Protein to Repository";
+      default:
+        return "Unknown stepIndex";
+    }
   }
   function addPublication() {
     let publications = protein.publications;
     let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall(
-        "getpublication",
-        "GET",
-        [newPubMedId],
-        true,
-        null,
-        addPublicationSuccess,
-        addPublicationError
-      );
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
     } else {
       setNewPubMedId("");
     }
@@ -220,6 +261,12 @@ const AddProtein = (props) => {
           publications: protein.publications.concat([responseJson]),
         });
         setNewPubMedId("");
+        if (activeStep === 1) {
+          setDisableReset(true);
+        }
+        if (activeStep === 2) {
+          setDisableResetSecondStep(true);
+        }
       });
     }
 
@@ -266,7 +313,7 @@ const AddProtein = (props) => {
           setPageErrorMessage(JSON.parse(text));
         } else {
           if (status === 406) {
-            setPageErrorMessage("Not a Valid Input. Please try again");
+            setPageErrorMessage("Not a valid Input. Please try again.");
             setShowErrorSummary(true);
           }
         }
@@ -309,35 +356,35 @@ const AddProtein = (props) => {
         {protein.urls && protein.urls.length > 0
           ? protein.urls.map((url, index) => {
               return (
-                <Row style={{ marginTop: "8px" }} key={index}>
+                <Row key={index}>
                   <Col
                     md={10}
                     style={{
                       wordBreak: "break-all",
                     }}
+                    className="pb-2"
                   >
-                    <Link
-                      style={{ fontSize: "0.9em" }}
-                      href={externalizeUrl(url)}
-                      target="_blank"
-                      rel="external noopener noreferrer"
-                    >
+                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                       {url}
-                    </Link>
+                    </a>
                   </Col>
                   {enableDelete && (
-                    <Col style={{ marginTop: "2px", textAlign: "center" }} md={2}>
-                      <FontAwesomeIcon
-                        icon={["far", "trash-alt"]}
-                        size="xs"
-                        title="Delete Url"
-                        className="caution-color table-btn"
-                        onClick={() => {
-                          const listUrls = protein.urls;
-                          listUrls.splice(index, 1);
-                          setProtein({ urls: listUrls });
-                        }}
-                      />
+                    <Col className="pb-2 text-center" md={2}>
+                      <LineTooltip text="Delete URL">
+                        <Link>
+                          <FontAwesomeIcon
+                            icon={["far", "trash-alt"]}
+                            size="lg"
+                            title="Delete URL"
+                            className="caution-color tbl-icon-btn"
+                            onClick={() => {
+                              const listUrls = protein.urls;
+                              listUrls.splice(index, 1);
+                              setProtein({ urls: listUrls });
+                            }}
+                          />
+                        </Link>
+                      </LineTooltip>
                     </Col>
                   )}
                 </Row>
@@ -352,30 +399,21 @@ const AddProtein = (props) => {
     switch (stepIndex) {
       case 0:
         return (
-          <Form className="radioform">
-            <FormCheck className="line-break-1">
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="SequenceDefined"
-                  onChange={handleSelect}
-                  checked={protein.selectedProtein === "SequenceDefined"}
-                />
-                {displayNames.protein.SEQUENCE}
-              </FormCheck.Label>
-            </FormCheck>
-
-            <FormCheck>
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="Unknown"
-                  onChange={handleSelect}
-                  checked={protein.selectedProtein === "Unknown"}
-                />
-                {displayNames.protein.UNKNOWN}
-              </FormCheck.Label>
-            </FormCheck>
+          <Form>
+            <Row className="gg-align-center">
+              <Col sm="auto">
+                <RadioGroup name="peptide-type" onChange={handleSelect} value={protein.selectedProtein}>
+                  {/* SEQUENCE_DEFINED */}
+                  <FormControlLabel
+                    value="SequenceDefined"
+                    control={<BlueRadio />}
+                    label={displayNames.protein.SEQUENCE}
+                  />
+                  {/* UNKNOWN */}
+                  <FormControlLabel value="Unknown" control={<BlueRadio />} label={displayNames.protein.UNKNOWN} />
+                </RadioGroup>
+              </Col>
+            </Row>
           </Form>
         );
       case 1:
@@ -383,36 +421,39 @@ const AddProtein = (props) => {
           return (
             <>
               <Form.Group as={Row} controlId="uniProtId">
-                <FormLabel label="UniProt Id" />
-                <Col md={4}>
+                <Form.Label column xs={12} md={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                  <strong>UniProt ID</strong>
+                </Form.Label>
+                <Col xs={12} lg={9}>
                   <Form.Control
                     type="text"
                     name="uniProtId"
-                    placeholder="UniProt Id"
+                    placeholder="Enter UniProt ID"
                     value={protein.uniProtId}
                     onChange={handleChange}
                     maxLength={100}
                   />
+
+                  {protein.uniProtId !== "" && (
+                    <Button
+                      variant="contained"
+                      onClick={() => getSequenceFromUniprot(encodeURIComponent(protein.uniProtId.trim()))}
+                      className="gg-btn-blue-reg btn-to-lower mt-3"
+                    >
+                      Insert Information from UniProt
+                    </Button>
+                  )}
                 </Col>
-                {protein.uniProtId !== "" && (
-                  <Button
-                    variant="contained"
-                    onClick={() =>
-                      getSequenceFromUniprot(encodeURIComponent(protein.uniProtId.trim()))
-                    }
-                    className="get-btn "
-                  >
-                    Get Sequence from Uniprot
-                  </Button>
-                )}
               </Form.Group>
               <Form.Group as={Row} controlId="pdbIds">
-                <FormLabel label="PDB Ids" />
-                <Col md={4}>
+                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                  <strong>PDB IDs</strong>
+                </Form.Label>
+                <Col xs={12} lg={9}>
                   <Form.Control
                     type="text"
                     name="pdbIds"
-                    placeholder="PDB Ids separated by ';'"
+                    placeholder="Enter PDB IDs separated by ';'"
                     value={protein.pdbIds.join(";")}
                     onChange={(e) => {
                       setShowErrorSummary(false);
@@ -425,32 +466,55 @@ const AddProtein = (props) => {
                 </Col>
               </Form.Group>
               <Form.Group as={Row} controlId="sequence">
-                <FormLabel label="Sequence" className="required-asterik" />
-                <Col md={6}>
+                <Form.Label
+                  column
+                  xs={12}
+                  lg={3}
+                  xl={2}
+                  className="required-asterik text-xs-left text-md-left text-lg-right"
+                >
+                  <strong>Sequence</strong>
+                </Form.Label>
+                <Col xs={12} lg={9}>
                   <Form.Control
                     as="textarea"
-                    rows="15"
+                    rows="5"
                     name="sequence"
-                    placeholder="Sequence"
+                    placeholder="Enter Protein Sequence"
                     value={protein.sequence}
                     onChange={handleChange}
                     className="sequence-text-area"
-                    isInvalid={
-                      validatedSpecificDetails && (protein.sequence === "" || sequenceError !== "")
-                    }
+                    isInvalid={validatedSpecificDetails && (protein.sequence === "" || sequenceError !== "")}
                     spellCheck="false"
                     maxLength={10000}
                   />
                   {protein.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
                   {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
-                  <div className="text-right text-muted">
-                    {protein.sequence && protein.sequence.length > 0
-                      ? protein.sequence.length
-                      : "0"}
-                    /10000
-                  </div>
+                  <Row>
+                    <Col className="gg-align-left">
+                      <ExampleExploreControl
+                        setInputValue={funcSetInputValues}
+                        inputValue={moleculeExamples.protein.examples}
+                      />
+                    </Col>
+                    <Col className="text-right text-muted">
+                      {protein.sequence && protein.sequence.length > 0 ? protein.sequence.length : "0"}
+                      /10000
+                    </Col>
+                  </Row>
                 </Col>
               </Form.Group>
+              {/* Bottom Reset / Clear fields  Button */}
+              <div className="text-center mb-2">
+                <Button
+                  variant="contained"
+                  disabled={!disableReset}
+                  onClick={clearFields}
+                  className="gg-btn-blue btn-to-lower"
+                >
+                  Clear Fields
+                </Button>
+              </div>
             </>
           );
         }
@@ -459,14 +523,22 @@ const AddProtein = (props) => {
         if (activeStep === 2) {
           return (
             <>
-              <Form className="radioform2" validated={validate && validatedCommNonComm}>
+              <Form validated={validate && validatedCommNonComm}>
                 <Form.Group as={Row} controlId="name">
-                  <FormLabel label="Name" className="required-asterik" />
-                  <Col md={4}>
+                  <Form.Label
+                    column
+                    xs={12}
+                    lg={3}
+                    xl={2}
+                    className="required-asterik text-xs-left text-md-left text-lg-right"
+                  >
+                    <strong>Name</strong>
+                  </Form.Label>
+                  <Col xs={12} lg={9}>
                     <Form.Control
                       type="text"
                       name="name"
-                      placeholder="name"
+                      placeholder="Enter Name of the protein"
                       value={protein.name}
                       onChange={handleChange}
                       isInvalid={validate}
@@ -477,13 +549,15 @@ const AddProtein = (props) => {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="comments">
-                  <FormLabel label="Comments" />
-                  <Col md={4}>
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                    <strong>Comment</strong>
+                  </Form.Label>
+                  <Col xs={12} lg={9}>
                     <Form.Control
                       as="textarea"
                       rows={4}
                       name="comment"
-                      placeholder="Comments"
+                      placeholder="Enter Comment"
                       value={protein.comment}
                       onChange={handleChange}
                       maxLength={2000}
@@ -494,47 +568,11 @@ const AddProtein = (props) => {
                     </div>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="publications">
-                  <FormLabel label="Publications" />
-                  <Col md={4}>
-                    {protein.publications.map((pub, index) => {
-                      return (
-                        <PublicationCard
-                          key={index}
-                          {...pub}
-                          enableDelete
-                          deletePublication={deletePublication}
-                        />
-                      );
-                    })}
-                    <Row>
-                      <Col md={10}>
-                        <Form.Control
-                          type="number"
-                          name="publication"
-                          placeholder="Enter a Pubmed ID and click +"
-                          value={newPubMedId}
-                          onChange={(e) => setNewPubMedId(e.target.value)}
-                          maxLength={100}
-                          onKeyDown={(e) => {
-                            isValidNumber(e);
-                          }}
-                          onInput={(e) => {
-                            numberLengthCheck(e);
-                          }}
-                        />
-                      </Col>
-                      <Col md={1}>
-                        <Button variant="contained" onClick={addPublication} className="add-button">
-                          +
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Form.Group>
                 <Form.Group as={Row} controlId="urls">
-                  <FormLabel label="URLs" />
-                  <Col md={4}>
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                    <strong>URLs</strong>
+                  </Form.Label>
+                  <Col xs={12} lg={9}>
                     {urlWidget(true)}
                     <Row>
                       <Col md={10}>
@@ -553,52 +591,72 @@ const AddProtein = (props) => {
                         <Feedback message="Please enter a valid and unique URL." />
                       </Col>
                       <Col md={1}>
-                        <Button variant="contained" onClick={addURL} className="add-button">
-                          +
+                        <Button onClick={addURL} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add URL">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="publications">
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                    <strong>Publications</strong>
+                  </Form.Label>
+                  <Col xs={12} lg={9}>
+                    {protein.publications.map((pub, index) => {
+                      return (
+                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
+                      );
+                    })}
+                    <Row>
+                      <Col md={10}>
+                        <Form.Control
+                          type="number"
+                          name="publication"
+                          placeholder="Enter the Pubmed ID and click +"
+                          value={newPubMedId}
+                          onChange={(e) => setNewPubMedId(e.target.value)}
+                          maxLength={100}
+                          onKeyDown={(e) => {
+                            isValidNumber(e);
+                          }}
+                          onInput={(e) => {
+                            numberLengthCheck(e);
+                          }}
+                        />
+                      </Col>
+                      <Col md={1}>
+                        <Button onClick={addPublication} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add Publication">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
                         </Button>
                       </Col>
                     </Row>
                   </Col>
                 </Form.Group>
                 <Row>
-                  <FormLabel label="Source" />
-
-                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"commercial"}
-                        label={"Commercial"}
-                        onChange={sourceSelection}
-                        checked={protein.source === "commercial"}
-                      />
-                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp; &nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        label={"Non Commercial"}
-                        value={"nonCommercial"}
-                        onChange={sourceSelection}
-                        checked={protein.source === "nonCommercial"}
-                      />
-                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"notSpecified"}
-                        label={"Not Specified"}
-                        onChange={sourceSelection}
-                        checked={protein.source === "notSpecified"}
-                      />
-                      {"Not Specified"}
-                    </Form.Check.Label>
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                    <strong>Source</strong>
+                  </Form.Label>
+                  <Col xs={12} lg={9}>
+                    <RadioGroup row name="protein-type" onChange={sourceSelection} value={protein.source}>
+                      {/* Commercial */}
+                      <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
+                      {/* Non Commercial */}
+                      <FormControlLabel value="nonCommercial" control={<BlueRadio />} label="Non Commercial" />
+                      {/* Not Specified */}
+                      <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
+                    </RadioGroup>
                   </Col>
                 </Row>
-                &nbsp;&nbsp;&nbsp;
+
                 {protein.source === "commercial" ? (
                   <Source
                     isCommercial
@@ -616,24 +674,37 @@ const AddProtein = (props) => {
                     />
                   )
                 )}
+                {/* Bottom Reset / Clear fields  Button */}
+                <div className="text-center mb-2 mt-2">
+                  <Button
+                    variant="contained"
+                    disabled={!disableResetSecondStep}
+                    onClick={clearFields}
+                    className="gg-btn-blue btn-to-lower"
+                  >
+                    Clear Fields
+                  </Button>
+                </div>
               </Form>
             </>
           );
         }
       case 3:
         return (
-          <Form className="radioform2">
+          <Form>
             {Object.keys(reviewFields).map((key) =>
               (key === "sequence" || key === "uniProtId" || key === "pdbIds") &&
               protein.selectedProtein === "Unknown" ? (
                 ""
               ) : (
                 <Form.Group as={Row} controlId={key} key={key}>
-                  <FormLabel label={reviewFields[key].label} />
-                  <Col md={6}>
+                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                    <strong>{reviewFields[key].label}</strong>
+                  </Form.Label>
+                  <Col xs={12} lg={9}>
                     <Form.Control
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
-                      rows={key === "sequence" ? "15" : "4"}
+                      rows={key === "sequence" ? "10" : "4"}
                       name={key}
                       placeholder={""}
                       value={protein[key]}
@@ -644,47 +715,39 @@ const AddProtein = (props) => {
                 </Form.Group>
               )
             )}
-
-            {protein.publications && protein.publications.length > 0 && (
-              <Form.Group as={Row} controlId="publications">
-                <FormLabel label="Publications" />
-                <Col md={4}>
-                  {protein.publications && protein.publications.length > 0
-                    ? protein.publications.map((pub) => {
-                        return (
-                          <li>
-                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
-                          </li>
-                        );
-                      })
-                    : ""}
+            {protein.urls && protein.urls.length > 0 && (
+              <Form.Group as={Row} controlId="urls">
+                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                  <strong>URLs</strong>
+                </Form.Label>
+                <Col xs={12} lg={9}>
+                  {protein.urls.map((url, index) => {
+                    return (
+                      <div key={index}>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </div>
+                    );
+                  })}
                 </Col>
               </Form.Group>
             )}
-
-            {protein.urls && protein.urls.length > 0 && (
-              <Form.Group as={Row} controlId="urls">
-                <FormLabel label="Urls" />
-                <Col md={4}>
-                  {protein.urls && protein.urls.length > 0 ? (
-                    protein.urls.map((url, index) => {
-                      return (
-                        <li style={{ marginTop: "8px" }} key={index}>
-                          <Link
-                            style={{ fontSize: "0.9em" }}
-                            href={externalizeUrl(url)}
-                            target="_blank"
-                            rel="external noopener noreferrer"
-                          >
-                            {url}
-                          </Link>
-                          <br />
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <div style={{ marginTop: "8px" }} />
-                  )}
+            {protein.publications && protein.publications.length > 0 && (
+              <Form.Group as={Row} controlId="publications">
+                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                  <strong>Publication</strong>
+                </Form.Label>
+                <Col xs={12} lg={9}>
+                  {protein.publications && protein.publications.length > 0
+                    ? protein.publications.map((pub) => {
+                        return (
+                          <diiv>
+                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
+                          </diiv>
+                        );
+                      })
+                    : ""}
                 </Col>
               </Form.Group>
             )}
@@ -701,18 +764,34 @@ const AddProtein = (props) => {
         return "Unknown stepIndex";
     }
   }
-
   function getNavigationButtons(className) {
     return (
-      <div className={className}>
-        <Button disabled={activeStep === 0} onClick={handleBack} className="stepper-button">
+      <div className="text-center mb-2">
+        <Link to="/proteins">
+          <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Proteins</Button>
+        </Link>
+        <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
         </Button>
-        <Button variant="contained" className="stepper-button" onClick={handleNext}>
-          {activeStep === steps.length - 1 ? "Finish" : "Next"}
+        <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
+          {activeStep === steps.length - 1 ? "Submit" : "Next"}
         </Button>
       </div>
     );
+  }
+
+  /**
+   * Function to set protein id value.
+   * @param {string} addProteinSequenceSuccess - input protein id value.
+   **/
+  function funcSetInputValues(value) {
+    setProtein({ sequence: value });
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
+    }
   }
 
   function addProtein(e) {
@@ -764,9 +843,7 @@ const AddProtein = (props) => {
   }
 
   const isStepSkipped = (step) => {
-    return (
-      protein.selectedProtein === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3)
-    );
+    return protein.selectedProtein === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
   };
 
   return (
@@ -775,43 +852,48 @@ const AddProtein = (props) => {
         <title>{head.addProtein.title}</title>
         {getMeta(head.addProtein)}
       </Helmet>
-
-      <div className="page-container">
-        <Title title="Add Protein to Repository" />
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const stepProps = {};
-            const labelProps = {};
-            if (isStepSkipped(index)) {
-              labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
-              stepProps.completed = false;
-            }
-            return (
-              <Step key={label} {...stepProps}>
-                <StepLabel {...labelProps}>{label}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-        {getNavigationButtons("button - div text-center")}
-        &nbsp; &nbsp;
-        {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="linkers"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Add Protein to Repository"
+            subTitle="Please provide the information for the new protein."
           />
-        )}
-        <div>
-          <div>
-            <Typography className={classes.instructions} component={"span"} variant={"body2"}>
-              {getStepContent(activeStep, validate)}
-            </Typography>
-            {getNavigationButtons("button-div line-break-1 text-center")}
-          </div>
+          <Card>
+            <Card.Body>
+              <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  if (isStepSkipped(index)) {
+                    labelProps.optional = <Typography variant="caption">Unknown Protein</Typography>;
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              {getNavigationButtons()}
+              <h5 className="text-center gg-blue mt-4">{getStepLabel(activeStep)}</h5>
+
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="linkers"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                />
+              )}
+              <div className="mt-4 mb-4">
+                <span>{getStepContent(activeStep, validate)}</span>
+                {getNavigationButtons()}
+              </div>
+            </Card.Body>
+          </Card>
         </div>
-      </div>
+      </Container>
       <Loading show={showLoading} />
     </>
   );

@@ -1,14 +1,4 @@
 {
-  "peptide":{
-    "examples": [
-      {
-        "example": {
-          "name": "Example",
-          "id": "GRQIK-RQIK-hgf"
-        }
-      }
-    ]
-  },
   "glycan": {
     "IUPAC": {
       "examples": [
@@ -54,5 +44,25 @@
         }
       ]
     }
+  },
+  "peptide":{
+    "examples": [
+      {
+        "example": {
+          "name": "Example",
+          "id": "GRQIK-R{Q}T{N}IK-hgf"
+        }
+      }
+    ]
+  },
+  "protein":{
+    "examples": [
+      {
+        "example": {
+          "name": "Example",
+          "id": "GRQIKRQIKHGF"
+        }
+      }
+    ]
   }
 }
