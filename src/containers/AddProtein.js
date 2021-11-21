@@ -69,9 +69,9 @@ const AddProtein = (props) => {
   const reviewFields = {
     name: { label: "Name", type: "text", length: 100 },
     sequence: { label: "Sequence", type: "textarea" },
-    comment: { label: "Comments", type: "textarea", length: 10000 },
-    uniProtId: { label: "UniProt Id", type: "text", length: 100 },
-    pdbIds: { label: "PDB Ids", type: "text" },
+    comment: { label: "Comment", type: "textarea", length: 10000 },
+    uniProtId: { label: "UniProt ID", type: "text", length: 100 },
+    pdbIds: { label: "PDB IDs", type: "text" },
   };
 
   const sourceSelection = (e) => {
@@ -99,12 +99,7 @@ const AddProtein = (props) => {
       nonComm[name] = newValue;
       setProtein({ [protein.nonCommercial]: nonComm });
     }
-    if (activeStep === 1) {
-      setDisableReset(true);
-    }
-    if (activeStep === 2) {
-      setDisableResetSecondStep(true);
-    }
+    clearFieldsReset();
   };
 
   const steps = getSteps();
@@ -154,20 +149,15 @@ const AddProtein = (props) => {
   };
 
   const handleChange = (e) => {
-    setValidate(false);
     const name = e.target.name;
     const newValue = e.target.value;
 
     if ((name === "uniProtId" || name === "sequence") && newValue !== "") {
       setShowErrorSummary(false);
     }
-    setProtein({ [name]: newValue.trim() });
-    if (activeStep === 1) {
-      setDisableReset(true);
-    }
-    if (activeStep === 2) {
-      setDisableResetSecondStep(true);
-    }
+    setProtein({ [name]: newValue });
+    setValidate(false);
+    clearFieldsReset();
   };
 
   const handleBack = () => {
@@ -244,6 +234,15 @@ const AddProtein = (props) => {
         return "Unknown stepIndex";
     }
   }
+  function clearFieldsReset() {
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
+    }
+  }
+
   function addPublication() {
     let publications = protein.publications;
     let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
@@ -261,12 +260,7 @@ const AddProtein = (props) => {
           publications: protein.publications.concat([responseJson]),
         });
         setNewPubMedId("");
-        if (activeStep === 1) {
-          setDisableReset(true);
-        }
-        if (activeStep === 2) {
-          setDisableResetSecondStep(true);
-        }
+        clearFieldsReset();
       });
     }
 
@@ -275,7 +269,7 @@ const AddProtein = (props) => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
-          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
+          setPageErrorMessage("The PubMed ID entered is invalid. Please try again.");
         }
         setShowErrorSummary(true);
       });
@@ -402,7 +396,7 @@ const AddProtein = (props) => {
           <Form>
             <Row className="gg-align-center">
               <Col sm="auto">
-                <RadioGroup name="peptide-type" onChange={handleSelect} value={protein.selectedProtein}>
+                <RadioGroup name="protein-type" onChange={handleSelect} value={protein.selectedProtein}>
                   {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
@@ -421,7 +415,7 @@ const AddProtein = (props) => {
           return (
             <>
               <Form.Group as={Row} controlId="uniProtId">
-                <Form.Label column xs={12} md={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
+                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                   <strong>UniProt ID</strong>
                 </Form.Label>
                 <Col xs={12} lg={9}>
@@ -488,8 +482,9 @@ const AddProtein = (props) => {
                     spellCheck="false"
                     maxLength={10000}
                   />
-                  {protein.sequence === "" && <Feedback message="Sequence is required"></Feedback>}
-                  {sequenceError !== "" && <Feedback message={sequenceError}></Feedback>}
+                  {protein.sequence === "" && <Feedback message="Sequence is required" />}
+                  {sequenceError !== "" && <Feedback message={sequenceError} />}
+                  <Feedback message="Please Enter Valid Sequence" />
                   <Row>
                     <Col className="gg-align-left">
                       <ExampleExploreControl
@@ -504,6 +499,7 @@ const AddProtein = (props) => {
                   </Row>
                 </Col>
               </Form.Group>
+
               {/* Bottom Reset / Clear fields  Button */}
               <div className="text-center mb-2">
                 <Button
@@ -548,7 +544,7 @@ const AddProtein = (props) => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="comments">
+                <Form.Group as={Row} controlId="comment">
                   <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>Comment</strong>
                   </Form.Label>
@@ -568,6 +564,7 @@ const AddProtein = (props) => {
                     </div>
                   </Col>
                 </Form.Group>
+
                 <Form.Group as={Row} controlId="urls">
                   <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>URLs</strong>
@@ -584,6 +581,7 @@ const AddProtein = (props) => {
                           onChange={(e) => {
                             setNewURL(e.target.value);
                             setInvalidUrls(false);
+                            clearFieldsReset();
                           }}
                           maxLength={2048}
                           isInvalid={invalidUrls}
@@ -615,18 +613,27 @@ const AddProtein = (props) => {
                     <Row>
                       <Col md={10}>
                         <Form.Control
-                          type="number"
-                          name="publication"
+                          // type="number"
+                          as="input"
+                          name="publications"
                           placeholder="Enter the Pubmed ID and click +"
                           value={newPubMedId}
-                          onChange={(e) => setNewPubMedId(e.target.value)}
-                          maxLength={100}
-                          onKeyDown={(e) => {
-                            isValidNumber(e);
-                          }}
-                          onInput={(e) => {
+                          onChange={(e) => {
+                            const _value = e.target.value;
+                            if (_value && !/^[0-9]+$/.test(_value)) {
+                              return;
+                            }
+                            setNewPubMedId(_value);
                             numberLengthCheck(e);
+                            clearFieldsReset();
                           }}
+                          maxLength={100}
+                          // onKeyDown={(e) => {
+                          //   isValidNumber(e);
+                          // }}
+                          // onInput={(e) => {
+                          //   numberLengthCheck(e);
+                          // }}
                         />
                       </Col>
                       <Col md={1}>
@@ -786,12 +793,7 @@ const AddProtein = (props) => {
    **/
   function funcSetInputValues(value) {
     setProtein({ sequence: value });
-    if (activeStep === 1) {
-      setDisableReset(true);
-    }
-    if (activeStep === 2) {
-      setDisableResetSecondStep(true);
-    }
+    clearFieldsReset();
   }
 
   function addProtein(e) {
@@ -808,7 +810,7 @@ const AddProtein = (props) => {
       source.batchId = protein.commercial.batchId;
     } else if (protein.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
-      source.batchId = protein.commercial.batchId;
+      source.batchId = protein.nonCommercial.batchId;
       source.providerLab = protein.nonCommercial.providerLab;
       source.method = protein.nonCommercial.method;
       source.comment = protein.nonCommercial.sourceComment;
@@ -817,11 +819,13 @@ const AddProtein = (props) => {
     var proteinObj = {
       type: "PROTEIN",
       name: protein.name,
-      comment: protein.comment,
+      description: protein.comment,
       publications: protein.publications,
       urls: protein.urls,
       sequence: protein.sequence.trim(),
       source: source,
+      uniProtId: protein.uniProtId,
+      pdbIds: protein.pdbIds,
     };
 
     wsCall(

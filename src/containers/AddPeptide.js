@@ -102,12 +102,7 @@ const AddPeptide = (props) => {
       nonComm[name] = newValue;
       setPeptide({ [peptide.nonCommercial]: nonComm });
     }
-    if (activeStep === 1) {
-      setDisableReset(true);
-    }
-    if (activeStep === 2) {
-      setDisableResetSecondStep(true);
-    }
+    clearFieldsReset();
   };
 
   const steps = getSteps();
@@ -162,12 +157,7 @@ const AddPeptide = (props) => {
 
     setPeptide({ [name]: newValue });
     setValidate(false);
-    if (activeStep === 1) {
-      setDisableReset(true);
-    }
-    if (activeStep === 2) {
-      setDisableResetSecondStep(true);
-    }
+    clearFieldsReset();
   };
 
   const handleBack = () => {
@@ -238,6 +228,15 @@ const AddPeptide = (props) => {
         return "Review and Add Peptide to Repository";
       default:
         return "Unknown stepIndex";
+    }
+  }
+
+  function clearFieldsReset() {
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
     }
   }
 
@@ -460,7 +459,7 @@ const AddPeptide = (props) => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="comments">
+                <Form.Group as={Row} controlId="comment">
                   <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
                     <strong>Comment</strong>
                   </Form.Label>
@@ -496,6 +495,7 @@ const AddPeptide = (props) => {
                           onChange={(e) => {
                             setNewURL(e.target.value);
                             setInvalidUrls(false);
+                            clearFieldsReset();
                           }}
                           maxLength={2048}
                           isInvalid={invalidUrls}
@@ -527,18 +527,27 @@ const AddPeptide = (props) => {
                     <Row>
                       <Col md={10}>
                         <Form.Control
-                          type="number"
+                          // type="number"
+                          as="input"
                           name="publication"
                           placeholder="Enter the Pubmed ID and click +"
                           value={newPubMedId}
-                          onChange={(e) => setNewPubMedId(e.target.value)}
-                          maxLength={100}
-                          onKeyDown={(e) => {
-                            isValidNumber(e);
-                          }}
-                          onInput={(e) => {
+                          onChange={(e) => {
+                            const _value = e.target.value;
+                            if (_value && !/^[0-9]+$/.test(_value)) {
+                              return;
+                            }
+                            setNewPubMedId(_value);
                             numberLengthCheck(e);
+                            clearFieldsReset();
                           }}
+                          maxLength={100}
+                          // onKeyDown={(e) => {
+                          //   isValidNumber(e);
+                          // }}
+                          // onInput={(e) => {
+                          //   numberLengthCheck(e);
+                          // }}
                         />
                       </Col>
                       <Col md={1}>
@@ -699,12 +708,7 @@ const AddPeptide = (props) => {
    **/
   function funcSetInputValues(value) {
     setPeptide({ sequence: value });
-    if (activeStep === 1) {
-      setDisableReset(true);
-    }
-    if (activeStep === 2) {
-      setDisableResetSecondStep(true);
-    }
+    clearFieldsReset();
   }
 
   function addPeptide(e) {
@@ -753,7 +757,7 @@ const AddPeptide = (props) => {
       var peptideseq = {
         type: "PEPTIDE",
         name: peptide.name,
-        comment: peptide.comment,
+        description: peptide.comment,
         publications: peptide.publications,
         urls: peptide.urls,
         sequence: peptide.sequence.trim(),
@@ -767,7 +771,7 @@ const AddPeptide = (props) => {
       var unknownpep = {
         type: "PEPTIDE",
         name: peptide.name,
-        comment: peptide.comment,
+        description: peptide.comment,
         publications: peptide.publications,
         urls: peptide.urls,
         sequence: "",

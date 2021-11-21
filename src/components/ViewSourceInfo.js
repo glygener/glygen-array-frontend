@@ -15,7 +15,7 @@ const ViewSourceInfo = (props) => {
               disabled
               plaintext={props.isUpdate}
               readOnly={props.isUpdate}
-              value={"Not Recorded"}
+              value={"Not Specified"}
             />
           </Col>
         </Form.Group>
