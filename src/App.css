@@ -463,11 +463,13 @@ input[type]:not(:-ms-input-placeholder) + label {
 .gg-btn-blue:disabled,
 .gg-btn-outline:disabled:hover,
 .gg-btn-blue:disabled:hover {
-  cursor: no-drop !important;
-  color: #ffffff !important;
+  /* cursor: no-drop !important; */
+  /* color: #ffffff !important;
   background-color: var(--gg-blue) !important;
-  opacity: 60%;
-  border-color: var(--gg-blue) !important;
+  border-color: var(--gg-blue) !important; */
+  color: rgba(255, 255, 255) !important;
+  background-color:rgba(47,120,183, 0.6) !important;
+  border-color:rgba(47,120,183, 0.6) !important;
 }
 
 /* .no-drop {cursor: no-drop !important;} */
