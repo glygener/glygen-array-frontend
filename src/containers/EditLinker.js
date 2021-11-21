@@ -229,14 +229,16 @@ const EditLinker = (props) => {
                       as="textarea"
                       rows={4}
                       placeholder="Enter Comment"
-                      name="comment"
-                      value={linkerDetails.description || linkerDetails.comment}
+                      name="description"
+                      value={linkerDetails.description}
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                    {linkerDetails.comment && linkerDetails.comment.length > 0 && (
+                    {linkerDetails.description && linkerDetails.description.length > 0 && (
                       <div className="text-right text-muted">
-                        {linkerDetails.comment && linkerDetails.comment.length > 0 ? linkerDetails.comment.length : "0"}
+                        {linkerDetails.description && linkerDetails.description.length > 0
+                          ? linkerDetails.description.length
+                          : "0"}
                         /2000
                       </div>
                     )}
