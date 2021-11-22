@@ -27,6 +27,7 @@ import { ScrollToTop } from "../components/ScrollToTop";
 import { GlycoPeptides } from "../components/GlycoPeptides";
 import { useHistory, Link } from "react-router-dom";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -2118,7 +2119,7 @@ const AddFeature = props => {
   const getSelectedGlycanList = () => {
     return (
       <>
-        <GlygenTable
+        <ReactTable
           columns={[
             {
               Header: "Name",
@@ -2226,7 +2227,42 @@ const AddFeature = props => {
                     minWidth: 150
                   }
                 ]
-              : [])
+              : []),
+            {
+              Header: "Actions",
+              Cell: (row, index) => {
+                return (
+                  <>
+                    <LineTooltip text="View Details">
+                      <Link>
+                        <FontAwesomeIcon
+                          key={"view" + index}
+                          icon={["far", "eye"]}
+                          alt="View icon"
+                          size="lg"
+                          color="#45818e"
+                          className="tbl-icon-btn"
+                          onClick={() => getGlycanInfoDisplay(row)}
+                        />
+                      </Link>
+                    </LineTooltip>
+
+                    <LineTooltip text="Delete">
+                      <Link>
+                        <FontAwesomeIcon
+                          key={"delete" + index}
+                          icon={["far", "trash-alt"]}
+                          alt="Delete icon"
+                          size="lg"
+                          className="caution-color tbl-icon-btn"
+                          onClick={() => handleDeletedSelectedGlycan(row.original)}
+                        />
+                      </Link>
+                    </LineTooltip>
+                  </>
+                );
+              }
+            }
           ]}
           data={
             featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN"
@@ -2234,12 +2270,12 @@ const AddFeature = props => {
               : featureAddState.rangeGlycans
           }
           defaultPageSize={5}
-          showDeleteButton
-          customDeleteOnClick
-          deleteOnClick={handleDeletedSelectedGlycan}
-          showViewIcon
-          customViewonClick
-          viewOnClick={getGlycanInfoDisplay}
+          // showDeleteButton
+          // customDeleteOnClick
+          // deleteOnClick={handleDeletedSelectedGlycan}
+          // showViewIcon
+          // customViewonClick
+          // viewOnClick={getGlycanInfoDisplay}
           showPagination={false}
           showRowsInfo={false}
           infoRowsText="Selected Glycans"
