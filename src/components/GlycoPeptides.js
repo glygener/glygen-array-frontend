@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
 import { getToolTip } from "../utils/commonUtils";
-import { Row, Col, Form } from "react-bootstrap";
+import { Button } from "@material-ui/core";
 
 const GlycoPeptides = props => {
   return (
@@ -66,38 +66,24 @@ const GlycoPeptides = props => {
                   // eslint-disable-next-line react/display-name
                   Cell: (row, index) => {
                     return row.original &&
-                      row.original.glycoPeptide &&
-                      row.original.glycoPeptide.maxRange &&
-                      row.original.glycoPeptide.minRange ? (
+                      row.original.range &&
+                      row.original.range.maxRange &&
+                      row.original.range.minRange ? (
                       <div key={index}>
-                        {getToolTip(row.original.glycoPeptide.maxRange - row.original.glycoPeptide.minRange)}
+                        {getToolTip(row.original.range.minRange)} - {getToolTip(row.original.range.maxRange)}
                       </div>
                     ) : (
-                      <>
-                        <Row>
-                          <Col>
-                            <Form.Control
-                              type="number"
-                              name="maxRange"
-                              placeholder={"enter max range"}
-                              value={row.original && row.original.glycoPeptide && row.original.glycoPeptide.maxRange}
-                              onChange={e => props.handleRange(e, row.original)}
-                            />
-                          </Col>
-                        </Row>
-                        &nbsp;
-                        <Row>
-                          <Col>
-                            <Form.Control
-                              type="number"
-                              name="minRange"
-                              placeholder={"enter min range"}
-                              value={row.original && row.original.glycoPeptide && row.original.glycoPeptide.minRange}
-                              onChange={e => props.handleRange(e, row.original)}
-                            />
-                          </Col>
-                        </Row>
-                      </>
+                      <Button
+                        style={{
+                          backgroundColor: "lightgray"
+                        }}
+                        onClick={() => {
+                          props.setEnableGlycoPeptideRange(true);
+                          props.setRowSelectedForRange(row);
+                        }}
+                      >
+                        Add range
+                      </Button>
                     );
                   }
                 }

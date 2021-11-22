@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { Loading } from "../components/Loading";
-import { Stepper, Step, StepLabel, Button, Typography } from "@material-ui/core";
+import { Stepper, Step, StepLabel, Typography } from "@material-ui/core";
 import { ErrorSummary } from "../components/ErrorSummary";
-import { Form, FormCheck, Col, Row, Modal } from "react-bootstrap";
+import { Form, FormCheck, Col, Row, Modal, Button } from "react-bootstrap";
 import { FormLabel, Feedback, Title } from "../components/FormControls";
 import { GlygenTable } from "../components/GlygenTable";
 import ReactTable from "react-table";
@@ -79,8 +79,13 @@ const AddFeature = props => {
   const [showGlycoPeptides, setShowGlycoPeptides] = useState(false);
   const [linkerForSelectedGlycan, setLinkerForSelectedGlycan] = useState();
 
+  const [invalidMinRange, setInvalidMinRange] = useState(false);
+  const [invalidMaxRange, setInvalidMaxRange] = useState(false);
+
   const [glycanViewInfo, setGlycanViewInfo] = useState(false);
   const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
+  const [enableGlycoPeptideRange, setEnableGlycoPeptideRange] = useState(false);
+  const [rowSelectedForRange, setRowSelectedForRange] = useState(false);
 
   const [featureAddState, setFeatureAddState] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
     ...featureAddInitState,
@@ -935,7 +940,6 @@ const AddFeature = props => {
   }
 
   function getGlycoProteinLinkedPeptide(featureObj, type) {
-    debugger;
     let glycoPeptides =
       featureAddState.rangeGlycoPeptides.length > 0
         ? featureAddState.rangeGlycoPeptides
@@ -953,8 +957,8 @@ const AddFeature = props => {
 
       if (featureAddState.rangeGlycoPeptides.length > 0) {
         range = {
-          min: glycoPeptideObj.min,
-          max: glycoPeptideObj.max
+          min: glycoPeptideObj.minRange,
+          max: glycoPeptideObj.maxRange
         };
 
         glycoPeptideObj.range = range;
@@ -1579,7 +1583,6 @@ const AddFeature = props => {
   };
 
   const viewGlycoPeptide = row => {
-    debugger;
     let glycoPeptideId =
       row.original && row.original.glycoPeptide
         ? row.original.glycoPeptide.id
@@ -1815,12 +1818,130 @@ const AddFeature = props => {
           />
         </div>
         {featureAddState.rangeGlycoPeptides.length > 0 && getRangeGlycoPeptidesList()}
+
+        {enableGlycoPeptideRange && getRangeModal()}
       </>
     );
   };
 
+  const getRangeModal = () => {
+    return (
+      <>
+        <Modal
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          show={enableGlycoPeptideRange}
+          onHide={() => setEnableGlycoPeptideRange(false)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">Enter Range:</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group as={Row} controlId={"minRange"}>
+              <FormLabel label={`Min Range`} />
+              <Col md={4}>
+                <Form.Control
+                  type="number"
+                  name="minRange"
+                  placeholder={"enter min range"}
+                  value={
+                    rowSelectedForRange.original &&
+                    rowSelectedForRange.original.glycoPeptide &&
+                    rowSelectedForRange.original.glycoPeptide.range &&
+                    rowSelectedForRange.original.glycoPeptide.range.minRange
+                  }
+                  onChange={e => handleRange(e, rowSelectedForRange.original)}
+                  isInvalid={invalidMinRange}
+                />
+                <Feedback message={"Invalid Min Range"} />
+              </Col>
+            </Form.Group>
+            &nbsp;
+            <Form.Group as={Row} controlId={"maxRange"}>
+              <FormLabel label={`Max Range`} />
+              <Col md={4}>
+                <Form.Control
+                  type="number"
+                  name="maxRange"
+                  placeholder={"enter max range"}
+                  value={
+                    rowSelectedForRange.original &&
+                    rowSelectedForRange.original.glycoPeptide &&
+                    rowSelectedForRange.original.glycoPeptide.range &&
+                    rowSelectedForRange.original.glycoPeptide.maxRange
+                  }
+                  onChange={e => handleRange(e, rowSelectedForRange.original)}
+                  isInvalid={invalidMaxRange}
+                />
+                <Feedback message={"Invalid Max Range"} />
+              </Col>
+            </Form.Group>
+            <Row>
+              <Col md={{ offset: 6, span: 4 }}>
+                <Button
+                  onClick={() => {
+                    setEnableGlycoPeptideRange(false);
+                  }}
+                  disabled={
+                    invalidMaxRange ||
+                    invalidMinRange ||
+                    (rowSelectedForRange.original &&
+                      rowSelectedForRange.original.glycoPeptide &&
+                      (!rowSelectedForRange.original.glycoPeptide.range.maxRange ||
+                        !rowSelectedForRange.original.glycoPeptide.range.minRange))
+                  }
+                >
+                  Save
+                </Button>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              onClick={() => setEnableGlycoPeptideRange(false)}
+              style={{
+                backgroundColor: "lightgray",
+                border: "none",
+                color: "black"
+              }}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  };
   const handleRange = (e, row) => {
-    debugger;
+    const listGlycoPeptides = featureAddState.rangeGlycoPeptides;
+    const rowSelected = listGlycoPeptides.find(i => i.index === row.index);
+    const rowSelectedIndex = listGlycoPeptides.indexOf(rowSelected);
+    let range = rowSelected.range === null ? {} : rowSelected.range;
+
+    if (e.target.name === "minRange") {
+      if (parseInt(e.target.value) > featureAddState.protein.sequence.length) {
+        setInvalidMinRange(true);
+      } else if (range.maxRange && parseInt(e.target.value) > range.maxRange) {
+        setInvalidMinRange(true);
+      } else {
+        range.minRange = e.target.value;
+        setInvalidMinRange(false);
+      }
+    } else {
+      if (parseInt(e.target.value) > featureAddState.protein.sequence.length) {
+        setInvalidMaxRange(true);
+      } else if (range.minRange && parseInt(e.target.value) < range.minRange) {
+        setInvalidMaxRange(true);
+      } else {
+        range.maxRange = e.target.value;
+        setInvalidMaxRange(false);
+      }
+    }
+
+    rowSelected.range = range;
+    listGlycoPeptides[rowSelectedIndex] = rowSelected;
+    setFeatureAddState({ rangeGlycoPeptides: listGlycoPeptides });
   };
 
   const getRangeGlycoPeptidesList = () => {
@@ -1835,6 +1956,9 @@ const AddFeature = props => {
         LinkerandRange
         handleRange={handleRange}
         setShowLinkerPicker={setShowLinkerPicker}
+        setEnableGlycoPeptideRange={setEnableGlycoPeptideRange}
+        enableGlycoPeptideRange={enableGlycoPeptideRange}
+        setRowSelectedForRange={setRowSelectedForRange}
       />
     );
   };
