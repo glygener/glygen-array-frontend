@@ -413,31 +413,31 @@ const MetaData = props => {
     );
   };
 
-  const getAddons = () => {
-    const popover = (
-      <Popover
-        id="popover-basic"
-        style={{
-          width: "30%",
-          paddingTop: 0
-        }}
-      >
-        <Popover.Title as="h3">Descriptors</Popover.Title>
-        <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
-      </Popover>
-    );
+  // const getAddons = () => {
+  //   const popover = (
+  //     <Popover
+  //       id="popover-basic"
+  //       style={{
+  //         width: "30%",
+  //         paddingTop: 0
+  //       }}
+  //     >
+  //       <Popover.Title as="h3">Descriptors</Popover.Title>
+  //       <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
+  //     </Popover>
+  //   );
 
-    return (
-      <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
-        <FontAwesomeIcon
-          className={"add-subGroup-button"}
-          icon={["fas", "cog"]}
-          size="xs"
-          title="Add Sub Group Descriptors"
-        />
-      </OverlayTrigger>
-    );
-  };
+  //   return (
+  //     <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
+  //       <FontAwesomeIcon
+  //         className={"add-subGroup-button"}
+  //         icon={["fas", "cog"]}
+  //         size="xs"
+  //         title="Add Sub Group Descriptors"
+  //       />
+  //     </OverlayTrigger>
+  //   );
+  // };
 
   const handleDescriptorSubGroupSelectChange = e => {
     const value = e.target.value;
@@ -739,7 +739,6 @@ const MetaData = props => {
   };
 
   const loadDescriptorsAndGroups = () => {
-    debugger;
     return (
       <>
         <Descriptors
@@ -1253,7 +1252,6 @@ const MetaData = props => {
   }
 
   function getListTemplatesSuccess(response) {
-    debugger;
     response.json().then(responseJson => {
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
@@ -1279,7 +1277,6 @@ const MetaData = props => {
   }
 
   function getSampleForUpdateSuccess(response) {
-    debugger;
     response.json().then(responseJson => {
       setMetaDataDetails({
         name: props.isCopy ? "" : responseJson.name,
@@ -1297,14 +1294,12 @@ const MetaData = props => {
   }
 
   function getSampleTemplateSuccess(response) {
-    debugger;
     response.json().then(responseJson => {
       setMetaDataDetails({
         type: responseJson.name
       });
 
       if (props.importedInAPage && props.importedPageData && props.importedPageData.id) {
-        debugger;
         setSampleModel(props.importedPageData);
       } else {
         setSampleModel(responseJson);
@@ -1314,7 +1309,6 @@ const MetaData = props => {
   }
 
   function setSampleUpdateData() {
-    debugger;
     let sampleModelUpdate = sampleModel;
 
     if (sampleModel.descriptors && sampleModel.descriptors.length > 0) {
@@ -1576,7 +1570,7 @@ const MetaData = props => {
         {loadDescriptors && !props.importedInAPage && (
           <>
             <Row>
-              <Col md={9}>
+              <Col>
                 <div
                   style={{
                     marginBottom: "100px",
@@ -1592,7 +1586,7 @@ const MetaData = props => {
                   </>
                 </div>
               </Col>
-              <Col md={3}>
+              {/* <Col md={3}>
                 <div
                   style={{
                     position: "fixed",
@@ -1600,9 +1594,9 @@ const MetaData = props => {
                   }}
                 >
                   {/* {getExpandCollapseIcon()} */}
-                  {getAddons()}
-                </div>
-              </Col>
+              {/* {getAddons()} */}
+              {/* </div> */}
+              {/* </Col>  */}
             </Row>
           </>
         )}
@@ -1611,7 +1605,7 @@ const MetaData = props => {
           <>
             {getButtonsForImportedPage()}
             <Row>
-              <Col md={10}>
+              <Col>
                 {props.metadataType !== "Assay" &&
                   !loadDataOnFirstNextInUpdate &&
                   !props.importedPageData.id &&
@@ -1629,9 +1623,9 @@ const MetaData = props => {
                   sampleModel.descriptors.length > 0 &&
                   getMetaData()}
               </Col>
-              <Col md={2} style={{ marginLeft: "-35px" }}>
-                <div className={"addon-setting"}>{getAddons()}</div>
-              </Col>
+              {/* <Col md={2} style={{ marginLeft: "-35px" }}> */}
+              {/* <div className={"addon-setting"}>{getAddons()}</div>
+              </Col> */}
             </Row>
             {getButtonsForImportedPage()}
           </>

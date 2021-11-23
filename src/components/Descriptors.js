@@ -1,15 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "../components/Descriptors.css";
-import { Feedback } from "./FormControls";
+import { Feedback, BlueCheckbox } from "./FormControls";
 import { HelpToolTip } from "./tooltip/HelpToolTip";
-import { Form, Col, Row, Accordion, Card } from "react-bootstrap";
+import { Form, Col, Row, Accordion, Card, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { ScrollTo } from "react-scroll-to";
 import { ContextAwareToggle, isValidNumber } from "../utils/commonUtils";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import { Droppable, Draggable } from "react-beautiful-dnd";
+import { FormControlLabel, Button } from "@material-ui/core";
+import { LineTooltip } from "./tooltip/LineTooltip";
+import plusIcon from "../images/icons/plus.svg";
 
 const Descriptors = props => {
   const {
@@ -365,6 +368,80 @@ const Descriptors = props => {
     );
   };
 
+  function getColumnWidth(element) {
+    let count = 0;
+    if (element.name === "Immunogen") {
+      debugger;
+    }
+
+    if (element.units.length > 0) {
+      count++;
+    }
+
+    if (!element.allowNotApplicable || !element.allowNotRecorded) {
+      count++;
+    }
+
+    if (element.maxOccurrence > 1) {
+      count++;
+    }
+
+    if (count < 1) {
+      return 9;
+    } else if (count === 1) {
+      if (element.units.length > 0) {
+        return 7;
+      } else if (element.allowNotApplicable || element.allowNotRecorded) {
+        return 6;
+      } else if (element.maxOccurrence > 1) {
+        return 8;
+      }
+    } else if (count === 2) {
+      if (element.units.length > 0 && (element.allowNotApplicable || element.allowNotRecorded)) {
+        return 4;
+      } else if (element.units.length > 0 && element.maxOccurrence > 1) {
+        return 5;
+      } else if (element.maxOccurrence > 1 && (element.allowNotApplicable || element.allowNotRecorded)) {
+        return 5;
+      }
+    } else if (count > 2) {
+      return 3;
+    }
+
+    // if (
+    //   element.units.length > 0 &&
+    //   element.allowNotApplicable &&
+    //   element.allowNotRecorded &&
+    //   element.maxOccurrence > 1
+    // ) {
+    //   debugger;
+    //   return 3;
+    // } else if (
+    //   element.units.length > 0 &&
+    //   !(element.allowNotApplicable || element.allowNotRecorded) &&
+    //   !element.maxOccurrence > 1
+    // ) {
+    //   debugger;
+    //   return 6;
+    // } else if (
+    //   !element.units.length > 0 &&
+    //   (element.allowNotApplicable || element.allowNotRecorded) &&
+    //   !element.maxOccurrence > 1
+    // ) {
+    //   debugger;
+    //   return 7;
+    // } else if (
+    //   !element.units.length > 0 &&
+    //   !(element.allowNotApplicable || element.allowNotRecorded) &&
+    //   element.maxOccurrence > 1
+    // ) {
+    //   debugger;
+    //   return 7;
+    // } else {
+    //   debugger;
+    //   return 4;
+    // }
+  }
   const getNewField = (element, descriptorDetails, subGroupName) => {
     if (!element.namespace) {
       element = { ...element, namespace: { name: "label" } };
@@ -376,8 +453,7 @@ const Descriptors = props => {
         <Form.Label column md={{ span: 3 }} className={element.mandatory ? "required-asterik" : ""}>
           {element.name}
         </Form.Label>
-
-        <Col md={7}>
+        <Col md={getColumnWidth(element)}>
           {element.namespace.name === "text" ? (
             <Form.Control
               as="textarea"
@@ -441,7 +517,7 @@ const Descriptors = props => {
               required={element.mandatory ? true : false}
               disabled={descriptorDetails.isHide}
             >
-              <option value="">select</option>
+              <option value="">select Unit</option>
               {element.units.map((unit, index) => {
                 return (
                   <option key={index} value={unit} id={element.id} name={element.name}>
@@ -451,6 +527,59 @@ const Descriptors = props => {
               })}
             </Form.Control>
             <Feedback message={`Unit is required`} />
+          </Col>
+        )}
+
+        {(element.allowNotApplicable || element.allowNotRecorded) && (
+          <Col style={{ marginTop: "-11px" }} md={3}>
+            {element.allowNotApplicable && (
+              <FormControlLabel
+                control={
+                  <BlueCheckbox
+                    name="notApplicable"
+                    // checked={userSelection.glytoucanRegistration}
+                    onChange={e => props.handleNotApplicableorRecorded(descriptorDetails, e, subGroupName, "")}
+                    size="small"
+                  />
+                }
+                label={
+                  <>
+                    {"Not Applicable"}
+                    <sup>1</sup>
+                  </>
+                }
+              />
+            )}
+            <br />
+            {element.allowNotRecorded && (
+              <FormControlLabel
+                style={{ marginTop: "-25px" }}
+                control={
+                  <BlueCheckbox
+                    name="notRecorded"
+                    // checked={userSelection.glytoucanRegistration}
+                    onChange={e => props.handleNotApplicableorRecorded(descriptorDetails, e, subGroupName, "")}
+                    size="small"
+                  />
+                }
+                label={
+                  <>
+                    {"Not Recorded"}
+                    <sup>2</sup>
+                  </>
+                }
+              />
+            )}
+          </Col>
+        )}
+
+        {element.maxOccurrence > 1 && (
+          <Col md={1} style={{ marginLeft: "-150px;" }}>
+            <Button onClick={props.addDescriptor}>
+              <LineTooltip text="Add descriptor">
+                <Image src={plusIcon} alt="plus button" />
+              </LineTooltip>
+            </Button>
           </Col>
         )}
       </Form.Group>
@@ -463,7 +592,7 @@ const Descriptors = props => {
 const addSubGroupValidation = groupElement => {
   var flag = false;
 
-  if (groupElement.descriptors.filter(i => i.maxOccurance > 1).length > 0) {
+  if (groupElement.descriptors.filter(i => i.maxOccurrence > 1).length > 0) {
     flag = true;
   }
   return flag;
