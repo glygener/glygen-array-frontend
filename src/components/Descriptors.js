@@ -219,12 +219,7 @@ const Descriptors = props => {
     );
 
     return (
-      <div
-        key={keyIndex++}
-        style={{
-          padding: "10px"
-        }}
-      >
+      <div key={keyIndex++} style={{ padding: "10px" }}>
         <Accordion defaultActiveKey={isAllExpanded ? generalDescriptors.id : 0}>
           <Card>
             {cardHeader}
@@ -300,15 +295,26 @@ const Descriptors = props => {
                 url={groupElement.wikiLink}
                 text={"Add Some text Here"}
                 helpIcon="gg-helpicon-detail"
-              ></HelpToolTip>
+              />
             </span>
 
-            <span className="descriptor-header">{" " + groupElement.name}</span>
+            <span className={`descriptor-header ${groupElement.mandatory ? "required-asterik" : ""}`}>
+              {" " + groupElement.name}
+            </span>
           </span>
 
           <div style={{ float: "right" }} key={groupElement.id}>
             {groupElement.isNewlyAddedNonMandatory && addSubGroupValidation(groupElement) && (
               <span>{descriptorSubGroup(groupElement)}</span>
+            )}
+
+            {groupElement.maxOccurrence > 1 && (
+              <FontAwesomeIcon
+                icon={["fas", "plus"]}
+                size="lg"
+                title="Add Descriptor Group"
+                onClick={() => props.handleAddDescriptorGroups(groupElement)}
+              />
             )}
 
             {(groupElement.isNewlyAdded || groupElement.isNewlyAddedNonMandatory || groupElement.xorMandate) && (
@@ -370,7 +376,7 @@ const Descriptors = props => {
 
   function getColumnWidth(element) {
     let count = 0;
-    if (element.name === "Immunogen") {
+    if (element.name === "Isotype") {
       debugger;
     }
 
@@ -378,7 +384,7 @@ const Descriptors = props => {
       count++;
     }
 
-    if (!element.allowNotApplicable || !element.allowNotRecorded) {
+    if (element.allowNotApplicable || element.allowNotRecorded) {
       count++;
     }
 
@@ -392,20 +398,20 @@ const Descriptors = props => {
       if (element.units.length > 0) {
         return 7;
       } else if (element.allowNotApplicable || element.allowNotRecorded) {
-        return 6;
+        return 7;
       } else if (element.maxOccurrence > 1) {
         return 8;
       }
     } else if (count === 2) {
       if (element.units.length > 0 && (element.allowNotApplicable || element.allowNotRecorded)) {
-        return 4;
+        return 5;
       } else if (element.units.length > 0 && element.maxOccurrence > 1) {
-        return 5;
+        return 6;
       } else if (element.maxOccurrence > 1 && (element.allowNotApplicable || element.allowNotRecorded)) {
-        return 5;
+        return 6;
       }
     } else if (count > 2) {
-      return 3;
+      return 4;
     }
 
     // if (
@@ -531,7 +537,7 @@ const Descriptors = props => {
         )}
 
         {(element.allowNotApplicable || element.allowNotRecorded) && (
-          <Col style={{ marginTop: "-11px" }} md={3}>
+          <Col style={{ marginTop: "-11px" }} md={2}>
             {element.allowNotApplicable && (
               <FormControlLabel
                 control={

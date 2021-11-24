@@ -585,6 +585,98 @@ const MetaData = props => {
     setSampleModel(sampleModelUpdate);
     //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
+  const handleAddDescriptorGroups = elementSelected => {
+    debugger;
+    const errorMessage = "MaxOccurrence for the descriptor has been reached";
+    var selectedSample;
+    var sampleModelUpdate;
+    let maxCurrentOrder;
+
+    if (isUpdate || props.isCopy) {
+      sampleModelUpdate = { ...sampleModel };
+      selectedSample = sampleModelUpdate;
+    } else {
+      sampleModelUpdate = [...sampleModel];
+      selectedSample = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
+    }
+
+    var existedElement = selectedSample.descriptors.find(e => e.name === elementSelected.name && !e.isNewlyAdded);
+
+    var newItemsCount = selectedSample.descriptors.filter(
+      e => e.isNewlyAdded === true && e.name === elementSelected.name
+    ).length;
+
+    maxCurrentOrder = selectedSample.descriptors[selectedSample.descriptors.length - 1].order;
+    var newElement;
+
+    if (existedElement) {
+      if (
+        (existedElement.mandatory && newItemsCount + 1 < existedElement.maxOccurrence) ||
+        (!existedElement.mandatory && newItemsCount > 0 && newItemsCount < existedElement.maxOccurrence) ||
+        (!existedElement.mandatory &&
+          existedElement.isNewlyAddedNonMandatory &&
+          newItemsCount + 1 < existedElement.maxOccurrence)
+      ) {
+        if (existedElement.isNewlyAddedNonMandatory) {
+          newItemsCount = newItemsCount + 1;
+        }
+
+        newElement = JSON.parse(JSON.stringify(existedElement));
+        newElement.id = "newlyAddedItems" + newItemsCount + existedElement.name.trim();
+        newElement.isNewlyAdded = true;
+        newElement.isNewlyAddedNonMandatory = true;
+        newElement.order = maxCurrentOrder + 1;
+
+        newElement.group &&
+          newElement.descriptors.forEach(e => {
+            e.value = "";
+            e.id = "newlyAddedItems" + newItemsCount + e.id;
+          });
+
+        const selectedElementIndex = selectedSample.descriptors.indexOf(existedElement);
+        const totalSelectedElementsDuplicateCount = selectedElementIndex + newItemsCount;
+
+        let listUptoSelectedElements = selectedSample.descriptors.slice(0, totalSelectedElementsDuplicateCount);
+        let listOfRemainingsAfterSelectedElements = selectedSample.descriptors.slice(
+          totalSelectedElementsDuplicateCount
+        );
+
+        debugger;
+
+        listUptoSelectedElements.push(newElement);
+        const reArrangedList = listUptoSelectedElements.concat(listOfRemainingsAfterSelectedElements);
+
+        // selectedSample.descriptors.push(newElement);
+        selectedSample.descriptors = reArrangedList;
+      } else if (
+        !existedElement.isNewlyAddedNonMandatory &&
+        !existedElement.mandatory &&
+        newItemsCount < existedElement.maxOccurrence
+      ) {
+        if (props.metadataType === "Assay") {
+          maxCurrentOrder = Math.max(
+            ...selectedSample.descriptors.map(desc => {
+              return desc.order;
+            }),
+            0
+          );
+          existedElement.order = maxCurrentOrder + 1;
+        }
+        existedElement.isNewlyAddedNonMandatory = true;
+      } else {
+        alert(errorMessage);
+      }
+    } else {
+      alert(errorMessage);
+    }
+
+    if (props.metadataType === "Assay") {
+      sortAssayDescriptors(selectedSample);
+    }
+
+    setSampleModel(sampleModelUpdate);
+    //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
+  };
 
   const sortAssayDescriptors = selectedMetadata => {
     selectedMetadata.descriptors.forEach(desc => {
@@ -754,6 +846,7 @@ const MetaData = props => {
           isCopySample={props.isCopy}
           setLoadDataOnFirstNextInUpdate={setLoadDataOnFirstNextInUpdate}
           handleUnitSelectionChange={handleChangeMetaForm}
+          handleAddDescriptorGroups={handleAddDescriptorGroups}
         />
       </>
     );
@@ -1578,12 +1671,11 @@ const MetaData = props => {
                   }}
                 >
                   {getMetaData()}
-
-                  <>
+                  <div className={"button-div line-break-2 text-center"}>
                     <Button onClick={() => setLoadDescriptors(false)}>Back</Button>
                     &nbsp;
                     <Button type="submit">Submit</Button>
-                  </>
+                  </div>
                 </div>
               </Col>
               {/* <Col md={3}>
