@@ -27,17 +27,10 @@ const SideMenu = (props) => {
 
   const classes = useStyles();
 
-  const chemicalEntity = [
-    "/glycans/?",
-    "/peptides/?",
-    "/proteins/?",
-    "/lipids/?",
-    "/linkers/?",
-    "/othermolecules/?",
-  ];
+  const chemicalEntity = ["/glycans/?", "/peptides/?", "/proteins/?", "/lipids/?", "/linkers/?", "/otherMolecules/?"];
   const chemicalEntityLabels = ["Glycan", "Peptide", "Protein", "Lipid", "Linker", "Other"];
 
-  const slidePages = ["/features/?", "/blocklayouts/?", "/slidelayouts/?", "/slides/?"];
+  const slidePages = ["/features/?", "/blockLayouts/?", "/slideLayouts/?", "/slides/?"];
   const slideSubMenuLabels = ["Feature", "Block Layout", "Slide Layout", "Slide"];
 
   const experimentPages = ["/experiments"];
@@ -46,10 +39,10 @@ const SideMenu = (props) => {
   const metadataPages = [
     "/samples/?",
     "/printers/?",
-    "/imageanalysis/?",
-    "/dataprocessing/?",
+    "/imageAnalysis/?",
+    "/dataProcessing/?",
     "/scanners/?",
-    "/listslidemeta/?",
+    "/listSlideMeta/?",
     "/assays/?",
     "/spots/?",
   ];

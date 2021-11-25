@@ -51,7 +51,7 @@ const GlycoPeptides = props => {
             // eslint-disable-next-line react/display-name
             Cell: ({ value, index }) => {
               return value && value.name ? (
-                <Link key={index} to={"/linkers/editlinker/" + value.id} target="_blank">
+                <Link key={index} to={"/linkers/editLinker/" + value.id} target="_blank">
                   {getToolTip(value.name)}
                 </Link>
               ) : (

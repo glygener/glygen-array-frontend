@@ -23,7 +23,7 @@ const BlockLayouts = props => {
         <Title title="Block Layouts" />
 
         <Col className={"col-link-button"}>
-          <Link to="/blocklayouts/addBlock" className="link-button" style={{ width: "180px" }}>
+          <Link to="/blockLayouts/addBlock" className="link-button" style={{ width: "180px" }}>
             Add Block Layout
           </Link>
         </Col>
@@ -32,16 +32,16 @@ const BlockLayouts = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
             },
             {
               Header: "Rows",
-              accessor: "height"
+              accessor: "height",
             },
             {
               Header: "Columns",
-              accessor: "width"
-            }
+              accessor: "width",
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="name"
@@ -53,7 +53,7 @@ const BlockLayouts = props => {
           commentsRefColumn="description"
           fetchWS="blocklayoutlist"
           deleteWS="blocklayoutdelete"
-          editUrl="blocklayouts/editBlock"
+          editUrl="blockLayouts/editBlock"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Block Layouts"

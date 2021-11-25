@@ -43,7 +43,7 @@ export function getWsUrl(ws) {
     case "recover":
       return ws_base_user + "/recover";
     case "addglycan":
-      return ws_base_array + "/addglycan";
+      return ws_base_array + "/addGlycan";
     case "glycanlist":
       return ws_base_array + "/listGlycans";
     case "glycandelete":
@@ -57,7 +57,7 @@ export function getWsUrl(ws) {
     case "addmultipleglycans":
       return ws_base_array + "/addBatchGlycan";
     case "addlinker":
-      return ws_base_array + "/addlinker";
+      return ws_base_array + "/addLinker";
     case "linkerlist":
       return ws_base_array + "/listLinkers";
     case "listmoleculesbytype":
@@ -117,9 +117,9 @@ export function getWsUrl(ws) {
     case "featuredelete":
       return ws_base_array + "/deletefeature";
     case "addfeature":
-      return ws_base_array + "/addfeature";
+      return ws_base_array + "/addFeature";
     case "getfeature":
-      return ws_base_array + "/getfeature";
+      return ws_base_array + "/getFeature";
     case "updatefeature":
       return ws_base_array + "/updateFeature";
     case "unitlevels":

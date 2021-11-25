@@ -200,7 +200,7 @@ const SpotInformationBlock = props => {
             <Accordion.Toggle as={Card.Header}>
               Block: &nbsp;
               <Link
-                to={`/blocklayouts/editBlock/${blockCard.blockSelected.id}`}
+                to={`/blockLayouts/editBlock/${blockCard.blockSelected.id}`}
                 target="_blank"
                 className="custom_link"
               >

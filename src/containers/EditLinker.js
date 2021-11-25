@@ -452,7 +452,7 @@ const EditLinker = (props) => {
                   {linkerDetails.type && (
                     <>
                       {linkerDetails.type.includes("OTHER") && (
-                        <Link to="/othermolecules">
+                        <Link to="/otherMolecules">
                           <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
                         </Link>
                       )}
@@ -507,7 +507,7 @@ const EditLinker = (props) => {
   function updateLinkerSuccess() {
     switch (linkerDetails.type) {
       case "OTHER":
-        return history.push("/othermolecules");
+        return history.push("/otherMolecules");
       case "LINKERS":
       case "SMALLMOLECULE":
         return history.push("/linkers");

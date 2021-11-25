@@ -119,7 +119,7 @@ const AddMultiSlideLayout = props => {
   };
 
   const getMessages = (key, value) => {
-    const trows = row => {
+    const trows = (row) => {
       var trow = [];
       trow = row.map((element, index) => {
         return (
@@ -132,13 +132,13 @@ const AddMultiSlideLayout = props => {
       return trow;
     };
 
-    const trowsForErrors = errors => {
+    const trowsForErrors = (errors) => {
       const trow = [];
 
       errors.forEach((element, index) => {
         var description = "";
 
-        element.error.errors.forEach(error => {
+        element.error.errors.forEach((error) => {
           description += error.objectName + " - " + error.defaultMessage + "\n";
         });
 
@@ -180,7 +180,7 @@ const AddMultiSlideLayout = props => {
 
         {/* {key === "errors" && (
           <Col md={{ span: 3, offset: 4 }}>
-            <Link to="/slidelayouts" className="link-button">
+            <Link to="/slideLayouts" className="link-button">
               Back to Slidelayouts
             </Link>
           </Col>
@@ -189,16 +189,16 @@ const AddMultiSlideLayout = props => {
     );
   };
 
-  const getSlidesFromLibrary = tableData => {
-    const editSlideName = row => (
+  const getSlidesFromLibrary = (tableData) => {
+    const editSlideName = (row) => (
       <input
         key={row.index}
         type="text"
         name={row.original.name}
-        onChange={e => handleSlideNameChange(row.original, e)}
+        onChange={(e) => handleSlideNameChange(row.original, e)}
         value={getUpdateSlideName(row.original)}
         style={{
-          border: "none"
+          border: "none",
         }}
       />
     );
@@ -206,20 +206,20 @@ const AddMultiSlideLayout = props => {
     columnsToRender["nameColumn"] = {
       Header: "Name",
       // eslint-disable-next-line react/display-name
-      Cell: row => editSlideName(row)
+      Cell: (row) => editSlideName(row),
     };
 
     columnsToRender["selectionColumn"] = {
       Header: "Select",
       // eslint-disable-next-line react/display-name
-      Cell: row => (
+      Cell: (row) => (
         <input
           key={row.index}
           type="radio"
           onChange={() => handleChecboxChange(row.original)}
           checked={checkSelection(row.original)}
         />
-      )
+      ),
     };
 
     return (
@@ -227,7 +227,7 @@ const AddMultiSlideLayout = props => {
         {Object.keys(tabs).length === 0 &&
           ((!showErrorSummary && uploadDetails.fileType === ".xml") ||
             (uploadDetails.fileType === ".gal" && galFileErrors.length > 0)) && (
-            <Form onSubmit={e => saveSelectedXMlSlidelayouts(e)}>
+            <Form onSubmit={(e) => saveSelectedXMlSlidelayouts(e)}>
               <ReactTable
                 columns={Object.values(columnsToRender)}
                 data={tableData}
@@ -244,7 +244,7 @@ const AddMultiSlideLayout = props => {
                   </Button>
                 </Col>
                 <Col md={{ span: 2 }}>
-                  <Link to="/slidelayouts" className="link-button">
+                  <Link to="/slideLayouts" className="link-button">
                     Back to Slidelayouts
                   </Link>
                 </Col>
@@ -253,7 +253,7 @@ const AddMultiSlideLayout = props => {
           )}
 
         {Object.keys(tabs).length > 0 &&
-          Object.entries(tabs).map(element => {
+          Object.entries(tabs).map((element) => {
             var key = element[0];
             var value = element[1];
 
@@ -264,7 +264,7 @@ const AddMultiSlideLayout = props => {
                     style={{
                       fontWeight: "bold",
                       backgroundColor:
-                        key === "addedLayouts" ? "darkseagreen" : key === "duplicates" ? "orange" : "indianred"
+                        key === "addedLayouts" ? "darkseagreen" : key === "duplicates" ? "orange" : "indianred",
                     }}
                   >
                     {key === "addedLayouts"
@@ -281,7 +281,7 @@ const AddMultiSlideLayout = props => {
                         <Button onClick={() => resetSelection()}>Back to Select Slides</Button>
                       </Col>
                       <Col md={{ span: 2 }}>
-                        <Link to="/slidelayouts" className="link-button">
+                        <Link to="/slideLayouts" className="link-button">
                           Back to Slidelayouts
                         </Link>
                       </Col>
@@ -301,7 +301,7 @@ const AddMultiSlideLayout = props => {
     setRowSelected([]);
   };
 
-  const saveSelectedXMlSlidelayouts = e => {
+  const saveSelectedXMlSlidelayouts = (e) => {
     setShowLoading(true);
 
     wsCall(
@@ -317,7 +317,7 @@ const AddMultiSlideLayout = props => {
     e.preventDefault();
   };
 
-  const saveGALSlidelayout = fileId => {
+  const saveGALSlidelayout = (fileId) => {
     if (uploadDetails.name === "") {
       setInvalidName(true);
     } else {
@@ -329,7 +329,7 @@ const AddMultiSlideLayout = props => {
           file: encodeURIComponent(fileId),
           name: uploadDetails.name,
           height: uploadDetails.height,
-          width: uploadDetails.width
+          width: uploadDetails.width,
         },
         true,
         null,
@@ -340,7 +340,7 @@ const AddMultiSlideLayout = props => {
   };
 
   function importSlideLayoutsFromLibrarySuccess(response) {
-    response.json().then(responseJson => {
+    response.json().then((responseJson) => {
       setTabs(responseJson);
       setShowLoading(false);
       console.log(tabs);
@@ -348,10 +348,10 @@ const AddMultiSlideLayout = props => {
   }
 
   function importSlideLayoutsFromLibraryError(response) {
-    response.json().then(responseJson => {
+    response.json().then((responseJson) => {
       if (responseJson.errors && uploadDetails.fileType === ".gal") {
-        const nameError = responseJson.errors.filter(i => i.objectName === "name");
-        const dimensionError = responseJson.errors.filter(i => i.objectName === "width" || i.objectName === "height");
+        const nameError = responseJson.errors.filter((i) => i.objectName === "name");
+        const dimensionError = responseJson.errors.filter((i) => i.objectName === "width" || i.objectName === "height");
 
         if (nameError.length > 0) {
           setInvalidName(true);
@@ -393,7 +393,7 @@ const AddMultiSlideLayout = props => {
             </li>
           );
         } else {
-          galFileErrors.errors.forEach(errorObj => {
+          galFileErrors.errors.forEach((errorObj) => {
             aggregatedSummary.push(
               <li key={errorObj.objectName}>
                 {errorObj.objectName.toUpperCase()} - {errorObj.defaultMessage}
@@ -426,7 +426,7 @@ const AddMultiSlideLayout = props => {
     }
   };
 
-  const processFile = fileId => {
+  const processFile = (fileId) => {
     setFileName(fileId);
 
     // call getSlideLayoutFromLibrary with fileId to get slidelayout
@@ -441,7 +441,7 @@ const AddMultiSlideLayout = props => {
     );
 
     function getSlideLayoutsFromLibrarySuccess(response) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         console.log(responseJson);
         setShowErrorSummary(false);
         setTableData(responseJson);
@@ -450,7 +450,7 @@ const AddMultiSlideLayout = props => {
     }
 
     function getSlideLayoutsFromLibraryError(response) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         console.log(responseJson);
         setFileSubmitted(false);
         setPageErrorsJson(responseJson);
@@ -475,7 +475,7 @@ const AddMultiSlideLayout = props => {
         {showErrorSummary === true && (
           <div
             style={{
-              textAlign: "initial"
+              textAlign: "initial",
             }}
           >
             <br />
@@ -493,10 +493,10 @@ const AddMultiSlideLayout = props => {
                 <Col
                   md={{ span: 3 }}
                   style={{
-                    marginLeft: "42%"
+                    marginLeft: "42%",
                   }}
                 >
-                  <Link to="/slidelayouts" className="link-button">
+                  <Link to="/slideLayouts" className="link-button">
                     Back to Slidelayouts
                   </Link>
                 </Col>
@@ -564,7 +564,7 @@ const AddMultiSlideLayout = props => {
                     <span
                       style={{
                         marginLeft: "80%",
-                        position: "inherit"
+                        position: "inherit",
                       }}
                     >
                       {uploadDetails.description !== "" ? uploadDetails.description.length : ""}
@@ -582,7 +582,7 @@ const AddMultiSlideLayout = props => {
                       value={uploadDetails.height}
                       onChange={handleChange}
                       isInvalid={invalidWidth}
-                      onKeyDown={e => {
+                      onKeyDown={(e) => {
                         isValidNumber(e);
                       }}
                     />
@@ -599,7 +599,7 @@ const AddMultiSlideLayout = props => {
                       value={uploadDetails.width}
                       onChange={handleChange}
                       isInvalid={invalidHeight}
-                      onKeyDown={e => {
+                      onKeyDown={(e) => {
                         isValidNumber(e);
                       }}
                     />
@@ -616,7 +616,7 @@ const AddMultiSlideLayout = props => {
                     history={history}
                     headerObject={{
                       Authorization: window.localStorage.getItem("token") || "",
-                      Accept: "*/*"
+                      Accept: "*/*",
                     }}
                     fileType={fileDetails.fileType}
                     uploadService={getWsUrl("upload")}

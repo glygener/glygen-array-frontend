@@ -411,7 +411,7 @@ const AddOtherMolecule = (props) => {
         null,
         true,
         othermoleculeObj,
-        (response) => history.push("/othermolecules"),
+        (response) => history.push("/otherMolecules"),
         addOtherMoleculeFailure
       );
     }

@@ -36,7 +36,7 @@ const Peptides = (props) => {
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
-                  <Link to="/peptides/addpeptide">
+                  <Link to="/peptides/addPeptide">
                     <Button className="gg-btn-blue mt-2 gg-mr-20">Add Peptide</Button>
                   </Link>
                 )}
@@ -62,7 +62,7 @@ const Peptides = (props) => {
                 showSearchBox
                 commentsRefColumn="comment"
                 deleteWS="linkerdelete"
-                editUrl="peptides/editlinker"
+                editUrl="peptides/editLinker"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Peptides"

@@ -477,12 +477,12 @@ const AddBlockLayout = props => {
           Update Block
         </Button>
         &nbsp;
-        <Button onClick={() => history.push("/blocklayouts")}>Back</Button>
+        <Button onClick={() => history.push("/blockLayouts")}>Back</Button>
       </div>
     );
   };
 
-  const handleSpotSelectionChange = e => {
+  const handleSpotSelectionChange = (e) => {
     const id = e.target.value !== "" ? e.target.options[e.target.value].id : "";
     const name = e.target.name;
     const value = e.target.value;
@@ -513,7 +513,7 @@ const AddBlockLayout = props => {
           </>
         )}
         {!addFeatures && (
-          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
             <GridForm
               gridParams={gridParams}
               updatedGridParams={updatedGridParams}
@@ -542,14 +542,14 @@ const AddBlockLayout = props => {
                     <div
                       className="grid-table"
                       style={{
-                        height: gridParams.rows > 30 ? "800px" : "fit-content"
+                        height: gridParams.rows > 30 ? "800px" : "fit-content",
                       }}
                     >
                       {createGrid()}
                     </div>
                     <div
                       style={{
-                        paddingBottom: "30px"
+                        paddingBottom: "30px",
                       }}
                     ></div>
                   </Col>
@@ -575,7 +575,7 @@ const AddBlockLayout = props => {
                         <div
                           style={{
                             border: "1px solid rgba(0, 0, 0, 0.1)",
-                            borderRadius: "8px"
+                            borderRadius: "8px",
                           }}
                         >
                           <div className={"summary-border"}>
@@ -638,7 +638,7 @@ const AddBlockLayout = props => {
         {
           id: blockLayoutId,
           name: gridParams.name,
-          description: gridParams.description
+          description: gridParams.description,
         },
         updateBlockLayoutSuccess,
         updateBlockLayoutFailure
@@ -657,7 +657,7 @@ const AddBlockLayout = props => {
             description: gridParams.description,
             width: updatedGridParams.cols,
             height: updatedGridParams.rows,
-            spots: spotsData
+            spots: spotsData,
           },
           addBlockLayoutSuccess,
           addBlockLayoutFailure
@@ -674,16 +674,16 @@ const AddBlockLayout = props => {
 
   function getSpotsData() {
     var spots = [];
-    arraySelected.forEach(element => {
+    arraySelected.forEach((element) => {
       if (element.selectedFeatures.length > 0) {
         spots.push({
           row: element.selectedRow,
           column: element.selectedCol,
-          features: element.selectedFeatures.map(e => e.feature),
+          features: element.selectedFeatures.map((e) => e.feature),
           group: element.groupAssigned,
           concentration: element.selectedConcentration,
           ratioMap: getFeaturetoRatioMap(element.selectedFeatures),
-          metadata: element.metadata
+          metadata: element.metadata,
         });
       }
     });
@@ -694,7 +694,7 @@ const AddBlockLayout = props => {
   function getFeaturetoRatioMap(features) {
     var featureToRatio = {};
 
-    features.forEach(element => {
+    features.forEach((element) => {
       element.ratio && Object.assign(featureToRatio, { [element.feature.id]: element.ratio });
     });
     return featureToRatio;
@@ -704,11 +704,11 @@ const AddBlockLayout = props => {
     console.log(response);
     setShowLoading(false);
     setEnablePrompt(false);
-    history.push("/blocklayouts");
+    history.push("/blockLayouts");
   }
 
   function addBlockLayoutFailure(response) {
-    response.json().then(response => {
+    response.json().then((response) => {
       setPageErrorsJson(response);
       setShowErrorSummary(true);
     });
@@ -718,7 +718,7 @@ const AddBlockLayout = props => {
     console.log(response);
     setShowLoading(false);
     setEnablePrompt(false);
-    history.push("/blocklayouts");
+    history.push("/blockLayouts");
   }
 
   function updateBlockLayoutFailure(response) {

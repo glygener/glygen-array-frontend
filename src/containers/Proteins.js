@@ -35,7 +35,7 @@ const Proteins = (props) => {
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
-                  <Link to="/proteins/addprotein">
+                  <Link to="/proteins/addProtein">
                     <Button className="gg-btn-blue mt-2 gg-mr-20">Add Protein</Button>
                   </Link>
                 )}
@@ -61,7 +61,7 @@ const Proteins = (props) => {
                 commentsRefColumn="comment"
                 customCommentColumn
                 deleteWS="linkerdelete"
-                editUrl="proteins/editlinker"
+                editUrl="proteins/editLinker"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Proteins"

@@ -15,8 +15,8 @@ const OtherMolecules = props => {
   return (
     <>
       <Helmet>
-        <title>{head.othermolecules.title}</title>
-        {getMeta(head.othermolecules)}
+        <title>{head.otherMolecules.title}</title>
+        {getMeta(head.otherMolecules)}
       </Helmet>
 
       <div className={!props.isImported ? "page-container" : ""}>
@@ -24,7 +24,7 @@ const OtherMolecules = props => {
 
         <Col className={"col-link-button"}>
           {!props.isImported && (
-            <Link to="/othermolecules/addothermolecule" className="link-button" style={{ width: "180px" }}>
+            <Link to="/otherMolecules/addOtherMolecule" className="link-button" style={{ width: "180px" }}>
               Add Other Molecule
             </Link>
           )}
@@ -34,8 +34,8 @@ const OtherMolecules = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
-            }
+              accessor: "name",
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -48,7 +48,7 @@ const OtherMolecules = props => {
           fetchWS="listmoleculesbytype"
           paramTypeValue={"OTHER"}
           deleteWS="linkerdelete"
-          editUrl="othermolecules/editlinker"
+          editUrl="otherMolecules/editLinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Peptides"

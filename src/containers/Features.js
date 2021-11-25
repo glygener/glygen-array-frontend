@@ -24,7 +24,7 @@ const Features = props => {
         <Title title="Features" />
 
         <Col className={"col-link-button"}>
-          <Link to="/features/addfeature" className="link-button" style={{ width: "150px" }}>
+          <Link to="/features/addFeature" className="link-button" style={{ width: "150px" }}>
             Add Feature
           </Link>
         </Col>
@@ -35,16 +35,16 @@ const Features = props => {
               Header: "Name",
               accessor: "name",
               // eslint-disable-next-line react/display-name
-              Cell: ({ row }, index) => <div key={index}>{row.name ? row.name : row.id}</div>
+              Cell: ({ row }, index) => <div key={index}>{row.name ? row.name : row.id}</div>,
             },
             {
               Header: "Feature Id",
-              accessor: "internalId"
+              accessor: "internalId",
             },
             {
               Header: "Type",
               accessor: "type",
-              Cell: row => displayNames.feature[row.value]
+              Cell: (row) => displayNames.feature[row.value],
             },
             {
               Header: "Linker",
@@ -52,12 +52,12 @@ const Features = props => {
               // eslint-disable-next-line react/display-name
               Cell: ({ value, index }) =>
                 value && value.name ? (
-                  <Link key={index} to={"/linkers/editlinker/" + value.id} target="_blank">
+                  <Link key={index} to={"/linkers/editLinker/" + value.id} target="_blank">
                     {value.name}
                   </Link>
                 ) : (
                   ""
-                )
+                ),
             },
             {
               Header: "Linker Type",
@@ -74,7 +74,7 @@ const Features = props => {
                 ) : (
                   ""
                 );
-              }
+              },
             },
             {
               Header: "Glycans",
@@ -87,7 +87,7 @@ const Features = props => {
                         (glycans, i) =>
                           glycans.glycan && (
                             <div key={i}>
-                              <Link to={"/glycans/editglycan/" + glycans.glycan.id} target="_blank">
+                              <Link to={"/glycans/editGlycan/" + glycans.glycan.id} target="_blank">
                                 {glycans.glycan.name}
                               </Link>
                               <br />
@@ -96,8 +96,8 @@ const Features = props => {
                       )
                     : ""}
                 </div>
-              )
-            }
+              ),
+            },
           ]}
           defaultPageSize={10}
           showDeleteButton
@@ -108,7 +108,7 @@ const Features = props => {
           commentsRefColumn="name"
           fetchWS="featurelist"
           deleteWS="featuredelete"
-          editUrl="features/editfeature/:editFeature"
+          editUrl="features/editFeature/:editFeature"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Features"

@@ -22,7 +22,7 @@ const SlideMeta = props => {
 
         <ButtonToolbar>
           <Col className={"col-link-button"}>
-            <Link to="/listslidemeta/addSlideMeta" className="link-button" style={{ width: "150px" }}>
+            <Link to="/listSlideMeta/addSlideMeta" className="link-button" style={{ width: "150px" }}>
               Add Slide Meta
             </Link>
           </Col>
@@ -32,12 +32,12 @@ const SlideMeta = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
             },
             {
               Header: "Template",
-              accessor: "template"
-            }
+              accessor: "template",
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -49,8 +49,8 @@ const SlideMeta = props => {
           commentsRefColumn="description"
           fetchWS="listslidemeta"
           deleteWS="slideMetaDelete"
-          editUrl="listslidemeta/editSlideMeta"
-          copyUrl="listslidemeta/copySlideMeta"
+          editUrl="listSlideMeta/editSlideMeta"
+          copyUrl="listSlideMeta/copySlideMeta"
           copyPage="copySlideMeta"
           keyColumn="id"
           showRowsInfo

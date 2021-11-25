@@ -313,7 +313,7 @@ const AddSlideLayout = props => {
           Update Slide
         </Button>
         &nbsp;
-        <Button onClick={() => history.push("/slidelayouts")}>Back</Button>
+        <Button onClick={() => history.push("/slideLayouts")}>Back</Button>
       </div>
     );
   };
@@ -340,7 +340,7 @@ const AddSlideLayout = props => {
         {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
 
         {!addBlocks && (
-          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
             <GridForm
               gridParams={gridParams}
               updatedGridParams={updatedGridParams}
@@ -364,7 +364,7 @@ const AddSlideLayout = props => {
                     <div
                       className="grid-table"
                       style={{
-                        height: gridParams.rows > 30 ? "800px" : "fit-content"
+                        height: gridParams.rows > 30 ? "800px" : "fit-content",
                       }}
                     >
                       {createGrid()}
@@ -372,7 +372,7 @@ const AddSlideLayout = props => {
                     <div
                       style={{
                         paddingBottom: "30px",
-                        marginLeft: "343px"
+                        marginLeft: "343px",
                       }}
                     >
                       {isUpdateSlide ? getUpdateButtons() : getButtons()}
@@ -437,7 +437,7 @@ const AddSlideLayout = props => {
         {
           id: slideLayoutId,
           name: gridParams.name,
-          description: gridParams.description
+          description: gridParams.description,
         },
         updateSlideLayoutSuccess,
         updateSlideLayoutFailure
@@ -456,7 +456,7 @@ const AddSlideLayout = props => {
             description: gridParams.description,
             width: updatedGridParams.cols,
             height: updatedGridParams.rows,
-            blocks: spotsData
+            blocks: spotsData,
           },
           addSlideSuccess,
           addSlideFailure
@@ -482,8 +482,8 @@ const AddSlideLayout = props => {
           column: value.selectedCol,
           blockLayout: {
             name: value.blockSelected.name,
-            id: value.blockSelected.id
-          }
+            id: value.blockSelected.id,
+          },
         });
       }
     }
@@ -494,14 +494,14 @@ const AddSlideLayout = props => {
     console.log(response);
     setShowLoading(false);
     setEnablePrompt(false);
-    history.push("/slidelayouts");
+    history.push("/slideLayouts");
   }
 
   function addSlideFailure(response) {
     setShowLoading(false);
     setValidated(false);
     setDuplicateName(true);
-    response.json().then(response => {
+    response.json().then((response) => {
       console.log(response);
       setShowErrorSummary(true);
       setPageErrorsJson(response);
@@ -512,7 +512,7 @@ const AddSlideLayout = props => {
     console.log(response);
     setShowLoading(false);
     setEnablePrompt(false);
-    history.push("/slidelayouts");
+    history.push("/slideLayouts");
   }
 
   function updateSlideLayoutFailure(response) {

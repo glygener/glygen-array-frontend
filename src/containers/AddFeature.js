@@ -1495,7 +1495,7 @@ const AddFeature = props => {
               accessor: "glycoPeptide",
               Cell: (row, index) => {
                 return row.value && row.value.linker ? (
-                  <Link key={index} to={"/linkers/editlinker/" + row.value.id} target="_blank">
+                  <Link key={index} to={"/linkers/editLinker/" + row.value.id} target="_blank">
                     {getToolTip(row.value.linker.name)}
                   </Link>
                 ) : (

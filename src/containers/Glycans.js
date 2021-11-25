@@ -34,7 +34,7 @@ const Glycans = (props) => {
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
-                <Link to="/glycans/addglycan">
+                <Link to="/glycans/addGlycan">
                   <Button className="gg-btn-blue mt-2 gg-mr-20">Add Glycan</Button>
                 </Link>
 
@@ -96,7 +96,7 @@ const Glycans = (props) => {
                 commentsRefColumn="description"
                 fetchWS="glycanlist"
                 deleteWS="glycandelete"
-                editUrl="glycans/editglycan"
+                editUrl="glycans/editGlycan"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Glycans"

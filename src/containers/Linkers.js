@@ -31,7 +31,7 @@ const Linkers = props => {
 
         <Col className={"col-link-button"}>
           {!props.isImported && (
-            <Link to="/linkers/addlinker" className="link-button" style={{ width: "150px" }}>
+            <Link to="/linkers/addLinker" className="link-button" style={{ width: "150px" }}>
               Add Linker
             </Link>
           )}
@@ -42,22 +42,22 @@ const Linkers = props => {
             {
               Header: "Name",
               accessor: "name",
-              Cell: row => getToolTip(row.original.name),
-              minWidth: 50
+              Cell: (row) => getToolTip(row.original.name),
+              minWidth: 50,
             },
             {
               Header: displayNames.linker.PUBCHEM_ID,
               accessor: "pubChemId",
-              Cell: row => getToolTip(row.original.pubChemId),
-              minWidth: 70
+              Cell: (row) => getToolTip(row.original.pubChemId),
+              minWidth: 70,
             },
             {
               Header: displayNames.linker.STRUCTURE,
               accessor: "imageURL",
               // eslint-disable-next-line react/prop-types
-              Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
-              minWidth: 150
-            }
+              Cell: (row) => <StructureImage imgUrl={row.value}></StructureImage>,
+              minWidth: 150,
+            },
           ]}
           defaultPageSize={10}
           showCommentsButton
@@ -65,7 +65,7 @@ const Linkers = props => {
           commentsRefColumn="comment"
           customCommentColumn
           deleteWS="linkerdelete"
-          editUrl="linkers/editlinker"
+          editUrl="linkers/editLinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Linkers"

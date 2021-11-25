@@ -31,7 +31,7 @@ const Lipids = props => {
 
         <Col className={"col-link-button"}>
           {!props.isImported && (
-            <Link to="/lipids/addlipid" className="link-button" style={{ width: "150px" }}>
+            <Link to="/lipids/addLipid" className="link-button" style={{ width: "150px" }}>
               Add Lipid
             </Link>
           )}
@@ -42,23 +42,23 @@ const Lipids = props => {
             {
               Header: "Name",
               accessor: "name",
-              Cell: row => getToolTip(row.original.name),
-              minWidth: 50
+              Cell: (row) => getToolTip(row.original.name),
+              minWidth: 50,
             },
             {
               Header: "PubChem ID",
               accessor: "pubChemId",
-              Cell: row => getToolTip(row.original.pubChemId),
-              minWidth: 70
+              Cell: (row) => getToolTip(row.original.pubChemId),
+              minWidth: 70,
             },
             {
               Header: displayNames.linker.STRUCTURE,
               accessor: "imageURL",
               sortable: false,
               // eslint-disable-next-line react/prop-types
-              Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
-              minWidth: 150
-            }
+              Cell: (row) => <StructureImage imgUrl={row.value}></StructureImage>,
+              minWidth: 150,
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -67,7 +67,7 @@ const Lipids = props => {
           commentsRefColumn="comment"
           customCommentColumn
           deleteWS="linkerdelete"
-          editUrl="lipids/editlinker"
+          editUrl="lipids/editLinker"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Lipids"

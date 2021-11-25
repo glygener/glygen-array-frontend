@@ -13,8 +13,8 @@ const DataProcessing = props => {
   return (
     <>
       <Helmet>
-        <title>{head.dataprocessing.title}</title>
-        {getMeta(head.dataprocessing)}
+        <title>{head.dataProcessing.title}</title>
+        {getMeta(head.dataProcessing)}
       </Helmet>
 
       <div className="page-container">
@@ -22,7 +22,7 @@ const DataProcessing = props => {
 
         <ButtonToolbar>
           <Col className={"col-link-button"}>
-            <Link to="/dataprocessing/addDataProcessing" className="link-button" style={{ width: "180px" }}>
+            <Link to="/dataProcessing/addDataProcessing" className="link-button" style={{ width: "180px" }}>
               Add Data Processing
             </Link>
           </Col>
@@ -32,12 +32,12 @@ const DataProcessing = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
             },
             {
               Header: "Template",
-              accessor: "template"
-            }
+              accessor: "template",
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -49,8 +49,8 @@ const DataProcessing = props => {
           commentsRefColumn="description"
           fetchWS="listdataprocessing"
           deleteWS="dataprocessingdelete"
-          editUrl="dataprocessing/editDataProcessing"
-          copyUrl="dataprocessing/copyDataProcessing"
+          editUrl="dataProcessing/editDataProcessing"
+          copyUrl="dataProcessing/copyDataProcessing"
           copyPage="copyDataProcessing"
           keyColumn="id"
           showRowsInfo

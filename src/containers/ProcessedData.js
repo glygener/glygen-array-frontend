@@ -149,11 +149,11 @@ const ProcessedData = props => {
                       }}
                       onClick={() => {
                         history.push({
-                          pathname: "/errorProcessdata",
+                          pathname: "/errorProcessData",
                           state: {
                             errorMessage: row.original.error,
-                            goBack: `/experiments/editExperiment/${props.experimentId}`
-                          }
+                            goBack: `/experiments/editExperiment/${props.experimentId}`,
+                          },
                         });
                       }}
                     />

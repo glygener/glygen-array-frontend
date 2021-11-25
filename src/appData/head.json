@@ -320,7 +320,7 @@
       }
     ]
   },
-  "othermolecules": {
+  "otherMolecules": {
     "title": "Other Molecules",
     "meta": [
       {
@@ -490,7 +490,7 @@
       }
     ]
   },
-  "imageanalysis": {
+  "imageAnalysis": {
     "title": "Image Analysis",
     "meta": [
       {
@@ -508,7 +508,7 @@
       }
     ]
   },
-  "dataprocessing": {
+  "dataProcessing": {
     "title": "Data Processing",
     "meta": [
       {

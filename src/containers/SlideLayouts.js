@@ -23,12 +23,12 @@ const SlideLayouts = props => {
         <Title title="Slide Layouts" />
 
         <Col className={"col-link-button"}>
-          <Link to="/slidelayouts/addSlide" className="link-button" style={{ width: "180px" }}>
+          <Link to="/slideLayouts/addSlide" className="link-button" style={{ width: "180px" }}>
             Add Slide Layout
           </Link>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <Link
-            to="/slidelayouts/addMultiple"
+            to="/slideLayouts/addMultiple"
             className="link-button"
             title="Upload a GAL/XML file wih Slide Layouts"
             style={{ width: "180px" }}
@@ -41,8 +41,8 @@ const SlideLayouts = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
-            }
+              accessor: "name",
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -53,7 +53,7 @@ const SlideLayouts = props => {
           commentsRefColumn="description"
           fetchWS="slidelayoutlist"
           deleteWS="slidelayoutdelete"
-          editUrl="slidelayouts/editSlide"
+          editUrl="slideLayouts/editSlide"
           keyColumn="id"
           showRowsInfo
           infoRowsText="Slide Layouts"

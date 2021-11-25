@@ -12,8 +12,8 @@ const ImageAnalysis = props => {
   return (
     <>
       <Helmet>
-        <title>{head.imageanalysis.title}</title>
-        {getMeta(head.imageanalysis)}
+        <title>{head.imageAnalysis.title}</title>
+        {getMeta(head.imageAnalysis)}
       </Helmet>
 
       <div className="page-container">
@@ -21,7 +21,7 @@ const ImageAnalysis = props => {
 
         <ButtonToolbar>
           <Col className={"col-link-button"}>
-            <Link to="/imageanalysis/addImageMetadata" className="link-button" style={{ width: "180px" }}>
+            <Link to="/imageAnalysis/addImageMetadata" className="link-button" style={{ width: "180px" }}>
               Add Image Metadata
             </Link>
           </Col>
@@ -31,12 +31,12 @@ const ImageAnalysis = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
             },
             {
               Header: "Template",
-              accessor: "template"
-            }
+              accessor: "template",
+            },
           ]}
           defaultPageSize={10}
           defaultSortColumn="id"
@@ -48,8 +48,8 @@ const ImageAnalysis = props => {
           commentsRefColumn="description"
           fetchWS="listimagemetadata"
           deleteWS="imagemetadatadelete"
-          editUrl="imageanalysis/editImageAnalysisMetadata"
-          copyUrl="imageanalysis/copyImageAnalysisMetadata"
+          editUrl="imageAnalysis/editImageAnalysisMetadata"
+          copyUrl="imageAnalysis/copyImageAnalysisMetadata"
           copyPage="copyImageAnalysis"
           keyColumn="id"
           showRowsInfo
