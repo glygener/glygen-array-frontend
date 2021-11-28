@@ -15,6 +15,7 @@ import { LineTooltip } from "./tooltip/LineTooltip";
 import plusIcon from "../images/icons/plus.svg";
 
 const Descriptors = props => {
+  let descriptorsByMetaType;
   const {
     descriptors,
     metaDataTemplate,
@@ -39,8 +40,6 @@ const Descriptors = props => {
   };
 
   const buildDescriptors = () => {
-    let descriptorsByMetaType;
-
     if (isUpdate || isCopySample) {
       descriptorsByMetaType = descriptors;
     } else if (metaType === "Feature") {
@@ -88,7 +87,7 @@ const Descriptors = props => {
           : descMetaData.map((descriptor, index) => {
               if (metaType === "Feature" && descriptor.group) {
                 return <>{getDescriptorGroups(descriptor, index)}</>;
-              } else if (descriptor.group && (descriptor.mandatory || descriptor.isNewlyAddedNonMandatory)) {
+              } else if (descriptor.group) {
                 return <>{getDescriptorGroups(descriptor, index)}</>;
               }
 
@@ -112,7 +111,7 @@ const Descriptors = props => {
               {descMetaData.map((descriptor, index) => {
                 if (metaType === "Feature" && descriptor.group) {
                   return <>{getDescriptorGroups(descriptor, index)}</>;
-                } else if (descriptor.group && (descriptor.mandatory || descriptor.isNewlyAddedNonMandatory)) {
+                } else if (descriptor.group) {
                   return <>{getDescriptorGroups(descriptor, index)}</>;
                 }
 
@@ -150,7 +149,29 @@ const Descriptors = props => {
     );
   };
 
-  const getCardBody = (descriptor, index, groupElement) => {
+  const getCardBody = (descriptor, index, groupElement, isSubGroup) => {
+    debugger;
+    let lastAddedIsNewMandatory = false;
+    let lastAddedIsNewMandatoryCount;
+    let listofGroupElementItems;
+    let lastAddedIsNewMandatoryElement;
+
+    if (isSubGroup) {
+      lastAddedIsNewMandatoryCount = groupElement.descriptors.filter(
+        i => i.isNewlyAddedNonMandatory && i.name === descriptor.name
+      ).length;
+
+      listofGroupElementItems = groupElement.descriptors.filter(i => i.name === descriptor.name);
+
+      lastAddedIsNewMandatoryElement = listofGroupElementItems[lastAddedIsNewMandatoryCount];
+
+      if (lastAddedIsNewMandatoryElement && lastAddedIsNewMandatoryElement.id === descriptor.id) {
+        lastAddedIsNewMandatory = true;
+      } else if (lastAddedIsNewMandatoryCount === 0) {
+        lastAddedIsNewMandatory = true;
+      }
+    }
+
     return (
       <>
         <Row>
@@ -160,6 +181,19 @@ const Descriptors = props => {
               textAlign: "right"
             }}
           >
+            {descriptor.maxOccurrence > 1 && lastAddedIsNewMandatory && (
+              <FontAwesomeIcon
+                icon={["fas", "plus"]}
+                size="lg"
+                title="Add Descriptor Group"
+                style={{
+                  marginRight: "10px",
+                  marginBottom: "6px"
+                }}
+                onClick={() => props.handleAddDescriptorSubGroups(groupElement, descriptor)}
+              />
+            )}
+
             {descriptor.id.startsWith("newly") && metaType !== "Feature" && (
               <FontAwesomeIcon
                 key={"delete" + index}
@@ -210,7 +244,7 @@ const Descriptors = props => {
               }}
               key={index + element.id}
             >
-              {getCardBody(element, 0, generalDescriptors)}
+              {getCardBody(element, 0, generalDescriptors, false)}
               {getNewField(element, element, "")}
             </div>
           );
@@ -231,6 +265,21 @@ const Descriptors = props => {
   };
 
   const getDescriptorGroups = (groupElement, index) => {
+    let lastAddedIsNewMandatory = false;
+    let lastAddedIsNewMandatoryCount = descriptorsByMetaType.descriptors.filter(
+      i => i.isNewlyAddedNonMandatory && i.name === groupElement.name
+    ).length;
+
+    let listofGroupElementItems = descriptorsByMetaType.descriptors.filter(i => i.name === groupElement.name);
+
+    let lastAddedIsNewMandatoryElement = listofGroupElementItems[lastAddedIsNewMandatoryCount];
+
+    if (lastAddedIsNewMandatoryElement && lastAddedIsNewMandatoryElement.id === groupElement.id) {
+      lastAddedIsNewMandatory = true;
+    } else if (lastAddedIsNewMandatoryCount === 0) {
+      lastAddedIsNewMandatory = true;
+    }
+
     const descriptorWithSubGroups = groupElement.descriptors.filter(i => i.group === true);
 
     if (descriptorWithSubGroups.length > 0 && !groupElement.descriptors[groupElement.descriptors.length - 1].group) {
@@ -251,7 +300,7 @@ const Descriptors = props => {
                 }}
                 key={descriptor.id.toString()}
               >
-                {getCardBody(descriptor, index, groupElement)}
+                {getCardBody(descriptor, index, groupElement, true)}
 
                 {descriptor.descriptors.map(field => {
                   return getNewField(field, groupElement, descriptor.id);
@@ -308,11 +357,15 @@ const Descriptors = props => {
               <span>{descriptorSubGroup(groupElement)}</span>
             )}
 
-            {groupElement.maxOccurrence > 1 && (
+            {groupElement.maxOccurrence > 1 && lastAddedIsNewMandatory && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
                 size="lg"
                 title="Add Descriptor Group"
+                style={{
+                  marginRight: "10px",
+                  marginBottom: "6px"
+                }}
                 onClick={() => props.handleAddDescriptorGroups(groupElement)}
               />
             )}
@@ -321,7 +374,7 @@ const Descriptors = props => {
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}
-                size="xs"
+                size="md"
                 title="Delete Descriptor"
                 className="delete-icon table-btn"
                 style={{
@@ -377,7 +430,6 @@ const Descriptors = props => {
   function getColumnWidth(element) {
     let count = 0;
     if (element.name === "Isotype") {
-      debugger;
     }
 
     if (element.units.length > 0) {
@@ -420,31 +472,31 @@ const Descriptors = props => {
     //   element.allowNotRecorded &&
     //   element.maxOccurrence > 1
     // ) {
-    //   debugger;
+    //
     //   return 3;
     // } else if (
     //   element.units.length > 0 &&
     //   !(element.allowNotApplicable || element.allowNotRecorded) &&
     //   !element.maxOccurrence > 1
     // ) {
-    //   debugger;
+    //
     //   return 6;
     // } else if (
     //   !element.units.length > 0 &&
     //   (element.allowNotApplicable || element.allowNotRecorded) &&
     //   !element.maxOccurrence > 1
     // ) {
-    //   debugger;
+    //
     //   return 7;
     // } else if (
     //   !element.units.length > 0 &&
     //   !(element.allowNotApplicable || element.allowNotRecorded) &&
     //   element.maxOccurrence > 1
     // ) {
-    //   debugger;
+    //
     //   return 7;
     // } else {
-    //   debugger;
+    //
     //   return 4;
     // }
   }

@@ -65,7 +65,7 @@ const MetaData = props => {
   }, [props.metaID]);
 
   const metaDetails = {
-    name: "",
+    name: "fwfw",
     selectedtemplate: "",
     description: "",
     sample: {}
@@ -301,54 +301,6 @@ const MetaData = props => {
     );
   };
 
-  const handleAddSubGroupDescriptors = (selectedDescriptorSubGroup, selectedSubGroupValue) => {
-    var sampleModelUpdate;
-    var selectedDescriptor;
-    var selectedDescriptorIndex;
-
-    if (isUpdate) {
-      selectedDescriptor = { ...sampleModel };
-    } else {
-      sampleModelUpdate = [...sampleModel];
-
-      var itemByType = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
-      var itemByTypeIndex = sampleModelUpdate.indexOf(itemByType);
-
-      selectedDescriptor = itemByType.descriptors.find(
-        i => i.name === selectedDescriptorSubGroup.name,
-        i => i.id === selectedDescriptorSubGroup.id
-      );
-      selectedDescriptorIndex = itemByType.descriptors.indexOf(selectedDescriptor);
-    }
-
-    const selectedSubGroup = selectedDescriptor.descriptors.find(i => i.name === selectedSubGroupValue);
-    const selectedSubGroupCount = selectedDescriptor.descriptors.filter(i => i.name === selectedSubGroupValue).length;
-
-    if (selectedSubGroup && selectedSubGroupCount < selectedSubGroup.maxOccurrence) {
-      const selectedGroupNewItemCount = selectedDescriptor.descriptors.filter(i => i.isNewlyAdded === true).length;
-
-      var newElement = JSON.parse(JSON.stringify(selectedSubGroup));
-      newElement.id = "newlyAddedItems" + selectedGroupNewItemCount + selectedSubGroup.name.trim();
-      newElement.isNewlyAdded = true;
-      newElement.group &&
-        newElement.descriptors.forEach(e => {
-          e.value = "";
-          e.id = "newlyAddedItems" + selectedGroupNewItemCount + e.id;
-        });
-
-      selectedDescriptor.descriptors.push(newElement);
-
-      if (isUpdate) {
-        setSampleModel(selectedDescriptor);
-      } else {
-        itemByType.descriptors[selectedDescriptorIndex] = selectedDescriptor;
-        sampleModelUpdate[itemByTypeIndex] = itemByType;
-        setSampleModel(sampleModelUpdate);
-      }
-    }
-    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
-  };
-
   const getDescriptorSubGroupOptions = selectedDescriptorSubGroup => {
     var sampleType;
     var options = [];
@@ -558,7 +510,7 @@ const MetaData = props => {
         selectedSample.descriptors.push(newElement);
       } else if (
         !existedElement.isNewlyAddedNonMandatory &&
-        !existedElement.mandatory &&
+        // !existedElement.mandatory &&
         newItemsCount < existedElement.maxOccurrence
       ) {
         if (props.metadataType === "Assay") {
@@ -585,8 +537,56 @@ const MetaData = props => {
     setSampleModel(sampleModelUpdate);
     //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
+
+  const handleAddSubGroupDescriptors = (selectedDescriptorSubGroup, selectedSubGroupValue) => {
+    var sampleModelUpdate;
+    var selectedDescriptor;
+    var selectedDescriptorIndex;
+
+    if (isUpdate) {
+      selectedDescriptor = { ...sampleModel };
+    } else {
+      sampleModelUpdate = [...sampleModel];
+
+      var itemByType = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
+      var itemByTypeIndex = sampleModelUpdate.indexOf(itemByType);
+
+      selectedDescriptor = itemByType.descriptors.find(
+        i => i.name === selectedDescriptorSubGroup.name,
+        i => i.id === selectedDescriptorSubGroup.id
+      );
+      selectedDescriptorIndex = itemByType.descriptors.indexOf(selectedDescriptor);
+    }
+
+    const selectedSubGroup = selectedDescriptor.descriptors.find(i => i.name === selectedSubGroupValue);
+    const selectedSubGroupCount = selectedDescriptor.descriptors.filter(i => i.name === selectedSubGroupValue).length;
+
+    if (selectedSubGroup && selectedSubGroupCount < selectedSubGroup.maxOccurrence) {
+      const selectedGroupNewItemCount = selectedDescriptor.descriptors.filter(i => i.isNewlyAdded === true).length;
+
+      var newElement = JSON.parse(JSON.stringify(selectedSubGroup));
+      newElement.id = "newlyAddedItems" + selectedGroupNewItemCount + selectedSubGroup.name.trim();
+      newElement.isNewlyAdded = true;
+      newElement.group &&
+        newElement.descriptors.forEach(e => {
+          e.value = "";
+          e.id = "newlyAddedItems" + selectedGroupNewItemCount + e.id;
+        });
+
+      selectedDescriptor.descriptors.push(newElement);
+
+      if (isUpdate) {
+        setSampleModel(selectedDescriptor);
+      } else {
+        itemByType.descriptors[selectedDescriptorIndex] = selectedDescriptor;
+        sampleModelUpdate[itemByTypeIndex] = itemByType;
+        setSampleModel(sampleModelUpdate);
+      }
+    }
+    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
+  };
+
   const handleAddDescriptorGroups = elementSelected => {
-    debugger;
     const errorMessage = "MaxOccurrence for the descriptor has been reached";
     var selectedSample;
     var sampleModelUpdate;
@@ -607,47 +607,15 @@ const MetaData = props => {
     ).length;
 
     maxCurrentOrder = selectedSample.descriptors[selectedSample.descriptors.length - 1].order;
-    var newElement;
 
     if (existedElement) {
-      if (
-        (existedElement.mandatory && newItemsCount + 1 < existedElement.maxOccurrence) ||
-        (!existedElement.mandatory && newItemsCount > 0 && newItemsCount < existedElement.maxOccurrence) ||
-        (!existedElement.mandatory &&
-          existedElement.isNewlyAddedNonMandatory &&
-          newItemsCount + 1 < existedElement.maxOccurrence)
-      ) {
-        if (existedElement.isNewlyAddedNonMandatory) {
-          newItemsCount = newItemsCount + 1;
-        }
-
-        newElement = JSON.parse(JSON.stringify(existedElement));
-        newElement.id = "newlyAddedItems" + newItemsCount + existedElement.name.trim();
-        newElement.isNewlyAdded = true;
-        newElement.isNewlyAddedNonMandatory = true;
-        newElement.order = maxCurrentOrder + 1;
-
-        newElement.group &&
-          newElement.descriptors.forEach(e => {
-            e.value = "";
-            e.id = "newlyAddedItems" + newItemsCount + e.id;
-          });
-
-        const selectedElementIndex = selectedSample.descriptors.indexOf(existedElement);
-        const totalSelectedElementsDuplicateCount = selectedElementIndex + newItemsCount;
-
-        let listUptoSelectedElements = selectedSample.descriptors.slice(0, totalSelectedElementsDuplicateCount);
-        let listOfRemainingsAfterSelectedElements = selectedSample.descriptors.slice(
-          totalSelectedElementsDuplicateCount
+      if (newItemsCount < existedElement.maxOccurrence) {
+        selectedSample.descriptors = creatNewDescriptorElement(
+          existedElement,
+          newItemsCount,
+          selectedSample,
+          maxCurrentOrder
         );
-
-        debugger;
-
-        listUptoSelectedElements.push(newElement);
-        const reArrangedList = listUptoSelectedElements.concat(listOfRemainingsAfterSelectedElements);
-
-        // selectedSample.descriptors.push(newElement);
-        selectedSample.descriptors = reArrangedList;
       } else if (
         !existedElement.isNewlyAddedNonMandatory &&
         !existedElement.mandatory &&
@@ -677,6 +645,84 @@ const MetaData = props => {
     setSampleModel(sampleModelUpdate);
     //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
+
+  const handleAddDescriptorSubGroups = (selectedGroup, selectedSubGrpDesc) => {
+    var sampleModelUpdate;
+
+    var selectedDescriptorIndex;
+    let maxCurrentOrder;
+
+    if (isUpdate) {
+      selectedGroup = { ...sampleModel };
+    } else {
+      sampleModelUpdate = [...sampleModel];
+
+      var itemByType = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
+      var itemByTypeIndex = sampleModelUpdate.indexOf(itemByType);
+    }
+
+    var existedElement = selectedGroup.descriptors.find(e => e.name === selectedSubGrpDesc.name && !e.isNewlyAdded);
+
+    var newItemsCount = selectedGroup.descriptors.filter(
+      e => e.isNewlyAdded === true && e.name === selectedSubGrpDesc.name
+    ).length;
+
+    maxCurrentOrder = selectedGroup.descriptors[selectedGroup.descriptors.length - 1].order;
+
+    if (newItemsCount < selectedSubGrpDesc.maxOccurrence) {
+      selectedGroup.descriptors = creatNewDescriptorElement(
+        existedElement,
+        newItemsCount,
+        selectedGroup,
+        maxCurrentOrder
+      );
+
+      if (isUpdate) {
+        setSampleModel(selectedGroup);
+      } else {
+        itemByType.descriptors[selectedDescriptorIndex] = selectedGroup;
+        sampleModelUpdate[itemByTypeIndex] = itemByType;
+        setSampleModel(sampleModelUpdate);
+      }
+    }
+    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
+  };
+
+  function creatNewDescriptorElement(existedElement, newItemsCount, selectedGroup, maxCurrentOrder) {
+    var newElement = JSON.parse(JSON.stringify(existedElement));
+
+    if (newItemsCount > 0) {
+      newElement.id = `newlyAddedItems${Math.floor(Math.random() * 1000000)}${existedElement.name.trim()}`;
+
+      let duplicateElements = selectedGroup.descriptors.filter(i => i.id === newElement.id);
+
+      if (duplicateElements.length > 0) {
+        newElement.id = `newlyAddedItems${Math.floor(Math.random() * 1000000)}${existedElement.name.trim()}`;
+      }
+    } else {
+      newElement.id = "newlyAddedItems" + newItemsCount + existedElement.name.trim();
+    }
+
+    newElement.isNewlyAdded = true;
+    newElement.isNewlyAddedNonMandatory = true;
+    newElement.order = maxCurrentOrder + 1;
+    newElement.group &&
+      newElement.descriptors.forEach(e => {
+        e.value = "";
+        e.id = "newlyAddedItems" + newItemsCount + e.id;
+      });
+
+    const selectedElementIndex = selectedGroup.descriptors.indexOf(existedElement);
+    const totalSelectedElementsDuplicateCount = selectedElementIndex + 1 + newItemsCount;
+
+    let listUptoSelectedElements = selectedGroup.descriptors.slice(0, totalSelectedElementsDuplicateCount);
+    let listOfRemainingsAfterSelectedElements = selectedGroup.descriptors.slice(totalSelectedElementsDuplicateCount);
+
+    listUptoSelectedElements.push(newElement);
+    const reArrangedList = listUptoSelectedElements.concat(listOfRemainingsAfterSelectedElements);
+
+    return reArrangedList;
+  }
 
   const sortAssayDescriptors = selectedMetadata => {
     selectedMetadata.descriptors.forEach(desc => {
@@ -847,6 +893,7 @@ const MetaData = props => {
           setLoadDataOnFirstNextInUpdate={setLoadDataOnFirstNextInUpdate}
           handleUnitSelectionChange={handleChangeMetaForm}
           handleAddDescriptorGroups={handleAddDescriptorGroups}
+          handleAddDescriptorSubGroups={handleAddDescriptorSubGroups}
         />
       </>
     );
@@ -1346,6 +1393,7 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
+      debugger;
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
           if (desc.group) {
