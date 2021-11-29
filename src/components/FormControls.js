@@ -13,8 +13,8 @@ const FormLabel = (props) => {
     className: PropTypes.string,
   };
   return (
-    <Form.Label column md={{ span: 3, offset: 2 }} className={props.className}>
-      {props.label}
+    <Form.Label className={props.className}>
+      <strong>{props.label}</strong>
     </Form.Label>
   );
 };

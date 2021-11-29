@@ -14,6 +14,7 @@ import { externalizeUrl } from "../utils/commonUtils";
 import { Button } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
+import { addCommas } from "../utils/commonUtils";
 
 const EditLinker = (props) => {
   useEffect(props.authCheckAgent, []);
@@ -138,7 +139,6 @@ const EditLinker = (props) => {
       </Helmet>
       <Container maxWidth="xl">
         <div className="page-container">
-          {/* <Title title="Edit Molecule" /> */}
           <PageHeading
             title="Edit Linker"
             subTitle="Update linker information. Name must be unique in your linker repository and can not be used for more than one linker."
@@ -155,18 +155,9 @@ const EditLinker = (props) => {
               )}
 
               <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
-                <Form.Group as={Row} controlId="name">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    xl={2}
-                    className="required-asterik text-xs-left text-md-left text-lg-right"
-                  >
-                    <strong>Name</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9}>
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Name" className="required-asterik" />
                     <Form.Control
                       type="text"
                       placeholder="name"
@@ -179,52 +170,42 @@ const EditLinker = (props) => {
                   </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="linkerType">
-                  <Form.Label column xs={5} md={4} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Linker Type</strong>
-                  </Form.Label>
-                  <Col xs={7} md={8} lg={9}>
+                <Form.Group as={Row} controlId="linkerType" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Linker Type" />
                     <Form.Control
                       type="text"
-                      plaintext
+                      // plaintext
                       readOnly
+                      disabled
                       defaultValue={linkerDetails.type.length > 0 ? getTypeLabel(linkerDetails.type) : ""}
                     />
                   </Col>
                 </Form.Group>
 
                 {(linkerDetails.sequence || linkerDetails.inChiSequence) && (
-                  <Form.Group as={Row} controlId="sequence">
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>{linkerDetails.sequence ? "Sequence" : "InchI"}</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
-                      <div className="text-overflow text-max-height">
+                  <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label={linkerDetails.sequence ? "Sequence" : "InChI"} />
+                      {/* <div className="text-overflow text-max-height">
                         {linkerDetails.sequence ? linkerDetails.sequence : linkerDetails.inChiSequence}
-                      </div>
-                      {/* <Form.Control
-                        rows={4}
+                      </div> */}
+                      <Form.Control
+                        // rows={4}
+                        rows={linkerDetails === "sequence" ? "10" : "4"}
                         as="textarea"
-                        plaintext
+                        // plaintext
                         readOnly
+                        disabled
                         value={linkerDetails.sequence ? linkerDetails.sequence : linkerDetails.inChiSequence}
-                      /> */}
+                      />
                     </Col>
                   </Form.Group>
                 )}
 
-                <Form.Group as={Row} controlId="comment">
-                  <Form.Label column xs={12} md={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Comment</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9}>
+                <Form.Group as={Row} controlId="comment" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Comment" />
                     <Form.Control
                       as="textarea"
                       rows={4}
@@ -234,36 +215,32 @@ const EditLinker = (props) => {
                       onChange={handleChange}
                       maxLength={2000}
                     />
-                    {linkerDetails.description && linkerDetails.description.length > 0 && (
-                      <div className="text-right text-muted">
-                        {linkerDetails.description && linkerDetails.description.length > 0
-                          ? linkerDetails.description.length
-                          : "0"}
-                        /2000
-                      </div>
-                    )}
+                    {/* {linkerDetails.description && linkerDetails.description.length > 0 && ( */}
+                    <div className="text-right text-muted">
+                      {linkerDetails.description && linkerDetails.description.length > 0
+                        ? linkerDetails.description.length
+                        : "0"}
+                      /2000
+                    </div>
+                    {/* )} */}
                   </Col>
                 </Form.Group>
 
                 {linkerDetails.pdbIds && linkerDetails.pdbIds.length > 0 && (
-                  <Form.Group as={Row} controlId="pdbIds">
-                    {/* <FormLabel label={"PDB Ids"} /> */}
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>PDB IDs</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
+                  <Form.Group as={Row} controlId="pdbIds" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label={"PDB IDs"} />
                       {linkerDetails.pdbIds.map((pdb) => {
                         return (
                           <>
                             <div>
-                              <Form.Control type="text" plaintext readOnly value={pdb} />
+                              <Form.Control
+                                type="text"
+                                // plaintext
+                                readOnly
+                                disabled
+                                value={pdb}
+                              />
                             </div>
                           </>
                         );
@@ -273,132 +250,94 @@ const EditLinker = (props) => {
                 )}
 
                 {linkerDetails.uniProtId && (
-                  <Form.Group as={Row} controlId="uniProtId">
-                    {/* <FormLabel label={"UniProt Id"} /> */}
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>UniProt ID</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
-                      <Form.Control type="text" plaintext readOnly value={linkerDetails.uniProtId} />
+                  <Form.Group as={Row} controlId="uniProtId" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label={"UniProt ID"} />
+                      <Form.Control
+                        type="text"
+                        // plaintext
+                        readOnly
+                        disabled
+                        value={linkerDetails.uniProtId}
+                      />
                     </Col>
                   </Form.Group>
                 )}
 
                 {linkerDetails.imageURL && (
-                  <Form.Group as={Row} controlId="imageURL">
-                    {/* <FormLabel label={"Image URL"} /> */}
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>Image URL</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
+                  <Form.Group as={Row} controlId="imageURL" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label={"Image URL"} />
                       <StructureImage imgUrl={linkerDetails.imageURL} />,
                     </Col>
                   </Form.Group>
                 )}
 
                 {linkerDetails.mass && (
-                  <Form.Group as={Row} controlId="mass">
-                    {/* <FormLabel label={"Mass"} /> */}
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>Monoisotopic Mass</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
-                      <Form.Control type="text" plaintext readOnly value={linkerDetails.mass} />
+                  <Form.Group as={Row} controlId="mass" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Monoisotopic Mass" />
+                      <Form.Control
+                        type="text"
+                        // plaintext
+                        readOnly
+                        disabled
+                        // value={linkerDetails.mass}
+                        value={addCommas(parseInt(linkerDetails.mass).toFixed(2)) + " Da"}
+                      />
                     </Col>
                   </Form.Group>
                 )}
 
                 {linkerDetails.iupacName && (
-                  <Form.Group as={Row} controlId="iupacName">
-                    {/* <FormLabel label={"IUPAC Name"} /> */}
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>IUPAC Name</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
-                      <Form.Control type="text" plaintext readOnly value={linkerDetails.iupacName} />
+                  <Form.Group as={Row} controlId="iupacName" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label={"IUPAC Name"} />
+                      <Form.Control
+                        type="text"
+                        // plaintext
+                        readOnly
+                        disabled
+                        value={linkerDetails.iupacName}
+                      />
                     </Col>
                   </Form.Group>
                 )}
 
                 {linkerDetails.smiles && (
-                  <Form.Group as={Row} controlId="smiles">
-                    {/* <FormLabel label={"Canonical SMILES"} /> */}
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>Canonical SMILES</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
-                      <Form.Control type="text" plaintext readOnly value={linkerDetails.smiles} />
+                  <Form.Group as={Row} controlId="smiles" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label={"Canonical SMILES"} />
+                      <Form.Control
+                        type="text"
+                        // plaintext
+                        readOnly
+                        disabled
+                        value={linkerDetails.smiles}
+                      />
                     </Col>
                   </Form.Group>
                 )}
 
                 {linkerDetails.isomericSmiles && (
-                  <Form.Group as={Row} controlId="smiles">
-                    {/* <FormLabel label={"Isomeric SMILES"} /> */}
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>Isomeric SMILES</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
-                      <Form.Control type="text" plaintext readOnly value={linkerDetails.isomericSmiles} />
+                  <Form.Group as={Row} controlId="smiles" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Isomeric SMILES" />
+                      <Form.Control
+                        type="text"
+                        // plaintext
+                        readOnly
+                        disabled
+                        value={linkerDetails.isomericSmiles}
+                      />
                     </Col>
                   </Form.Group>
                 )}
 
                 {linkerDetails.urls && linkerDetails.urls.length > 0 && (
-                  <Form.Group as={Row} controlId="urls">
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>URLs</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
+                  <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="URLs" />
                       {linkerDetails.urls.map((url, index) => {
                         return (
                           <div className="mb-2" key={index}>
@@ -413,18 +352,9 @@ const EditLinker = (props) => {
                 )}
 
                 {linkerDetails.publications && linkerDetails.publications.length > 0 && (
-                  <Form.Group as={Row} controlId="publications" className="mb-0">
-                    <Form.Label
-                      column
-                      xs={12}
-                      md={12}
-                      lg={3}
-                      xl={2}
-                      className="text-xs-left text-md-left text-lg-right"
-                    >
-                      <strong>Publication</strong>
-                    </Form.Label>
-                    <Col xs={12} md={12} lg={9}>
+                  <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3 mb-0">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Publication" />
                       {linkerDetails.publications && linkerDetails.publications.length > 0
                         ? linkerDetails.publications.map((pub) => {
                             return (
@@ -444,7 +374,6 @@ const EditLinker = (props) => {
                     commercial={source.commercial}
                     nonCommercial={source.nonCommercial}
                     isUpdate
-                    className="mb-0"
                   />
                 )}
 

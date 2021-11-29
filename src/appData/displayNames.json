@@ -35,7 +35,7 @@
     "PUBCHEM_ID": "PubChem ID",
     "STRUCTURE": "Structure Image",
     "INCHIKEY": "InChI Key",
-    "INCHI_SEQUENCE": "InchI",
+    "INCHI_SEQUENCE": "InChI Sequence",
     "CANONICAL_SMILES": "Canonical SMILES",
     "ISOMERIC_SMILES": "Isomeric SMILES",
     "SMALLMOLECULE_LINKER": "Small Molecule",

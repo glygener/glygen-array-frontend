@@ -1,7 +1,7 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
 import { Form, FormCheck, Row, Col } from "react-bootstrap";
-import { FormLabel, Feedback, Title } from "../components/FormControls";
+import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -11,17 +11,21 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  csvToArray,
-  isValidURL,
-  externalizeUrl,
-  isValidNumber,
-  numberLengthCheck,
-} from "../utils/commonUtils";
-import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import { Button, Step, StepLabel, Stepper, Typography, makeStyles } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
 import { ViewSourceInfo } from "../components/ViewSourceInfo";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Link } from "react-router-dom";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import { BlueRadio } from "../components/FormControls";
+import { Image } from "react-bootstrap";
+import plusIcon from "../images/icons/plus.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,7 +93,7 @@ const AddLipid = (props) => {
     canonicalSmiles: { label: "Canonical SMILES", type: "text" },
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comments", type: "textarea", length: 10000 },
+    comment: { label: "Comment", type: "textarea", length: 10000 },
   };
 
   const sourceSelection = (e) => {
@@ -164,7 +168,7 @@ const AddLipid = (props) => {
       if (count > 0) {
         return;
       }
-    } else if (e.currentTarget.innerText === "FINISH") {
+    } else if (e.currentTarget.innerText === "SUBMIT") {
       addLipid(e);
       return;
     }
@@ -227,14 +231,32 @@ const AddLipid = (props) => {
   };
 
   function getSteps() {
-    return [
-      "Select the Lipid Type",
-      "Type Specific Lipid Info",
-      "Generic Lipid Info",
-      "Review and Add",
-    ];
+    return ["Lipid Type", "Type Specific Information", "Generic Information", "Review and Add"];
   }
-
+  function getMoleculeType(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${displayNames.lipid.SEQUENCE}`;
+      case "Unknown":
+        return `${displayNames.lipid.UNKNOWN}`;
+      default:
+        return "Unknown typeIndex";
+    }
+  }
+  function getStepLabel(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return "Select the Lipid Type";
+      case 1:
+        return `Add Type Specific Lipid Information (${getMoleculeType(lipid.selectedLipid)})`;
+      case 2:
+        return `Add Generic Lipid Information (${getMoleculeType(lipid.selectedLipid)})`;
+      case 3:
+        return "Review and Add Lipid to Repository";
+      default:
+        return "Unknown stepIndex";
+    }
+  }
   function populateLinkerDetails(pubChemId) {
     setShowLoading(true);
     setIsWscalldone(false);
@@ -325,28 +347,27 @@ const AddLipid = (props) => {
                       wordBreak: "break-all",
                     }}
                   >
-                    <Link
-                      style={{ fontSize: "0.9em" }}
-                      href={externalizeUrl(url)}
-                      target="_blank"
-                      rel="external noopener noreferrer"
-                    >
+                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                       {url}
-                    </Link>
+                    </a>
                   </Col>
                   {enableDelete && (
-                    <Col style={{ marginTop: "2px", textAlign: "center" }} md={2}>
-                      <FontAwesomeIcon
-                        icon={["far", "trash-alt"]}
-                        size="xs"
-                        title="Delete Url"
-                        className="caution-color table-btn"
-                        onClick={() => {
-                          const listUrls = lipid.urls;
-                          listUrls.splice(index, 1);
-                          setLipid({ urls: listUrls });
-                        }}
-                      />
+                    <Col className="pb-2 text-center" md={2}>
+                      <LineTooltip text="Delete URL">
+                        <Link>
+                          <FontAwesomeIcon
+                            icon={["far", "trash-alt"]}
+                            size="lg"
+                            alt="Delete URL"
+                            className="caution-color table-btn"
+                            onClick={() => {
+                              const listUrls = lipid.urls;
+                              listUrls.splice(index, 1);
+                              setLipid({ urls: listUrls });
+                            }}
+                          />
+                        </Link>
+                      </LineTooltip>
                     </Col>
                   )}
                 </Row>
@@ -369,15 +390,7 @@ const AddLipid = (props) => {
     let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall(
-        "getpublication",
-        "GET",
-        [newPubMedId],
-        true,
-        null,
-        addPublicationSuccess,
-        addPublicationError
-      );
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
     } else {
       setNewPubMedId("");
     }
@@ -407,41 +420,40 @@ const AddLipid = (props) => {
   const getStep2 = () => {
     return (
       <>
-        <Form.Group as={Row} controlId={"inChiKey"}>
-          <FormLabel label={displayNames.linker.INCHIKEY} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId={"inChiKey"}>
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.INCHIKEY} />
             <Form.Control
-              type={"text"}
-              name={"inChiKey"}
-              placeholder={displayNames.linker.INCHIKEY}
+              type="text"
+              name="inChiKey"
+              placeholder="Enter InChI Key"
               value={lipid.inChiKey}
               onChange={handleChange}
               disabled={disablePubChemFields}
               maxLength={27}
             />
             <Feedback message={`${displayNames.linker.INCHIKEY} is Invalid`} />
+
+            {lipid.inChiKey !== "" && !disablePubChemFields && (
+              <Button
+                variant="contained"
+                onClick={() => populateLinkerDetails(encodeURIComponent(lipid.inChiKey && lipid.inChiKey.trim()))}
+                className="gg-btn-blue-reg btn-to-lower mt-3"
+              >
+                Insert Information from PubChem
+              </Button>
+            )}
           </Col>
-          {lipid.inChiKey !== "" && !disablePubChemFields && (
-            <Button
-              variant="contained"
-              onClick={() =>
-                populateLinkerDetails(encodeURIComponent(lipid.inChiKey && lipid.inChiKey.trim()))
-              }
-              className="get-btn "
-            >
-              Get Details from PubChem
-            </Button>
-          )}
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"inChiSequence"}>
-          <FormLabel label={displayNames.linker.INCHI_SEQUENCE} className={"required-asterik"} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId="inChiSequence">
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.INCHI_SEQUENCE} className="required-asterik" />
             <Form.Control
-              as={"textarea"}
+              as="textarea"
               rows="4"
-              name={"inChiSequence"}
-              placeholder={displayNames.linker.INCHI_SEQUENCE}
+              name="inChiSequence"
+              placeholder="Enter InChI Sequence"
               value={lipid.inChiSequence}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -450,22 +462,20 @@ const AddLipid = (props) => {
               required
             />
             <div className="text-right text-muted">
-              {lipid.inChiSequence && lipid.inChiSequence.length > 0
-                ? lipid.inChiSequence.length
-                : "0"}
+              {lipid.inChiSequence && lipid.inChiSequence.length > 0 ? lipid.inChiSequence.length : "0"}
               /10000
             </div>
             <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"iupacName"}>
-          <FormLabel label={"IUPAC Name"} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId={"iupacName"}>
+          <Col xs={12} lg={9}>
+            <FormLabel label="IUPAC Name" />
             <Form.Control
-              type={"text"}
-              name={"iupacName"}
-              placeholder={"iupacName"}
+              type="text"
+              name="iupacName"
+              placeholder="Enter IUPAC Name"
               value={lipid.iupacName}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -473,13 +483,13 @@ const AddLipid = (props) => {
             />
           </Col>
         </Form.Group>
-        <Form.Group as={Row} controlId={"Mass"}>
-          <FormLabel label={"Mass"} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId={"Mass"}>
+          <Col xs={12} lg={9}>
+            <FormLabel label="Monoisotopic Mass" />
             <Form.Control
-              type={"number"}
-              name={"mass"}
-              placeholder={"Mass"}
+              type="number"
+              name="mass"
+              placeholder="Enter Monoisotopic Mass"
               value={lipid.mass}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -490,13 +500,13 @@ const AddLipid = (props) => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"Molecular Formula"}>
-          <FormLabel label={"Molecular Formula"} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId="Molecular Formula">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Molecular Formula" />
             <Form.Control
-              type={"text"}
-              name={"molecularFormula"}
-              placeholder={"molecular formula"}
+              type="text"
+              name="molecularFormula"
+              placeholder="Enter Molecular Formula"
               value={lipid.molecularFormula}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -505,13 +515,13 @@ const AddLipid = (props) => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"isomericSmiles"}>
-          <FormLabel label={displayNames.linker.ISOMERIC_SMILES} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId={"isomericSmiles"}>
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.ISOMERIC_SMILES} />
             <Form.Control
-              type={"text"}
-              name={"isomericSmiles"}
-              placeholder={"isomeric smiles"}
+              type="text"
+              name="isomericSmiles"
+              placeholder="Enter isomeric SMILES"
               value={lipid.isomericSmiles}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -520,32 +530,31 @@ const AddLipid = (props) => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"canonicalSmiles"}>
-          <FormLabel label={displayNames.linker.CANONICAL_SMILES} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId={"canonicalSmiles"}>
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.CANONICAL_SMILES} />
             <Form.Control
-              type={"text"}
-              name={"canonicalSmiles"}
-              placeholder={"canonical smiles"}
+              type="text"
+              name="canonicalSmiles"
+              placeholder="Enter Canonical SMILES"
               value={lipid.canonicalSmiles}
               onChange={handleChange}
               disabled={disablePubChemFields}
               maxLength={10000}
             />
+
+            {lipid.canonicalSmiles !== "" && !disablePubChemFields && (
+              <Button
+                variant="contained"
+                onClick={() =>
+                  populateLinkerDetails(encodeURIComponent(lipid.canonicalSmiles && lipid.canonicalSmiles.trim()))
+                }
+                className="gg-btn-blue-reg btn-to-lower mt-3"
+              >
+                Insert Information from PubChem
+              </Button>
+            )}
           </Col>
-          {lipid.canonicalSmiles !== "" && !disablePubChemFields && (
-            <Button
-              variant="contained"
-              onClick={() =>
-                populateLinkerDetails(
-                  encodeURIComponent(lipid.canonicalSmiles && lipid.canonicalSmiles.trim())
-                )
-              }
-              className="get-btn "
-            >
-              Get Details from PubChem
-            </Button>
-          )}
         </Form.Group>
       </>
     );
@@ -555,89 +564,75 @@ const AddLipid = (props) => {
     switch (stepIndex) {
       case 0:
         return (
-          <Form className="radioform">
-            <FormCheck className="line-break-1">
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="SequenceDefined"
-                  onChange={handleSelect}
-                  checked={lipid.selectedLipid === "SequenceDefined"}
-                />
-                {displayNames.lipid.SEQUENCE}
-              </FormCheck.Label>
-            </FormCheck>
-
-            <FormCheck>
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="Unknown"
-                  onChange={handleSelect}
-                  checked={lipid.selectedLipid === "Unknown"}
-                />
-                {displayNames.lipid.UNKNOWN}
-              </FormCheck.Label>
-            </FormCheck>
+          <Form>
+            <Row className="gg-align-center">
+              <Col sm="auto">
+                <RadioGroup name="molecule-type" onChange={handleSelect} value={lipid.selectedLipid}>
+                  {/* SEQUENCE_DEFINED */}
+                  <FormControlLabel
+                    value="SequenceDefined"
+                    control={<BlueRadio />}
+                    label={displayNames.lipid.SEQUENCE}
+                  />
+                  {/* UNKNOWN */}
+                  <FormControlLabel value="Unknown" control={<BlueRadio />} label={displayNames.lipid.UNKNOWN} />
+                </RadioGroup>
+              </Col>
+            </Row>
           </Form>
         );
       case 1:
         if (activeStep === 1 && lipid.selectedLipid !== "Unknown") {
           return (
             <>
-              <Form className="radioform1">
-                <>
-                  <Form.Group as={Row} controlId="pubChemId">
-                    <FormLabel label="PubChem Compound CID" />
-                    <Col md={4}>
-                      <Form.Control
-                        type="number"
-                        name="pubChemId"
-                        placeholder="PubChem Compound CID"
-                        value={lipid.pubChemId}
-                        onChange={handleChange}
-                        disabled={disablePubChemFields}
-                        onKeyDown={(e) => {
-                          if (e.key.length === 1) {
-                            if (e.key !== "v" && e.key !== "V") {
-                              isValidNumber(e);
-                            }
+              <Form>
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId="pubChemId">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="PubChem Compound CID"></FormLabel>
+                    <Form.Control
+                      type="number"
+                      name="pubChemId"
+                      placeholder="Enter PubChem Compound CID"
+                      value={lipid.pubChemId}
+                      onChange={handleChange}
+                      disabled={disablePubChemFields}
+                      onKeyDown={(e) => {
+                        if (e.key.length === 1) {
+                          if (e.key !== "v" && e.key !== "V") {
+                            isValidNumber(e);
                           }
-                        }}
-                        maxLength={12}
-                        onInput={(e) => {
-                          numberLengthCheck(e);
-                        }}
-                      />
-                    </Col>
+                        }
+                      }}
+                      maxLength={12}
+                      onInput={(e) => {
+                        numberLengthCheck(e);
+                      }}
+                    />
+
                     {lipid.pubChemId !== "" && !disablePubChemFields && (
                       <Button
                         variant="contained"
-                        onClick={() =>
-                          populateLinkerDetails(encodeURIComponent(lipid.pubChemId.trim()))
-                        }
-                        className="get-btn "
+                        onClick={() => populateLinkerDetails(encodeURIComponent(lipid.pubChemId.trim()))}
+                        className="gg-btn-blue-reg btn-to-lower mt-3"
                       >
-                        Get Details from PubChem
+                        Insert Information from PubChem
                       </Button>
                     )}
-                  </Form.Group>
+                  </Col>
+                </Form.Group>
 
-                  {getStep2()}
-
-                  <Form.Group as={Row}>
-                    <Col md={{ span: 2, offset: 5 }}>
-                      <Button
-                        variant="contained"
-                        disabled={!disableReset}
-                        onClick={clearPubChemFields}
-                        className="stepper-button"
-                      >
-                        Reset
-                      </Button>
-                    </Col>
-                  </Form.Group>
-                </>
+                {getStep2()}
+                {/* Bottom Reset / Clear fields  Button */}
+                <div className="text-center mb-2 mt-2">
+                  <Button
+                    variant="contained"
+                    disabled={!disableReset}
+                    onClick={clearPubChemFields}
+                    className="gg-btn-blue btn-to-lower"
+                  >
+                    Clear Fields
+                  </Button>
+                </div>
               </Form>
             </>
           );
@@ -646,31 +641,31 @@ const AddLipid = (props) => {
         if (activeStep === 2) {
           return (
             <>
-              <Form noValidate className="radioform2" validated={validate && validatedCommNonComm}>
-                <Form.Group as={Row} controlId="name">
-                  <FormLabel label="Name" className="required-asterik" />
-                  <Col md={4}>
+              <Form noValidate validated={validate && validatedCommNonComm}>
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Name" className="required-asterik" />
                     <Form.Control
                       type="text"
                       name="name"
-                      placeholder="name"
+                      placeholder="Enter Name"
                       value={lipid.name}
                       onChange={handleChange}
                       isInvalid={validate}
                       maxLength={100}
                       required
                     />
-                    <Feedback message={"Name is required"} />
+                    <Feedback message="Name is required" />
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="comments">
-                  <FormLabel label="Comments" />
-                  <Col md={4}>
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId="comments">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Comment" />
                     <Form.Control
                       as="textarea"
                       rows={4}
                       name="comment"
-                      placeholder="Comments"
+                      placeholder="Enter Comment"
                       value={lipid.comment}
                       onChange={handleChange}
                       maxLength={2000}
@@ -681,47 +676,9 @@ const AddLipid = (props) => {
                     </div>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="publications">
-                  <FormLabel label="Publications" />
-                  <Col md={4}>
-                    {lipid.publications.map((pub, index) => {
-                      return (
-                        <PublicationCard
-                          key={index}
-                          {...pub}
-                          enableDelete
-                          deletePublication={deletePublication}
-                        />
-                      );
-                    })}
-                    <Row>
-                      <Col md={10}>
-                        <Form.Control
-                          type="number"
-                          name="publication"
-                          placeholder="Enter a Pubmed ID and click +"
-                          value={newPubMedId}
-                          onChange={(e) => setNewPubMedId(e.target.value)}
-                          maxLength={100}
-                          onKeyDown={(e) => {
-                            isValidNumber(e);
-                          }}
-                          onInput={(e) => {
-                            numberLengthCheck(e);
-                          }}
-                        />
-                      </Col>
-                      <Col md={1}>
-                        <Button variant="contained" onClick={addPublication} className="add-button">
-                          +
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="urls">
-                  <FormLabel label="URLs" />
-                  <Col md={4}>
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId="urls">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="URLs" />
                     {urlWidget(true)}
                     <Row>
                       <Col md={10}>
@@ -740,52 +697,76 @@ const AddLipid = (props) => {
                         <Feedback message="Please enter a valid and unique URL." />
                       </Col>
                       <Col md={1}>
-                        <Button variant="contained" onClick={addURL} className="add-button">
-                          +
+                        <Button onClick={addURL} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add URL">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
                         </Button>
                       </Col>
                     </Row>
                   </Col>
                 </Form.Group>
-                <Row>
-                  <FormLabel label="Source" />
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId="publications">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Publications" />
+                    {lipid.publications.map((pub, index) => {
+                      return (
+                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
+                      );
+                    })}
+                    <Row>
+                      <Col md={10}>
+                        <Form.Control
+                          // type="number"
+                          name="publication"
+                          placeholder="Enter a Pubmed ID and click +"
+                          value={newPubMedId}
+                          onChange={(e) => {
+                            const _value = e.target.value;
+                            if (_value && !/^[0-9]+$/.test(_value)) {
+                              return;
+                            }
+                            setNewPubMedId(_value);
+                            numberLengthCheck(e);
+                          }}
+                          // onChange={(e) => setNewPubMedId(e.target.value)}
+                          maxLength={100}
+                          // onKeyDown={(e) => {
+                          //   isValidNumber(e);
+                          // }}
+                          // onInput={(e) => {
+                          //   numberLengthCheck(e);
+                          // }}
+                        />
+                      </Col>
+                      <Col md={1}>
+                        <Button onClick={addPublication} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add Publication">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Form.Group>
 
-                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"commercial"}
-                        label={"Commercial"}
-                        onChange={sourceSelection}
-                        checked={lipid.source === "commercial"}
-                      />
-                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp; &nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        label={"Non Commercial"}
-                        value={"nonCommercial"}
-                        onChange={sourceSelection}
-                        checked={lipid.source === "nonCommercial"}
-                      />
-                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"notSpecified"}
-                        label={"Not Specified"}
-                        onChange={sourceSelection}
-                        checked={lipid.source === "notSpecified"}
-                      />
-                      {"Not Specified"}
-                    </Form.Check.Label>
+                <Row className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Source" />
+                    <RadioGroup row name="molecule-type" onChange={sourceSelection} value={lipid.source}>
+                      {/* Commercial */}
+                      <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
+                      {/* Non Commercial */}
+                      <FormControlLabel value="nonCommercial" control={<BlueRadio />} label="Non Commercial" />
+                      {/* Not Specified */}
+                      <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
+                    </RadioGroup>
                   </Col>
                 </Row>
-                &nbsp;&nbsp;&nbsp;
                 {lipid.source === "commercial" ? (
                   <Source
                     isCommercial
@@ -809,7 +790,7 @@ const AddLipid = (props) => {
         }
       case 3:
         return (
-          <Form className="radioform2">
+          <Form>
             {Object.keys(reviewFields).map((key) =>
               (key === "pubChemId" ||
                 key === "inChiKey" ||
@@ -821,12 +802,12 @@ const AddLipid = (props) => {
               lipid.selectedLipid === "Unknown" ? (
                 ""
               ) : (
-                <Form.Group as={Row} controlId={key} key={key}>
-                  <FormLabel label={reviewFields[key].label} />
-                  <Col md={6}>
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId={key} key={key}>
+                  <Col xs={12} lg={9}>
+                    <FormLabel label={reviewFields[key].label} />
                     <Form.Control
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
-                      rows={key === "sequence" ? "15" : "4"}
+                      rows={key === "sequence" ? "10" : "4"}
                       name={key}
                       placeholder={""}
                       value={lipid[key]}
@@ -839,9 +820,9 @@ const AddLipid = (props) => {
             )}
 
             {lipid.publications && lipid.publications.length > 0 && (
-              <Form.Group as={Row} controlId="publications">
-                <FormLabel label="Publications" />
-                <Col md={4}>
+              <Form.Group as={Row} className="gg-align-center mb-3" controlId="publications">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Publications" />
                   {lipid.publications && lipid.publications.length > 0
                     ? lipid.publications.map((pub) => {
                         return (
@@ -856,37 +837,23 @@ const AddLipid = (props) => {
             )}
 
             {lipid.urls && lipid.urls.length > 0 && (
-              <Form.Group as={Row} controlId="urls">
-                <FormLabel label="Urls" />
-                <Col md={4}>
-                  {lipid.urls && lipid.urls.length > 0 ? (
-                    lipid.urls.map((url, index) => {
-                      return (
-                        <li style={{ marginTop: "8px" }} key={index}>
-                          <Link
-                            style={{ fontSize: "0.9em" }}
-                            href={externalizeUrl(url)}
-                            target="_blank"
-                            rel="external noopener noreferrer"
-                          >
-                            {url}
-                          </Link>
-                          <br />
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <div style={{ marginTop: "8px" }} />
-                  )}
+              <Form.Group as={Row} className="gg-align-center mb-3" controlId="urls">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Urls" />
+                  {lipid.urls.map((url, index) => {
+                    return (
+                      <div key={index}>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </div>
+                    );
+                  })}
                 </Col>
               </Form.Group>
             )}
 
-            <ViewSourceInfo
-              source={lipid.source}
-              commercial={lipid.commercial}
-              nonCommercial={lipid.nonCommercial}
-            />
+            <ViewSourceInfo source={lipid.source} commercial={lipid.commercial} nonCommercial={lipid.nonCommercial} />
           </Form>
         );
 
@@ -897,12 +864,15 @@ const AddLipid = (props) => {
 
   function getNavigationButtons(className) {
     return (
-      <div className={className}>
-        <Button disabled={activeStep === 0} onClick={handleBack} className="stepper-button">
+      <div className="text-center mb-2">
+        <Link to="/lipids">
+          <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Lipids</Button>
+        </Link>
+        <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
         </Button>
-        <Button variant="contained" className="stepper-button" onClick={handleNext}>
-          {activeStep === steps.length - 1 ? "Finish" : "Next"}
+        <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
+          {activeStep === steps.length - 1 ? "Submit" : "Next"}
         </Button>
       </div>
     );
@@ -923,7 +893,7 @@ const AddLipid = (props) => {
       source.batchId = lipid.commercial.batchId;
     } else if (lipid.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
-      source.batchId = lipid.commercial.batchId;
+      source.batchId = lipid.nonCommercial.batchId;
       source.providerLab = lipid.nonCommercial.providerLab;
       source.method = lipid.nonCommercial.method;
       source.comment = lipid.nonCommercial.sourceComment;
@@ -967,9 +937,7 @@ const AddLipid = (props) => {
   }
 
   const isStepSkipped = (step) => {
-    return (
-      lipid.selectedLipid === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3)
-    );
+    return lipid.selectedLipid === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
   };
 
   return (
@@ -978,43 +946,45 @@ const AddLipid = (props) => {
         <title>{head.addLipid.title}</title>
         {getMeta(head.addLipid)}
       </Helmet>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Add Lipid to Repository" subTitle="Please provide the information for the new lipid." />
+          <Card>
+            <Card.Body>
+              <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  if (isStepSkipped(index)) {
+                    labelProps.optional = <Typography variant="caption">Unknown Lipid</Typography>;
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              {getNavigationButtons()}
+              <h5 className="text-center gg-blue mt-4">{getStepLabel(activeStep)}</h5>
 
-      <div className="page-container">
-        <Title title="Add Lipid to Repository" />
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const stepProps = {};
-            const labelProps = {};
-            if (isStepSkipped(index)) {
-              labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
-              stepProps.completed = false;
-            }
-            return (
-              <Step key={label} {...stepProps}>
-                <StepLabel {...labelProps}>{label}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-        {getNavigationButtons("button - div text-center")}
-        &nbsp; &nbsp;
-        {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="linkers"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
-          />
-        )}
-        <div>
-          <div>
-            <Typography className={classes.instructions} component={"span"} variant={"body2"}>
-              {getStepContent(activeStep, validate)}
-            </Typography>
-            {getNavigationButtons("button-div line-break-1 text-center")}
-          </div>
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="linkers"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                />
+              )}
+              <div className="mt-4 mb-4">
+                <span>{getStepContent(activeStep, validate)}</span>
+                {getNavigationButtons()}
+              </div>
+            </Card.Body>
+          </Card>
         </div>
-      </div>
+      </Container>
       <Loading show={showLoading} />
     </>
   );
