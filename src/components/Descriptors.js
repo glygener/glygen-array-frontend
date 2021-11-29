@@ -353,9 +353,9 @@ const Descriptors = props => {
           </span>
 
           <div style={{ float: "right" }} key={groupElement.id}>
-            {groupElement.isNewlyAddedNonMandatory && addSubGroupValidation(groupElement) && (
+            {/* {groupElement.isNewlyAddedNonMandatory && addSubGroupValidation(groupElement) && (
               <span>{descriptorSubGroup(groupElement)}</span>
-            )}
+            )} */}
 
             {groupElement.maxOccurrence > 1 && lastAddedIsNewMandatory && (
               <FontAwesomeIcon
