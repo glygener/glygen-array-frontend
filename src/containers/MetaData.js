@@ -65,7 +65,7 @@ const MetaData = props => {
   }, [props.metaID]);
 
   const metaDetails = {
-    name: "fwfw",
+    name: "",
     selectedtemplate: "",
     description: "",
     sample: {}
