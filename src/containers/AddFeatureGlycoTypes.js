@@ -50,23 +50,7 @@ const AddFeatureGlycoTypes = props => {
   function getStepContent(activeStep) {
     switch (activeStep) {
       case 0:
-        return (
-          <>
-            {/* <Form.Group as={Row} controlId="position" style={{ marginTop: "5%", marginBottom: "5%" }}>
-              <FormLabel label="Position" />
-              <Col md={4}>
-                <Form.Control
-                  type="text"
-                  name="position"
-                  placeholder="Enter position"
-                  value={glycoFeatureTypes.position}
-                  onChange={e => setGlycoFeatureTypes({ position: e.target.value })}
-                />
-              </Col>
-            </Form.Group> */}
-            {props.getGlycanTabletoSelect(true)}
-          </>
-        );
+        return <>{props.getGlycanTabletoSelect(true)}</>;
 
       case 1:
         return props.getTableforLinkers(true);

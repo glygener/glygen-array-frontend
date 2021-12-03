@@ -152,8 +152,29 @@ const MetaData = props => {
     let id = "";
     let name = "";
     let value = "";
+    let descriptor;
+    let flag;
 
-    if (dateElementId) {
+    if (dateElementId === "checkBox") {
+      descriptor = descriptorDetails.descriptors.find(i => i.id === subGroupId);
+
+      if (!descriptor) {
+        descriptor = descriptorDetails.descriptors.map(subDesc => {
+          let d;
+
+          if (subDesc.group) {
+            d = subDesc.descriptors.find(e => e.id === subGroupId);
+            if (d) {
+              return d;
+            }
+          }
+        });
+      } else {
+        id = subGroupId;
+        name = descriptor.name;
+        flag = e.target.checked;
+      }
+    } else if (dateElementId) {
       let dateField = "";
 
       if (descriptorDetails.group && !subGroupId) {
@@ -205,7 +226,9 @@ const MetaData = props => {
     const descriptorGroupEditedIndex = selectedSample.descriptors.indexOf(descriptorDetails);
 
     if (descriptorDetails.group) {
-      const descriptor = descriptorDetails.descriptors.find(i => i.id === id);
+      if (!descriptor) {
+        descriptor = descriptorDetails.descriptors.find(i => i.id === id);
+      }
 
       if (!descriptor) {
         var editedSubGroup = "";
@@ -218,6 +241,8 @@ const MetaData = props => {
           editedSubGroupIndex = subGroupDescriptors.descriptors.indexOf(editedSubGroup);
           if (name === "unitlevel") {
             editedSubGroup.unit = value;
+          } else if (dateElementId === "checkBox") {
+            editedSubGroup.disabled = flag;
           } else {
             editedSubGroup.value = value;
           }
@@ -226,6 +251,8 @@ const MetaData = props => {
           editedSubGroup = subGroupDescriptors.find(i => i.id === id);
           if (name === "unitlevel") {
             editedSubGroup.unit = value;
+          } else if (dateElementId === "checkBox") {
+            editedSubGroup.disabled = flag;
           } else {
             editedSubGroup.value = value;
           }
@@ -236,6 +263,8 @@ const MetaData = props => {
         const editedDesc = editedDescGroup.find(i => i.id === id);
         if (name === "unitlevel") {
           editedDesc.unit = value;
+        } else if (dateElementId === "checkBox") {
+          editedDesc.disabled = flag;
         } else {
           editedDesc.value = value;
         }
@@ -243,6 +272,8 @@ const MetaData = props => {
     } else {
       if (name === "unitlevel") {
         descriptorDetails.unit = value;
+      } else if (dateElementId === "checkBox") {
+        descriptorDetails.disabled = flag;
       } else {
         descriptorDetails.value = value;
       }
@@ -292,7 +323,7 @@ const MetaData = props => {
                 icon={["fas", "plus"]}
                 size="lg"
                 title="Add Sub Group Descriptors"
-                onClick={() => handleAddSubGroupDescriptors(selectedDescriptorSubGroup, addDescriptorSubGroupSelection)}
+                // onClick={() => handleAddSubGroupDescriptors(selectedDescriptorSubGroup, addDescriptorSubGroupSelection)}
               />
             )}
           </Form.Group>
@@ -365,31 +396,68 @@ const MetaData = props => {
     );
   };
 
-  // const getAddons = () => {
-  //   const popover = (
-  //     <Popover
-  //       id="popover-basic"
-  //       style={{
-  //         width: "30%",
-  //         paddingTop: 0
-  //       }}
-  //     >
-  //       <Popover.Title as="h3">Descriptors</Popover.Title>
-  //       <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
-  //     </Popover>
-  //   );
+  const getAddons = () => {
+    const popover = (
+      <Popover
+        id="popover-basic"
+        style={{
+          width: "30%",
+          paddingTop: 0
+        }}
+      >
+        <Popover.Title as="h3">Descriptors</Popover.Title>
+        <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
+      </Popover>
+    );
 
-  //   return (
-  //     <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
-  //       <FontAwesomeIcon
-  //         className={"add-subGroup-button"}
-  //         icon={["fas", "cog"]}
-  //         size="xs"
-  //         title="Add Sub Group Descriptors"
-  //       />
-  //     </OverlayTrigger>
-  //   );
-  // };
+    return (
+      <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
+        <FontAwesomeIcon
+          className={"add-subGroup-button"}
+          icon={["fas", "cog"]}
+          size="xs"
+          title="Add Sub Group Descriptors"
+        />
+      </OverlayTrigger>
+    );
+  };
+
+  const addDescriptorsandDescriptorGroups = () => {
+    let sampleModelUpdate;
+    let selectedSample;
+    let name;
+
+    return (
+      <>
+        <Form.Group as={Row} controlId={""}>
+          <Col md={10}>
+            <Form.Control
+              as="select"
+              value={addDescriptorSelection}
+              onChange={e => {
+                setAddDescriptorSelection(e.target.value);
+                name = e.target.value;
+                if (e.target.value !== "Select" && e.target.value !== "select") {
+                  if (isUpdate || props.isCopy) {
+                    sampleModelUpdate = { ...sampleModel };
+                    selectedSample = sampleModelUpdate;
+                  } else {
+                    sampleModelUpdate = [...sampleModel];
+                    selectedSample = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
+                  }
+
+                  var existedElement = selectedSample.descriptors.find(e => e.name === name && !e.isNewlyAdded);
+                  handleAddDescriptorGroups(existedElement);
+                }
+              }}
+            >
+              {getDescriptorOptions()}
+            </Form.Control>
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
 
   const handleDescriptorSubGroupSelectChange = e => {
     const value = e.target.value;
@@ -437,155 +505,6 @@ const MetaData = props => {
     return options;
   };
 
-  const addDescriptorsandDescriptorGroups = () => {
-    return (
-      <>
-        <Form.Group as={Row} controlId={""}>
-          <Col md={10}>
-            <Form.Control
-              as="select"
-              value={addDescriptorSelection}
-              onChange={e => {
-                setAddDescriptorSelection(e.target.value);
-                if (e.target.value !== "Select" && e.target.value !== "select") {
-                  handleAddDescriptors();
-                }
-              }}
-            >
-              {getDescriptorOptions()}
-            </Form.Control>
-          </Col>
-        </Form.Group>
-      </>
-    );
-  };
-
-  const handleAddDescriptors = () => {
-    const descriptorValue = addDescriptorSelection;
-    const errorMessage = "MaxOccurrence for the descriptor has been reached";
-    var selectedSample;
-    var sampleModelUpdate;
-    let maxCurrentOrder;
-
-    if (isUpdate || props.isCopy) {
-      sampleModelUpdate = { ...sampleModel };
-      selectedSample = sampleModelUpdate;
-    } else {
-      sampleModelUpdate = [...sampleModel];
-      selectedSample = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
-    }
-
-    var existedElement = selectedSample.descriptors.find(e => e.name === descriptorValue && !e.isNewlyAdded);
-
-    var newItemsCount = selectedSample.descriptors.filter(e => e.isNewlyAdded === true && e.name === descriptorValue)
-      .length;
-
-    maxCurrentOrder = selectedSample.descriptors[selectedSample.descriptors.length - 1].order;
-    var newElement;
-
-    if (existedElement) {
-      if (
-        (existedElement.mandatory && newItemsCount + 1 < existedElement.maxOccurrence) ||
-        (!existedElement.mandatory && newItemsCount > 0 && newItemsCount < existedElement.maxOccurrence) ||
-        (!existedElement.mandatory &&
-          existedElement.isNewlyAddedNonMandatory &&
-          newItemsCount + 1 < existedElement.maxOccurrence)
-      ) {
-        if (existedElement.isNewlyAddedNonMandatory) {
-          newItemsCount = newItemsCount + 1;
-        }
-
-        newElement = JSON.parse(JSON.stringify(existedElement));
-        newElement.id = "newlyAddedItems" + newItemsCount + existedElement.name.trim();
-        newElement.isNewlyAdded = true;
-        newElement.isNewlyAddedNonMandatory = true;
-        newElement.order = maxCurrentOrder + 1;
-
-        newElement.group &&
-          newElement.descriptors.forEach(e => {
-            e.value = "";
-            e.id = "newlyAddedItems" + newItemsCount + e.id;
-          });
-
-        selectedSample.descriptors.push(newElement);
-      } else if (
-        !existedElement.isNewlyAddedNonMandatory &&
-        // !existedElement.mandatory &&
-        newItemsCount < existedElement.maxOccurrence
-      ) {
-        if (props.metadataType === "Assay") {
-          maxCurrentOrder = Math.max(
-            ...selectedSample.descriptors.map(desc => {
-              return desc.order;
-            }),
-            0
-          );
-          existedElement.order = maxCurrentOrder + 1;
-        }
-        existedElement.isNewlyAddedNonMandatory = true;
-      } else {
-        alert(errorMessage);
-      }
-    } else {
-      alert(errorMessage);
-    }
-
-    if (props.metadataType === "Assay") {
-      sortAssayDescriptors(selectedSample);
-    }
-
-    setSampleModel(sampleModelUpdate);
-    //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
-  };
-
-  const handleAddSubGroupDescriptors = (selectedDescriptorSubGroup, selectedSubGroupValue) => {
-    var sampleModelUpdate;
-    var selectedDescriptor;
-    var selectedDescriptorIndex;
-
-    if (isUpdate) {
-      selectedDescriptor = { ...sampleModel };
-    } else {
-      sampleModelUpdate = [...sampleModel];
-
-      var itemByType = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
-      var itemByTypeIndex = sampleModelUpdate.indexOf(itemByType);
-
-      selectedDescriptor = itemByType.descriptors.find(
-        i => i.name === selectedDescriptorSubGroup.name,
-        i => i.id === selectedDescriptorSubGroup.id
-      );
-      selectedDescriptorIndex = itemByType.descriptors.indexOf(selectedDescriptor);
-    }
-
-    const selectedSubGroup = selectedDescriptor.descriptors.find(i => i.name === selectedSubGroupValue);
-    const selectedSubGroupCount = selectedDescriptor.descriptors.filter(i => i.name === selectedSubGroupValue).length;
-
-    if (selectedSubGroup && selectedSubGroupCount < selectedSubGroup.maxOccurrence) {
-      const selectedGroupNewItemCount = selectedDescriptor.descriptors.filter(i => i.isNewlyAdded === true).length;
-
-      var newElement = JSON.parse(JSON.stringify(selectedSubGroup));
-      newElement.id = "newlyAddedItems" + selectedGroupNewItemCount + selectedSubGroup.name.trim();
-      newElement.isNewlyAdded = true;
-      newElement.group &&
-        newElement.descriptors.forEach(e => {
-          e.value = "";
-          e.id = "newlyAddedItems" + selectedGroupNewItemCount + e.id;
-        });
-
-      selectedDescriptor.descriptors.push(newElement);
-
-      if (isUpdate) {
-        setSampleModel(selectedDescriptor);
-      } else {
-        itemByType.descriptors[selectedDescriptorIndex] = selectedDescriptor;
-        sampleModelUpdate[itemByTypeIndex] = itemByType;
-        setSampleModel(sampleModelUpdate);
-      }
-    }
-    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
-  };
-
   const handleAddDescriptorGroups = elementSelected => {
     const errorMessage = "MaxOccurrence for the descriptor has been reached";
     var selectedSample;
@@ -608,8 +527,20 @@ const MetaData = props => {
 
     maxCurrentOrder = selectedSample.descriptors[selectedSample.descriptors.length - 1].order;
 
-    if (existedElement) {
-      if (newItemsCount < existedElement.maxOccurrence) {
+    if (existedElement.isDeleted) {
+      if (existedElement.mandateGroup) {
+        let sameGroupItemDeletedTobe = selectedSample.descriptors.filter(
+          e => e.mandateGroup && e.mandateGroup.id === existedElement.mandateGroup.id
+        );
+
+        sameGroupItemDeletedTobe.forEach(descGroup => {
+          descGroup.isDeleted = false;
+        });
+      } else {
+        existedElement.isDeleted = false;
+      }
+    } else if (existedElement) {
+      if (newItemsCount + 1 < existedElement.maxOccurrence) {
         selectedSample.descriptors = creatNewDescriptorElement(
           existedElement,
           newItemsCount,
@@ -619,7 +550,7 @@ const MetaData = props => {
       } else if (
         !existedElement.isNewlyAddedNonMandatory &&
         !existedElement.mandatory &&
-        newItemsCount < existedElement.maxOccurrence
+        newItemsCount + 1 < existedElement.maxOccurrence
       ) {
         if (props.metadataType === "Assay") {
           maxCurrentOrder = Math.max(
@@ -669,7 +600,7 @@ const MetaData = props => {
 
     maxCurrentOrder = selectedGroup.descriptors[selectedGroup.descriptors.length - 1].order;
 
-    if (newItemsCount < selectedSubGrpDesc.maxOccurrence) {
+    if (newItemsCount + 1 < selectedSubGrpDesc.maxOccurrence) {
       selectedGroup.descriptors = creatNewDescriptorElement(
         existedElement,
         newItemsCount,
@@ -751,7 +682,19 @@ const MetaData = props => {
     var itemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
 
     if (!itemToBeDeleted.mandatory) {
-      if (itemToBeDeleted.id.startsWith("newly")) {
+      if (!itemToBeDeleted.id.startsWith("newly") && itemToBeDeleted.isNewlyAddedNonMandatory === undefined) {
+        if (itemToBeDeleted.mandateGroup) {
+          let sameGroupItemDeletedTobe = itemDescriptors.filter(
+            e => e.mandateGroup && e.mandateGroup.id === itemToBeDeleted.mandateGroup.id
+          );
+
+          sameGroupItemDeletedTobe.forEach(descGroup => {
+            descGroup.isDeleted = true;
+          });
+        } else {
+          itemToBeDeleted.isDeleted = true;
+        }
+      } else if (itemToBeDeleted.id.startsWith("newly")) {
         const ItemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
         itemDescriptors.splice(ItemToBeDeletedIndex, 1);
       } else {
@@ -809,10 +752,12 @@ const MetaData = props => {
     props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
-  const handleSubGroupDelete = (group, id) => {
+  const handleSubGroupDelete = id => {
     var sampleModelDelete;
     var itemByType;
     var itemByTypeIndex;
+    let itemToBeDeleted;
+    let itemToBeDeletedIndex;
 
     if (isUpdate || props.isCopy) {
       itemByType = { ...sampleModel };
@@ -823,15 +768,20 @@ const MetaData = props => {
     }
 
     var itemDescriptors = itemByType.descriptors;
-    const selectedGroup = itemDescriptors.find(i => i.id === group.id);
-    const selectedGroupIndex = itemDescriptors.indexOf(selectedGroup);
+    const selectedElement = itemDescriptors.find(i => i.id === id);
+    const selectedElementIndex = itemDescriptors.indexOf(selectedElement);
 
-    const itemToBeDeleted = selectedGroup.descriptors.find(i => i.id === id);
-    const itemToBeDeletedIndex = selectedGroup.descriptors.indexOf(itemToBeDeleted);
-    selectedGroup.descriptors.splice(itemToBeDeletedIndex, 1);
+    if (!selectedElement.group) {
+      itemDescriptors.splice(selectedElementIndex, 1);
+    } else {
+      itemToBeDeleted = selectedElement.descriptors.find(i => i.id === id);
+      itemToBeDeletedIndex = selectedElement.descriptors.indexOf(itemToBeDeleted);
+      selectedElement.descriptors.splice(itemToBeDeletedIndex, 1);
+      itemDescriptors[selectedElementIndex] = selectedElement;
+    }
 
-    itemDescriptors[selectedGroupIndex] = selectedGroup;
     itemByType.descriptors = itemDescriptors;
+
     if (isUpdate || props.isCopy) {
       setSampleModel(itemByType);
     } else {
@@ -851,7 +801,12 @@ const MetaData = props => {
               <Col md={6}>
                 <Form.Control type="text" name="name" disabled value={metaDataDetails.name} />
               </Col>
+              <Col md={3}>
+                {/* {getExpandCollapseIcon()} */}
+                {getAddons()}
+              </Col>
             </Form.Group>
+
             {(sampleModel && sampleModel.length > 1) ||
             (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
               <Form.Group as={Row} controlId="type">
@@ -886,7 +841,7 @@ const MetaData = props => {
           handleChange={handleChangeMetaForm}
           handleDelete={handleDelete}
           isAllExpanded={isAllExpanded}
-          descriptorSubGroup={getDescriptorSubGroup}
+          // descriptorSubGroup={getDescriptorSubGroup}
           handleSubGroupDelete={handleSubGroupDelete}
           isUpdate={isUpdate}
           isCopySample={props.isCopy}
@@ -894,6 +849,7 @@ const MetaData = props => {
           handleUnitSelectionChange={handleChangeMetaForm}
           handleAddDescriptorGroups={handleAddDescriptorGroups}
           handleAddDescriptorSubGroups={handleAddDescriptorSubGroups}
+          defaultSelectionChange={defaultSelectionChange}
         />
       </>
     );
@@ -952,6 +908,52 @@ const MetaData = props => {
       setSampleModel(sampleModelDragandDrop);
     }
   };
+
+  function defaultSelectionChange(grp, desc) {
+    var sampleModelDragandDrop;
+    var itemByType;
+    var itemByTypeIndex;
+
+    if (isUpdate || props.isCopy) {
+      itemByType = { ...sampleModel };
+    } else {
+      sampleModelDragandDrop = [...sampleModel];
+      itemByType = sampleModelDragandDrop.find(i => i.name === metaDataDetails.selectedtemplate);
+      itemByTypeIndex = sampleModelDragandDrop.indexOf(itemByType);
+    }
+
+    var itemDescriptors = itemByType.descriptors;
+
+    let currentDefaultSelection = itemDescriptors.find(
+      i => i.mandateGroup && i.mandateGroup.id === grp.mandateGroup.id && i.mandateGroup.defaultSelection === true
+    );
+
+    let latestDefaultSelection = itemDescriptors.find(
+      i =>
+        i.mandateGroup &&
+        i.mandateGroup.id === grp.mandateGroup.id &&
+        i.mandateGroup.defaultSelection === false &&
+        i.id === grp.id
+    );
+
+    let indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection);
+    let indexOfLatestDefaultSelection = itemDescriptors.indexOf(latestDefaultSelection);
+
+    currentDefaultSelection.mandateGroup.defaultSelection = false;
+    latestDefaultSelection.mandateGroup.defaultSelection = true;
+
+    itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection;
+    itemDescriptors[indexOfLatestDefaultSelection] = latestDefaultSelection;
+
+    itemByType.descriptors = itemDescriptors;
+
+    if (isUpdate || props.isCopy) {
+      setSampleModel(itemByType);
+    } else {
+      sampleModelDragandDrop[itemByTypeIndex] = itemByType;
+      setSampleModel(sampleModelDragandDrop);
+    }
+  }
 
   const getXorList = (mandateGroupMap, message) => {
     let itr = mandateGroupMap.entries();
@@ -1393,16 +1395,6 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
-      debugger;
-      responseJson.forEach(template => {
-        template.descriptors.forEach(desc => {
-          if (desc.group) {
-            desc.descriptors.sort((a, b) => a.order - b.order);
-          }
-        });
-        template.descriptors.sort((a, b) => a.order - b.order);
-      });
-
       setMetaDataDetails({ sample: responseJson });
 
       if (props.importedPageData && props.importedPageData.length > 0) {
@@ -1726,17 +1718,6 @@ const MetaData = props => {
                   </div>
                 </div>
               </Col>
-              {/* <Col md={3}>
-                <div
-                  style={{
-                    position: "fixed",
-                    marginTop: "8%"
-                  }}
-                >
-                  {/* {getExpandCollapseIcon()} */}
-              {/* {getAddons()} */}
-              {/* </div> */}
-              {/* </Col>  */}
             </Row>
           </>
         )}
@@ -1763,9 +1744,6 @@ const MetaData = props => {
                   sampleModel.descriptors.length > 0 &&
                   getMetaData()}
               </Col>
-              {/* <Col md={2} style={{ marginLeft: "-35px" }}> */}
-              {/* <div className={"addon-setting"}>{getAddons()}</div>
-              </Col> */}
             </Row>
             {getButtonsForImportedPage()}
           </>
