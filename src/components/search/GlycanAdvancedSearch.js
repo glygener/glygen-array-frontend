@@ -14,6 +14,7 @@ import { ErrorSummary } from "../../components/ErrorSummary";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import "../../css/Search.css";
 import ExampleExploreControl from "../ExampleExploreControl";
+import { Loading } from "../Loading";
 
 const getCommaSeparatedValues = (value) => {
   if (typeof value !== "string") return "";
@@ -38,17 +39,16 @@ const GlycanAdvancedSearch = (props) => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
+  const [showLoading, setShowLoading] = useState(false);
 
-  const [inputValue, setInputValue] = React.useReducer(
-    (state, payload) => ({ ...state, ...payload }),
-    {
-      glytoucanIds: "",
-      massRange: [0, 0],
-      massRangeInput: ["0", "0"],
-    }
-  );
+  const [inputValue, setInputValue] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
+    glytoucanIds: "",
+    massRange: [0, 0],
+    massRangeInput: ["0", "0"],
+  });
 
   const searchGlycan = (glytoucanIds, minMass, maxMass) => {
+    setShowLoading(true);
     wsCall(
       "searchglycans",
       "POST",
@@ -66,6 +66,7 @@ const GlycanAdvancedSearch = (props) => {
 
   const glycanSearchSuccess = (response) => {
     response.text().then((searchId) => history.push("/glycanList/" + searchId));
+    setShowLoading(false);
   };
 
   const glycanSearchFailure = (response) => {
@@ -80,6 +81,7 @@ const GlycanAdvancedSearch = (props) => {
       setPageErrorsJson(resp);
       setShowErrorSummary(true);
     });
+    setShowLoading(false);
   };
 
   /**
@@ -94,10 +96,7 @@ const GlycanAdvancedSearch = (props) => {
     setShowErrorSummary(false);
     setInputValue({
       glytoucanIds: "",
-      massRange: [
-        Math.floor(initSearchData.minGlycanMass || 0),
-        Math.ceil(initSearchData.maxGlycanMass || 0),
-      ],
+      massRange: [Math.floor(initSearchData.minGlycanMass || 0), Math.ceil(initSearchData.maxGlycanMass || 0)],
       massRangeInput: [
         Math.floor(initSearchData.minGlycanMass || 0).toLocaleString(),
         Math.ceil(initSearchData.maxGlycanMass || 0).toLocaleString(),
@@ -130,15 +129,7 @@ const GlycanAdvancedSearch = (props) => {
   }, [props.searchData]);
 
   useEffect(() => {
-    wsCall(
-      "initglycansearch",
-      "GET",
-      null,
-      false,
-      null,
-      glycanInitSearchSuccess,
-      glycanInitSearchFailure
-    );
+    wsCall("initglycansearch", "GET", null, false, null, glycanInitSearchSuccess, glycanInitSearchFailure);
   }, []);
 
   const glycanInitSearchSuccess = (response) => {
@@ -219,10 +210,7 @@ const GlycanAdvancedSearch = (props) => {
             {inputValue.glytoucanIds.length > advancedSearch.glycan_id.length && (
               <FormHelperText error>{advancedSearch.glycan_id.errorText}</FormHelperText>
             )}
-            <ExampleExploreControl
-              setInputValue={funcSetInputValues}
-              inputValue={advancedSearch.glycan_id.examples}
-            />
+            <ExampleExploreControl setInputValue={funcSetInputValues} inputValue={advancedSearch.glycan_id.examples} />
           </FormControl>
         </Grid>
         {/* Monoisotopic Mass */}
@@ -231,10 +219,7 @@ const GlycanAdvancedSearch = (props) => {
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} sm={12}>
                 <Typography className={"search-lbl"} gutterBottom>
-                  <HelpToolTip
-                    title={advancedSearch.mass.tooltip.title}
-                    text={advancedSearch.mass.tooltip.text}
-                  />
+                  <HelpToolTip title={advancedSearch.mass.tooltip.title} text={advancedSearch.mass.tooltip.text} />
                   Monoisotopic Mass
                 </Typography>
                 <RangeInputSlider
@@ -251,6 +236,7 @@ const GlycanAdvancedSearch = (props) => {
           </FormControl>
         </Grid>
       </Grid>
+      <Loading show={showLoading} />
     </>
   );
 };

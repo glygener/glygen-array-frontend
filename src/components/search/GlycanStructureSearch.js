@@ -14,6 +14,7 @@ import SelectControl from "./SelectControl";
 import { HelpToolTip } from "../tooltip/HelpToolTip";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import ExampleSequenceControl from "../ExampleSequenceControl";
+import { Loading } from "../Loading";
 
 const structureSearch = glycanSearchData.structure_search;
 
@@ -22,14 +23,12 @@ export default function GlycanStructureSearch(props) {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
+  const [showLoading, setShowLoading] = useState(false);
 
-  const [inputValue, setInputValue] = React.useReducer(
-    (state, payload) => ({ ...state, ...payload }),
-    {
-      sequence: "",
-      sequenceFormat: "",
-    }
-  );
+  const [inputValue, setInputValue] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
+    sequence: "",
+    sequenceFormat: "",
+  });
 
   const [touched, setTouched] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
     sequence: false,
@@ -43,10 +42,7 @@ export default function GlycanStructureSearch(props) {
 
   const validate = {
     sequence: () => {
-      if (
-        inputValue.sequence === "" ||
-        inputValue.sequence.length > structureSearch.sequence.length
-      ) {
+      if (inputValue.sequence === "" || inputValue.sequence.length > structureSearch.sequence.length) {
         setErrors({ sequence: true });
       } else {
         setErrors({ sequence: false });
@@ -74,6 +70,7 @@ export default function GlycanStructureSearch(props) {
     Object.values(errors).every((error) => error === false);
 
   const searchStructure = (sequence, sequenceFormat) => {
+    setShowLoading(true);
     wsCall(
       "searchglycansbystructure",
       "POST",
@@ -87,6 +84,7 @@ export default function GlycanStructureSearch(props) {
 
   const glycanSearchSuccess = (response) => {
     response.text().then((searchId) => history.push("/glycanList/" + searchId));
+    setShowLoading(false);
   };
 
   const glycanSearchFailure = (response) => {
@@ -100,15 +98,14 @@ export default function GlycanStructureSearch(props) {
       }
       if (resp.statusCode === 400) {
         setPageErrorsJson(null);
-        setPageErrorMessage(
-          "Invalid sequence for selected sequence type. Please correct it and try again."
-        );
+        setPageErrorMessage("Invalid sequence for selected sequence type. Please correct it and try again.");
         setShowErrorSummary(true);
         return;
       }
       setPageErrorsJson(resp);
       setShowErrorSummary(true);
     });
+    setShowLoading(false);
   };
 
   /**
@@ -241,6 +238,7 @@ export default function GlycanStructureSearch(props) {
           </FormControl>
         </Grid>
       </Grid>
+      <Loading show={showLoading} />
     </>
   );
 }
