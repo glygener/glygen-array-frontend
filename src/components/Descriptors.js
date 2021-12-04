@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../components/Descriptors.css";
 import { Feedback, BlueCheckbox, FormLabel } from "./FormControls";
@@ -13,6 +13,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import { FormControlLabel, Button } from "@material-ui/core";
 import { LineTooltip } from "./tooltip/LineTooltip";
 import plusIcon from "../images/icons/plus.svg";
+import { ConfirmationModal } from "./ConfirmationModal";
 
 const Descriptors = props => {
   let descriptorsByMetaType;
@@ -29,7 +30,11 @@ const Descriptors = props => {
     isAllExpanded
   } = props;
 
+  const [enableModal, setEnableModal] = useState(false);
+  const [mandateGroupNewValue, setMandateGroupNewValue] = useState();
+
   let descriptorForm = [];
+  let descMetaData;
   const simpleDescriptorTitle = "General Descriptors";
 
   let inputProps = {
@@ -49,7 +54,7 @@ const Descriptors = props => {
     }
 
     var subGroupKeyIndex = 900;
-    let descMetaData = descriptorsByMetaType.descriptors;
+    descMetaData = descriptorsByMetaType.descriptors;
     const accorSimpleDesc = descMetaData.filter(i => i.group !== true);
 
     //General Descriptors
@@ -95,9 +100,19 @@ const Descriptors = props => {
                   return <>{getDescriptorGroups(descriptor, index)}</>;
                 } else {
                   if (descriptor.mandateGroup && descriptor.mandateGroup.defaultSelection) {
+                    let listTraversed = descMetaData.slice(0, index);
+
+                    //skipping the radio button display for mandategroup if there is one for current group
+                    let alreadyDisplayedXorGroupWiz = listTraversed.filter(
+                      i =>
+                        i.mandateGroup &&
+                        i.mandateGroup.id === descriptor.mandateGroup.id &&
+                        i.mandateGroup.defaultSelection
+                    );
+
                     return (
                       <>
-                        {getXorMandateHeader(descriptor, descMetaData)}
+                        {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(descriptor, descMetaData)}
                         {getDescriptorGroups(descriptor, index)}
                       </>
                     );
@@ -123,7 +138,8 @@ const Descriptors = props => {
       <>
         <Row
           style={{
-            marginTop: "1em"
+            marginTop: "1em",
+            marginLeft: "1%"
           }}
         >
           <FormLabel
@@ -133,20 +149,25 @@ const Descriptors = props => {
 
           <Col>
             {sameXorGroup.map(grp => {
-              return (
+              return !grp.id.startsWith("newly") ? (
                 <>
                   <Form.Check.Label>
                     <Form.Check.Input
                       type="radio"
                       value={grp.name}
                       label={grp.name}
-                      onChange={() => props.defaultSelectionChange(grp, descMetaData)}
+                      onChange={() => {
+                        setEnableModal(true);
+                        setMandateGroupNewValue(grp);
+                      }}
                       checked={grp.mandateGroup.defaultSelection}
                       defaultChecked={grp.mandateGroup.defaultSelection}
                     />
                     {grp.name}&nbsp;&nbsp;&nbsp;&nbsp;
                   </Form.Check.Label>
                 </>
+              ) : (
+                ""
               );
             })}
           </Col>
@@ -233,7 +254,7 @@ const Descriptors = props => {
               textAlign: "right"
             }}
           >
-            {/* {descriptor.maxOccurrence > 1 && lastAddedIsNewMandatory && (
+            {descriptor.maxOccurrence > 1 && lastAddedIsNewMandatory && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
                 size="lg"
@@ -244,13 +265,13 @@ const Descriptors = props => {
                 }}
                 onClick={() => props.handleAddDescriptorSubGroups(groupElement, descriptor)}
               />
-            )} */}
+            )}
 
             {descriptor.id.startsWith("newly") && metaType !== "Feature" && (
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}
-                size="xs"
+                size="1x"
                 title="Delete Descriptor"
                 className="delete-icon table-btn"
                 style={{ marginRight: "10px", marginBottom: "4px" }}
@@ -284,7 +305,7 @@ const Descriptors = props => {
     const cardBody = (
       <Card.Body>
         {generalDescriptors.map((element, index) => {
-          return (
+          return !element.mandateGroup ? (
             <div
               style={{
                 paddingLeft: "10px",
@@ -295,6 +316,18 @@ const Descriptors = props => {
               {getCardBody(element, 0, generalDescriptors, false)}
               {getNewField(element, element, "")}
             </div>
+          ) : (
+            element.mandateGroup && element.mandateGroup.defaultSelection && (
+              <div
+                style={{
+                  paddingLeft: "10px",
+                  backgroundColor: "#f3f3f3"
+                }}
+                key={index + element.id}
+              >
+                {getMandateGroupsforSimpleDescriptors(element, index)}
+              </div>
+            )
           );
         })}
       </Card.Body>
@@ -309,6 +342,22 @@ const Descriptors = props => {
           </Card>
         </Accordion>
       </div>
+    );
+  };
+
+  const getMandateGroupsforSimpleDescriptors = (element, index) => {
+    let listTraversed = descMetaData.slice(0, index);
+
+    //skipping the radio button display for mandategroup if there is one for current group
+    let alreadyDisplayedXorGroupWiz = listTraversed.filter(
+      i => i.mandateGroup && i.mandateGroup.id === element.mandateGroup.id && i.mandateGroup.defaultSelection
+    );
+
+    return (
+      <>
+        {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, descMetaData)}
+        {getNewField(element, element, "")}
+      </>
     );
   };
 
@@ -429,7 +478,7 @@ const Descriptors = props => {
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}
-                size="md"
+                size="1x"
                 title="Delete Descriptor"
                 className="delete-icon table-btn"
                 style={{
@@ -725,7 +774,25 @@ const Descriptors = props => {
     );
   };
 
-  return <>{buildDescriptors()}</>;
+  return (
+    <>
+      {buildDescriptors()}
+      {enableModal && (
+        <ConfirmationModal
+          showModal={enableModal}
+          onCancel={() => setEnableModal(false)}
+          onConfirm={() => (
+            <>
+              {props.defaultSelectionChange(mandateGroupNewValue)}
+              {setEnableModal(false)}
+            </>
+          )}
+          title="Mandate Group Change"
+          body="You will loose the Current Data if you change the group. Do you wish to proceed ?"
+        />
+      )}
+    </>
+  );
 };
 
 const addSubGroupValidation = groupElement => {

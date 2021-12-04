@@ -768,7 +768,7 @@ const MetaData = props => {
     }
 
     var itemDescriptors = itemByType.descriptors;
-    const selectedElement = itemDescriptors.find(i => i.id === id);
+    const selectedElement = itemDescriptors.filter(i => i.id === id);
     const selectedElementIndex = itemDescriptors.indexOf(selectedElement);
 
     if (!selectedElement.group) {
@@ -909,10 +909,12 @@ const MetaData = props => {
     }
   };
 
-  function defaultSelectionChange(grp, desc) {
+  function defaultSelectionChange(latestDefaultSelection) {
     var sampleModelDragandDrop;
     var itemByType;
     var itemByTypeIndex;
+    let indexOfCurrentDefaultSelection;
+    let indexOfLatestDefaultSelection;
 
     if (isUpdate || props.isCopy) {
       itemByType = { ...sampleModel };
@@ -924,25 +926,54 @@ const MetaData = props => {
 
     var itemDescriptors = itemByType.descriptors;
 
-    let currentDefaultSelection = itemDescriptors.find(
-      i => i.mandateGroup && i.mandateGroup.id === grp.mandateGroup.id && i.mandateGroup.defaultSelection === true
-    );
-
-    let latestDefaultSelection = itemDescriptors.find(
+    let currentDefaultSelection = itemDescriptors.filter(
       i =>
         i.mandateGroup &&
-        i.mandateGroup.id === grp.mandateGroup.id &&
-        i.mandateGroup.defaultSelection === false &&
-        i.id === grp.id
+        i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+        i.mandateGroup.defaultSelection === true
     );
 
-    let indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection);
-    let indexOfLatestDefaultSelection = itemDescriptors.indexOf(latestDefaultSelection);
+    // let latestDefaultSelection = itemDescriptors.find(
+    //   i =>
+    //     i.mandateGroup &&
+    //     i.mandateGroup.id === grp.mandateGroup.id &&
+    //     i.mandateGroup.defaultSelection === false &&
+    //     i.id === grp.id
+    // );
 
-    currentDefaultSelection.mandateGroup.defaultSelection = false;
+    if (currentDefaultSelection.length > 1) {
+      debugger;
+      let newlyAddedNonMGroupsofCurrentDefaultSelection = itemDescriptors.filter(
+        i =>
+          i.mandateGroup &&
+          i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+          i.mandateGroup.defaultSelection === true &&
+          i.id.startsWith("newly")
+      );
+
+      newlyAddedNonMGroupsofCurrentDefaultSelection.forEach(desc => {
+        debugger;
+        itemDescriptors.splice(itemDescriptors.indexOf(desc), 1);
+      });
+
+      debugger;
+
+      currentDefaultSelection = itemDescriptors.filter(
+        i =>
+          i.mandateGroup &&
+          i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+          i.mandateGroup.defaultSelection === true &&
+          !i.id.startsWith("newly")
+      );
+    }
+
+    indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
+    indexOfLatestDefaultSelection = itemDescriptors.indexOf(latestDefaultSelection);
+
+    currentDefaultSelection[0].mandateGroup.defaultSelection = false;
     latestDefaultSelection.mandateGroup.defaultSelection = true;
 
-    itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection;
+    itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
     itemDescriptors[indexOfLatestDefaultSelection] = latestDefaultSelection;
 
     itemByType.descriptors = itemDescriptors;
@@ -1395,6 +1426,15 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
+      responseJson.forEach(template => {
+        template.descriptors.forEach(desc => {
+          if (desc.group) {
+            desc.descriptors.sort((a, b) => a.order - b.order);
+          }
+        });
+        template.descriptors.sort((a, b) => a.order - b.order);
+      });
+
       setMetaDataDetails({ sample: responseJson });
 
       if (props.importedPageData && props.importedPageData.length > 0) {
