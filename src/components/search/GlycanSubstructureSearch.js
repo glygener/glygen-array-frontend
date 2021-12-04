@@ -17,6 +17,7 @@ import { HelpToolTip } from "../tooltip/HelpToolTip";
 import { withStyles } from "@material-ui/core/styles";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import ExampleSequenceControl from "../ExampleSequenceControl";
+import { Loading } from "../Loading";
 
 const BlueCheckbox = withStyles({
   root: {
@@ -36,15 +37,13 @@ export default function GlycanSubstructureSearch(props) {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
+  const [showLoading, setShowLoading] = useState(false);
 
-  const [inputValue, setInputValue] = React.useReducer(
-    (state, payload) => ({ ...state, ...payload }),
-    {
-      sequence: "",
-      sequenceFormat: "",
-      reducingEnd: false,
-    }
-  );
+  const [inputValue, setInputValue] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
+    sequence: "",
+    sequenceFormat: "",
+    reducingEnd: false,
+  });
 
   const [touched, setTouched] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
     sequence: false,
@@ -58,10 +57,7 @@ export default function GlycanSubstructureSearch(props) {
 
   const validate = {
     sequence: () => {
-      if (
-        inputValue.sequence === "" ||
-        inputValue.sequence.length > subStructureSearch.sequence.length
-      ) {
+      if (inputValue.sequence === "" || inputValue.sequence.length > subStructureSearch.sequence.length) {
         setErrors({ sequence: true });
       } else {
         setErrors({ sequence: false });
@@ -89,6 +85,7 @@ export default function GlycanSubstructureSearch(props) {
     Object.values(errors).every((error) => error === false);
 
   const searchSubstructure = (sequence, sequenceFormat, reducingEnd) => {
+    setShowLoading(true);
     wsCall(
       "searchglycansbysubstructure",
       "POST",
@@ -102,6 +99,7 @@ export default function GlycanSubstructureSearch(props) {
 
   const glycanSearchSuccess = (response) => {
     response.text().then((searchId) => history.push("/glycanList/" + searchId));
+    setShowLoading(false);
   };
 
   const glycanSearchFailure = (response) => {
@@ -115,15 +113,14 @@ export default function GlycanSubstructureSearch(props) {
       }
       if (resp.statusCode === 400) {
         setPageErrorsJson(null);
-        setPageErrorMessage(
-          "Invalid sequence for selected sequence type. Please correct it and try again."
-        );
+        setPageErrorMessage("Invalid sequence for selected sequence type. Please correct it and try again.");
         setShowErrorSummary(true);
         return;
       }
       setPageErrorsJson(resp);
       setShowErrorSummary(true);
     });
+    setShowLoading(false);
   };
 
   /**
@@ -245,10 +242,9 @@ export default function GlycanSubstructureSearch(props) {
             {touched.sequence && inputValue.sequence.length === 0 && (
               <FormHelperText error>{subStructureSearch.sequence.requiredText}</FormHelperText>
             )}
-            {touched.sequence &&
-              inputValue.sequence.length > subStructureSearch.sequence.length && (
-                <FormHelperText error>{subStructureSearch.sequence.errorText}</FormHelperText>
-              )}
+            {touched.sequence && inputValue.sequence.length > subStructureSearch.sequence.length && (
+              <FormHelperText error>{subStructureSearch.sequence.errorText}</FormHelperText>
+            )}
             {inputValue.sequenceFormat && (
               <ExampleSequenceControl
                 setInputValue={(id) => {
@@ -274,6 +270,7 @@ export default function GlycanSubstructureSearch(props) {
           />
         </Grid>
       </Grid>
+      <Loading show={showLoading} />
     </>
   );
 }
