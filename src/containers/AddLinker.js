@@ -1,7 +1,7 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
-import { Form, FormCheck, Row, Col } from "react-bootstrap";
-import { FormLabel, Feedback, Title } from "../components/FormControls";
+import { Form, Row, Col } from "react-bootstrap";
+import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -18,28 +18,24 @@ import {
   isValidNumber,
   numberLengthCheck,
 } from "../utils/commonUtils";
-import { Button, Step, StepLabel, Stepper, Typography, makeStyles, Link } from "@material-ui/core";
+import { Button, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
 import { ViewSourceInfo } from "../components/ViewSourceInfo";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "90%",
-  },
-  backButton: {
-    marginRight: theme.spacing(1),
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-}));
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Link } from "react-router-dom";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import { BlueRadio } from "../components/FormControls";
+import { Image } from "react-bootstrap";
+import plusIcon from "../images/icons/plus.svg";
 
 const AddLinker = (props) => {
   useEffect(props.authCheckAgent, []);
 
-  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
@@ -89,7 +85,7 @@ const AddLinker = (props) => {
     canonicalSmiles: { label: "Canonical SMILES", type: "text" },
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comments", type: "textarea", length: 10000 },
+    comment: { label: "Comment", type: "textarea", length: 10000 },
   };
 
   const sourceSelection = (e) => {
@@ -159,7 +155,7 @@ const AddLinker = (props) => {
       if (count > 0) {
         return;
       }
-    } else if (e.currentTarget.innerText === "FINISH") {
+    } else if (e.currentTarget.innerText === "SUBMIT") {
       addLinker(e);
       return;
     }
@@ -221,12 +217,32 @@ const AddLinker = (props) => {
   };
 
   function getSteps() {
-    return [
-      "Select the Linker Type",
-      "Type Specific Linker Info",
-      "Generic Linker Info",
-      "Review and Add",
-    ];
+    return ["Linker Type", "Type Specific Information", "Generic Information", "Review and Add"];
+  }
+
+  function getMoleculeType(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${displayNames.linker.SEQUENCE}`;
+      case "Unknown":
+        return `${displayNames.linker.UNKNOWN}`;
+      default:
+        return "Unknown typeIndex";
+    }
+  }
+  function getStepLabel(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return "Select the Linker Type";
+      case 1:
+        return `Add Type Specific Linker Information (${getMoleculeType(linker.selectedLinker)})`;
+      case 2:
+        return `Add Generic Linker Information (${getMoleculeType(linker.selectedLinker)})`;
+      case 3:
+        return "Review and Add Linker to Repository";
+      default:
+        return "Unknown stepIndex";
+    }
   }
 
   function populateLinkerDetails(pubChemId) {
@@ -313,35 +329,34 @@ const AddLinker = (props) => {
         {linker.urls && linker.urls.length > 0
           ? linker.urls.map((url, index) => {
               return (
-                <Row style={{ marginTop: "8px" }} key={index}>
+                <Row key={index}>
                   <Col
                     md={10}
                     style={{
                       wordBreak: "break-all",
                     }}
                   >
-                    <Link
-                      style={{ fontSize: "0.9em" }}
-                      href={externalizeUrl(url)}
-                      target="_blank"
-                      rel="external noopener noreferrer"
-                    >
+                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                       {url}
-                    </Link>
+                    </a>
                   </Col>
                   {enableDelete && (
-                    <Col style={{ marginTop: "2px", textAlign: "center" }} md={2}>
-                      <FontAwesomeIcon
-                        icon={["far", "trash-alt"]}
-                        size="xs"
-                        title="Delete Url"
-                        className="caution-color table-btn"
-                        onClick={() => {
-                          const listUrls = linker.urls;
-                          listUrls.splice(index, 1);
-                          setLinker({ urls: listUrls });
-                        }}
-                      />
+                    <Col className="pb-2 text-center" md={2}>
+                      <LineTooltip text="Delete URL">
+                        <Link>
+                          <FontAwesomeIcon
+                            icon={["far", "trash-alt"]}
+                            size="lg"
+                            alt="Delete URL"
+                            className="caution-color tbl-icon-btn"
+                            onClick={() => {
+                              const listUrls = linker.urls;
+                              listUrls.splice(index, 1);
+                              setLinker({ urls: listUrls });
+                            }}
+                          />
+                        </Link>
+                      </LineTooltip>
                     </Col>
                   )}
                 </Row>
@@ -364,15 +379,7 @@ const AddLinker = (props) => {
     let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall(
-        "getpublication",
-        "GET",
-        [newPubMedId],
-        true,
-        null,
-        addPublicationSuccess,
-        addPublicationError
-      );
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
     } else {
       setNewPubMedId("");
     }
@@ -392,7 +399,7 @@ const AddLinker = (props) => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
-          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
+          setPageErrorMessage("The PubMed ID entered is invalid. Please try again.");
         }
         setShowErrorSummary(true);
       });
@@ -402,41 +409,40 @@ const AddLinker = (props) => {
   const getStep2 = () => {
     return (
       <>
-        <Form.Group as={Row} controlId={"inChiKey"}>
-          <FormLabel label={displayNames.linker.INCHIKEY} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="inChiKey" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.INCHIKEY} />
             <Form.Control
-              type={"text"}
-              name={"inChiKey"}
-              placeholder={displayNames.linker.INCHIKEY}
+              type="text"
+              name="inChiKey"
+              placeholder={`Enter ${displayNames.linker.INCHIKEY}`}
               value={linker.inChiKey}
               onChange={handleChange}
               disabled={disablePubChemFields}
               maxLength={27}
             />
             <Feedback message={`${displayNames.linker.INCHIKEY} is Invalid`} />
+
+            {linker.inChiKey !== "" && !disablePubChemFields && (
+              <Button
+                variant="contained"
+                onClick={() => populateLinkerDetails(encodeURIComponent(linker.inChiKey && linker.inChiKey.trim()))}
+                className="gg-btn-blue-reg btn-to-lower mt-3"
+              >
+                Insert Information from PubChem
+              </Button>
+            )}
           </Col>
-          {linker.inChiKey !== "" && !disablePubChemFields && (
-            <Button
-              variant="contained"
-              onClick={() =>
-                populateLinkerDetails(encodeURIComponent(linker.inChiKey && linker.inChiKey.trim()))
-              }
-              className="get-btn "
-            >
-              Get Details from PubChem
-            </Button>
-          )}
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"inChiSequence"}>
-          <FormLabel label={displayNames.linker.INCHI_SEQUENCE} className={"required-asterik"} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="inChiSequence" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.INCHI_SEQUENCE} className="required-asterik" />
             <Form.Control
-              as={"textarea"}
+              as="textarea"
               rows="4"
-              name={"inChiSequence"}
-              placeholder={displayNames.linker.INCHI_SEQUENCE}
+              name="inChiSequence"
+              placeholder={`Enter ${displayNames.linker.INCHI_SEQUENCE}`}
               value={linker.inChiSequence}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -445,22 +451,20 @@ const AddLinker = (props) => {
               required
             />
             <div className="text-right text-muted">
-              {linker.inChiSequence && linker.inChiSequence.length > 0
-                ? linker.inChiSequence.length
-                : "0"}
+              {linker.inChiSequence && linker.inChiSequence.length > 0 ? linker.inChiSequence.length : "0"}
               /10000
             </div>
             <Feedback message={`${displayNames.linker.INCHI_SEQUENCE} is Invalid`} />
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"iupacName"}>
-          <FormLabel label={"IUPAC Name"} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="iupacName" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="IUPAC Name" />
             <Form.Control
-              type={"text"}
-              name={"iupacName"}
-              placeholder={"iupacName"}
+              type="text"
+              name="iupacName"
+              placeholder="Enter IUPAC Name"
               value={linker.iupacName}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -468,30 +472,30 @@ const AddLinker = (props) => {
             />
           </Col>
         </Form.Group>
-        <Form.Group as={Row} controlId={"Mass"}>
-          <FormLabel label={"Mass"} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="Mass" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Monoisotopic Mass" />
             <Form.Control
-              type={"number"}
-              name={"mass"}
-              placeholder={"Mass"}
+              type="number"
+              name="mass"
+              placeholder="Enter Monoisotopic Mass"
               value={linker.mass}
               onChange={handleChange}
               disabled={disablePubChemFields}
               onKeyDown={(e) => isValidNumber(e)}
               isInvalid={invalidMass}
             />
-            <Feedback message={`Mass is Invalid`} />
+            <Feedback message={`Monoisotopic Mass is Invalid`} />
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"Molecular Formula"}>
-          <FormLabel label={"Molecular Formula"} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="Molecular Formula" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Molecular Formula" />
             <Form.Control
-              type={"text"}
-              name={"molecularFormula"}
-              placeholder={"molecular formula"}
+              type="text"
+              name="molecularFormula"
+              placeholder="Enter Molecular Formula"
               value={linker.molecularFormula}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -500,13 +504,13 @@ const AddLinker = (props) => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"isomericSmiles"}>
-          <FormLabel label={displayNames.linker.ISOMERIC_SMILES} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="isomericSmiles" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.ISOMERIC_SMILES} />
             <Form.Control
-              type={"text"}
-              name={"isomericSmiles"}
-              placeholder={"isomeric smiles"}
+              type="text"
+              name="isomericSmiles"
+              placeholder="Enter Isomeric SMILES"
               value={linker.isomericSmiles}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -515,32 +519,31 @@ const AddLinker = (props) => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId={"canonicalSmiles"}>
-          <FormLabel label={displayNames.linker.CANONICAL_SMILES} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="canonicalSmiles" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={displayNames.linker.CANONICAL_SMILES} />
             <Form.Control
-              type={"text"}
-              name={"canonicalSmiles"}
-              placeholder={"canonical smiles"}
+              type="text"
+              name="canonicalSmiles"
+              placeholder="Enter Canonical SMILES"
               value={linker.canonicalSmiles}
               onChange={handleChange}
               disabled={disablePubChemFields}
               maxLength={10000}
             />
+
+            {linker.canonicalSmiles !== "" && !disablePubChemFields && (
+              <Button
+                variant="contained"
+                onClick={() =>
+                  populateLinkerDetails(encodeURIComponent(linker.canonicalSmiles && linker.canonicalSmiles.trim()))
+                }
+                className="gg-btn-blue-reg btn-to-lower mt-3"
+              >
+                Insert Information from PubChem
+              </Button>
+            )}
           </Col>
-          {linker.canonicalSmiles !== "" && !disablePubChemFields && (
-            <Button
-              variant="contained"
-              onClick={() =>
-                populateLinkerDetails(
-                  encodeURIComponent(linker.canonicalSmiles && linker.canonicalSmiles.trim())
-                )
-              }
-              className="get-btn "
-            >
-              Get Details from PubChem
-            </Button>
-          )}
         </Form.Group>
       </>
     );
@@ -550,89 +553,74 @@ const AddLinker = (props) => {
     switch (stepIndex) {
       case 0:
         return (
-          <Form className="radioform">
-            <FormCheck className="line-break-1">
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="SequenceDefined"
-                  onChange={handleSelect}
-                  checked={linker.selectedLinker === "SequenceDefined"}
-                />
-                {displayNames.linker.SEQUENCE}
-              </FormCheck.Label>
-            </FormCheck>
-
-            <FormCheck>
-              <FormCheck.Label>
-                <FormCheck.Input
-                  type="radio"
-                  value="Unknown"
-                  onChange={handleSelect}
-                  checked={linker.selectedLinker === "Unknown"}
-                />
-                {displayNames.linker.UNKNOWN}
-              </FormCheck.Label>
-            </FormCheck>
+          <Form>
+            <Row className="gg-align-center">
+              <Col sm="auto">
+                <RadioGroup name="molecule-type" onChange={handleSelect} value={linker.selectedLinker}>
+                  {/* SEQUENCE_DEFINED */}
+                  <FormControlLabel
+                    value="SequenceDefined"
+                    control={<BlueRadio />}
+                    label={displayNames.linker.SEQUENCE}
+                  />
+                  {/* UNKNOWN */}
+                  <FormControlLabel value="Unknown" control={<BlueRadio />} label={displayNames.linker.UNKNOWN} />
+                </RadioGroup>
+              </Col>
+            </Row>
           </Form>
         );
       case 1:
         if (activeStep === 1 && linker.selectedLinker !== "Unknown") {
           return (
             <>
-              <Form className="radioform1">
-                <>
-                  <Form.Group as={Row} controlId="pubChemId">
+              <Form>
+                <Form.Group as={Row} controlId="pubChemId" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
                     <FormLabel label="PubChem Compound CID" />
-                    <Col md={4}>
-                      <Form.Control
-                        type="number"
-                        name="pubChemId"
-                        placeholder="PubChem Compound CID"
-                        value={linker.pubChemId}
-                        onChange={handleChange}
-                        disabled={disablePubChemFields}
-                        onKeyDown={(e) => {
-                          if (e.key.length === 1) {
-                            if (e.key !== "v" && e.key !== "V") {
-                              isValidNumber(e);
-                            }
+                    <Form.Control
+                      type="number"
+                      name="pubChemId"
+                      placeholder="Enter PubChem Compound CID"
+                      value={linker.pubChemId}
+                      onChange={handleChange}
+                      disabled={disablePubChemFields}
+                      onKeyDown={(e) => {
+                        if (e.key.length === 1) {
+                          if (e.key !== "v" && e.key !== "V") {
+                            isValidNumber(e);
                           }
-                        }}
-                        maxLength={12}
-                        onInput={(e) => {
-                          numberLengthCheck(e);
-                        }}
-                      />
-                    </Col>
+                        }
+                      }}
+                      maxLength={12}
+                      onInput={(e) => {
+                        numberLengthCheck(e);
+                      }}
+                    />
                     {linker.pubChemId !== "" && !disablePubChemFields && (
                       <Button
                         variant="contained"
-                        onClick={() =>
-                          populateLinkerDetails(encodeURIComponent(linker.pubChemId.trim()))
-                        }
-                        className="get-btn "
+                        onClick={() => populateLinkerDetails(encodeURIComponent(linker.pubChemId.trim()))}
+                        className="gg-btn-blue-reg btn-to-lower mt-3"
                       >
-                        Get Details from PubChem
+                        Insert Information from PubChem
                       </Button>
                     )}
-                  </Form.Group>
+                  </Col>
+                </Form.Group>
 
-                  {getStep2()}
-
-                  <Form.Group as={Row}>
-                    <Col md={{ span: 2, offset: 5 }}>
-                      <Button
-                        variant="contained"
-                        disabled={!disableReset}
-                        onClick={clearPubChemFields}
-                        className="stepper-button"
-                      >
-                        Reset
-                      </Button>
-                    </Col>
-                  </Form.Group>
-                </>
+                {getStep2()}
+                {/* Bottom Reset / Clear fields  Button */}
+                <div className="text-center mb-2 mt-2">
+                  <Button
+                    variant="contained"
+                    disabled={!disableReset}
+                    onClick={clearPubChemFields}
+                    className="gg-btn-blue btn-to-lower"
+                  >
+                    Clear Fields
+                  </Button>
+                </div>
               </Form>
             </>
           );
@@ -641,14 +629,14 @@ const AddLinker = (props) => {
         if (activeStep === 2) {
           return (
             <>
-              <Form noValidate className="radioform2" validated={validate && validatedCommNonComm}>
-                <Form.Group as={Row} controlId="name">
-                  <FormLabel label="Name" className="required-asterik" />
-                  <Col md={4}>
+              <Form noValidate validated={validate && validatedCommNonComm}>
+                <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Name" className="required-asterik" />
                     <Form.Control
                       type="text"
                       name="name"
-                      placeholder="name"
+                      placeholder="Enter Name"
                       value={linker.name}
                       onChange={handleChange}
                       isInvalid={validate}
@@ -658,14 +646,14 @@ const AddLinker = (props) => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="comments">
-                  <FormLabel label="Comments" />
-                  <Col md={4}>
+                <Form.Group as={Row} controlId="comment" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Comment" />
                     <Form.Control
                       as="textarea"
                       rows={4}
                       name="comment"
-                      placeholder="Comments"
+                      placeholder="Enter Comment"
                       value={linker.comment}
                       onChange={handleChange}
                       maxLength={2000}
@@ -676,47 +664,9 @@ const AddLinker = (props) => {
                     </div>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="publications">
-                  <FormLabel label="Publications" />
-                  <Col md={4}>
-                    {linker.publications.map((pub, index) => {
-                      return (
-                        <PublicationCard
-                          key={index}
-                          {...pub}
-                          enableDelete
-                          deletePublication={deletePublication}
-                        />
-                      );
-                    })}
-                    <Row>
-                      <Col md={10}>
-                        <Form.Control
-                          type="number"
-                          name="publication"
-                          placeholder="Enter a Pubmed ID and click +"
-                          value={newPubMedId}
-                          onChange={(e) => setNewPubMedId(e.target.value)}
-                          maxLength={100}
-                          onKeyDown={(e) => {
-                            isValidNumber(e);
-                          }}
-                          onInput={(e) => {
-                            numberLengthCheck(e);
-                          }}
-                        />
-                      </Col>
-                      <Col md={1}>
-                        <Button variant="contained" onClick={addPublication} className="add-button">
-                          +
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="urls">
-                  <FormLabel label="URLs" />
-                  <Col md={4}>
+                <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="URLs" />
                     {urlWidget(true)}
                     <Row>
                       <Col md={10}>
@@ -735,52 +685,67 @@ const AddLinker = (props) => {
                         <Feedback message="Please enter a valid and unique URL." />
                       </Col>
                       <Col md={1}>
-                        <Button variant="contained" onClick={addURL} className="add-button">
-                          +
+                        <Button onClick={addURL} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add URL">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
                         </Button>
                       </Col>
                     </Row>
                   </Col>
                 </Form.Group>
-                <Row>
-                  <FormLabel label="Source" />
-
-                  <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"commercial"}
-                        label={"Commercial"}
-                        onChange={sourceSelection}
-                        checked={linker.source === "commercial"}
-                      />
-                      {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp; &nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        label={"Non Commercial"}
-                        value={"nonCommercial"}
-                        onChange={sourceSelection}
-                        checked={linker.source === "nonCommercial"}
-                      />
-                      {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Form.Check.Label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        type="radio"
-                        value={"notSpecified"}
-                        label={"Not Specified"}
-                        onChange={sourceSelection}
-                        checked={linker.source === "notSpecified"}
-                      />
-                      {"Not Specified"}
-                    </Form.Check.Label>
+                <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Publications" />
+                    {linker.publications.map((pub, index) => {
+                      return (
+                        <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
+                      );
+                    })}
+                    <Row>
+                      <Col md={10}>
+                        <Form.Control
+                          name="publication"
+                          placeholder="Enter a Pubmed ID and click +"
+                          value={newPubMedId}
+                          onChange={(e) => {
+                            const _value = e.target.value;
+                            if (_value && !/^[0-9]+$/.test(_value)) {
+                              return;
+                            }
+                            setNewPubMedId(_value);
+                            numberLengthCheck(e);
+                          }}
+                          maxLength={100}
+                        />
+                      </Col>
+                      <Col md={1}>
+                        <Button onClick={addPublication} className="gg-reg-btn-outline">
+                          <LineTooltip text="Add Publication">
+                            <Link>
+                              <Image src={plusIcon} alt="plus button" />
+                            </Link>
+                          </LineTooltip>
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Form.Group>
+                <Row className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Source" />
+                    <RadioGroup row name="molecule-type" onChange={sourceSelection} value={linker.source}>
+                      {/* Commercial */}
+                      <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
+                      {/* Non Commercial */}
+                      <FormControlLabel value="nonCommercial" control={<BlueRadio />} label="Non Commercial" />
+                      {/* Not Specified */}
+                      <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
+                    </RadioGroup>
                   </Col>
                 </Row>
-                &nbsp;&nbsp;&nbsp;
                 {linker.source === "commercial" ? (
                   <Source
                     isCommercial
@@ -804,7 +769,7 @@ const AddLinker = (props) => {
         }
       case 3:
         return (
-          <Form className="radioform2">
+          <Form>
             {Object.keys(reviewFields).map((key) =>
               (key === "pubChemId" ||
                 key === "inChiKey" ||
@@ -816,12 +781,12 @@ const AddLinker = (props) => {
               linker.selectedLinker === "Unknown" ? (
                 ""
               ) : (
-                <Form.Group as={Row} controlId={key} key={key}>
-                  <FormLabel label={reviewFields[key].label} />
-                  <Col md={6}>
+                <Form.Group as={Row} controlId={key} key={key} className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label={reviewFields[key].label} />
                     <Form.Control
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
-                      rows={key === "sequence" ? "15" : "4"}
+                      rows={key === "sequence" ? "10" : "4"}
                       name={key}
                       placeholder={""}
                       value={linker[key]}
@@ -833,50 +798,32 @@ const AddLinker = (props) => {
               )
             )}
 
-            {linker.publications && linker.publications.length > 0 && (
-              <Form.Group as={Row} controlId="publications">
-                <FormLabel label="Publications" />
-                <Col md={4}>
-                  {linker.publications && linker.publications.length > 0
-                    ? linker.publications.map((pub) => {
-                        return (
-                          <li>
-                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
-                          </li>
-                        );
-                      })
-                    : ""}
-                </Col>
-              </Form.Group>
-            )}
-
             {linker.urls && linker.urls.length > 0 && (
-              <Form.Group as={Row} controlId="urls">
-                <FormLabel label="Urls" />
-                <Col md={4}>
-                  {linker.urls && linker.urls.length > 0 ? (
-                    linker.urls.map((url, index) => {
-                      return (
-                        <li style={{ marginTop: "8px" }} key={index}>
-                          <Link
-                            style={{ fontSize: "0.9em" }}
-                            href={externalizeUrl(url)}
-                            target="_blank"
-                            rel="external noopener noreferrer"
-                          >
-                            {url}
-                          </Link>
-                          <br />
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <div style={{ marginTop: "8px" }} />
-                  )}
+              <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="URLs" />
+                  {linker.urls.map((url, index) => {
+                    return (
+                      <div key={index}>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </div>
+                    );
+                  })}
                 </Col>
               </Form.Group>
             )}
-
+            {linker.publications && linker.publications.length > 0 && (
+              <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Publications" />
+                  {linker.publications.map((pub) => {
+                    return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
+                  })}
+                </Col>
+              </Form.Group>
+            )}
             <ViewSourceInfo
               source={linker.source}
               commercial={linker.commercial}
@@ -892,12 +839,15 @@ const AddLinker = (props) => {
 
   function getNavigationButtons(className) {
     return (
-      <div className={className}>
-        <Button disabled={activeStep === 0} onClick={handleBack} className="stepper-button">
+      <div className="text-center mb-2">
+        <Link to="/linkers">
+          <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Lipids</Button>
+        </Link>
+        <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
         </Button>
-        <Button variant="contained" className="stepper-button" onClick={handleNext}>
-          {activeStep === steps.length - 1 ? "Finish" : "Next"}
+        <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
+          {activeStep === steps.length - 1 ? "Submit" : "Next"}
         </Button>
       </div>
     );
@@ -917,7 +867,7 @@ const AddLinker = (props) => {
       source.batchId = linker.commercial.batchId;
     } else if (linker.source === "nonCommercial") {
       source.type = "NONCOMMERCIAL";
-      source.batchId = linker.commercial.batchId;
+      source.batchId = linker.nonCommercial.batchId;
       source.providerLab = linker.nonCommercial.providerLab;
       source.method = linker.nonCommercial.method;
       source.comment = linker.nonCommercial.sourceComment;
@@ -935,7 +885,7 @@ const AddLinker = (props) => {
       molecularFormula: linker.molecularFormula,
       smiles: linker.canonicalSmiles,
       isomericSmiles: linker.isomericSmiles,
-      comment: linker.comment,
+      description: linker.comment,
       publications: linker.publications,
       urls: linker.urls,
       source: source,
@@ -960,9 +910,7 @@ const AddLinker = (props) => {
   }
 
   const isStepSkipped = (step) => {
-    return (
-      linker.selectedLinker === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3)
-    );
+    return linker.selectedLinker === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
   };
 
   return (
@@ -971,43 +919,45 @@ const AddLinker = (props) => {
         <title>{head.addLinker.title}</title>
         {getMeta(head.addLinker)}
       </Helmet>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Add Linker to Repository" subTitle="Please provide the information for the new linker." />
+          <Card>
+            <Card.Body>
+              <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  if (isStepSkipped(index)) {
+                    labelProps.optional = <Typography variant="caption">Unknown Linker</Typography>;
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              {getNavigationButtons()}
+              <h5 className="text-center gg-blue mt-4">{getStepLabel(activeStep)}</h5>
 
-      <div className="page-container">
-        <Title title="Add Linker to Repository" />
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const stepProps = {};
-            const labelProps = {};
-            if (isStepSkipped(index)) {
-              labelProps.optional = <Typography variant="caption">Not Applicable</Typography>;
-              stepProps.completed = false;
-            }
-            return (
-              <Step key={label} {...stepProps}>
-                <StepLabel {...labelProps}>{label}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-        {getNavigationButtons("button - div text-center")}
-        &nbsp; &nbsp;
-        {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="linkers"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
-          />
-        )}
-        <div>
-          <div>
-            <Typography className={classes.instructions} component={"span"} variant={"body2"}>
-              {getStepContent(activeStep, validate)}
-            </Typography>
-            {getNavigationButtons("button-div line-break-1 text-center")}
-          </div>
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="linkers"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                />
+              )}
+              <div className="mt-4 mb-4">
+                <span>{getStepContent(activeStep, validate)}</span>
+                {getNavigationButtons()}
+              </div>
+            </Card.Body>
+          </Card>
         </div>
-      </div>
+      </Container>
       <Loading show={showLoading} />
     </>
   );
