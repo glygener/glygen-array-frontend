@@ -5,11 +5,14 @@ import "./Contribute.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Col } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
+import { getToolTip } from "../utils/commonUtils";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { Button } from "react-bootstrap";
 
-const OtherMolecules = props => {
+const OtherMolecules = (props) => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -18,42 +21,50 @@ const OtherMolecules = props => {
         <title>{head.otherMolecules.title}</title>
         {getMeta(head.otherMolecules)}
       </Helmet>
+      <Container maxWidth="xl">
+        <div className={!props.isImported ? "page-container" : ""}>
+          <PageHeading
+            title="Other Molecules"
+            subTitle="The table below displays a list of all lipids that have been uploaded to your repository. New lipids may be added, old lipids can be edited, and unused lipids can be removed."
+          />
+          <Card>
+            <Card.Body>
+              <div className="text-center mb-4">
+                {!props.isImported && (
+                  <Link to="/otherMolecules/addOtherMolecule">
+                    <Button className="gg-btn-blue mt-2">Add Other Molecule</Button>
+                  </Link>
+                )}
+              </div>
 
-      <div className={!props.isImported ? "page-container" : ""}>
-        <Title title="Other Molecules" />
-
-        <Col className={"col-link-button"}>
-          {!props.isImported && (
-            <Link to="/otherMolecules/addOtherMolecule" className="link-button" style={{ width: "180px" }}>
-              Add Other Molecule
-            </Link>
-          )}
-        </Col>
-
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name",
-            },
-          ]}
-          defaultPageSize={10}
-          defaultSortColumn="id"
-          showCommentsButton
-          customCommentColumn
-          showDeleteButton
-          showSearchBox
-          showEditButton
-          commentsRefColumn="comment"
-          fetchWS="listmoleculesbytype"
-          paramTypeValue={"OTHER"}
-          deleteWS="linkerdelete"
-          editUrl="otherMolecules/editLinker"
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Peptides"
-        />
-      </div>
+              <GlygenTable
+                columns={[
+                  {
+                    Header: "Name",
+                    accessor: "name",
+                    Cell: (row) => getToolTip(row.original.name),
+                  },
+                ]}
+                defaultPageSize={10}
+                defaultSortColumn="id"
+                showCommentsButton
+                customCommentColumn
+                showDeleteButton
+                showSearchBox
+                showEditButton
+                commentsRefColumn="comment"
+                fetchWS="listmoleculesbytype"
+                paramTypeValue={"OTHER"}
+                deleteWS="linkerdelete"
+                editUrl="otherMolecules/editLinker"
+                keyColumn="id"
+                showRowsInfo
+                infoRowsText="Peptides"
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

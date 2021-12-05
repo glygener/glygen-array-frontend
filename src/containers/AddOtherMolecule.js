@@ -1,7 +1,7 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
 import { Form, Row, Col } from "react-bootstrap";
-import { FormLabel, Feedback, FormButton, Title, LinkButton } from "../components/FormControls";
+import { FormLabel, Feedback, FormButton, LinkButton } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -10,16 +10,20 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PublicationCard } from "../components/PublicationCard";
-import {
-  csvToArray,
-  isValidURL,
-  externalizeUrl,
-  isValidNumber,
-  numberLengthCheck,
-} from "../utils/commonUtils";
-import { Button, Link } from "@material-ui/core";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import { Button } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Link } from "react-router-dom";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import { BlueRadio } from "../components/FormControls";
+import { Image } from "react-bootstrap";
+import plusIcon from "../images/icons/plus.svg";
 
 const AddOtherMolecule = (props) => {
   useEffect(props.authCheckAgent, []);
@@ -90,15 +94,7 @@ const AddOtherMolecule = (props) => {
     let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
-      wsCall(
-        "getpublication",
-        "GET",
-        [newPubMedId],
-        true,
-        null,
-        addPublicationSuccess,
-        addPublicationError
-      );
+      wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
     } else {
       setNewPubMedId("");
     }
@@ -158,30 +154,29 @@ const AddOtherMolecule = (props) => {
         {otherMolecule.urls && otherMolecule.urls.length > 0
           ? otherMolecule.urls.map((url, index) => {
               return (
-                <Row style={{ marginTop: "8px" }} key={index}>
+                <Row key={index}>
                   <Col md={10}>
-                    <Link
-                      style={{ fontSize: "0.9em" }}
-                      href={externalizeUrl(url)}
-                      target="_blank"
-                      rel="external noopener noreferrer"
-                    >
+                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                       {url}
-                    </Link>
+                    </a>
                   </Col>
                   {enableDelete && (
-                    <Col style={{ marginTop: "2px", textAlign: "center" }} md={2}>
-                      <FontAwesomeIcon
-                        icon={["far", "trash-alt"]}
-                        size="xs"
-                        title="Delete Url"
-                        className="caution-color table-btn"
-                        onClick={() => {
-                          const listUrls = otherMolecule.urls;
-                          listUrls.splice(index, 1);
-                          setOtherMolecule({ urls: listUrls });
-                        }}
-                      />
+                    <Col className="pb-2 text-center" md={2}>
+                      <LineTooltip text="Delete URL">
+                        <Link>
+                          <FontAwesomeIcon
+                            icon={["far", "trash-alt"]}
+                            size="lg"
+                            alt="Delete URL"
+                            className="caution-color tbl-icon-btn"
+                            onClick={() => {
+                              const listUrls = otherMolecule.urls;
+                              listUrls.splice(index, 1);
+                              setOtherMolecule({ urls: listUrls });
+                            }}
+                          />
+                        </Link>
+                      </LineTooltip>
                     </Col>
                   )}
                 </Row>
@@ -195,15 +190,10 @@ const AddOtherMolecule = (props) => {
   function getStepContent() {
     return (
       <>
-        <Form
-          className="radioform2"
-          noValidate
-          validated={validate && validatedCommNonComm}
-          onSubmit={(e) => handleSubmit(e)}
-        >
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Name" className="required-asterik" />
-            <Col md={4}>
+        <Form noValidate validated={validate && validatedCommNonComm} onSubmit={(e) => handleSubmit(e)}>
+          <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Name" className="required-asterik" />
               <Form.Control
                 type="text"
                 name="name"
@@ -217,67 +207,27 @@ const AddOtherMolecule = (props) => {
               <Feedback message={"Name is required"} />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="comments">
-            <FormLabel label="Comments" />
-            <Col md={4}>
+          <Form.Group as={Row} controlId="comments" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Comment" />
               <Form.Control
                 as="textarea"
                 rows={4}
                 name="comment"
-                placeholder="Comments"
+                placeholder="Enter Comment"
                 value={otherMolecule.comment}
                 onChange={handleChange}
                 maxLength={2000}
               />
               <div className="text-right text-muted">
-                {otherMolecule.comment && otherMolecule.comment.length > 0
-                  ? otherMolecule.comment.length
-                  : "0"}
+                {otherMolecule.comment && otherMolecule.comment.length > 0 ? otherMolecule.comment.length : "0"}
                 /2000
               </div>
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="publications">
-            <FormLabel label="Publications" />
-            <Col md={4}>
-              {otherMolecule.publications.map((pub, index) => {
-                return (
-                  <PublicationCard
-                    key={index}
-                    {...pub}
-                    enableDelete
-                    deletePublication={deletePublication}
-                  />
-                );
-              })}
-              <Row>
-                <Col md={10}>
-                  <Form.Control
-                    type="number"
-                    name="publication"
-                    placeholder="Enter a Pubmed ID and click +"
-                    value={newPubMedId}
-                    onChange={(e) => setNewPubMedId(e.target.value)}
-                    maxLength={100}
-                    onKeyDown={(e) => {
-                      isValidNumber(e);
-                    }}
-                    onInput={(e) => {
-                      numberLengthCheck(e);
-                    }}
-                  />
-                </Col>
-                <Col md={1}>
-                  <Button variant="contained" onClick={addPublication} className="add-button">
-                    +
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} controlId="urls">
-            <FormLabel label="URLs" />
-            <Col md={4}>
+          <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="URLs" />
               {urlWidget(true)}
               <Row>
                 <Col md={10}>
@@ -296,52 +246,65 @@ const AddOtherMolecule = (props) => {
                   <Feedback message="Please enter a valid and unique URL." />
                 </Col>
                 <Col md={1}>
-                  <Button variant="contained" onClick={addURL} className="add-button">
-                    +
+                  <Button onClick={addURL} className="gg-reg-btn-outline">
+                    <LineTooltip text="Add URL">
+                      <Link>
+                        <Image src={plusIcon} alt="plus button" />
+                      </Link>
+                    </LineTooltip>
                   </Button>
                 </Col>
               </Row>
             </Col>
           </Form.Group>
-          <Row>
-            <FormLabel label="Source" />
-
-            <Col md={{ span: 6 }} style={{ marginLeft: "20px" }}>
-              <Form.Check.Label>
-                <Form.Check.Input
-                  type="radio"
-                  value={"commercial"}
-                  label={"Commercial"}
-                  onChange={sourceSelection}
-                  checked={otherMolecule.source === "commercial"}
-                />
-                {"Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-              </Form.Check.Label>
-              &nbsp;&nbsp; &nbsp;&nbsp;
-              <Form.Check.Label>
-                <Form.Check.Input
-                  type="radio"
-                  label={"Non Commercial"}
-                  value={"nonCommercial"}
-                  onChange={sourceSelection}
-                  checked={otherMolecule.source === "nonCommercial"}
-                />
-                {"Non Commercial"}&nbsp;&nbsp;&nbsp;&nbsp;
-              </Form.Check.Label>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Form.Check.Label>
-                <Form.Check.Input
-                  type="radio"
-                  value={"notSpecified"}
-                  label={"Not Specified"}
-                  onChange={sourceSelection}
-                  checked={otherMolecule.source === "notSpecified"}
-                />
-                {"Not Specified"}
-              </Form.Check.Label>
+          <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Publications" />
+              {otherMolecule.publications.map((pub, index) => {
+                return <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />;
+              })}
+              <Row>
+                <Col md={10}>
+                  <Form.Control
+                    name="publication"
+                    placeholder="Enter a Pubmed ID and click +"
+                    value={newPubMedId}
+                    onChange={(e) => {
+                      const _value = e.target.value;
+                      if (_value && !/^[0-9]+$/.test(_value)) {
+                        return;
+                      }
+                      setNewPubMedId(_value);
+                      numberLengthCheck(e);
+                    }}
+                    maxLength={100}
+                  />
+                </Col>
+                <Col md={1}>
+                  <Button onClick={addPublication} className="gg-reg-btn-outline">
+                    <LineTooltip text="Add Publication">
+                      <Link>
+                        <Image src={plusIcon} alt="plus button" />
+                      </Link>
+                    </LineTooltip>
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Form.Group>
+          <Row className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Source" />
+              <RadioGroup row name="molecule-type" onChange={sourceSelection} value={otherMolecule.source}>
+                {/* Commercial */}
+                <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
+                {/* Non Commercial */}
+                <FormControlLabel value="nonCommercial" control={<BlueRadio />} label="Non Commercial" />
+                {/* Not Specified */}
+                <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
+              </RadioGroup>
             </Col>
           </Row>
-          &nbsp;&nbsp;&nbsp;
           {otherMolecule.source === "commercial" ? (
             <Source
               isCommercial
@@ -359,8 +322,16 @@ const AddOtherMolecule = (props) => {
               />
             )
           )}
-          <FormButton className="line-break-1" type="submit" label="Submit" />
-          <LinkButton to="/linkers" label="Cancel" />
+          {/* <FormButton className="line-break-1" type="submit" label="Submit" />
+          <LinkButton to="/linkers" label="Cancel" /> */}
+          <div className="text-center mb-2">
+            <Link to="/otherMolecules">
+              <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+            </Link>
+            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+              Submit
+            </Button>
+          </div>
         </Form>
       </>
     );
@@ -388,7 +359,7 @@ const AddOtherMolecule = (props) => {
       }
 
       source.type = "NONCOMMERCIAL";
-      source.batchId = otherMolecule.commercial.batchId;
+      source.batchId = otherMolecule.nonCommercial.batchId;
       source.providerLab = otherMolecule.nonCommercial.providerLab;
       source.method = otherMolecule.nonCommercial.method;
       source.comment = otherMolecule.nonCommercial.sourceComment;
@@ -434,20 +405,27 @@ const AddOtherMolecule = (props) => {
         <title>{head.addOtherMolecule.title}</title>
         {getMeta(head.addOtherMolecule)}
       </Helmet>
-
-      <div className="page-container">
-        <Title title="Add OtherMolecule to Repository" />
-        &nbsp; &nbsp;
-        {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="linkers"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Add Other Molecule to Repository"
+            subTitle="Please provide the information for other molecule."
           />
-        )}
-        <div>{getStepContent()}</div>
-      </div>
+          <Card>
+            <Card.Body>
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="linkers"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                />
+              )}
+              <div className="mt-4 mb-4">{getStepContent()}</div>
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
       <Loading show={showLoading} />
     </>
   );

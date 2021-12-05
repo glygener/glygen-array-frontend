@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import { Loading } from "../components/Loading";
 import { Helmet } from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Feedback, PageHeading } from "../components/FormControls";
+import { FormLabel, Feedback, PageHeading } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Form, Row, Col, Button, Card } from "react-bootstrap";
 import { useHistory, Link } from "react-router-dom";
@@ -14,7 +14,7 @@ import Container from "@material-ui/core/Container";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
 
-const AddMultipleGlycans = props => {
+const AddMultipleGlycans = (props) => {
   useEffect(() => {
     props.authCheckAgent();
 
@@ -36,7 +36,7 @@ const AddMultipleGlycans = props => {
 
   const fileDetails = {
     fileType: defaultFileType,
-    glytoucanRegistration: false
+    glytoucanRegistration: false,
   };
 
   const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
@@ -58,14 +58,14 @@ const AddMultipleGlycans = props => {
       "POST",
       {
         noGlytoucanRegistration: !uploadDetails.glytoucanRegistration,
-        filetype: encodeURIComponent(uploadDetails.fileType)
+        filetype: encodeURIComponent(uploadDetails.fileType),
       },
       true,
       {
         identifier: uploadedGlycanFile.identifier,
         originalName: uploadedGlycanFile.originalName,
         fileFolder: uploadedGlycanFile.fileFolder,
-        fileFormat: uploadedGlycanFile.fileFormat
+        fileFormat: uploadedGlycanFile.fileFormat,
       },
       glycanUploadSucess,
       glycanUploadError
@@ -75,18 +75,18 @@ const AddMultipleGlycans = props => {
   }
 
   function glycanUploadSucess(response) {
-    response.json().then(resp => {
+    response.json().then((resp) => {
       setShowErrorSummary(false);
       setShowLoading(false);
 
       history.push({
         pathname: "/glycans/addMultipleGlycanDetails",
-        state: { uploadResponse: resp }
+        state: { uploadResponse: resp },
       });
     });
   }
   function glycanUploadError(response) {
-    response.json().then(resp => {
+    response.json().then((resp) => {
       setTitle("Glycan File Upload Details");
       resp.error
         ? setPageErrorMessage("The file is invalid. Please verify the file and format selection before re-uploading.")
@@ -102,7 +102,7 @@ const AddMultipleGlycans = props => {
         <title>{head.addMultiSlideLayout.title}</title>
         {getMeta(head.addMultiSlideLayout)}
       </Helmet>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
             title={title}
@@ -119,19 +119,11 @@ const AddMultipleGlycans = props => {
                 ></ErrorSummary>
               )}
 
-              <Form noValidate onSubmit={e => handleSubmit(e)}>
+              <Form noValidate onSubmit={(e) => handleSubmit(e)} className="mt-4 mb-4">
                 {/* File type */}
-                <Form.Group as={Row} controlId="fileType">
-                  <Form.Label
-                    column
-                    xs={12}
-                    sm={3}
-                    lg={3}
-                    className="required-asterik text-xs-left text-sm-right text-md-right"
-                  >
-                    <strong>File Type</strong>
-                  </Form.Label>
-                  <Col xs={12} sm={9} lg={8}>
+                <Form.Group as={Row} controlId="fileType" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="File Type" className="required-asterik" />
                     <Form.Control
                       as="select"
                       name="fileType"
@@ -152,22 +144,14 @@ const AddMultipleGlycans = props => {
                 </Form.Group>
 
                 {/* File Upload */}
-                <Form.Group as={Row} controlId="fileUploader">
-                  <Form.Label
-                    column
-                    xs={12}
-                    sm={6}
-                    lg={3}
-                    className="required-asterik text-xs-left text-sm-right text-md-right"
-                  >
-                    <strong>Upload Glycan File</strong>
-                  </Form.Label>
-                  <Col xs={12} sm={6} lg={8}>
+                <Form.Group as={Row} controlId="fileUploader" className="gg-align-center mb-35">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Upload Glycan File" className="required-asterik" />
                     <ResumableUploader
                       history={history}
                       headerObject={{
                         Authorization: window.localStorage.getItem("token") || "",
-                        Accept: "*/*"
+                        Accept: "*/*",
                       }}
                       fileType={fileDetails.fileType}
                       uploadService={getWsUrl("upload")}
@@ -175,13 +159,13 @@ const AddMultipleGlycans = props => {
                       setUploadedFile={setUploadedGlycanFile}
                       required={true}
                     />
-                    <Form.Group className="mb-3 mt-0 pt-0" controlId="formBasicCheckbox">
+                    <Form.Group className="mt-0 pt-0 mb-0" controlId="formBasicCheckbox">
                       <FormControlLabel
                         control={
                           <BlueCheckbox
                             name="glytoucanRegistration"
                             checked={uploadDetails.glytoucanRegistration}
-                            onChange={e => setUploadDetails({ glytoucanRegistration: e.target.checked })}
+                            onChange={(e) => setUploadDetails({ glytoucanRegistration: e.target.checked })}
                             size="large"
                           />
                         }
@@ -191,7 +175,7 @@ const AddMultipleGlycans = props => {
                   </Col>
                 </Form.Group>
 
-                <div className="text-center mb-4">
+                <div className="text-center">
                   <Link to="/glycans">
                     <Button className="gg-btn-blue5 gg-btn-outline mt-2 gg-mr-20"> Back to Glycans</Button>
                   </Link>
