@@ -156,7 +156,11 @@ const MetaData = props => {
     let flag;
 
     if (dateElementId === "checkBox") {
-      descriptor = descriptorDetails.descriptors.find(i => i.id === subGroupId);
+      if (descriptorDetails.group) {
+        descriptor = descriptorDetails.descriptors.find(i => i.id === subGroupId);
+      } else {
+        descriptor = descriptorDetails;
+      }
 
       if (!descriptor) {
         descriptor = descriptorDetails.descriptors.map(subDesc => {
@@ -242,7 +246,17 @@ const MetaData = props => {
           if (name === "unitlevel") {
             editedSubGroup.unit = value;
           } else if (dateElementId === "checkBox") {
-            editedSubGroup.disabled = flag;
+            if (e.target.name === "notApplicable") {
+              editedSubGroup.notApplicable = flag;
+            } else if (e.target.name === "notRecorded") {
+              editedSubGroup.notRecorded = flag;
+            }
+
+            if (editedSubGroup.notApplicable || editedSubGroup.notRecorded) {
+              editedSubGroup.disabled = true;
+            } else if (!editedSubGroup.notApplicable && !editedSubGroup.notRecorded) {
+              editedSubGroup.disabled = false;
+            }
           } else {
             editedSubGroup.value = value;
           }
@@ -252,7 +266,17 @@ const MetaData = props => {
           if (name === "unitlevel") {
             editedSubGroup.unit = value;
           } else if (dateElementId === "checkBox") {
-            editedSubGroup.disabled = flag;
+            if (e.target.name === "notApplicable") {
+              editedSubGroup.notApplicable = flag;
+            } else if (e.target.name === "notRecorded") {
+              editedSubGroup.notRecorded = flag;
+            }
+
+            if (editedSubGroup.notApplicable || editedSubGroup.notRecorded) {
+              editedSubGroup.disabled = true;
+            } else if (!editedSubGroup.notApplicable && !editedSubGroup.notRecorded) {
+              editedSubGroup.disabled = false;
+            }
           } else {
             editedSubGroup.value = value;
           }
@@ -264,7 +288,17 @@ const MetaData = props => {
         if (name === "unitlevel") {
           editedDesc.unit = value;
         } else if (dateElementId === "checkBox") {
-          editedDesc.disabled = flag;
+          if (e.target.name === "notApplicable") {
+            editedDesc.notApplicable = flag;
+          } else if (e.target.name === "notRecorded") {
+            editedDesc.notRecorded = flag;
+          }
+
+          if (editedDesc.notApplicable || editedDesc.notRecorded) {
+            editedDesc.disabled = true;
+          } else if (!editedDesc.notApplicable && !editedDesc.notRecorded) {
+            editedDesc.disabled = false;
+          }
         } else {
           editedDesc.value = value;
         }
@@ -273,7 +307,17 @@ const MetaData = props => {
       if (name === "unitlevel") {
         descriptorDetails.unit = value;
       } else if (dateElementId === "checkBox") {
-        descriptorDetails.disabled = flag;
+        if (e.target.name === "notApplicable") {
+          descriptorDetails.notApplicable = flag;
+        } else if (e.target.name === "notRecorded") {
+          descriptorDetails.notRecorded = flag;
+        }
+
+        if (descriptorDetails.notApplicable || descriptorDetails.notRecorded) {
+          descriptorDetails.disabled = true;
+        } else if (!descriptorDetails.notApplicable && !descriptorDetails.notRecorded) {
+          descriptorDetails.disabled = false;
+        }
       } else {
         descriptorDetails.value = value;
       }
@@ -768,7 +812,7 @@ const MetaData = props => {
     }
 
     var itemDescriptors = itemByType.descriptors;
-    const selectedElement = itemDescriptors.filter(i => i.id === id);
+    const selectedElement = itemDescriptors.find(i => i.id === id);
     const selectedElementIndex = itemDescriptors.indexOf(selectedElement);
 
     if (!selectedElement.group) {
@@ -942,7 +986,6 @@ const MetaData = props => {
     // );
 
     if (currentDefaultSelection.length > 1) {
-      debugger;
       let newlyAddedNonMGroupsofCurrentDefaultSelection = itemDescriptors.filter(
         i =>
           i.mandateGroup &&
@@ -952,11 +995,8 @@ const MetaData = props => {
       );
 
       newlyAddedNonMGroupsofCurrentDefaultSelection.forEach(desc => {
-        debugger;
         itemDescriptors.splice(itemDescriptors.indexOf(desc), 1);
       });
-
-      debugger;
 
       currentDefaultSelection = itemDescriptors.filter(
         i =>

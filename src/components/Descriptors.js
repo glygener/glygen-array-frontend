@@ -362,21 +362,6 @@ const Descriptors = props => {
   };
 
   const getDescriptorGroups = (groupElement, index) => {
-    let lastAddedIsNewMandatory = false;
-    let lastAddedIsNewMandatoryCount = descriptorsByMetaType.descriptors.filter(
-      i => i.isNewlyAddedNonMandatory && i.name === groupElement.name
-    ).length;
-
-    let listofGroupElementItems = descriptorsByMetaType.descriptors.filter(i => i.name === groupElement.name);
-
-    let lastAddedIsNewMandatoryElement = listofGroupElementItems[lastAddedIsNewMandatoryCount];
-
-    if (lastAddedIsNewMandatoryElement && lastAddedIsNewMandatoryElement.id === groupElement.id) {
-      lastAddedIsNewMandatory = true;
-    } else if (lastAddedIsNewMandatoryCount === 0) {
-      lastAddedIsNewMandatory = true;
-    }
-
     const descriptorWithSubGroups = groupElement.descriptors.filter(i => i.group === true);
 
     if (descriptorWithSubGroups.length > 0 && !groupElement.descriptors[groupElement.descriptors.length - 1].group) {
@@ -458,7 +443,7 @@ const Descriptors = props => {
               <span>{descriptorSubGroup(groupElement)}</span>
             )} */}
 
-            {groupElement.maxOccurrence > 1 && lastAddedIsNewMandatory && (
+            {groupElement.maxOccurrence > 1 && displayPlusIcon(groupElement, descriptorsByMetaType.descriptors, false) && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
                 size="lg"
@@ -470,7 +455,6 @@ const Descriptors = props => {
                 onClick={() => props.handleAddDescriptorGroups(groupElement)}
               />
             )}
-
             {(groupElement.isNewlyAdded ||
               groupElement.isNewlyAddedNonMandatory ||
               groupElement.xorMandate ||
@@ -604,6 +588,33 @@ const Descriptors = props => {
     //   return 4;
     // }
   }
+
+  function displayPlusIcon(element, desc, group) {
+    let lastAddedIsNewMandatory = false;
+    let lastAddedIsNewMandatoryCount;
+    let listofGroupElementItems;
+    let lastAddedIsNewMandatoryElement;
+
+    if (group) {
+      lastAddedIsNewMandatoryCount = desc.filter(i => !i.group && i.isNewlyAddedNonMandatory && i.name === element.name)
+        .length;
+    } else {
+      lastAddedIsNewMandatoryCount = desc.filter(i => i.isNewlyAddedNonMandatory && i.name === element.name).length;
+    }
+
+    listofGroupElementItems = desc.filter(i => i.name === element.name);
+
+    lastAddedIsNewMandatoryElement = listofGroupElementItems[lastAddedIsNewMandatoryCount];
+
+    if (lastAddedIsNewMandatoryElement && lastAddedIsNewMandatoryElement.id === element.id) {
+      lastAddedIsNewMandatory = true;
+    } else if (lastAddedIsNewMandatoryCount === 0) {
+      lastAddedIsNewMandatory = true;
+    }
+
+    return lastAddedIsNewMandatory;
+  }
+
   const getNewField = (element, descriptorDetails, subGroupName) => {
     if (!element.namespace) {
       element = { ...element, namespace: { name: "label" } };
@@ -761,9 +772,9 @@ const Descriptors = props => {
           </Col>
         )}
 
-        {element.maxOccurrence > 1 && (
+        {element && element.maxOccurrence > 1 && displayPlusIcon(element, descMetaData, true) && (
           <Col md={1} style={{ marginLeft: "-150px;" }}>
-            <Button onClick={props.addDescriptor}>
+            <Button onClick={() => props.handleAddDescriptorGroups(descriptorDetails)}>
               <LineTooltip text="Add descriptor">
                 <Image src={plusIcon} alt="plus button" />
               </LineTooltip>
