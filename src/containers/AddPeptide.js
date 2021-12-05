@@ -1,7 +1,7 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
 import { Form, Row, Col } from "react-bootstrap";
-import { Feedback } from "../components/FormControls";
+import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -12,13 +12,7 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  csvToArray,
-  isValidURL,
-  externalizeUrl,
-  isValidNumber,
-  numberLengthCheck,
-} from "../utils/commonUtils";
+import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography, makeStyles } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
@@ -35,7 +29,6 @@ import { BlueRadio } from "../components/FormControls";
 import { Link } from "react-router-dom";
 import ExampleExploreControl from "../components/ExampleExploreControl";
 import moleculeExamples from "../appData/moleculeExamples";
-
 
 const AddPeptide = (props) => {
   useEffect(props.authCheckAgent, []);
@@ -206,7 +199,7 @@ const AddPeptide = (props) => {
     return ["Peptide Type", "Type Specific Information", "Generic Information", "Review and Add"];
   }
 
-  function getPeptideType(typeIndex) {
+  function getMoleculeType(typeIndex) {
     switch (typeIndex) {
       case "SequenceDefined":
         return `${displayNames.peptide.SEQUENCE}`;
@@ -221,9 +214,9 @@ const AddPeptide = (props) => {
       case 0:
         return "Select the Peptide Type";
       case 1:
-        return `Add Type Specific Peptide Information (${getPeptideType(peptide.selectedPeptide)})`;
+        return `Add Type Specific Peptide Information (${getMoleculeType(peptide.selectedPeptide)})`;
       case 2:
-        return `Add Generic Peptide Information (${getPeptideType(peptide.selectedPeptide)})`;
+        return `Add Generic Peptide Information (${getMoleculeType(peptide.selectedPeptide)})`;
       case 3:
         return "Review and Add Peptide to Repository";
       default:
@@ -271,7 +264,7 @@ const AddPeptide = (props) => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
-          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
+          setPageErrorMessage("The PubMed ID entered is invalid. Please try again.");
         }
         setShowErrorSummary(true);
       });
@@ -317,7 +310,6 @@ const AddPeptide = (props) => {
                     style={{
                       wordBreak: "break-all",
                     }}
-                    className="pb-2"
                   >
                     <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                       {url}
@@ -357,7 +349,7 @@ const AddPeptide = (props) => {
           <Form>
             <Row className="gg-align-center">
               <Col sm="auto">
-                <RadioGroup name="peptide-type" onChange={handleSelect} value={peptide.selectedPeptide}>
+                <RadioGroup name="molecule-type" onChange={handleSelect} value={peptide.selectedPeptide}>
                   {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
@@ -375,17 +367,9 @@ const AddPeptide = (props) => {
         if (activeStep === 1 && peptide.selectedPeptide !== "Unknown") {
           return (
             <>
-              <Form.Group as={Row} controlId="sequence">
-                <Form.Label
-                  column
-                  xs={12}
-                  lg={3}
-                  xl={2}
-                  className="required-asterik text-xs-left text-md-left text-lg-right"
-                >
-                  <strong>Sequence</strong>
-                </Form.Label>
+              <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
+                  <FormLabel label="Sequence" className="required-asterik" />
                   <Form.Control
                     as="textarea"
                     rows="5"
@@ -435,17 +419,9 @@ const AddPeptide = (props) => {
           return (
             <>
               <Form noValidate validated={validate && validatedCommNonComm}>
-                <Form.Group as={Row} controlId="name">
-                  <Form.Label
-                    column
-                    xs={12}
-                    lg={3}
-                    xl={2}
-                    className="required-asterik text-xs-left text-md-left text-lg-right"
-                  >
-                    <strong>Name</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="Name" className="required-asterik" />
                     <Form.Control
                       type="text"
                       name="name"
@@ -459,11 +435,9 @@ const AddPeptide = (props) => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="comment">
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Comment</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="comment" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="Comment" />
                     <Form.Control
                       as="textarea"
                       rows={4}
@@ -479,11 +453,9 @@ const AddPeptide = (props) => {
                     </div>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="urls">
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>URLs</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="URLs" />
                     {urlWidget(true)}
                     <Row>
                       <Col md={10}>
@@ -514,11 +486,9 @@ const AddPeptide = (props) => {
                     </Row>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="publications">
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Publications</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="Publications" />
                     {peptide.publications.map((pub, index) => {
                       return (
                         <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
@@ -562,11 +532,9 @@ const AddPeptide = (props) => {
                     </Row>
                   </Col>
                 </Form.Group>
-                <Row>
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Source</strong>
-                  </Form.Label>
+                <Row className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="Source" />
                     <RadioGroup row name="peptide-type" onChange={sourceSelection} value={peptide.source}>
                       {/* Commercial */}
                       <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
@@ -617,11 +585,9 @@ const AddPeptide = (props) => {
               key === "sequence" && peptide.selectedPeptide === "Unknown" ? (
                 ""
               ) : (
-                <Form.Group as={Row} controlId={key} key={key}>
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>{reviewFields[key].label}</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId={key} key={key} className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label={reviewFields[key].label} />
                     <Form.Control
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
                       rows={key === "sequence" ? "10" : "4"}
@@ -636,11 +602,9 @@ const AddPeptide = (props) => {
               )
             )}
             {peptide.urls && peptide.urls.length > 0 && (
-              <Form.Group as={Row} controlId="urls">
-                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                  <strong>URLs</strong>
-                </Form.Label>
+              <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
+                  <FormLabel label="URLs" />
                   {peptide.urls.map((url, index) => {
                     return (
                       <div key={index}>
@@ -655,11 +619,9 @@ const AddPeptide = (props) => {
             )}
 
             {peptide.publications && peptide.publications.length > 0 && (
-              <Form.Group as={Row} controlId="publications">
-                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                  <strong>Publication</strong>
-                </Form.Label>
-                <Col xs={12} lg={9}>
+              <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
+                 <Col xs={12} lg={9}>
+                  <FormLabel label="Publications" />
                   {peptide.publications && peptide.publications.length > 0
                     ? peptide.publications.map((pub) => {
                         return (

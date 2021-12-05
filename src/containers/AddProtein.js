@@ -1,7 +1,7 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
 import { Form, Row, Col } from "react-bootstrap";
-import { Feedback } from "../components/FormControls";
+import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -184,7 +184,7 @@ const AddProtein = (props) => {
 
   const clearFields = () => {
     if (activeStep === 1) {
-      setProtein({ ...proteinInitialState, ...{ selectedPeptide: protein.selectedPeptide } });
+      setProtein({ ...proteinInitialState, ...{ selectedProtein: protein.selectedProtein } });
 
       setDisableReset(false);
     }
@@ -194,7 +194,7 @@ const AddProtein = (props) => {
         commercial: proteinInitialState.commercial,
         nonCommercial: proteinInitialState.nonCommercial,
         ...{
-          selectedPeptide: protein.selectedPeptide,
+          selectedProtein: protein.selectedProtein,
           sequence: protein.sequence,
           source: protein.source,
           uniProtId: protein.uniProtId,
@@ -210,7 +210,7 @@ const AddProtein = (props) => {
   function getSteps() {
     return ["Protein Type", "Type Specific Information", "Generic Information", "Review and Add"];
   }
-  function getPeptideType(typeIndex) {
+  function getMoleculeType(typeIndex) {
     switch (typeIndex) {
       case "SequenceDefined":
         return `${displayNames.protein.SEQUENCE}`;
@@ -225,9 +225,9 @@ const AddProtein = (props) => {
       case 0:
         return "Select the Protein Type";
       case 1:
-        return `Add Type Specific Protein Information (${getPeptideType(protein.selectedProtein)})`;
+        return `Add Type Specific Protein Information (${getMoleculeType(protein.selectedProtein)})`;
       case 2:
-        return `Add Generic Protein Information (${getPeptideType(protein.selectedProtein)})`;
+        return `Add Generic Protein Information (${getMoleculeType(protein.selectedProtein)})`;
       case 3:
         return "Review and Add Protein to Repository";
       default:
@@ -356,7 +356,6 @@ const AddProtein = (props) => {
                     style={{
                       wordBreak: "break-all",
                     }}
-                    className="pb-2"
                   >
                     <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                       {url}
@@ -369,7 +368,7 @@ const AddProtein = (props) => {
                           <FontAwesomeIcon
                             icon={["far", "trash-alt"]}
                             size="lg"
-                            title="Delete URL"
+                            alt="Delete URL"
                             className="caution-color tbl-icon-btn"
                             onClick={() => {
                               const listUrls = protein.urls;
@@ -396,7 +395,7 @@ const AddProtein = (props) => {
           <Form>
             <Row className="gg-align-center">
               <Col sm="auto">
-                <RadioGroup name="protein-type" onChange={handleSelect} value={protein.selectedProtein}>
+                <RadioGroup name="molecule-type" onChange={handleSelect} value={protein.selectedProtein}>
                   {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
@@ -414,11 +413,9 @@ const AddProtein = (props) => {
         if (activeStep === 1 && protein.selectedProtein !== "Unknown") {
           return (
             <>
-              <Form.Group as={Row} controlId="uniProtId">
-                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                  <strong>UniProt ID</strong>
-                </Form.Label>
+              <Form.Group as={Row} controlId="uniProtId" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
+                  <FormLabel label="UniProt ID" />
                   <Form.Control
                     type="text"
                     name="uniProtId"
@@ -439,11 +436,9 @@ const AddProtein = (props) => {
                   )}
                 </Col>
               </Form.Group>
-              <Form.Group as={Row} controlId="pdbIds">
-                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                  <strong>PDB IDs</strong>
-                </Form.Label>
+              <Form.Group as={Row} controlId="pdbIds" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
+                  <FormLabel label="PDB ID" />
                   <Form.Control
                     type="text"
                     name="pdbIds"
@@ -459,17 +454,9 @@ const AddProtein = (props) => {
                   />
                 </Col>
               </Form.Group>
-              <Form.Group as={Row} controlId="sequence">
-                <Form.Label
-                  column
-                  xs={12}
-                  lg={3}
-                  xl={2}
-                  className="required-asterik text-xs-left text-md-left text-lg-right"
-                >
-                  <strong>Sequence</strong>
-                </Form.Label>
+              <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
+                  <FormLabel label="Sequence" className="required-asterik" />
                   <Form.Control
                     as="textarea"
                     rows="5"
@@ -520,17 +507,9 @@ const AddProtein = (props) => {
           return (
             <>
               <Form validated={validate && validatedCommNonComm}>
-                <Form.Group as={Row} controlId="name">
-                  <Form.Label
-                    column
-                    xs={12}
-                    lg={3}
-                    xl={2}
-                    className="required-asterik text-xs-left text-md-left text-lg-right"
-                  >
-                    <strong>Name</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="Name" className="required-asterik" />
                     <Form.Control
                       type="text"
                       name="name"
@@ -544,11 +523,9 @@ const AddProtein = (props) => {
                     <Feedback message={"Name is required"} />
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="comment">
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Comment</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="comment" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="Comment" />
                     <Form.Control
                       as="textarea"
                       rows={4}
@@ -565,11 +542,9 @@ const AddProtein = (props) => {
                   </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="urls">
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>URLs</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="URLs" />
                     {urlWidget(true)}
                     <Row>
                       <Col md={10}>
@@ -600,11 +575,9 @@ const AddProtein = (props) => {
                     </Row>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="publications">
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Publications</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label="Publications" />
                     {protein.publications.map((pub, index) => {
                       return (
                         <PublicationCard key={index} {...pub} enableDelete deletePublication={deletePublication} />
@@ -648,12 +621,10 @@ const AddProtein = (props) => {
                     </Row>
                   </Col>
                 </Form.Group>
-                <Row>
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Source</strong>
-                  </Form.Label>
+                <Row className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
-                    <RadioGroup row name="protein-type" onChange={sourceSelection} value={protein.source}>
+                    <FormLabel label="Source" />
+                    <RadioGroup row name="molecule-type" onChange={sourceSelection} value={protein.source}>
                       {/* Commercial */}
                       <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
                       {/* Non Commercial */}
@@ -704,11 +675,9 @@ const AddProtein = (props) => {
               protein.selectedProtein === "Unknown" ? (
                 ""
               ) : (
-                <Form.Group as={Row} controlId={key} key={key}>
-                  <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                    <strong>{reviewFields[key].label}</strong>
-                  </Form.Label>
+                <Form.Group as={Row} controlId={key} key={key} className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
+                    <FormLabel label={reviewFields[key].label} />
                     <Form.Control
                       as={reviewFields[key].type === "textarea" ? "textarea" : "input"}
                       rows={key === "sequence" ? "10" : "4"}
@@ -723,11 +692,9 @@ const AddProtein = (props) => {
               )
             )}
             {protein.urls && protein.urls.length > 0 && (
-              <Form.Group as={Row} controlId="urls">
-                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                  <strong>URLs</strong>
-                </Form.Label>
+              <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
+                  <FormLabel label="URLs" />
                   {protein.urls.map((url, index) => {
                     return (
                       <div key={index}>
@@ -741,11 +708,9 @@ const AddProtein = (props) => {
               </Form.Group>
             )}
             {protein.publications && protein.publications.length > 0 && (
-              <Form.Group as={Row} controlId="publications">
-                <Form.Label column xs={12} lg={3} xl={2} className="text-xs-left text-md-left text-lg-right">
-                  <strong>Publication</strong>
-                </Form.Label>
+              <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
+                  <FormLabel label="Publications" />
                   {protein.publications && protein.publications.length > 0
                     ? protein.publications.map((pub) => {
                         return (

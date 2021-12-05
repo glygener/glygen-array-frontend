@@ -37,7 +37,7 @@ const Peptides = (props) => {
               <div className="text-center mb-4">
                 {!props.isImported && (
                   <Link to="/peptides/addPeptide">
-                    <Button className="gg-btn-blue mt-2 gg-mr-20">Add Peptide</Button>
+                    <Button className="gg-btn-blue mt-2">Add Peptide</Button>
                   </Link>
                 )}
               </div>

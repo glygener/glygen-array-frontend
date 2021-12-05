@@ -5,7 +5,6 @@ import "./Contribute.css";
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Col } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import displayNames from "../appData/displayNames";
 import { StructureImage } from "../components/StructureImage";
@@ -32,14 +31,14 @@ const Lipids = (props) => {
         <div className={!props.isImported ? "page-container" : ""}>
           <PageHeading
             title="Your Lipids"
-            subTitle="The table below displays a list of all lipids that have been uploaded to your repository. New lipids may be added, old proteins can be edited, and unused lipids can be removed."
+            subTitle="The table below displays a list of all lipids that have been uploaded to your repository. New lipids may be added, old lipids can be edited, and unused lipids can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
                   <Link to="/lipids/addLipid">
-                    <Button className="gg-btn-blue mt-2 gg-mr-20">Add Lipid</Button>
+                    <Button className="gg-btn-blue mt-2">Add Lipid</Button>
                   </Link>
                 )}
               </div>

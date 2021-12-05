@@ -1,8 +1,8 @@
 import React, { useReducer, useState, useEffect } from "react";
-import { Button, makeStyles, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
+import { Button, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
 import "../containers/AddGlycan.css";
 import { Form, Row, Col } from "react-bootstrap";
-import { Feedback } from "../components/FormControls";
+import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -176,17 +176,9 @@ const AddGlycan = (props) => {
     return (
       <Form>
         {/* Internal ID */}
-        <Form.Group as={Row} controlId="internalID">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={3}
-            className="required-asterik text-xs-left text-md-left text-lg-right"
-          >
-            <strong>Internal ID</strong>
-          </Form.Label>
-          <Col xs={12} md={12} lg={9} xl={8}>
+        <Form.Group as={Row} controlId="internalID" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Internal ID" className="required-asterik" />
             <Form.Control
               type="text"
               name="internalId"
@@ -199,21 +191,9 @@ const AddGlycan = (props) => {
         </Form.Group>
 
         {/* Name */}
-        <Form.Group as={Row} controlId="name">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={3}
-            className={
-              userSelection.selectedGlycan === "Unknown"
-                ? "required-asterik text-xs-left text-md-left text-lg-right"
-                : "text-xs-left text-md-left text-lg-right"
-            }
-          >
-            <strong>Name</strong>
-          </Form.Label>
-          <Col xs={12} md={12} lg={9} xl={8}>
+        <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Name" className={userSelection.selectedGlycan === "Unknown" ? "required-asterik" : ""} />
             <Form.Control
               type="text"
               name="name"
@@ -229,17 +209,9 @@ const AddGlycan = (props) => {
         </Form.Group>
 
         {/* Comment */}
-        <Form.Group as={Row} controlId="comments">
-          <Form.Label
-            column
-            xs={12}
-            md={12}
-            lg={3}
-            className="required-asterik text-xs-left text-md-left text-lg-right"
-          >
-            <strong>Comment</strong>
-          </Form.Label>
-          <Col xs={12} md={12} lg={9} xl={8}>
+        <Form.Group as={Row} controlId="comments" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Comment" className="required-asterik" />
             <Form.Control
               as="textarea"
               rows={4}
@@ -399,17 +371,16 @@ const AddGlycan = (props) => {
                 <Form.Group
                   as={Row}
                   controlId="glytoucanId"
-                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                  className={`gg-align-center mb-3 ${
+                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                  }`}
                 >
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                    <strong>GlyTouCan ID</strong>
-                  </Form.Label>
-
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="GlyTouCan ID" />
                     <Form.Control
                       type="text"
                       name="glytoucanId"
-                      placeholder="Enter GlyTouCan ID"
+                      placeholder="Enter GlyTouCan ID of the glycan"
                       value={userSelection.glytoucanId}
                       onChange={handleChange}
                       onFocus={() => setShowErrorSummary(false)}
@@ -433,18 +404,12 @@ const AddGlycan = (props) => {
                 <Form.Group
                   as={Row}
                   controlId="mass"
-                  className={userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"}
+                  className={`gg-align-center mb-3 ${
+                    userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"
+                  }`}
                 >
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="required-asterik text-xs-left text-md-left text-lg-right"
-                  >
-                    <strong>Monoisotopic Mass</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Monoisotopic Mass" className="required-asterik" />
                     <Form.Control
                       type="number"
                       name="mass"
@@ -467,11 +432,9 @@ const AddGlycan = (props) => {
                 </Form.Group>
 
                 {/* Internal ID */}
-                <Form.Group as={Row} controlId="internalID">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Internal ID</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                <Form.Group as={Row} controlId="internalID" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Internal ID" />
                     <Form.Control
                       type="text"
                       name="internalId"
@@ -484,21 +447,16 @@ const AddGlycan = (props) => {
                 </Form.Group>
 
                 {/* Name */}
-                <Form.Group as={Row} controlId="name">
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className={
-                      userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
-                        ? "required-asterik text-xs-left text-md-left text-lg-right"
-                        : "text-xs-left text-md-left text-lg-right"
-                    }
-                  >
-                    <strong>Name</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel
+                      label="Name"
+                      className={
+                        userSelection.selectedGlycan === "Unknown" || userSelection.selectedGlycan === "Other"
+                          ? "required-asterik"
+                          : ""
+                      }
+                    />
                     <Form.Control
                       type="text"
                       name="name"
@@ -521,18 +479,12 @@ const AddGlycan = (props) => {
                 <Form.Group
                   as={Row}
                   controlId="sequenceType"
-                  className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                  className={`gg-align-center mb-3 ${
+                    userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                  }`}
                 >
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="required-asterik text-xs-left text-md-left text-lg-right"
-                  >
-                    <strong>Sequence Type</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Sequence Type" className="required-asterik" />
                     <Form.Control
                       as="select"
                       name="sequenceType"
@@ -554,22 +506,14 @@ const AddGlycan = (props) => {
                 <Form.Group
                   as={Row}
                   controlId="sequence"
-                  className={
+                  className={`gg-align-center mb-3 ${
                     userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
                       ? ""
                       : "hide-content"
-                  }
+                  }`}
                 >
-                  <Form.Label
-                    column
-                    xs={12}
-                    md={12}
-                    lg={3}
-                    className="required-asterik text-xs-left text-md-left text-lg-right"
-                  >
-                    <strong>Sequence</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Sequence" className="required-asterik" />
                     <Form.Control
                       as="textarea"
                       rows="5"
@@ -627,11 +571,9 @@ const AddGlycan = (props) => {
                 </Form.Group>
 
                 {/* Comment */}
-                <Form.Group as={Row} controlId="comments">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Comment</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                <Form.Group as={Row} controlId="comments" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Comment" />
                     <Form.Control
                       as="textarea"
                       rows={4}
@@ -686,12 +628,16 @@ const AddGlycan = (props) => {
           <>
             <Form>
               {/* Glycan Type */}
-              <Form.Group as={Row} controlId="glycanSelected">
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>Glycan Type</strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
-                  <Form.Control type="text" name="glycanType" value={userSelection.selectedGlycan} disabled />
+              <Form.Group as={Row} controlId="glycanSelected" className="gg-align-center mb-3">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Glycan Type" />
+                  <Form.Control
+                    type="text"
+                    name="glycanType"
+                    value={getGlycanType(userSelection.selectedGlycan)}
+                    // value={userSelection.selectedGlycan}
+                    disabled
+                  />
                 </Col>
               </Form.Group>
 
@@ -699,12 +645,12 @@ const AddGlycan = (props) => {
               <Form.Group
                 as={Row}
                 controlId="glytoucanId"
-                className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                className={`gg-align-center mb-3 ${
+                  userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                }`}
               >
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>{displayNames.glycan.GLYTOUCAN_ID} </strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+                <Col xs={12} lg={9}>
+                  <FormLabel label={displayNames.glycan.GLYTOUCAN_ID} />
                   <Form.Control type="text" name="glytoucanId" value={userSelection.glytoucanId} disabled />
                 </Col>
               </Form.Group>
@@ -713,46 +659,41 @@ const AddGlycan = (props) => {
               <Form.Group
                 as={Row}
                 controlId="mass"
-                className={userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"}
+                className={`gg-align-center mb-3 ${
+                  userSelection.selectedGlycan === "MassDefined" ? "" : "hide-content"
+                }`}
               >
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>Monoisotopic Mass</strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Monoisotopic Mass" />
                   <Form.Control type="text" name="mass" value={userSelection.mass} disabled />
                 </Col>
               </Form.Group>
 
               {/* Internal ID */}
-              <Form.Group as={Row} controlId="internalId">
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>{displayNames.glycan.INTERNAL_ID}</strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+              <Form.Group as={Row} controlId="internalId" className="gg-align-center mb-3">
+                <Col xs={12} lg={9}>
+                  <FormLabel label={displayNames.glycan.INTERNAL_ID} />
                   <Form.Control type="text" name="internalId" value={userSelection.internalId} disabled />
                 </Col>
               </Form.Group>
 
               {/* Name */}
-              <Form.Group as={Row} controlId="name">
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>Name</strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+              <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Name" />
                   <Form.Control type="text" name="name" value={userSelection.name} disabled />
                 </Col>
               </Form.Group>
-
               {/* Sequence Type */}
               <Form.Group
                 as={Row}
                 controlId="sequenceType"
-                className={userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"}
+                className={`gg-align-center mb-3 ${
+                  userSelection.selectedGlycan === "SequenceDefined" ? "" : "hide-content"
+                }`}
               >
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>Sequence Type</strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Sequence Type" />
                   <Form.Control name="sequenceType" value={userSelection.sequenceType} disabled />
                 </Col>
               </Form.Group>
@@ -761,26 +702,22 @@ const AddGlycan = (props) => {
               <Form.Group
                 as={Row}
                 controlId="sequence"
-                className={
+                className={`gg-align-center mb-3 ${
                   userSelection.selectedGlycan === "SequenceDefined" || userSelection.selectedGlycan === "Other"
                     ? ""
                     : "hide-content"
-                }
+                }`}
               >
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>{displayNames.glycan.SEQUENCE}</strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+                <Col xs={12} lg={9}>
+                  <FormLabel label={displayNames.glycan.SEQUENCE} />
                   <Form.Control as="textarea" rows={4} name="sequence" value={userSelection.sequence} disabled />
                 </Col>
               </Form.Group>
 
               {/* Comments */}
-              <Form.Group as={Row} controlId="comments">
-                <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                  <strong>Comment</strong>
-                </Form.Label>
-                <Col xs={12} md={12} lg={9} xl={8}>
+              <Form.Group as={Row} controlId="comments" className="gg-align-center mb-3">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Comment" />
                   <Form.Control as="textarea" rows={4} name="comment" value={userSelection.comment} disabled />
                 </Col>
               </Form.Group>

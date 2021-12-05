@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
 import React, { useReducer, useState, useEffect } from "react";
-import { Form, FormCheck, Row, Col } from "react-bootstrap";
+import { Form, Row, Col } from "react-bootstrap";
 import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Helmet from "react-helmet";
@@ -12,7 +12,7 @@ import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
-import { Button, Step, StepLabel, Stepper, Typography, makeStyles } from "@material-ui/core";
+import { Button, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
 import { ViewSourceInfo } from "../components/ViewSourceInfo";
@@ -27,23 +27,9 @@ import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "90%",
-  },
-  backButton: {
-    marginRight: theme.spacing(1),
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-}));
-
 const AddLipid = (props) => {
   useEffect(props.authCheckAgent, []);
 
-  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
   const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
@@ -340,7 +326,7 @@ const AddLipid = (props) => {
         {lipid.urls && lipid.urls.length > 0
           ? lipid.urls.map((url, index) => {
               return (
-                <Row style={{ marginTop: "8px" }} key={index}>
+                <Row key={index}>
                   <Col
                     md={10}
                     style={{
@@ -359,7 +345,7 @@ const AddLipid = (props) => {
                             icon={["far", "trash-alt"]}
                             size="lg"
                             alt="Delete URL"
-                            className="caution-color table-btn"
+                            className="caution-color tbl-icon-btn"
                             onClick={() => {
                               const listUrls = lipid.urls;
                               listUrls.splice(index, 1);
@@ -410,7 +396,7 @@ const AddLipid = (props) => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
-          setPageErrorMessage("The PubMed Id entered is invalid. Please try again.");
+          setPageErrorMessage("The PubMed ID entered is invalid. Please try again.");
         }
         setShowErrorSummary(true);
       });
@@ -420,13 +406,13 @@ const AddLipid = (props) => {
   const getStep2 = () => {
     return (
       <>
-        <Form.Group as={Row} className="gg-align-center mb-3" controlId={"inChiKey"}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId="inChiKey">
           <Col xs={12} lg={9}>
             <FormLabel label={displayNames.linker.INCHIKEY} />
             <Form.Control
               type="text"
               name="inChiKey"
-              placeholder="Enter InChI Key"
+              placeholder={`Enter ${displayNames.linker.INCHIKEY}`}
               value={lipid.inChiKey}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -453,7 +439,7 @@ const AddLipid = (props) => {
               as="textarea"
               rows="4"
               name="inChiSequence"
-              placeholder="Enter InChI Sequence"
+              placeholder={`Enter ${displayNames.linker.INCHI_SEQUENCE}`}
               value={lipid.inChiSequence}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -469,7 +455,7 @@ const AddLipid = (props) => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} className="gg-align-center mb-3" controlId={"iupacName"}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId="iupacName">
           <Col xs={12} lg={9}>
             <FormLabel label="IUPAC Name" />
             <Form.Control
@@ -496,7 +482,7 @@ const AddLipid = (props) => {
               onKeyDown={(e) => isValidNumber(e)}
               isInvalid={invalidMass}
             />
-            <Feedback message={`Mass is Invalid`} />
+            <Feedback message={`Monoisotopic Mass is Invalid`} />
           </Col>
         </Form.Group>
 
@@ -521,7 +507,7 @@ const AddLipid = (props) => {
             <Form.Control
               type="text"
               name="isomericSmiles"
-              placeholder="Enter isomeric SMILES"
+              placeholder="Enter Isomeric SMILES"
               value={lipid.isomericSmiles}
               onChange={handleChange}
               disabled={disablePubChemFields}
@@ -588,7 +574,7 @@ const AddLipid = (props) => {
               <Form>
                 <Form.Group as={Row} className="gg-align-center mb-3" controlId="pubChemId">
                   <Col xs={12} lg={9}>
-                    <FormLabel label="PubChem Compound CID"></FormLabel>
+                    <FormLabel label="PubChem Compound CID" />
                     <Form.Control
                       type="number"
                       name="pubChemId"
@@ -819,27 +805,10 @@ const AddLipid = (props) => {
               )
             )}
 
-            {lipid.publications && lipid.publications.length > 0 && (
-              <Form.Group as={Row} className="gg-align-center mb-3" controlId="publications">
-                <Col xs={12} lg={9}>
-                  <FormLabel label="Publications" />
-                  {lipid.publications && lipid.publications.length > 0
-                    ? lipid.publications.map((pub) => {
-                        return (
-                          <li>
-                            <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
-                          </li>
-                        );
-                      })
-                    : ""}
-                </Col>
-              </Form.Group>
-            )}
-
             {lipid.urls && lipid.urls.length > 0 && (
               <Form.Group as={Row} className="gg-align-center mb-3" controlId="urls">
                 <Col xs={12} lg={9}>
-                  <FormLabel label="Urls" />
+                  <FormLabel label="URLs" />
                   {lipid.urls.map((url, index) => {
                     return (
                       <div key={index}>
@@ -852,7 +821,16 @@ const AddLipid = (props) => {
                 </Col>
               </Form.Group>
             )}
-
+            {lipid.publications && lipid.publications.length > 0 && (
+              <Form.Group as={Row} className="gg-align-center mb-3" controlId="publications">
+                <Col xs={12} lg={9}>
+                  <FormLabel label="Publications" />
+                  {lipid.publications.map((pub) => {
+                    return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
+                  })}
+                </Col>
+              </Form.Group>
+            )}
             <ViewSourceInfo source={lipid.source} commercial={lipid.commercial} nonCommercial={lipid.nonCommercial} />
           </Form>
         );
@@ -911,7 +889,7 @@ const AddLipid = (props) => {
       molecularFormula: lipid.molecularFormula,
       smiles: lipid.canonicalSmiles,
       isomericSmiles: lipid.isomericSmiles,
-      comment: lipid.comment,
+      description: lipid.comment,
       publications: lipid.publications,
       urls: lipid.urls,
       source: source,

@@ -3,7 +3,7 @@ import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import { Row, Col, Form } from "react-bootstrap";
 import Helmet from "react-helmet";
-import { Feedback, PageHeading } from "../components/FormControls";
+import { FormLabel, Feedback, PageHeading } from "../components/FormControls";
 import { head, getMeta } from "../utils/head";
 import { useParams, useHistory, Link } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -33,18 +33,15 @@ const EditGlycan = (props) => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
 
-  const [glycanDetails, setGlycanDetails] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    {
-      name: "",
-      internalId: "",
-      description: "",
-      mass: "",
-      cartoon: "",
-      glytoucanId: "",
-      type: "",
-    }
-  );
+  const [glycanDetails, setGlycanDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
+    name: "",
+    internalId: "",
+    description: "",
+    mass: "",
+    cartoon: "",
+    glytoucanId: "",
+    type: "",
+  });
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -88,7 +85,7 @@ const EditGlycan = (props) => {
         <title>{head.editGlycan.title}</title>
         {getMeta(head.editGlycan)}
       </Helmet>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
             title="Edit Glycan"
@@ -120,38 +117,42 @@ const EditGlycan = (props) => {
 
                 {/* Glycan Type */}
                 {/* {glycanDetails.glytoucanId && ( */}
-                <Form.Group as={Row} controlId="glycanType" className="gg-align-center mb-0 pb-0">
-                  <Form.Label column xs={12} sm={5} lg={3} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Glycan Type</strong>
-                  </Form.Label>
-                  <Col xs={12} sm={7} lg={9} xl={8}>
-                    <Form.Control type="text" plaintext readOnly value={getGlycanTypeLabel(glycanDetails.type)} />
+                <Form.Group as={Row} controlId="glycanType" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Glycan Type" />
+                    <Form.Control
+                      type="text"
+                      // plaintext
+                      readOnly
+                      value={getGlycanTypeLabel(glycanDetails.type)}
+                    />
                   </Col>
                 </Form.Group>
                 {/* )} */}
 
                 {/* GlyTouCan ID */}
                 {glycanDetails.glytoucanId && (
-                  <Form.Group as={Row} controlId="glytoucanId" className="gg-align-center mb-0 pb-0">
-                    <Form.Label column xs={12} sm={5} lg={3} className="text-xs-left text-md-left text-lg-right">
-                      <strong>GlyTouCan ID</strong>
-                    </Form.Label>
-                    <Col xs={12} sm={7} lg={9} xl={8}>
-                      <Form.Control type="text" plaintext readOnly value={glycanDetails.glytoucanId} />
+                  <Form.Group as={Row} controlId="glytoucanId" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="GlyTouCan ID" />
+                      <Form.Control
+                        type="text"
+                        // plaintext
+                        readOnly
+                        value={glycanDetails.glytoucanId}
+                      />
                     </Col>
                   </Form.Group>
                 )}
 
                 {/* Mass */}
                 {glycanDetails.mass && (
-                  <Form.Group as={Row} controlId="mass" className="gg-align-center">
-                    <Form.Label column xs={12} sm={5} lg={3} className="text-xs-left text-md-left text-lg-right">
-                      <strong>Monoisotopic Mass</strong>
-                    </Form.Label>
-                    <Col xs={12} sm={7} lg={9} xl={8}>
+                  <Form.Group as={Row} controlId="mass" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Monoisotopic Mass" />
                       <Form.Control
                         type="text"
-                        plaintext
+                        // plaintext
                         readOnly
                         value={addCommas(parseInt(glycanDetails.mass).toFixed(2)) + " Da"}
                       />
@@ -160,11 +161,9 @@ const EditGlycan = (props) => {
                 )}
 
                 {/* Internal ID */}
-                <Form.Group as={Row} className="mb-3 gg-align-center" controlId="internalId">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Internal ID</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                <Form.Group as={Row} className="gg-align-center mb-3" controlId="internalId">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Internal ID" />
                     <Form.Control
                       type="text"
                       placeholder="Enter Internal ID"
@@ -177,11 +176,9 @@ const EditGlycan = (props) => {
                 </Form.Group>
 
                 {/* Name */}
-                <Form.Group as={Row} controlId="name" className="gg-align-center">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                    <strong className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""}>Name</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Name" className={glycanDetails.type === "UNKNOWN" ? "required-asterik" : ""} />
                     <Form.Control
                       type="text"
                       placeholder="Enter Name of the glycan"
@@ -196,11 +193,9 @@ const EditGlycan = (props) => {
                 </Form.Group>
 
                 {/* Comment */}
-                <Form.Group as={Row} controlId="comment" className="gg-align-center">
-                  <Form.Label column xs={12} md={12} lg={3} className="text-xs-left text-md-left text-lg-right">
-                    <strong>Comment</strong>
-                  </Form.Label>
-                  <Col xs={12} md={12} lg={9} xl={8}>
+                <Form.Group as={Row} controlId="comment" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Comment" />
                     <Form.Control
                       as="textarea"
                       rows={4}
@@ -239,15 +234,7 @@ const EditGlycan = (props) => {
   function handleSubmit(e) {
     setValidated(true);
     if (e.currentTarget.checkValidity()) {
-      wsCall(
-        "updateglycan",
-        "POST",
-        null,
-        true,
-        glycanDetails,
-        updateGlycanSuccess,
-        updateGlycanFailure
-      );
+      wsCall("updateglycan", "POST", null, true, glycanDetails, updateGlycanSuccess, updateGlycanFailure);
     }
     e.preventDefault();
   }
