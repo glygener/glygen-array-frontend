@@ -32,6 +32,9 @@ const Descriptors = props => {
 
   const [enableModal, setEnableModal] = useState(false);
   const [mandateGroupNewValue, setMandateGroupNewValue] = useState();
+  const [enableSubGroupAddModal, setEnableSubGroupAddModal] = useState(false);
+  const [subGroupAddElement, setSubGroupAddElement] = useState();
+  const [subGroupAddDescriptor, setSubGroupAddDescriptor] = useState();
 
   let descriptorForm = [];
   let descMetaData;
@@ -248,13 +251,17 @@ const Descriptors = props => {
     return (
       <>
         <Row>
-          <Col>{descriptor.group && <p style={{ textAlign: "left", fontWeight: "bold" }}>{descriptor.name}</p>}</Col>
+          <Col>
+            {!descriptor.id.startsWith("newly") && descriptor.group && (
+              <p style={{ textAlign: "left", fontWeight: "bold" }}>{descriptor.name}</p>
+            )}
+          </Col>
           <Col
             style={{
-              textAlign: "right"
+              textAlign: isSubGroup ? "left" : "right"
             }}
           >
-            {descriptor.maxOccurrence > 1 && lastAddedIsNewMandatory && (
+            {!descriptor.id.startsWith("newly") && descriptor.maxOccurrence > 1 && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
                 size="lg"
@@ -263,11 +270,16 @@ const Descriptors = props => {
                   marginRight: "10px",
                   marginBottom: "6px"
                 }}
-                onClick={() => props.handleAddDescriptorSubGroups(groupElement, descriptor)}
+                // onClick={() => props.handleAddDescriptorSubGroups(groupElement, descriptor)}
+                onClick={() => {
+                  setEnableSubGroupAddModal(true);
+                  setSubGroupAddElement(groupElement);
+                  setSubGroupAddDescriptor(descriptor);
+                }}
               />
             )}
-
-            {descriptor.id.startsWith("newly") && metaType !== "Feature" && (
+            {/* 
+            {!descriptor.id.startsWith("newly") && metaType !== "Feature" && (
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}
@@ -277,7 +289,7 @@ const Descriptors = props => {
                 style={{ marginRight: "10px", marginBottom: "4px" }}
                 onClick={() => handleSubGroupDelete(descriptor.id)}
               />
-            )}
+            )} */}
           </Col>
         </Row>
       </>
@@ -374,21 +386,85 @@ const Descriptors = props => {
       <Card.Body>
         {groupElement.descriptors.map(descriptor => {
           if (descriptor.group) {
-            return (
-              <div
-                style={{
-                  backgroundColor: "#f3f3f3",
-                  paddingLeft: "10px"
-                }}
-                key={descriptor.id.toString()}
-              >
-                {getCardBody(descriptor, index, groupElement, true)}
+            let commonGroups = groupElement.descriptors.filter(i => i.name === descriptor.name);
 
-                {descriptor.descriptors.map(field => {
+            return (
+              <>
+                {!descriptor.id.startsWith("newly") && (
+                  <span className="font-awesome-color " style={{ float: "left" }}>
+                    <span>
+                      <HelpToolTip
+                        name={groupElement.name}
+                        url={groupElement.wikiLink}
+                        text={"Add Some text Here"}
+                        helpIcon="gg-helpicon-detail"
+                      />
+                    </span>
+                  </span>
+                )}
+
+                <div key={descriptor.id.toString()}>
+                  {getCardBody(descriptor, index, groupElement, true)}
+
+                  {!descriptor.id.startsWith("newly") && (
+                    /* Creating Sub group Table */
+                    <table hover fluid="true" className="table-striped mb-3">
+                      <thead>
+                        <tr>
+                          {descriptor.descriptors.map(field => {
+                            return (
+                              <>
+                                <th>{field.name}</th>
+                              </>
+                            );
+                          })}
+                          <th>{"Action"}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="table-body">
+                        {commonGroups.map(desc => {
+                          let rowData = [];
+
+                          rowData.push(
+                            desc.descriptors.map(field => {
+                              return (
+                                field.value && (
+                                  <>
+                                    <td>{field.value}</td>
+                                  </>
+                                )
+                              );
+                            })
+                          );
+
+                          let filledDescriptors = desc.descriptors.filter(i => i.value && i.value !== "");
+
+                          filledDescriptors.length > 0 &&
+                            rowData.push(
+                              <FontAwesomeIcon
+                                key={"delete" + index}
+                                icon={["far", "trash-alt"]}
+                                size="1x"
+                                title="Delete Descriptor"
+                                className="delete-icon table-btn"
+                                style={{ marginRight: "10px", marginBottom: "4px" }}
+                                onClick={() => handleSubGroupDelete(desc.id)}
+                              />
+                            );
+
+                          return <tr>{rowData}</tr>;
+                        })}
+                      </tbody>
+                    </table>
+                  )}
+
+                  {/* {descriptor.descriptors.map(field => {
                   return getNewField(field, groupElement, descriptor.id);
-                })}
-                {descriptor.id.startsWith("newly") ? <p> &nbsp;</p> : <p> &nbsp;&nbsp;</p>}
-              </div>
+                })} */}
+
+                  {/* {descriptor.id.startsWith("newly") ? <p> &nbsp;</p> : <p> &nbsp;&nbsp;</p>} */}
+                </div>
+              </>
             );
           } else {
             return (
@@ -455,6 +531,7 @@ const Descriptors = props => {
                 onClick={() => props.handleAddDescriptorGroups(groupElement)}
               />
             )}
+
             {(groupElement.isNewlyAdded ||
               groupElement.isNewlyAddedNonMandatory ||
               groupElement.xorMandate ||
@@ -517,8 +594,6 @@ const Descriptors = props => {
 
   function getColumnWidth(element) {
     let count = 0;
-    if (element.name === "Isotype") {
-    }
 
     if (element.units.length > 0) {
       count++;
@@ -785,6 +860,27 @@ const Descriptors = props => {
     );
   };
 
+  const getSubGroupDescriptorBody = () => {
+    let duplicateGroups;
+    let CurrentGroup;
+
+    duplicateGroups = subGroupAddElement.descriptors.filter(
+      i => i.name === subGroupAddDescriptor.name && i.id.startsWith("newly")
+    );
+
+    if (duplicateGroups.length > 0) {
+      CurrentGroup = duplicateGroups[duplicateGroups.length - 1];
+    } else {
+      CurrentGroup = subGroupAddDescriptor;
+    }
+
+    return CurrentGroup.descriptors.map(field => {
+      return getNewField(field, CurrentGroup, subGroupAddElement.id);
+    });
+
+    // subGroupAddElement, subGroupAddDescriptor
+  };
+
   return (
     <>
       {buildDescriptors()}
@@ -800,6 +896,21 @@ const Descriptors = props => {
           )}
           title="Mandate Group Change"
           body="You will loose the Current Data if you change the group. Do you wish to proceed ?"
+        />
+      )}
+
+      {enableSubGroupAddModal && (
+        <ConfirmationModal
+          showModal={enableSubGroupAddModal}
+          onCancel={() => setEnableSubGroupAddModal(false)}
+          onConfirm={() => (
+            <>
+              {props.handleAddDescriptorSubGroups(subGroupAddElement, subGroupAddDescriptor)}
+              {setEnableSubGroupAddModal(false)}
+            </>
+          )}
+          title={`Add ${subGroupAddDescriptor.name}`}
+          body={getSubGroupDescriptorBody()}
         />
       )}
     </>
