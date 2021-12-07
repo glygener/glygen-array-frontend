@@ -19,7 +19,7 @@ import { Peptides } from "./Peptides";
 import { Proteins } from "./Proteins";
 import { Lipids } from "./Lipids";
 import { SourceForGlycanInFeature } from "../components/SourceForGlycanInFeature";
-import { updateMetadataTemplate, getMetadataSubmitData } from "../containers/FeatureMetadata";
+import { updateMetadataTemplate, getMetadataSubmitData, FeatureMetadata } from "../containers/FeatureMetadata";
 import { FeatureView } from "./FeatureView";
 import { getToolTip } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -95,12 +95,24 @@ const AddFeature = props => {
 
   const featureMetaDataInitState = {
     commercial: { vendor: "", catalogueNumber: "", batchId: "", vendorNotRecorded: false },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "", providerLabNotRecorded: false },
+    nonCommercial: {
+      providerLab: "",
+      batchId: "",
+      method: "",
+      providerLabNotRecorded: false,
+      ref: {
+        type: "",
+        value: ""
+      }
+    },
     purity: {
-      comment: "",
       value: "",
       method: "",
       purityNotSpecified: "specify",
+      ref: {
+        type: "",
+        value: ""
+      },
       valueNotRecorded: false,
       methodNotRecorded: false
     },
@@ -111,7 +123,8 @@ const AddFeature = props => {
     invalidName: false,
     validateFeatureId: false,
     featureId: "",
-    name: ""
+    name: "",
+    comment: ""
   };
 
   const [featureMetaData, setFeatureMetaData] = useReducer(
@@ -568,7 +581,7 @@ const AddFeature = props => {
   };
 
   const getMetadata = () => {
-    return <SourceForGlycanInFeature metadata={featureMetaData} setMetadata={setFeatureMetaData} isMetadata />;
+    return <FeatureMetadata featureMetaData={featureMetaData} setFeatureMetaData={setFeatureMetaData} />;
   };
 
   const getTableforLinkers = isModal => {
