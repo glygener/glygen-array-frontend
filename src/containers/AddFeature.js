@@ -223,6 +223,12 @@ const AddFeature = props => {
   const handleNextGlycoLipid = () => {
     var stepIncrement = 1;
 
+    if (activeStep === 3) {
+      setMetaDataStep(true);
+    } else if (metaDataStep) {
+      setMetaDataStep(false);
+    }
+
     if (activeStep === 0 && featureAddState.isLipidLinkedToSurfaceUsingLinker === "No") {
       stepIncrement = stepIncrement + 1;
     } else if (activeStep === 1) {
