@@ -19,7 +19,7 @@ import { Peptides } from "./Peptides";
 import { Proteins } from "./Proteins";
 import { Lipids } from "./Lipids";
 import { SourceForGlycanInFeature } from "../components/SourceForGlycanInFeature";
-import { updateMetadataTemplate, getMetadataSubmitData, FeatureMetadata } from "../containers/FeatureMetadata";
+import { getMetadataSubmitData } from "../containers/FeatureMetadata";
 import { FeatureView } from "./FeatureView";
 import { getToolTip } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,6 +28,7 @@ import { GlycoPeptides } from "../components/GlycoPeptides";
 import { useHistory, Link } from "react-router-dom";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { MetaData } from "./MetaData";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -50,6 +51,8 @@ const AddFeature = props => {
   };
 
   const featureAddInitState = {
+    name: "",
+    featureId: "",
     linker: {},
     glycans: [],
     rangeGlycans: [],
@@ -75,7 +78,6 @@ const AddFeature = props => {
   const [validLinker, setValidLinker] = useState(true);
   const [showGlycanPicker, setShowGlycanPicker] = useState(false);
   const [showLinkerPicker, setShowLinkerPicker] = useState(false);
-  const [glycoLipidGlycanLinkerListStep4, setGlycoLipidGlycanLinkerListStep4] = useState();
   const [glycoProteinPepTideListStep4, setGlycoProteinPepTideListStep4] = useState([{ position: 0 }]);
   const [showGlycoPeptides, setShowGlycoPeptides] = useState(false);
   const [linkerForSelectedGlycan, setLinkerForSelectedGlycan] = useState();
@@ -88,51 +90,16 @@ const AddFeature = props => {
   const [enableGlycoPeptideRange, setEnableGlycoPeptideRange] = useState(false);
   const [rowSelectedForRange, setRowSelectedForRange] = useState(false);
 
+  const [metaDataStep, setMetaDataStep] = useState(false);
+
+  const [featureMetadata, setFeatureMetadata] = useState([]);
+  const [spotMetaDataToSubmit, setSpotMetaDataToSubmit] = useState();
+
   const [featureAddState, setFeatureAddState] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
     ...featureAddInitState,
     ...{ type: "LINKED_GLYCAN" }
   });
 
-  const featureMetaDataInitState = {
-    commercial: { vendor: "", catalogueNumber: "", batchId: "", vendorNotRecorded: false },
-    nonCommercial: {
-      providerLab: "",
-      batchId: "",
-      method: "",
-      providerLabNotRecorded: false,
-      ref: {
-        type: "",
-        value: ""
-      }
-    },
-    purity: {
-      value: "",
-      method: "",
-      purityNotSpecified: "specify",
-      ref: {
-        type: "",
-        value: ""
-      },
-      valueNotRecorded: false,
-      methodNotRecorded: false
-    },
-    source: "notSpecified",
-    validatedCommNonComm: false,
-    validateMethod: false,
-    validateValue: false,
-    invalidName: false,
-    validateFeatureId: false,
-    featureId: "",
-    name: "",
-    comment: ""
-  };
-
-  const [featureMetaData, setFeatureMetaData] = useReducer(
-    (oldState, newState) => ({ ...oldState, ...newState }),
-    featureMetaDataInitState
-  );
-
-  const [metadataTemplate, setMetadataTemplate] = useState([]);
   const [onlyMyglycans, setOnlyMyglycans] = useState(false);
   const [onlyMyLinkers, setOnlyMyLinkers] = useState(false);
   var [rowSelected, setRowSelected] = useState([]);
@@ -219,6 +186,12 @@ const AddFeature = props => {
   const handleNextLinker = () => {
     var stepIncrement = 1;
 
+    if (activeStep === 2) {
+      setMetaDataStep(true);
+    } else if (metaDataStep) {
+      setMetaDataStep(false);
+    }
+
     if (activeStep === 1) {
       setLinkerValidated(true);
       if (featureAddState.type !== "LINKED_GLYCAN") {
@@ -240,89 +213,12 @@ const AddFeature = props => {
           return;
         }
       }
-    } else if (activeStep === 3) {
-      let result = getMetadataStep();
-      if (!result) {
-        return;
-      }
     } else if (activeStep === 4) {
       addFeature();
       return;
     }
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
-
-  const getMetadataStep = () => {
-    if (featureMetaData.name === "") {
-      setFeatureMetaData({ invalidName: true });
-    }
-
-    if (featureMetaData.featureId === "") {
-      setFeatureMetaData({ validateFeatureId: true });
-    }
-
-    if (featureMetaData.purity.purityNotSpecified === "specify") {
-      if (featureMetaData.purity.method === "" && !featureMetaData.purity.methodNotRecorded) {
-        setFeatureMetaData({ validateMethod: true });
-      }
-      if (featureMetaData.purity.value === "" && !featureMetaData.purity.valueNotRecorded) {
-        setFeatureMetaData({ validateValue: true });
-      }
-    }
-
-    if (featureMetaData.source === "commercial" && !featureMetaData.commercial.vendorNotRecorded) {
-      if (featureMetaData.commercial.vendor === "") {
-        setFeatureMetaData({ validatedCommNonComm: true });
-      }
-    } else if (featureMetaData.source === "nonCommercial" && !featureMetaData.nonCommercial.providerLabNotRecorded) {
-      if (featureMetaData.nonCommercial.providerLab === "") {
-        setFeatureMetaData({ validatedCommNonComm: true });
-      }
-    }
-
-    if (
-      featureMetaData.validatedCommNonComm ||
-      (featureMetaData.source === "commercial" &&
-        !featureMetaData.commercial.vendorNotRecorded &&
-        featureMetaData.commercial.vendor === "") ||
-      (featureMetaData.source === "nonCommercial" &&
-        !featureMetaData.nonCommercial.providerLabNotRecorded &&
-        featureMetaData.nonCommercial.providerLab === "") ||
-      (featureMetaData.purity.purityNotSpecified === "specify" &&
-        ((!featureMetaData.purity.methodNotRecorded && featureMetaData.purity.method === "") ||
-          (!featureMetaData.purity.valueNotRecorded && featureMetaData.purity.value === ""))) ||
-      featureMetaData.validateValue ||
-      featureMetaData.validateMethod ||
-      featureMetaData.invalidName ||
-      featureMetaData.name === "" ||
-      featureMetaData.featureId === "" ||
-      featureMetaData.validateFeatureId
-    ) {
-      return false;
-    } else {
-      metadataList();
-      return true;
-    }
-  };
-
-  function metadataList() {
-    wsCall("listtemplates", "GET", { type: "FEATURE" }, true, null, getListTemplatesSuccess, getListTemplatesFailure);
-
-    function getListTemplatesSuccess(response) {
-      response.json().then(resp => {
-        let respJson = resp;
-
-        updateMetadataTemplate(respJson, featureMetaData, setMetadataTemplate);
-      });
-    }
-    function getListTemplatesFailure(response) {
-      response.json().then(responseJson => {
-        setPageErrorsJson(responseJson);
-      });
-      // setPageErrorMessage("");
-      setShowErrorSummary(true);
-    }
-  }
 
   const handleNextGlycoLipid = () => {
     var stepIncrement = 1;
@@ -402,11 +298,6 @@ const AddFeature = props => {
       } else {
         setShowErrorSummary(false);
       }
-    } else if (activeStep === 4) {
-      let result = getMetadataStep();
-      if (!result) {
-        return;
-      }
     } else if (activeStep === 5) {
       addFeature();
       return;
@@ -417,6 +308,12 @@ const AddFeature = props => {
 
   const handleBack = () => {
     var stepDecrement = 1;
+    if (metaDataStep) {
+      setMetaDataStep(false);
+    } else if (activeStep > 3) {
+      setMetaDataStep(true);
+    }
+
     setErrorMessage("");
     setPageErrorsJson({});
     setShowErrorSummary(false);
@@ -430,19 +327,17 @@ const AddFeature = props => {
     ) {
       stepDecrement += 1;
     }
-    if (activeStep === 3) {
-      // if (featureAddState.type !== "LINKED_GLYCAN" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "No") {
-      //   stepDecrement += 1;
-      // }
-    }
+    // if (activeStep === 3) {
+    //   // if (featureAddState.type !== "LINKED_GLYCAN" && featureAddState.isLipidLinkedToSurfaceUsingLinker === "No") {
+    //   //   stepDecrement += 1;
+    //   // }
+    // }
     setOnlyMyLinkers(false);
     setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
   };
 
   const handleTypeSelect = e => {
     const newValue = e.target.value;
-    setGlycoLipidGlycanLinkerListStep4();
-    setFeatureMetaData({ ...featureMetaDataInitState });
     setFeatureAddState({ ...featureAddInitState, ...{ type: newValue } });
   };
 
@@ -581,7 +476,22 @@ const AddFeature = props => {
   };
 
   const getMetadata = () => {
-    return <FeatureMetadata featureMetaData={featureMetaData} setFeatureMetaData={setFeatureMetaData} />;
+    return (
+      <>
+        <MetaData
+          type={"FEATURE"}
+          featureAddState={featureAddState}
+          setFeatureAddState={setFeatureAddState}
+          metadataType={"Feature"}
+          importedInAPage={true}
+          importedPageData={featureMetadata}
+          setMetadataforImportedPage={setFeatureMetadata}
+          handleBack={handleBack}
+          handleNext={handleNextLinker}
+          setImportedPageDataToSubmit={setSpotMetaDataToSubmit}
+        />
+      </>
+    );
   };
 
   const getTableforLinkers = isModal => {
@@ -799,11 +709,12 @@ const AddFeature = props => {
   }
 
   function metadataToSubmit() {
-    const descriptorGroups = getMetadataSubmitData(metadataTemplate);
+    const descriptorGroups = getMetadataSubmitData(featureMetadata);
+
     // const descriptors = getDescriptors();
 
     let objectToBeSaved = {
-      name: featureMetaData.name,
+      name: featureAddState.name,
       user: {
         name: window.localStorage.getItem("loggedinuser")
       },
@@ -819,8 +730,8 @@ const AddFeature = props => {
     featureObj = {
       type: "LINKEDGLYCAN",
 
-      name: featureMetaData.name,
-      internalId: featureMetaData.featureId,
+      name: featureAddState.name,
+      internalId: featureAddState.featureId,
       linker: featureAddState.linker,
       glycans: featureAddState.glycans.map(glycanObj => {
         let glycanDetails = {};
@@ -873,8 +784,8 @@ const AddFeature = props => {
     featureObj = {
       type: "GLYCOLIPID",
 
-      name: featureMetaData.name,
-      internalId: featureMetaData.featureId,
+      name: featureAddState.name,
+      internalId: featureAddState.featureId,
       linker: featureAddState.linker,
       lipid: featureAddState.lipid,
       glycans: [{ glycans: glycans, type: "LINKEDGLYCAN", linker: glycans[0].linker }],
@@ -885,7 +796,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataTemplate.length > 0 && metadataToSubmit()
+      metadata: metadataToSubmit()
     };
 
     return featureObj;
@@ -935,8 +846,8 @@ const AddFeature = props => {
 
     featureObj = {
       type: type,
-      name: featureMetaData.name,
-      internalId: featureMetaData.featureId,
+      name: featureAddState.name,
+      internalId: featureAddState.featureId,
       linker: featureAddState.linker,
       ...getKey(type),
       glycans: glycans,
@@ -947,7 +858,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataTemplate.length > 0 && metadataToSubmit()
+      metadata: metadataToSubmit()
     };
 
     return featureObj;
@@ -989,8 +900,8 @@ const AddFeature = props => {
 
     featureObj = {
       type: type,
-      name: featureMetaData.name,
-      internalId: featureMetaData.featureId,
+      name: featureAddState.name,
+      internalId: featureAddState.featureId,
       linker: featureAddState.linker,
       protein: featureAddState.protein,
       peptides: glycoPep,
@@ -1001,7 +912,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataTemplate.length > 0 && metadataToSubmit()
+      metadata: metadataToSubmit()
     };
 
     return featureObj;
@@ -2007,12 +1918,6 @@ const AddFeature = props => {
       glycansList = [...featureAddState.glycans];
     }
 
-    let glycoLipidGlycanLinkerList = [];
-
-    glycoLipidGlycanLinkerList.push({
-      glycan: glycan.name
-    });
-
     if (!currentGlycanSelection) {
       glycansList.push(glycan);
       setCurrentGlycanSelection(glycan);
@@ -2032,7 +1937,6 @@ const AddFeature = props => {
       setFeatureAddState({ glycans: glycansList });
     }
 
-    setGlycoLipidGlycanLinkerListStep4(glycoLipidGlycanLinkerList);
     setErrorMessage("");
     setShowErrorSummary(false);
   };
@@ -2315,7 +2219,7 @@ const AddFeature = props => {
         lipid={featureAddState.type === "GLYCO_LIPID" ? featureAddState.lipid : ""}
         type={featureAddState.type}
         linkerSeletion={featureAddState.isLipidLinkedToSurfaceUsingLinker}
-        metadata={featureMetaData}
+        metadata={featureMetadata}
         rangeGlycans={featureAddState.rangeGlycans}
         rangeGlycoPeptides={featureAddState.rangeGlycoPeptides}
         viewGlycoPeptide={viewGlycoPeptide}
@@ -2356,49 +2260,53 @@ const AddFeature = props => {
             );
           })}
         </Stepper>
-        <div className="button-div text-center">
-          <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-            Back
-          </Button>
-          <Button
-            variant="contained"
-            onClick={
-              featureAddState.type === "GLYCO_LIPID" ||
-              featureAddState.type === "GLYCO_PEPTIDE" ||
-              featureAddState.type === "GLYCO_PROTEIN" ||
-              featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
-                ? handleNextGlycoLipid
-                : handleNextLinker
-            }
-            className="stepper-button"
-          >
-            {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
-          </Button>
-        </div>
+        {!metaDataStep && (
+          <div className="button-div text-center">
+            <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              onClick={
+                featureAddState.type === "GLYCO_LIPID" ||
+                featureAddState.type === "GLYCO_PEPTIDE" ||
+                featureAddState.type === "GLYCO_PROTEIN" ||
+                featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+                  ? handleNextGlycoLipid
+                  : handleNextLinker
+              }
+              className="stepper-button"
+            >
+              {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
+            </Button>
+          </div>
+        )}
         &nbsp;&nbsp;
         <ErrorSummary show={showErrorSummary} form="feature" errorJson={pageErrorsJson} errorMessage={errorMessage} />
         <Typography component={"span"} variant={"body2"}>
           {getStepContent(featureAddState.type, activeStep)}
         </Typography>
-        <div className="button-div text-center">
-          <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
-            Back
-          </Button>
-          <Button
-            variant="contained"
-            onClick={
-              featureAddState.type === "GLYCO_LIPID" ||
-              featureAddState.type === "GLYCO_PEPTIDE" ||
-              featureAddState.type === "GLYCO_PROTEIN" ||
-              featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
-                ? handleNextGlycoLipid
-                : handleNextLinker
-            }
-            className="stepper-button"
-          >
-            {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
-          </Button>
-        </div>
+        {!metaDataStep && (
+          <div className="button-div text-center">
+            <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              onClick={
+                featureAddState.type === "GLYCO_LIPID" ||
+                featureAddState.type === "GLYCO_PEPTIDE" ||
+                featureAddState.type === "GLYCO_PROTEIN" ||
+                featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+                  ? handleNextGlycoLipid
+                  : handleNextLinker
+              }
+              className="stepper-button"
+            >
+              {activeStep === getSteps(featureAddState.type).length - 1 ? "Finish" : "Next"}
+            </Button>
+          </div>
+        )}
       </div>
 
       <Loading show={showLoading}></Loading>

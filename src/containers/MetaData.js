@@ -865,6 +865,50 @@ const MetaData = props => {
           </>
         )}
 
+        {props.metadataType === "Feature" && (
+          <>
+            <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
+              <Col xs={10} lg={7}>
+                <FormLabel label="Name" className={"required-asterik"} />
+                <Form.Control
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={props.featureAddState.name}
+                  onChange={e => {
+                    props.setFeatureAddState({ name: e.target.value });
+                    props.setFeatureAddState({ invalidName: false });
+                  }}
+                  isInvalid={props.featureAddState.invalidName}
+                  maxLength={50}
+                  required
+                />
+                <Feedback message="Name is required" />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} className="gg-align-center mb-3" controlId="featureId">
+              <Col xs={10} lg={7}>
+                <FormLabel label="Feature Id" className={"required-asterik"} />
+                <Form.Control
+                  type="text"
+                  name="featureId"
+                  placeholder="Feature Id"
+                  value={props.featureAddState.featureId}
+                  onChange={e => {
+                    props.setFeatureAddState({ featureId: e.target.value });
+                    props.setFeatureAddState({ validateFeatureId: false });
+                  }}
+                  isInvalid={props.featureAddState.validateFeatureId}
+                  maxLength={30}
+                  required
+                />
+                <Feedback message="Feature Id is required" />
+              </Col>
+            </Form.Group>
+          </>
+        )}
+
         {props.metadataType === "Assay" ? (
           <DragDropContext onDragEnd={dragEnd}>{loadDescriptorsAndGroups()}</DragDropContext>
         ) : (
@@ -1199,7 +1243,11 @@ const MetaData = props => {
   function handleSubmit(e) {
     setValidated(true);
 
-    if (e.currentTarget.checkValidity() && !isGroupMandate()) {
+    if (
+      e.currentTarget.checkValidity()
+
+      // && !isGroupMandate()
+    ) {
       if (props.importedPageData) {
         props.handleNext(e);
         props.setImportedPageDataToSubmit(metadataToSubmit());
@@ -1716,10 +1764,6 @@ const MetaData = props => {
     setShowErrorSummary(true);
   }
 
-  // if (sampleModel.length < 1) {
-  //   return <Loading show={true} />;
-  // }
-
   const getButtonsForImportedPage = () => {
     return (
       <>
@@ -1738,6 +1782,37 @@ const MetaData = props => {
     );
   };
 
+  const getPageLoaded = () => {
+    let sample;
+
+    if (sampleModel.length === 1 && !sampleModel.descriptors) {
+      sample = sampleModel[0];
+    } else if (sampleModel.descriptors) {
+      sample = sampleModel;
+    }
+    return (
+      <>
+        {getButtonsForImportedPage()}
+        <Row>
+          <Col>
+            {props.metadataType !== "Assay" &&
+              !loadDataOnFirstNextInUpdate &&
+              !props.importedPageData.id &&
+              sample &&
+              setSampleUpdateData()}
+
+            {props.metadataType === "Assay" &&
+              !loadDataOnFirstNextInUpdate &&
+              !props.importedPageData.id &&
+              setAssayMetadataUpdate()}
+
+            {(props.importedPageData.id || props.metadataType === "Feature") && sample && getMetaData()}
+          </Col>
+        </Row>
+        {getButtonsForImportedPage()}
+      </>
+    );
+  };
   return (
     <>
       {showErrorSummary === true && (
@@ -1746,7 +1821,7 @@ const MetaData = props => {
           form="slideLayouts"
           errorJson={pageErrorsJson}
           errorMessage={pageErrorMessage}
-        ></ErrorSummary>
+        />
       )}
 
       {mandateGroupLimitExceed.size > 0 &&
@@ -1802,34 +1877,7 @@ const MetaData = props => {
           </>
         )}
 
-        {props.importedInAPage ? (
-          <>
-            {getButtonsForImportedPage()}
-            <Row>
-              <Col>
-                {props.metadataType !== "Assay" &&
-                  !loadDataOnFirstNextInUpdate &&
-                  !props.importedPageData.id &&
-                  sampleModel.descriptors &&
-                  sampleModel.descriptors.length &&
-                  setSampleUpdateData()}
-
-                {props.metadataType === "Assay" &&
-                  !loadDataOnFirstNextInUpdate &&
-                  !props.importedPageData.id &&
-                  setAssayMetadataUpdate()}
-
-                {props.importedPageData.id &&
-                  sampleModel.descriptors &&
-                  sampleModel.descriptors.length > 0 &&
-                  getMetaData()}
-              </Col>
-            </Row>
-            {getButtonsForImportedPage()}
-          </>
-        ) : (
-          ""
-        )}
+        {props.importedInAPage ? <>{getPageLoaded()}</> : ""}
       </Form>
     </>
   );

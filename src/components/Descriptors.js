@@ -93,9 +93,11 @@ const Descriptors = props => {
         metaType === "Assay"
           ? getAssayDroppable(descMetaData, subGroupKeyIndex)
           : descMetaData.map((descriptor, index) => {
-              if (metaType === "Feature" && descriptor.group) {
-                return <>{getDescriptorGroups(descriptor, index)}</>;
-              } else if (
+              // if (metaType === "Feature" && descriptor.group) {
+              //   return <>{getDescriptorGroups(descriptor, index)}</>;
+              // } else
+
+              if (
                 (descriptor.group && descriptor.mandatory) ||
                 (descriptor.group && !descriptor.mandatory && !descriptor.isDeleted)
               ) {
@@ -151,7 +153,7 @@ const Descriptors = props => {
           />
 
           <Col>
-            {sameXorGroup.map(grp => {
+            {sameXorGroup.map((grp, index) => {
               return !grp.id.startsWith("newly") ? (
                 <>
                   <Form.Check.Label>
@@ -168,6 +170,39 @@ const Descriptors = props => {
                     />
                     {grp.name}&nbsp;&nbsp;&nbsp;&nbsp;
                   </Form.Check.Label>
+
+                  {index === sameXorGroup.length - 1 && (
+                    <>
+                      <Form.Check.Label>
+                        <Form.Check.Input
+                          type="radio"
+                          value={"notApplicable"}
+                          label={"Not Applicable"}
+                          onChange={() => {
+                            // setEnableModal(true);
+                            // setMandateGroupNewValue(grp);
+                          }}
+                          checked={grp.mandateGroup.defaultSelection}
+                          // defaultChecked={grp.mandateGroup.defaultSelection}
+                        />
+                        {"Not Applicable"}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </Form.Check.Label>
+                      <Form.Check.Label>
+                        <Form.Check.Input
+                          type="radio"
+                          value={"notRecorded"}
+                          label={"Not Recorded"}
+                          onChange={() => {
+                            // setEnableModal(true);
+                            // setMandateGroupNewValue(grp);
+                          }}
+                          checked={grp.mandateGroup.defaultSelection}
+                          // defaultChecked={grp.mandateGroup.defaultSelection}
+                        />
+                        {"Not Recorded"}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </Form.Check.Label>
+                    </>
+                  )}
                 </>
               ) : (
                 ""
@@ -261,7 +296,7 @@ const Descriptors = props => {
               textAlign: isSubGroup ? "left" : "right"
             }}
           >
-            {!descriptor.id.startsWith("newly") && descriptor.maxOccurrence > 1 && (
+            {!descriptor.id.startsWith("newly") && descriptor.maxOccurrence > 1 && groupElement.group && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
                 size="lg"
@@ -278,8 +313,8 @@ const Descriptors = props => {
                 }}
               />
             )}
-            {/* 
-            {!descriptor.id.startsWith("newly") && metaType !== "Feature" && (
+
+            {descriptor.id.startsWith("newly") && metaType !== "Feature" && (
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}
@@ -289,7 +324,7 @@ const Descriptors = props => {
                 style={{ marginRight: "10px", marginBottom: "4px" }}
                 onClick={() => handleSubGroupDelete(descriptor.id)}
               />
-            )} */}
+            )}
           </Col>
         </Row>
       </>
@@ -532,23 +567,9 @@ const Descriptors = props => {
               />
             )}
 
-            {(groupElement.isNewlyAdded ||
-              groupElement.isNewlyAddedNonMandatory ||
-              groupElement.xorMandate ||
-              !groupElement.mandatory) && (
-              <FontAwesomeIcon
-                key={"delete" + index}
-                icon={["far", "trash-alt"]}
-                size="1x"
-                title="Delete Descriptor"
-                className="delete-icon table-btn"
-                style={{
-                  marginRight: "10px",
-                  marginBottom: "4px"
-                }}
-                onClick={() => handleDelete(groupElement.id)}
-              />
-            )}
+            {(groupElement.isNewlyAdded || groupElement.isNewlyAddedNonMandatory || !groupElement.mandatory) &&
+              !groupElement.mandateGroup &&
+              createDeleteIcon(groupElement, index)}
             {/* toggle */}
             {accToggle}
           </div>
@@ -589,6 +610,25 @@ const Descriptors = props => {
           </div>
         )}
       </Draggable>
+    );
+  };
+
+  const createDeleteIcon = (groupElement, index) => {
+    return (
+      <>
+        <FontAwesomeIcon
+          key={"delete" + index}
+          icon={["far", "trash-alt"]}
+          size="1x"
+          title="Delete Descriptor"
+          className="delete-icon table-btn"
+          style={{
+            marginRight: "10px",
+            marginBottom: "4px"
+          }}
+          onClick={() => handleDelete(groupElement.id)}
+        />
+      </>
     );
   };
 
@@ -765,13 +805,18 @@ const Descriptors = props => {
               disabled={descriptorDetails.isHide || element.disabled}
             />
           ) : element.namespace.name === "boolean" ? (
-            <Form.Check
-              type="checkbox"
+            <FormControlLabel
+              control={
+                <BlueCheckbox
+                  name={element.name}
+                  checked={element.notApplicable}
+                  onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
+                  size="small"
+                  defaultChecked={element.value}
+                  disabled={descriptorDetails.isHide || element.disabled}
+                />
+              }
               label={element.name}
-              name={element.name}
-              onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
-              defaultChecked={element.value}
-              disabled={descriptorDetails.isHide || element.disabled}
             />
           ) : (
             ""

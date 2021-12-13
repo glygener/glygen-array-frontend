@@ -120,8 +120,9 @@ hr {
 /* ========================================
                 Fields
   ==========================================*/
-.form-control.is-valid, .was-validated .form-control:valid {
-    border-color: var(--dark-blue-1) !important;
+.form-control.is-valid,
+.was-validated .form-control:valid {
+  border-color: var(--dark-blue-1) !important;
 }
 
 .custom-text-fields {
@@ -399,7 +400,7 @@ input[type]:not(:-ms-input-placeholder) + label {
   width: 270px;
 }
 .gg-btn-outline:hover,
-.gg-reg-btn-outline:hover  {
+.gg-reg-btn-outline:hover {
   color: #fff !important;
   background-color: var(--gg-blue) !important;
   border-color: var(--gg-blue) !important;
@@ -468,8 +469,8 @@ input[type]:not(:-ms-input-placeholder) + label {
   background-color: var(--gg-blue) !important;
   border-color: var(--gg-blue) !important; */
   color: rgba(255, 255, 255) !important;
-  background-color:rgba(47,120,183, 0.6) !important;
-  border-color:rgba(47,120,183, 0.6) !important;
+  background-color: rgba(47, 120, 183, 0.6) !important;
+  border-color: rgba(47, 120, 183, 0.6) !important;
 }
 
 /* .no-drop {cursor: no-drop !important;} */
@@ -543,7 +544,8 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
-input[type="radio" i], input[type="check" i] {
+input[type="radio" i],
+input[type="check" i] {
   width: 20px !important;
   height: 20px !important;
 }
@@ -551,27 +553,28 @@ input[type="radio" i], input[type="check" i] {
 .form-check-input {
   position: inherit !important;
   margin-right: 10px !important;
+  margin-left: 0px !important;
 }
 
 /* =========================================
                 Glycan List Summary
   ============================================ */
-  .summary-panel {
-    width: 50% !important;
-    margin: 0 auto !important;
-  }
-  .panelHeadBgr {
-    background: #f0f0f0 !important;
-  }
-  .panelHeadBgr h3{
-    margin: 0 auto;
-  }
-  .panelHeadText {
-    color: #1d9901 !important;
-    position: relative;
-  }
+.summary-panel {
+  width: 50% !important;
+  margin: 0 auto !important;
+}
+.panelHeadBgr {
+  background: #f0f0f0 !important;
+}
+.panelHeadBgr h3 {
+  margin: 0 auto;
+}
+.panelHeadText {
+  color: #1d9901 !important;
+  position: relative;
+}
 
-  /* =========================================
+/* =========================================
                 Link Button
 ============================================ */
 
@@ -598,26 +601,30 @@ input[type="radio" i], input[type="check" i] {
 /* ========================================
               Footer
   ==========================================*/
-  .gg-footer {
-    margin-top: auto;
-  }
+.gg-footer {
+  margin-top: auto;
+}
 
-  /* =============================== */
-  .text-overflow {
-    display: block;
-    padding: 9px 0;
-    /* margin-bottom: 25px; */
-    /* line-height: 1.42857143; */
-    /* background-color: rgba(0, 0, 0, 0.05); */
-    overflow: auto;
-    word-break: break-all;
-    word-wrap: break-word;
-    /* border: 1px solid #ddd;
+/* =============================== */
+.text-overflow {
+  display: block;
+  padding: 9px 0;
+  /* margin-bottom: 25px; */
+  /* line-height: 1.42857143; */
+  /* background-color: rgba(0, 0, 0, 0.05); */
+  overflow: auto;
+  word-break: break-all;
+  word-wrap: break-word;
+  /* border: 1px solid #ddd;
     border-radius: 4px; */
-    overflow-x: "scroll";
-    white-space: pre-line;
-  }
+  overflow-x: "scroll";
+  white-space: pre-line;
+}
 
-  .text-max-height {
-    max-height: 150px !important;
-  }
+.text-max-height {
+  max-height: 150px !important;
+}
+
+.modal-backdrop {
+  opacity: 0.9 !important;
+}
