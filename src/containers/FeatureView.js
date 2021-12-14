@@ -84,14 +84,36 @@ const FeatureView = props => {
                   <tbody>
                     {desc.descriptors &&
                       desc.descriptors.map(subdesc => {
-                        return (
-                          <>
-                            <tr>
-                              <td>{subdesc.name}</td>
-                              <td>{subdesc.value}</td>
-                            </tr>
-                          </>
-                        );
+                        let subGroup = [];
+                        if (subdesc.group) {
+                          //sub group title
+                          subGroup.push(
+                            <th style={{ backgroundColor: "white", fontWeight: "bold" }}>{subdesc.name}</th>
+                          );
+
+                          subdesc.descriptors.forEach(ele => {
+                            debugger;
+                            subGroup.push(
+                              <>
+                                <tr>
+                                  <td>{ele.name}</td>
+                                  <td>{ele.value}</td>
+                                </tr>
+                              </>
+                            );
+                          });
+                        } else {
+                          debugger;
+                          subGroup.push(
+                            <>
+                              <tr>
+                                <td>{subdesc.name}</td>
+                                <td>{subdesc.value}</td>
+                              </tr>
+                            </>
+                          );
+                        }
+                        return subGroup;
                       })}
                   </tbody>
                 </Table>
@@ -263,120 +285,76 @@ const FeatureView = props => {
     }
   };
 
-  const case4Metadata = () => {
+  const case4MetadataWhileCreatingFeature = () => {
+    let groupData = [];
+    let generalData = [];
+
+    generalData.push(<FormLabel label={"General Descriptors"} />);
+
+    props.metadata[0].descriptors.forEach(ele => {
+      if (ele.group) {
+        if (ele.mandateGroup && ele.mandateGroup.defaultSelection) {
+          groupData.push(
+            <div>
+              <FormLabel label={`${ele.mandateGroup.name} - ${ele.name}`} /> <br />
+            </div>
+          );
+        } else if (!ele.mandateGroup) {
+          groupData.push(
+            <div>
+              <FormLabel label={ele.name} />
+              <br />
+            </div>
+          );
+        }
+
+        if ((ele.mandateGroup && ele.mandateGroup.defaultSelection) || !ele.mandateGroup) {
+          ele.descriptors.forEach(subEle => {
+            if (subEle.group && subEle.descriptors.filter(i => i.value).length > 0) {
+              groupData.push(
+                <div
+                  style={{
+                    marginLeft: "100px"
+                  }}
+                >
+                  <FormLabel label={subEle.name} />
+                  <br />
+                </div>
+              );
+              subEle.descriptors.forEach(lastSubEle => {
+                if (lastSubEle.value) {
+                  groupData.push(getField(lastSubEle.name, lastSubEle.value));
+                }
+              });
+            } else {
+              if (subEle.value) {
+                groupData.push(getField(subEle.name, subEle.value));
+              }
+            }
+          });
+        }
+      } else {
+        if (ele.value) {
+          generalData.push(getField(ele.name, ele.value));
+        }
+      }
+    });
+
+    if (generalData.length > 1) {
+      generalData.push(groupData);
+    }
+    return <>{generalData}</>;
+  };
+
+  const getField = (label, value) => {
     return (
       <>
-        {props.metadata.purity.purityNotSpecified === "specify" ? (
-          <>
-            <FormLabel label="Purity" className={"metadata-descriptor-title"} />
-            <Form.Group as={Row} controlId="value">
-              <FormLabel label="Value" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.purity.value} />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} controlId="method">
-              <FormLabel label="Method" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.purity.method} />
-              </Col>
-            </Form.Group>
-
-            {props.metadata.purity.comment && (
-              <Form.Group as={Row} controlId="comment">
-                <FormLabel label="Comment" />
-                <Col md={4}>
-                  <Form.Control
-                    rows={props.metadata.purity.comment.length > 10 ? 3 : 1}
-                    as="textarea"
-                    plaintext
-                    disabled
-                    value={props.metadata.purity.comment}
-                  />
-                </Col>
-              </Form.Group>
-            )}
-          </>
-        ) : (
-          <Form.Group as={Row} controlId="value">
-            <FormLabel label="Purity" />
-            <Col md={4}>
-              <Form.Control type="text" disabled value={"Not Recorded"} />
-            </Col>
-          </Form.Group>
-        )}
-
-        {props.metadata.source === "notSpecified" && (
-          <Form.Group as={Row} controlId="value">
-            <FormLabel label="Source" />
-            <Col md={4}>
-              <Form.Control type="text" disabled value={"Not Recorded"} />
-            </Col>
-          </Form.Group>
-        )}
-
-        {props.metadata.source === "commercial" && (
-          <>
-            <FormLabel label="Source" className={"metadata-descriptor-title "} />
-            <Form.Group as={Row} controlId="vendor">
-              <FormLabel label="Vendor" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.commercial.vendor} />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} controlId="catalogueNumber">
-              <FormLabel label="Catalogue Number" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.commercial.catalogueNumber} />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} controlId="batchId">
-              <FormLabel label=" Batch Id" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.commercial.batchId} />
-              </Col>
-            </Form.Group>
-          </>
-        )}
-
-        {props.metadata.source === "nonCommercial" && (
-          <>
-            <FormLabel label="Source" className={"metadata-descriptor-title "} />
-            <Form.Group as={Row} controlId="providerLab">
-              <FormLabel label="Provider Lab" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.nonCommercial.providerLab} />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} controlId="method">
-              <FormLabel label="Method" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.nonCommercial.method} />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} controlId="batchId">
-              <FormLabel label="Batch Id" />
-              <Col md={4}>
-                <Form.Control type="text" disabled value={props.metadata.nonCommercial.batchId} />
-              </Col>
-            </Form.Group>
-
-            {props.metadata.nonCommercial.sourceComment && (
-              <Form.Group as={Row} controlId="comment">
-                <FormLabel label="Comment" />
-                <Col md={4}>
-                  <Form.Control
-                    rows={props.metadata.nonCommercial.sourceComment.length > 10 ? 3 : 1}
-                    as="textarea"
-                    plaintext
-                    disabled
-                    value={props.metadata.nonCommercial.sourceComment}
-                  />
-                </Col>
-              </Form.Group>
-            )}
-          </>
-        )}
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId={label}>
+          <Col xs={10} lg={7}>
+            <FormLabel label={label} />
+            <Form.Control type="text" name={label} placeholder="Name" value={value} disabled />
+          </Col>
+        </Form.Group>
       </>
     );
   };
@@ -426,17 +404,18 @@ const FeatureView = props => {
   };
 
   const getMetadataNameandId = page => {
+    debugger;
     return (
       <>
-        <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" className={editFeature ? "required-asterik" : ""} />
-          <Col md={4}>
+        <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
+          <Col xs={10} lg={7}>
+            <FormLabel label="Name" className={editFeature ? "required-asterik" : ""} />
             <Form.Control
               type="text"
               name="name"
               disabled={page === "case4" && !editFeature}
               plaintext={page === "view" && !editFeature}
-              value={props.metadata ? props.metadata.name : featureDetails.name}
+              value={props.metadata ? props.name : featureDetails.name}
               onChange={editFeature ? handleChange : {}}
               maxLength={50}
               required
@@ -445,15 +424,15 @@ const FeatureView = props => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="featureId">
-          <FormLabel label="FeatureId" className={editFeature ? "required-asterik" : ""} />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="featureId" className="gg-align-center mb-3">
+          <Col xs={10} lg={7}>
+            <FormLabel label="FeatureId" className={editFeature ? "required-asterik" : ""} />
             <Form.Control
               type="text"
               name="internalId"
               disabled={page === "case4" && !editFeature}
               plaintext={page === "view" && !editFeature}
-              value={props.metadata ? props.metadata.featureId : featureDetails.internalId}
+              value={props.metadata ? props.featureId : featureDetails.internalId}
               onChange={editFeature ? handleChange : {}}
               maxLength={30}
               required
@@ -462,9 +441,9 @@ const FeatureView = props => {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="Type">
-          <FormLabel label="Type" />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="Type" className="gg-align-center mb-3">
+          <Col xs={10} lg={7}>
+            <FormLabel label="Type" />
             <Form.Control
               type="text"
               disabled={page === "case4"}
@@ -684,7 +663,7 @@ const FeatureView = props => {
                   {getProtein()}
 
                   {props.metadata
-                    ? case4Metadata()
+                    ? case4MetadataWhileCreatingFeature()
                     : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
 
                   {props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&

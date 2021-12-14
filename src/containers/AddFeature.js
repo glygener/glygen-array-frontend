@@ -493,7 +493,7 @@ const AddFeature = props => {
           importedPageData={featureMetadata}
           setMetadataforImportedPage={setFeatureMetadata}
           handleBack={handleBack}
-          handleNext={handleNextLinker}
+          handleNext={featureAddState.type === "LINKED_GLYCAN" ? handleNextLinker : handleNextGlycoLipid}
           setImportedPageDataToSubmit={setSpotMetaDataToSubmit}
         />
       </>
@@ -2157,7 +2157,7 @@ const AddFeature = props => {
                 return (
                   <>
                     <LineTooltip text="View Details">
-                      <Link>
+                      <Link to={""}>
                         <FontAwesomeIcon
                           key={"view" + index}
                           icon={["far", "eye"]}
@@ -2171,7 +2171,7 @@ const AddFeature = props => {
                     </LineTooltip>
 
                     <LineTooltip text="Delete">
-                      <Link>
+                      <Link to={""}>
                         <FontAwesomeIcon
                           key={"delete" + index}
                           icon={["far", "trash-alt"]}
@@ -2217,6 +2217,8 @@ const AddFeature = props => {
   const getCase4 = () => {
     return (
       <FeatureView
+        name={featureAddState.name}
+        featureId={featureAddState.featureId}
         positionDetails={featureAddState.positionDetails}
         getSelectedLinkerInformation={getSelectedLinkerInformation}
         linker={featureAddState.linker}

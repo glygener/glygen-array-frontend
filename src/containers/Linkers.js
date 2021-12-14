@@ -8,14 +8,13 @@ import { Link } from "react-router-dom";
 import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import displayNames from "../appData/displayNames";
-import { Title } from "../components/FormControls";
 import { getToolTip } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 
-const Linkers = (props) => {
+const Linkers = props => {
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
@@ -50,22 +49,22 @@ const Linkers = (props) => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: (row) => getToolTip(row.original.name),
+                    Cell: row => getToolTip(row.original.name)
                     // minWidth: 50,
                   },
                   {
                     Header: displayNames.linker.PUBCHEM_ID,
                     accessor: "pubChemId",
-                    Cell: (row) => getToolTip(row.original.pubChemId),
+                    Cell: row => getToolTip(row.original.pubChemId)
                     // minWidth: 70,
                   },
                   {
                     Header: displayNames.linker.STRUCTURE,
                     accessor: "imageURL",
                     // eslint-disable-next-line react/prop-types
-                    Cell: (row) => <StructureImage imgUrl={row.value}></StructureImage>,
-                    minWidth: 150,
-                  },
+                    Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
+                    minWidth: 150
+                  }
                 ]}
                 defaultPageSize={10}
                 showCommentsButton

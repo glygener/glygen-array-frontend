@@ -165,7 +165,7 @@ const Descriptors = props => {
                         setEnableModal(true);
                         setMandateGroupNewValue(grp);
                       }}
-                      checked={grp.mandateGroup.defaultSelection}
+                      // checked={grp.mandateGroup.defaultSelection}
                       defaultChecked={grp.mandateGroup.defaultSelection}
                     />
                     {grp.name}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -182,8 +182,8 @@ const Descriptors = props => {
                             // setEnableModal(true);
                             // setMandateGroupNewValue(grp);
                           }}
-                          checked={grp.mandateGroup.defaultSelection}
-                          // defaultChecked={grp.mandateGroup.defaultSelection}
+                          // checked={grp.mandateGroup.defaultSelection}
+                          defaultChecked={grp.mandateGroup.defaultSelection}
                         />
                         {"Not Applicable"}&nbsp;&nbsp;&nbsp;&nbsp;
                       </Form.Check.Label>
@@ -196,8 +196,8 @@ const Descriptors = props => {
                             // setEnableModal(true);
                             // setMandateGroupNewValue(grp);
                           }}
-                          checked={grp.mandateGroup.defaultSelection}
-                          // defaultChecked={grp.mandateGroup.defaultSelection}
+                          // checked={grp.mandateGroup.defaultSelection}
+                          defaultChecked={grp.mandateGroup.defaultSelection}
                         />
                         {"Not Recorded"}&nbsp;&nbsp;&nbsp;&nbsp;
                       </Form.Check.Label>
@@ -443,7 +443,7 @@ const Descriptors = props => {
 
                   {!descriptor.id.startsWith("newly") && (
                     /* Creating Sub group Table */
-                    <table hover fluid="true" className="table-striped mb-3">
+                    <table fluid="true" className="table-striped mb-3">
                       <thead>
                         <tr>
                           {descriptor.descriptors.map(field => {
@@ -747,7 +747,7 @@ const Descriptors = props => {
               <Form.Control
                 as="textarea"
                 name={element.name}
-                value={element.value}
+                value={element.value || ""}
                 placeholder={element.description.toLowerCase()}
                 onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
                 required={element.mandatory ? true : false}
@@ -767,7 +767,7 @@ const Descriptors = props => {
             <Form.Control
               type="text"
               name={element.name}
-              value={element.value}
+              value={element.value || ""}
               placeholder={element.description.toLowerCase()}
               onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
               required={element.mandatory ? true : false}
@@ -809,10 +809,10 @@ const Descriptors = props => {
               control={
                 <BlueCheckbox
                   name={element.name}
-                  checked={element.notApplicable}
+                  // checked={element.notApplicable}
                   onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
                   size="small"
-                  defaultChecked={element.value}
+                  defaultChecked={element.notApplicable}
                   disabled={descriptorDetails.isHide || element.disabled}
                 />
               }
@@ -854,7 +854,7 @@ const Descriptors = props => {
                 control={
                   <BlueCheckbox
                     name="notApplicable"
-                    checked={element.notApplicable}
+                    // checked={element.notApplicable}
                     onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                     size="small"
                     defaultChecked={element.disabled}
@@ -875,7 +875,7 @@ const Descriptors = props => {
                 control={
                   <BlueCheckbox
                     name="notRecorded"
-                    checked={element.notRecorded}
+                    // checked={element.notRecorded}
                     onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                     size="small"
                     defaultChecked={element.disabled}
@@ -922,8 +922,6 @@ const Descriptors = props => {
     return CurrentGroup.descriptors.map(field => {
       return getNewField(field, CurrentGroup, subGroupAddElement.id);
     });
-
-    // subGroupAddElement, subGroupAddDescriptor
   };
 
   return (
