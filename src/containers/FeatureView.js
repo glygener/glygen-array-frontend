@@ -92,7 +92,6 @@ const FeatureView = props => {
                           );
 
                           subdesc.descriptors.forEach(ele => {
-                            debugger;
                             subGroup.push(
                               <>
                                 <tr>
@@ -103,7 +102,6 @@ const FeatureView = props => {
                             );
                           });
                         } else {
-                          debugger;
                           subGroup.push(
                             <>
                               <tr>
@@ -404,7 +402,6 @@ const FeatureView = props => {
   };
 
   const getMetadataNameandId = page => {
-    debugger;
     return (
       <>
         <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
