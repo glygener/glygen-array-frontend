@@ -197,14 +197,14 @@ const AddOtherMolecule = (props) => {
               <Form.Control
                 type="text"
                 name="name"
-                placeholder="name"
+                placeholder="Enter Name"
                 value={otherMolecule.name}
                 onChange={handleChange}
                 isInvalid={validate}
                 maxLength={100}
                 required
               />
-              <Feedback message={"Name is required"} />
+              <Feedback message="Name is required" />
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="comments" className="gg-align-center mb-3">

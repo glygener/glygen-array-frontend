@@ -267,7 +267,7 @@ const EditLinker = (props) => {
                 {linkerDetails.imageURL && (
                   <Form.Group as={Row} controlId="imageURL" className="gg-align-center mb-3">
                     <Col xs={12} lg={9}>
-                      <FormLabel label={"Image URL"} />
+                      <FormLabel label={"Image"} />
                       <StructureImage imgUrl={linkerDetails.imageURL} />,
                     </Col>
                   </Form.Group>
@@ -338,15 +338,17 @@ const EditLinker = (props) => {
                   <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
                     <Col xs={12} lg={9}>
                       <FormLabel label="URLs" />
-                      {linkerDetails.urls.map((url, index) => {
-                        return (
-                          <div className="mb-2" key={index}>
-                            <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                              {url}
-                            </a>
-                          </div>
-                        );
-                      })}
+                      {linkerDetails.urls && linkerDetails.urls.length > 0
+                        ? linkerDetails.urls.map((url, index) => {
+                            return (
+                              <div className="mb-2" key={index}>
+                                <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                                  {url}
+                                </a>
+                              </div>
+                            );
+                          })
+                        : ""}
                     </Col>
                   </Form.Group>
                 )}
@@ -386,7 +388,7 @@ const EditLinker = (props) => {
                         </Link>
                       )}
 
-                      {(linkerDetails.type.includes("LINKERS") || linkerDetails.type === "SMALLMOLECULE") && (
+                      {(linkerDetails.type.includes("LINKERS") || linkerDetails.type.includes("SMALLMOLECULE")) && (
                         <Link to="/linkers">
                           <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
                         </Link>
