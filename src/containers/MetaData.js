@@ -148,16 +148,17 @@ const MetaData = props => {
     }
   };
 
-  const handleChangeMetaForm = (descriptorDetails, e, subGroupId, dateElementId) => {
+  const handleChangeMetaForm = (descriptorDetails, e, groupId, dateElementId) => {
     let id = "";
     let name = "";
     let value = "";
     let descriptor;
     let flag;
+    let descriptorGroupEditedIndex;
 
     if (dateElementId === "checkBox") {
       if (descriptorDetails.group) {
-        descriptor = descriptorDetails.descriptors.find(i => i.id === subGroupId);
+        descriptor = descriptorDetails.descriptors.find(i => i.id === groupId);
       } else {
         descriptor = descriptorDetails;
       }
@@ -167,35 +168,19 @@ const MetaData = props => {
           let d;
 
           if (subDesc.group) {
-            d = subDesc.descriptors.find(e => e.id === subGroupId);
+            d = subDesc.descriptors.find(e => e.id === groupId);
             if (d) {
               return d;
             }
           }
         });
       } else {
-        id = subGroupId;
+        id = groupId;
         name = descriptor.name;
         flag = e.target.checked;
       }
     } else if (dateElementId) {
-      let dateField = "";
-
-      if (descriptorDetails.group && !subGroupId) {
-        dateField = descriptorDetails.descriptors.find(i => i.id === dateElementId);
-      } else if (subGroupId) {
-        descriptorDetails.descriptors.forEach(element => {
-          if (element.id === dateElementId) {
-            dateField = element;
-          } else if (element.group) {
-            element.descriptors.forEach(element => {
-              if (element.id === dateElementId) {
-                dateField = element;
-              }
-            });
-          }
-        });
-      }
+      let dateField = handleDate(descriptorDetails, groupId, dateElementId, e);
 
       id = dateField.id;
       name = dateField.name;
@@ -215,9 +200,9 @@ const MetaData = props => {
       value = e.target.value;
     }
 
-    var selectedSample;
-    var sampleModelUpdated;
-    var selectedSampleIndex;
+    let selectedSample;
+    let sampleModelUpdated;
+    let selectedSampleIndex;
 
     if (isUpdate || props.isCopy) {
       selectedSample = { ...sampleModel };
@@ -227,17 +212,15 @@ const MetaData = props => {
       selectedSampleIndex = sampleModelUpdated.indexOf(selectedSample);
     }
 
-    const descriptorGroupEditedIndex = selectedSample.descriptors.indexOf(descriptorDetails);
-
     if (descriptorDetails.group) {
       if (!descriptor) {
         descriptor = descriptorDetails.descriptors.find(i => i.id === id);
       }
 
       if (!descriptor) {
-        var editedSubGroup = "";
-        var editedSubGroupIndex;
-        const subGroupDescriptors = descriptorDetails.descriptors.find(i => i.id === subGroupId);
+        let editedSubGroup = "";
+        let editedSubGroupIndex;
+        const subGroupDescriptors = descriptorDetails.descriptors.find(i => i.id === groupId);
         const subGroupDescriptorIndex = descriptorDetails.descriptors.indexOf(subGroupDescriptors);
 
         if (subGroupDescriptors.group) {
@@ -246,17 +229,7 @@ const MetaData = props => {
           if (name === "unitlevel") {
             editedSubGroup.unit = value;
           } else if (dateElementId === "checkBox") {
-            if (e.target.name === "notApplicable") {
-              editedSubGroup.notApplicable = flag;
-            } else if (e.target.name === "notRecorded") {
-              editedSubGroup.notRecorded = flag;
-            }
-
-            if (editedSubGroup.notApplicable || editedSubGroup.notRecorded) {
-              editedSubGroup.disabled = true;
-            } else if (!editedSubGroup.notApplicable && !editedSubGroup.notRecorded) {
-              editedSubGroup.disabled = false;
-            }
+            editedSubGroup = handleCheckBox(editedSubGroup, flag, e);
           } else {
             editedSubGroup.value = value;
           }
@@ -266,39 +239,20 @@ const MetaData = props => {
           if (name === "unitlevel") {
             editedSubGroup.unit = value;
           } else if (dateElementId === "checkBox") {
-            if (e.target.name === "notApplicable") {
-              editedSubGroup.notApplicable = flag;
-            } else if (e.target.name === "notRecorded") {
-              editedSubGroup.notRecorded = flag;
-            }
-
-            if (editedSubGroup.notApplicable || editedSubGroup.notRecorded) {
-              editedSubGroup.disabled = true;
-            } else if (!editedSubGroup.notApplicable && !editedSubGroup.notRecorded) {
-              editedSubGroup.disabled = false;
-            }
+            editedSubGroup = handleCheckBox(editedSubGroup, flag, e);
           } else {
             editedSubGroup.value = value;
           }
         }
         descriptorDetails.descriptors[subGroupDescriptorIndex] = subGroupDescriptors;
       } else {
-        const editedDescGroup = descriptorDetails.descriptors;
-        const editedDesc = editedDescGroup.find(i => i.id === id);
+        let editedDescGroup = descriptorDetails.descriptors;
+        let editedDesc = editedDescGroup.find(i => i.id === id);
+
         if (name === "unitlevel") {
           editedDesc.unit = value;
         } else if (dateElementId === "checkBox") {
-          if (e.target.name === "notApplicable") {
-            editedDesc.notApplicable = flag;
-          } else if (e.target.name === "notRecorded") {
-            editedDesc.notRecorded = flag;
-          }
-
-          if (editedDesc.notApplicable || editedDesc.notRecorded) {
-            editedDesc.disabled = true;
-          } else if (!editedDesc.notApplicable && !editedDesc.notRecorded) {
-            editedDesc.disabled = false;
-          }
+          editedDesc = handleCheckBox(editedDesc, flag, e);
         } else {
           editedDesc.value = value;
         }
@@ -307,31 +261,82 @@ const MetaData = props => {
       if (name === "unitlevel") {
         descriptorDetails.unit = value;
       } else if (dateElementId === "checkBox") {
-        if (e.target.name === "notApplicable") {
-          descriptorDetails.notApplicable = flag;
-        } else if (e.target.name === "notRecorded") {
-          descriptorDetails.notRecorded = flag;
-        }
-
-        if (descriptorDetails.notApplicable || descriptorDetails.notRecorded) {
-          descriptorDetails.disabled = true;
-        } else if (!descriptorDetails.notApplicable && !descriptorDetails.notRecorded) {
-          descriptorDetails.disabled = false;
-        }
+        descriptorDetails = handleCheckBox(descriptorDetails, flag, e);
       } else {
         descriptorDetails.value = value;
       }
     }
 
-    selectedSample.descriptors[descriptorGroupEditedIndex] = descriptorDetails;
+    if (groupId && !dateElementId) {
+      let groupSelected = selectedSample.descriptors.find(e => e.id === groupId);
+      let subGroupIndex = groupSelected.descriptors.indexOf(descriptorDetails);
+
+      groupSelected.descriptors[subGroupIndex] = descriptorDetails;
+      descriptorGroupEditedIndex = selectedSample.descriptors.indexOf(groupSelected);
+
+      selectedSample.descriptors[descriptorGroupEditedIndex] = groupSelected;
+    } else {
+      descriptorGroupEditedIndex = selectedSample.descriptors.indexOf(descriptorDetails);
+      selectedSample.descriptors[descriptorGroupEditedIndex] = descriptorDetails;
+    }
+
     if (isUpdate || props.isCopy) {
       setSampleModel(selectedSample);
     } else {
       sampleModelUpdated[selectedSampleIndex] = selectedSample;
       setSampleModel(sampleModelUpdated);
     }
+
     props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
+
+  function handleCheckBox(descriptorDetails, flag, e) {
+    if (e.target.name === "notApplicable" && flag) {
+      descriptorDetails.notApplicable = flag;
+      if (descriptorDetails.notRecorded) {
+        descriptorDetails.notRecorded = false;
+      }
+    } else if (e.target.name === "notApplicable" && !flag) {
+      descriptorDetails.notApplicable = flag;
+    } else if (e.target.name === "notRecorded" && flag) {
+      descriptorDetails.notRecorded = flag;
+      if (descriptorDetails.notApplicable) {
+        descriptorDetails.notApplicable = false;
+      }
+    } else if (e.target.name === "notRecorded" && !flag) {
+      descriptorDetails.notRecorded = flag;
+    }
+
+    if (descriptorDetails.notApplicable || descriptorDetails.notRecorded) {
+      descriptorDetails.disabled = true;
+    } else if (!descriptorDetails.notApplicable && !descriptorDetails.notRecorded) {
+      descriptorDetails.disabled = false;
+    }
+
+    return descriptorDetails;
+  }
+
+  function handleDate(descriptorDetails, groupId, dateElementId, e) {
+    let dateField = "";
+
+    if (descriptorDetails.group && !groupId) {
+      dateField = descriptorDetails.descriptors.find(i => i.id === dateElementId);
+    } else if (groupId) {
+      descriptorDetails.descriptors.forEach(element => {
+        if (element.id === dateElementId) {
+          dateField = element;
+        } else if (element.group) {
+          element.descriptors.forEach(element => {
+            if (element.id === dateElementId) {
+              dateField = element;
+            }
+          });
+        }
+      });
+    }
+
+    return dateField;
+  }
 
   const editDescriptorGroup = selectedDescriptorSubGroup => {
     return (
@@ -622,9 +627,10 @@ const MetaData = props => {
   };
 
   const handleAddDescriptorSubGroups = (selectedGroup, selectedSubGrpDesc) => {
-    var sampleModelUpdate;
-
-    var selectedDescriptorIndex;
+    let sampleModelUpdate;
+    let itemByType;
+    let itemByTypeIndex;
+    let selectedDescriptorIndex;
     let maxCurrentOrder;
 
     if (isUpdate) {
@@ -632,8 +638,8 @@ const MetaData = props => {
     } else {
       sampleModelUpdate = [...sampleModel];
 
-      var itemByType = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
-      var itemByTypeIndex = sampleModelUpdate.indexOf(itemByType);
+      itemByType = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
+      itemByTypeIndex = sampleModelUpdate.indexOf(itemByType);
     }
 
     var existedElement = selectedGroup.descriptors.find(e => e.name === selectedSubGrpDesc.name && !e.isNewlyAdded);
@@ -655,11 +661,13 @@ const MetaData = props => {
       if (isUpdate) {
         setSampleModel(selectedGroup);
       } else {
+        selectedDescriptorIndex = itemByType.descriptors.indexOf(selectedGroup);
         itemByType.descriptors[selectedDescriptorIndex] = selectedGroup;
         sampleModelUpdate[itemByTypeIndex] = itemByType;
         setSampleModel(sampleModelUpdate);
       }
     }
+
     props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
@@ -725,45 +733,60 @@ const MetaData = props => {
     var itemToBeDeleted = itemDescriptors.find(i => i.id === id);
     var itemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
 
-    if (!itemToBeDeleted.mandatory) {
-      if (!itemToBeDeleted.id.startsWith("newly") && itemToBeDeleted.isNewlyAddedNonMandatory === undefined) {
-        if (itemToBeDeleted.mandateGroup) {
-          let sameGroupItemDeletedTobe = itemDescriptors.filter(
-            e => e.mandateGroup && e.mandateGroup.id === itemToBeDeleted.mandateGroup.id
-          );
+    if (!itemToBeDeleted.id.startsWith("newly") && itemToBeDeleted.isNewlyAddedNonMandatory === undefined) {
+      if (itemToBeDeleted.mandateGroup) {
+        let sameGroupItemDeletedTobe = itemDescriptors.filter(
+          e => e.mandateGroup && e.mandateGroup.id === itemToBeDeleted.mandateGroup.id
+        );
 
-          sameGroupItemDeletedTobe.forEach(descGroup => {
-            descGroup.isDeleted = true;
-          });
-        } else {
-          itemToBeDeleted.isDeleted = true;
-        }
-      } else if (itemToBeDeleted.id.startsWith("newly")) {
-        const ItemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
-        itemDescriptors.splice(ItemToBeDeletedIndex, 1);
+        sameGroupItemDeletedTobe.forEach(descGroup => {
+          descGroup.isDeleted = true;
+        });
       } else {
-        itemToBeDeleted.isNewlyAddedNonMandatory = false;
-        itemToBeDeleted.isNewlyAdded = false;
-        itemToBeDeleted.order = 0;
+        itemToBeDeleted.isDeleted = true;
 
-        const itemSubDescriptors = itemToBeDeleted.descriptors;
+        let itemSubDescriptors = itemToBeDeleted.descriptors;
+
+        let listtoBeDeleted = itemSubDescriptors.filter(e => e.isNewlyAddedNonMandatory);
+
+        listtoBeDeleted.forEach(newlyAddedEle => {
+          itemToBeDeleted.descriptors.splice(itemToBeDeleted.descriptors.indexOf(newlyAddedEle), 1);
+        });
 
         itemSubDescriptors.forEach(d => {
-          if (d.id.startsWith("newly")) {
-            const newlyAddedsubGroupIndex = itemSubDescriptors.indexOf(d);
-            itemSubDescriptors.splice(newlyAddedsubGroupIndex, 1);
-          } else if (d.group) {
+          if (!d.id.startsWith("newly") && d.group) {
             var dg = d.descriptors;
             dg.forEach(sgd => {
               sgd.value = undefined;
             });
-          } else {
+          } else if (!d.group) {
             d.value = undefined;
           }
         });
       }
+    } else if (itemToBeDeleted.id.startsWith("newly")) {
+      const ItemToBeDeletedIndex = itemDescriptors.indexOf(itemToBeDeleted);
+      itemDescriptors.splice(ItemToBeDeletedIndex, 1);
     } else {
-      itemDescriptors.splice(itemToBeDeletedIndex, 1);
+      itemToBeDeleted.isNewlyAddedNonMandatory = false;
+      itemToBeDeleted.isNewlyAdded = false;
+      itemToBeDeleted.order = 0;
+
+      const itemSubDescriptors = itemToBeDeleted.descriptors;
+
+      itemSubDescriptors.forEach(d => {
+        if (d.id.startsWith("newly")) {
+          const newlyAddedsubGroupIndex = itemSubDescriptors.indexOf(d);
+          itemSubDescriptors.splice(newlyAddedsubGroupIndex, 1);
+        } else if (d.group) {
+          var dg = d.descriptors;
+          dg.forEach(sgd => {
+            sgd.value = undefined;
+          });
+        } else {
+          d.value = undefined;
+        }
+      });
     }
 
     if (props.metadataType === "Assay") {
@@ -796,12 +819,14 @@ const MetaData = props => {
     props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
-  const handleSubGroupDelete = id => {
+  const handleSubGroupDelete = (id, selectedSubGroup) => {
     var sampleModelDelete;
     var itemByType;
     var itemByTypeIndex;
     let itemToBeDeleted;
     let itemToBeDeletedIndex;
+    let selectedElement;
+    let selectedElementIndex;
 
     if (isUpdate || props.isCopy) {
       itemByType = { ...sampleModel };
@@ -812,10 +837,41 @@ const MetaData = props => {
     }
 
     var itemDescriptors = itemByType.descriptors;
-    const selectedElement = itemDescriptors.find(i => i.id === id);
-    const selectedElementIndex = itemDescriptors.indexOf(selectedElement);
+    let subGroupElement;
+    let subGroupIndex;
 
-    if (!selectedElement.group) {
+    if (!selectedSubGroup) {
+      selectedElement = itemDescriptors.find(i => i.id === id);
+      selectedElementIndex = itemDescriptors.indexOf(selectedElement);
+    }
+
+    if (selectedSubGroup) {
+      if (!selectedSubGroup.id.startsWith("newly")) {
+        selectedSubGroup.descriptors.forEach(ele => {
+          ele.value = "";
+        });
+
+        itemDescriptors.forEach(e => {
+          if (e.group) {
+            subGroupElement = e.descriptors.find(i => i.id === id);
+            if (subGroupElement) {
+              subGroupIndex = e.descriptors.indexOf(subGroupElement);
+              e.descriptors[subGroupIndex] = selectedSubGroup;
+            }
+          }
+        });
+      } else {
+        itemDescriptors.forEach(e => {
+          if (e.group) {
+            subGroupElement = e.descriptors.find(i => i.id === id);
+            if (subGroupElement) {
+              subGroupIndex = e.descriptors.indexOf(subGroupElement);
+              e.descriptors.splice(subGroupIndex, 1);
+            }
+          }
+        });
+      }
+    } else if (!selectedElement.group) {
       itemDescriptors.splice(selectedElementIndex, 1);
     } else {
       itemToBeDeleted = selectedElement.descriptors.find(i => i.id === id);

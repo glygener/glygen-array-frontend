@@ -314,7 +314,7 @@ const Descriptors = props => {
               />
             )}
 
-            {descriptor.id.startsWith("newly") && metaType !== "Feature" && (
+            {descriptor.id.startsWith("newly") && !isSubGroup && metaType !== "Feature" && (
               <FontAwesomeIcon
                 key={"delete" + index}
                 icon={["far", "trash-alt"]}
@@ -459,34 +459,28 @@ const Descriptors = props => {
                       <tbody className="table-body">
                         {commonGroups.map(desc => {
                           let rowData = [];
-
-                          rowData.push(
-                            desc.descriptors.map(field => {
-                              return (
-                                field.value && (
-                                  <>
-                                    <td>{field.value}</td>
-                                  </>
-                                )
-                              );
-                            })
-                          );
-
                           let filledDescriptors = desc.descriptors.filter(i => i.value && i.value !== "");
 
-                          filledDescriptors.length > 0 &&
+                          if (filledDescriptors.length > 0) {
                             rowData.push(
-                              <FontAwesomeIcon
-                                key={"delete" + index}
-                                icon={["far", "trash-alt"]}
-                                size="1x"
-                                title="Delete Descriptor"
-                                className="delete-icon table-btn"
-                                style={{ marginRight: "10px", marginBottom: "4px" }}
-                                onClick={() => handleSubGroupDelete(desc.id)}
-                              />
+                              desc.descriptors.map(field => {
+                                return field.value && field.value !== "" && <td>{field.value}</td>;
+                              })
                             );
-
+                            rowData.push(
+                              <td>
+                                <FontAwesomeIcon
+                                  key={"delete" + index}
+                                  icon={["far", "trash-alt"]}
+                                  size="1x"
+                                  title="Delete Descriptor"
+                                  className="delete-icon table-btn"
+                                  style={{ marginRight: "10px", marginBottom: "4px" }}
+                                  onClick={() => handleSubGroupDelete(desc.id, desc)}
+                                />
+                              </td>
+                            );
+                          }
                           return <tr>{rowData}</tr>;
                         })}
                       </tbody>
@@ -853,11 +847,12 @@ const Descriptors = props => {
               <FormControlLabel
                 control={
                   <BlueCheckbox
+                    key={Math.random()}
                     name="notApplicable"
-                    // checked={element.notApplicable}
+                    checked={element.notApplicable}
                     onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                     size="small"
-                    defaultChecked={element.disabled}
+                    defaultChecked={element.notApplicable}
                   />
                 }
                 label={
@@ -874,11 +869,12 @@ const Descriptors = props => {
                 style={{ marginTop: "-25px" }}
                 control={
                   <BlueCheckbox
+                    key={Math.random()}
                     name="notRecorded"
-                    // checked={element.notRecorded}
+                    checked={element.notRecorded}
                     onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                     size="small"
-                    defaultChecked={element.disabled}
+                    defaultChecked={element.notRecorded}
                   />
                 }
                 label={
@@ -893,7 +889,7 @@ const Descriptors = props => {
         )}
 
         {element && element.maxOccurrence > 1 && displayPlusIcon(element, descMetaData, true) && (
-          <Col md={1} style={{ marginLeft: "-150px;" }}>
+          <Col md={1} style={{ marginLeft: "-150px" }}>
             <Button onClick={() => props.handleAddDescriptorGroups(descriptorDetails)}>
               <LineTooltip text="Add descriptor">
                 <Image src={plusIcon} alt="plus button" />
