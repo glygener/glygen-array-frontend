@@ -31,7 +31,7 @@ const ConfirmationModal = props => {
 
 ConfirmationModal.propTypes = {
   title: PropTypes.string,
-  body: PropTypes.string,
+  body: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   onConfirm: PropTypes.func,
   onCancel: PropTypes.func,
   showModal: PropTypes.bool
