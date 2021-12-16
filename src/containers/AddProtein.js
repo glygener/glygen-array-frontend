@@ -564,7 +564,7 @@ const AddProtein = (props) => {
                         <Feedback message="Please enter a valid and unique URL." />
                       </Col>
                       <Col md={1}>
-                        <Button onClick={addURL} className="gg-reg-btn-outline">
+                        <Button onClick={addURL} className="gg-btn-outline-reg">
                           <LineTooltip text="Add URL">
                             <Link>
                               <Image src={plusIcon} alt="plus button" />
@@ -610,7 +610,7 @@ const AddProtein = (props) => {
                         />
                       </Col>
                       <Col md={1}>
-                        <Button onClick={addPublication} className="gg-reg-btn-outline">
+                        <Button onClick={addPublication} className="gg-btn-outline-reg">
                           <LineTooltip text="Add Publication">
                             <Link>
                               <Image src={plusIcon} alt="plus button" />

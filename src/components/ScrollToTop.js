@@ -24,7 +24,7 @@ const ScrollToTopBtn = () => {
     <div className="scroll-to-top">
       {isVisible && (
         <div onClick={ScrollToTop}>
-          <Button className="gg-reg-btn-outline">
+          <Button className="gg-btn-outline-reg">
             {/* <VerticalAlignTopIcon fontSize="large" /> */}
             <BiArrowToTop fontSize="40px" />
           </Button>

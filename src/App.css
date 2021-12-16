@@ -400,12 +400,12 @@ input[type]:not(:-ms-input-placeholder) + label {
   width: 270px;
 }
 .gg-btn-outline:hover,
-.gg-reg-btn-outline:hover {
+.gg-btn-outline-reg:hover {
   color: #fff !important;
   background-color: var(--gg-blue) !important;
   border-color: var(--gg-blue) !important;
 }
-.gg-reg-btn-outline {
+.gg-btn-outline-reg {
   color: var(--gg-blue) !important;
   background-color: #fff !important;
   border-color: var(--gg-blue) !important;
