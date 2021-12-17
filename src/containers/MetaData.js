@@ -623,6 +623,7 @@ const MetaData = props => {
     }
 
     setSampleModel(sampleModelUpdate);
+    setAddDescriptorSelection("");
     //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
@@ -819,6 +820,52 @@ const MetaData = props => {
     props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
+  const handleCancelModal = (selectedSubGroup, selectedGroup) => {
+    let sampleModelDelete;
+    let itemByType;
+    let itemByTypeIndex;
+    let itemDescriptors;
+
+    if (isUpdate || props.isCopy) {
+      itemByType = { ...sampleModel };
+    } else {
+      sampleModelDelete = [...sampleModel];
+      itemByType = sampleModelDelete.find(i => i.name === metaDataDetails.selectedtemplate);
+      itemByTypeIndex = sampleModelDelete.indexOf(itemByType);
+    }
+
+    itemDescriptors = itemByType.descriptors;
+
+    let sameSubGroups;
+    let cancelledElement;
+
+    let selectedMainGroup = itemDescriptors.find(e => e.id === selectedGroup.id);
+    let selectedMainGroupIndex = itemDescriptors.indexOf(selectedMainGroup);
+
+    sameSubGroups = selectedMainGroup.descriptors.filter(e => e.name === selectedSubGroup.name);
+
+    if (sameSubGroups.length > 0) {
+      cancelledElement = sameSubGroups[sameSubGroups.length - 1];
+    }
+
+    if (cancelledElement) {
+      cancelledElement.descriptors.forEach(ele => {
+        ele.value = "";
+      });
+    }
+
+    itemDescriptors[selectedMainGroupIndex] = selectedMainGroup;
+    itemByType.descriptors = itemDescriptors;
+
+    if (isUpdate || props.isCopy) {
+      setSampleModel(itemByType);
+    } else {
+      sampleModelDelete[itemByTypeIndex] = itemByType;
+      setSampleModel(sampleModelDelete);
+    }
+    props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
+  };
+
   const handleSubGroupDelete = (id, selectedSubGroup) => {
     var sampleModelDelete;
     var itemByType;
@@ -987,6 +1034,7 @@ const MetaData = props => {
           isAllExpanded={isAllExpanded}
           // descriptorSubGroup={getDescriptorSubGroup}
           handleSubGroupDelete={handleSubGroupDelete}
+          handleCancelModal={handleCancelModal}
           isUpdate={isUpdate}
           isCopySample={props.isCopy}
           setLoadDataOnFirstNextInUpdate={setLoadDataOnFirstNextInUpdate}
@@ -1053,7 +1101,7 @@ const MetaData = props => {
     }
   };
 
-  function defaultSelectionChange(latestDefaultSelection) {
+  function defaultSelectionChange(latestDefaultSelection, notApplicableOrRecorded) {
     var sampleModelDragandDrop;
     var itemByType;
     var itemByTypeIndex;
@@ -1105,16 +1153,44 @@ const MetaData = props => {
           i.mandateGroup.defaultSelection === true &&
           !i.id.startsWith("newly")
       );
+    } else if (currentDefaultSelection.length < 1 && !notApplicableOrRecorded) {
+      currentDefaultSelection = itemDescriptors.filter(
+        i =>
+          i.mandateGroup &&
+          i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+          i.mandateGroup.defaultSelection === false &&
+          (i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
+      );
+
+      indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
+      currentDefaultSelection[0].mandateGroup.notApplicable = false;
+      currentDefaultSelection[0].mandateGroup.notRecorded = false;
+      itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
+    } else if ((currentDefaultSelection.length === 1 && notApplicableOrRecorded) || !notApplicableOrRecorded) {
+      indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
+      currentDefaultSelection[0].mandateGroup.defaultSelection = false;
+      itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
     }
 
-    indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
-    indexOfLatestDefaultSelection = itemDescriptors.indexOf(latestDefaultSelection);
-
-    currentDefaultSelection[0].mandateGroup.defaultSelection = false;
-    latestDefaultSelection.mandateGroup.defaultSelection = true;
-
-    itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
-    itemDescriptors[indexOfLatestDefaultSelection] = latestDefaultSelection;
+    if (notApplicableOrRecorded) {
+      let sameXorGroup = itemDescriptors.filter(
+        i => i.mandateGroup && i.mandateGroup.id === latestDefaultSelection.mandateGroup.id
+      );
+      if (sameXorGroup.length > 0) {
+        let lastElementIntheGroup = sameXorGroup[sameXorGroup.length - 1];
+        if (notApplicableOrRecorded === "notApplicable") {
+          lastElementIntheGroup.mandateGroup.notApplicable = true;
+          lastElementIntheGroup.mandateGroup.notRecorded = false;
+        } else if (notApplicableOrRecorded === "notRecorded") {
+          lastElementIntheGroup.mandateGroup.notRecorded = true;
+          lastElementIntheGroup.mandateGroup.notApplicable = false;
+        }
+      }
+    } else {
+      indexOfLatestDefaultSelection = itemDescriptors.indexOf(latestDefaultSelection);
+      latestDefaultSelection.mandateGroup.defaultSelection = true;
+      itemDescriptors[indexOfLatestDefaultSelection] = latestDefaultSelection;
+    }
 
     itemByType.descriptors = itemDescriptors;
 

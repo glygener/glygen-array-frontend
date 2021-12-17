@@ -24,6 +24,7 @@ const Descriptors = props => {
     metaType,
     handleDelete,
     handleSubGroupDelete,
+    handleCancelModal,
     isUpdate,
     isCopySample,
     setLoadDataOnFirstNextInUpdate,
@@ -104,7 +105,12 @@ const Descriptors = props => {
                 if (!descriptor.mandateGroup) {
                   return <>{getDescriptorGroups(descriptor, index)}</>;
                 } else {
-                  if (descriptor.mandateGroup && descriptor.mandateGroup.defaultSelection) {
+                  if (
+                    descriptor.mandateGroup &&
+                    (descriptor.mandateGroup.defaultSelection ||
+                      descriptor.mandateGroup.notApplicable ||
+                      descriptor.mandateGroup.notRecorded)
+                  ) {
                     let listTraversed = descMetaData.slice(0, index);
 
                     //skipping the radio button display for mandategroup if there is one for current group
@@ -115,10 +121,16 @@ const Descriptors = props => {
                         i.mandateGroup.defaultSelection
                     );
 
+                    let notRecordedorApp = false;
+                    if (descriptor.mandateGroup.notApplicable || descriptor.mandateGroup.notRecorded) {
+                      notRecordedorApp = true;
+                    }
+
                     return (
                       <>
                         {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(descriptor, descMetaData)}
-                        {getDescriptorGroups(descriptor, index)}
+
+                        {!notRecordedorApp && getDescriptorGroups(descriptor, index)}
                       </>
                     );
                   }
@@ -158,15 +170,25 @@ const Descriptors = props => {
                 <>
                   <Form.Check.Label>
                     <Form.Check.Input
+                      name={grp.name}
                       type="radio"
                       value={grp.name}
                       label={grp.name}
                       onChange={() => {
-                        setEnableModal(true);
-                        setMandateGroupNewValue(grp);
+                        if (
+                          sameXorGroup.filter(e => {
+                            debugger;
+                            return e.value !== undefined;
+                          }).length > 0
+                        ) {
+                          setEnableModal(true);
+                        } else {
+                          setMandateGroupNewValue(grp);
+                          props.defaultSelectionChange(grp);
+                        }
                       }}
-                      // checked={grp.mandateGroup.defaultSelection}
-                      defaultChecked={grp.mandateGroup.defaultSelection}
+                      checked={grp.mandateGroup.defaultSelection === true ? true : false}
+                      // defaultChecked={grp.mandateGroup.defaultSelection}
                     />
                     {grp.name}&nbsp;&nbsp;&nbsp;&nbsp;
                   </Form.Check.Label>
@@ -175,29 +197,28 @@ const Descriptors = props => {
                     <>
                       <Form.Check.Label>
                         <Form.Check.Input
+                          name={"notApplicable"}
                           type="radio"
                           value={"notApplicable"}
                           label={"Not Applicable"}
                           onChange={() => {
-                            // setEnableModal(true);
-                            // setMandateGroupNewValue(grp);
+                            props.defaultSelectionChange(grp, "notApplicable");
                           }}
-                          // checked={grp.mandateGroup.defaultSelection}
-                          defaultChecked={grp.mandateGroup.defaultSelection}
+                          checked={grp.mandateGroup.notApplicable === true ? true : false}
                         />
                         {"Not Applicable"}&nbsp;&nbsp;&nbsp;&nbsp;
                       </Form.Check.Label>
+
                       <Form.Check.Label>
                         <Form.Check.Input
                           type="radio"
+                          name={"notRecorded"}
                           value={"notRecorded"}
                           label={"Not Recorded"}
                           onChange={() => {
-                            // setEnableModal(true);
-                            // setMandateGroupNewValue(grp);
+                            props.defaultSelectionChange(grp, "notRecorded");
                           }}
-                          // checked={grp.mandateGroup.defaultSelection}
-                          defaultChecked={grp.mandateGroup.defaultSelection}
+                          checked={grp.mandateGroup.notRecorded === true ? true : false}
                         />
                         {"Not Recorded"}&nbsp;&nbsp;&nbsp;&nbsp;
                       </Form.Check.Label>
@@ -364,17 +385,20 @@ const Descriptors = props => {
               {getNewField(element, element, "")}
             </div>
           ) : (
-            element.mandateGroup && element.mandateGroup.defaultSelection && (
-              <div
-                style={{
-                  paddingLeft: "10px",
-                  backgroundColor: "#f3f3f3"
-                }}
-                key={index + element.id}
-              >
-                {getMandateGroupsforSimpleDescriptors(element, index)}
-              </div>
-            )
+            element.mandateGroup &&
+              (element.mandateGroup.defaultSelection ||
+                element.mandateGroup.notApplicable ||
+                element.mandateGroup.notRecorded) && (
+                <div
+                  style={{
+                    paddingLeft: "10px",
+                    backgroundColor: "#f3f3f3"
+                  }}
+                  key={index + element.id}
+                >
+                  {getMandateGroupsforSimpleDescriptors(element, index)}
+                </div>
+              )
           );
         })}
       </Card.Body>
@@ -393,6 +417,7 @@ const Descriptors = props => {
   };
 
   const getMandateGroupsforSimpleDescriptors = (element, index) => {
+    debugger;
     let listTraversed = descMetaData.slice(0, index);
 
     //skipping the radio button display for mandategroup if there is one for current group
@@ -400,10 +425,15 @@ const Descriptors = props => {
       i => i.mandateGroup && i.mandateGroup.id === element.mandateGroup.id && i.mandateGroup.defaultSelection
     );
 
+    let notRecordedorApp = false;
+    if (element.mandateGroup.notApplicable || element.mandateGroup.notRecorded) {
+      notRecordedorApp = true;
+    }
+
     return (
       <>
         {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, descMetaData)}
-        {getNewField(element, element, "")}
+        {!notRecordedorApp && getNewField(element, element, "")}
       </>
     );
   };
@@ -889,7 +919,7 @@ const Descriptors = props => {
         )}
 
         {element && element.maxOccurrence > 1 && displayPlusIcon(element, descMetaData, true) && (
-          <Col md={1} style={{ marginLeft: "-150px" }}>
+          <Col md={1}>
             <Button onClick={() => props.handleAddDescriptorGroups(descriptorDetails)}>
               <LineTooltip text="Add descriptor">
                 <Image src={plusIcon} alt="plus button" />
@@ -941,7 +971,10 @@ const Descriptors = props => {
       {enableSubGroupAddModal && (
         <ConfirmationModal
           showModal={enableSubGroupAddModal}
-          onCancel={() => setEnableSubGroupAddModal(false)}
+          onCancel={() => {
+            setEnableSubGroupAddModal(false);
+            handleCancelModal(subGroupAddDescriptor, subGroupAddElement);
+          }}
           onConfirm={() => (
             <>
               {props.handleAddDescriptorSubGroups(subGroupAddElement, subGroupAddDescriptor)}
