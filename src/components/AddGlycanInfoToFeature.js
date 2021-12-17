@@ -355,8 +355,9 @@ const AddGlycanInfoToFeature = props => {
             <Col md={4}>
               <Form.Control
                 name={"method"}
-                type={"text"}
-                placeholder={"method"}
+                as="textarea"
+                rows={4}
+                placeholder={"Enter Method"}
                 value={props.metadata.purity && props.metadata.purity.method}
                 isInvalid={props.metadata.validateMethod}
                 onChange={purityInfoChange}

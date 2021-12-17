@@ -126,7 +126,8 @@ const Source = (props) => {
             <FormLabel label="Method" />
             <Form.Control
               name="method"
-              type="text"
+              as="textarea"
+              rows={4}
               placeholder="Enter Method"
               value={props.nonCommercial.method}
               onChange={(e) => props.sourceChange(e)}

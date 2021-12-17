@@ -99,18 +99,7 @@ const ViewSourceInfo = (props) => {
               />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="method" className="gg-align-center mb-3">
-            <Col xs={10} lg={7}>
-              <FormLabel label="Method" />
-              <Form.Control
-                type="text"
-                disabled
-                // plaintext={props.isUpdate}
-                readOnly={props.isUpdate}
-                value={props.nonCommercial.method}
-              />
-            </Col>
-          </Form.Group>
+          
           <Form.Group as={Row} controlId="batchId" className="gg-align-center mb-3">
             <Col xs={10} lg={7}>
               <FormLabel label="Batch ID" />
@@ -123,7 +112,19 @@ const ViewSourceInfo = (props) => {
               />
             </Col>
           </Form.Group>
-
+          <Form.Group as={Row} controlId="method" className="gg-align-center mb-3">
+            <Col xs={10} lg={7}>
+              <FormLabel label="Method" />
+              <Form.Control
+                as="textarea"
+                rows={4}
+                disabled
+                // plaintext={props.isUpdate}
+                readOnly={props.isUpdate}
+                value={props.nonCommercial.method}
+              />
+            </Col>
+          </Form.Group>
           <Form.Group as={Row} className="gg-align-center mb-3" controlId="sourceComment">
             <Col xs={10} lg={7}>
               <FormLabel label="Source Comment" />
