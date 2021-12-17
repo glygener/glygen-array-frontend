@@ -238,13 +238,13 @@ const AddLinker = (props) => {
   function getStepLabel(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return "Select the Linker Type";
+        return "Select the type";
       case 1:
-        return `Add Type Specific Linker Information (${getMoleculeType(linker.selectedLinker)})`;
+        return `Add Type Specific Information (${getMoleculeType(linker.selectedLinker)})`;
       case 2:
-        return `Add Generic Linker Information (${getMoleculeType(linker.selectedLinker)})`;
+        return `Add Generic Information (${getMoleculeType(linker.selectedLinker)})`;
       case 3:
-        return "Review and Add Linker to Repository";
+        return "Review and Add Chemical/Linker to Repository";
       default:
         return "Unknown stepIndex";
     }
@@ -846,7 +846,7 @@ const AddLinker = (props) => {
     return (
       <div className="text-center mb-2">
         <Link to="/linkers">
-          <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Lipids</Button>
+          <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Chemicals/Linkers</Button>
         </Link>
         <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
@@ -926,7 +926,7 @@ const AddLinker = (props) => {
       </Helmet>
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Add Linker to Repository" subTitle="Please provide the information for the new linker." />
+          <PageHeading title="Add Chemical/Linker to Repository" subTitle="Please provide the information for the new chemical/linker." />
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>

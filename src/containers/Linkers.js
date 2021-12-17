@@ -31,15 +31,15 @@ const Linkers = props => {
       <Container maxWidth="xl">
         <div className={!props.isImported ? "page-container" : ""}>
           <PageHeading
-            title="Your Linkers"
-            subTitle="The table below displays a list of all linkers that have been uploaded to your repository. New linkers may be added, old linkers can be edited, and unused linkers can be removed."
+            title="Your Chemicals/Linkers"
+            subTitle="The table below displays a list of all chemicals/linkers that have been uploaded to your repository. New chemicals/linkers may be added, old chemicals/linkers can be edited, and unused chemicals/linkers can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
                   <Link to="/linkers/addLinker">
-                    <Button className="gg-btn-blue mt-2">Add Linker</Button>
+                    <Button className="gg-btn-blue mt-2">Add Chemical/Linker</Button>
                   </Link>
                 )}
               </div>
@@ -75,7 +75,7 @@ const Linkers = props => {
                 editUrl="linkers/editLinker"
                 keyColumn="id"
                 showRowsInfo
-                infoRowsText="Linkers"
+                infoRowsText="Chemicals/Linkers"
                 showDeleteButton={props.isImported ? false : true}
                 showEditButton={props.isImported ? false : true}
                 fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}

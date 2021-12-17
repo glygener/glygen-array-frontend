@@ -140,8 +140,8 @@ const EditLinker = (props) => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Edit Linker"
-            subTitle="Update linker information. Name must be unique in your linker repository and can not be used for more than one linker."
+            title="Edit Chemical/Linker"
+            subTitle="Update chemical/linker information. Name must be unique in your chemical/linker repository and cannot be used for more than one chemical/linker."
           />
           <Card>
             <Card.Body className="mt-4">
@@ -172,7 +172,7 @@ const EditLinker = (props) => {
 
                 <Form.Group as={Row} controlId="linkerType" className="gg-align-center mb-3">
                   <Col xs={12} lg={9}>
-                    <FormLabel label="Linker Type" />
+                    <FormLabel label="Type" />
                     <Form.Control
                       type="text"
                       // plaintext
