@@ -627,6 +627,20 @@ const MetaData = props => {
     //props.importedInAPage && props.setMetadataforImportedPage(sampleModel);
   };
 
+  function validateUserInput(subGroupAddElement, subGroupAddDescriptor) {
+    let flag = true;
+
+    subGroupAddDescriptor.descriptors.forEach(ele => {
+      if (ele.mandatory) {
+        if (!ele.value || (ele.value && ele.value.length < 1) || ele.value === "") {
+          flag = false;
+        }
+      }
+    });
+
+    return flag;
+  }
+
   const handleAddDescriptorSubGroups = (selectedGroup, selectedSubGrpDesc) => {
     let sampleModelUpdate;
     let itemByType;
@@ -1031,6 +1045,7 @@ const MetaData = props => {
           descriptors={sampleModel}
           handleChange={handleChangeMetaForm}
           handleDelete={handleDelete}
+          validateUserInput={validateUserInput}
           isAllExpanded={isAllExpanded}
           // descriptorSubGroup={getDescriptorSubGroup}
           handleSubGroupDelete={handleSubGroupDelete}
