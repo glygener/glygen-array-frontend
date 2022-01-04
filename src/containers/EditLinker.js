@@ -143,7 +143,7 @@ const EditLinker = props => {
     } else if (history.location.pathname.includes("lipid")) {
       setPageHeading("Edit Lipid", "lipid");
     } else if (history.location.pathname.includes("linker")) {
-      setPageHeading("Edit Linker", "linker");
+      setPageHeading("Edit Chemical/Linker", "chemical/linker");
     } else if (history.location.pathname.includes("otherMolecule")) {
       setPageHeading("Edit OtherMolecule", "othermolecule");
     }
