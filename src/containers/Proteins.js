@@ -12,7 +12,7 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 
-const Proteins = (props) => {
+const Proteins = props => {
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
@@ -46,13 +46,13 @@ const Proteins = (props) => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: (row) => getToolTip(row.original.name),
+                    Cell: row => getToolTip(row.original.name)
                   },
                   {
                     Header: "UniProtID",
                     accessor: "uniProtId",
-                    Cell: (row) => getToolTip(row.original.uniProtId),
-                  },
+                    Cell: row => getToolTip(row.original.uniProtId)
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -61,7 +61,7 @@ const Proteins = (props) => {
                 commentsRefColumn="comment"
                 customCommentColumn
                 deleteWS="linkerdelete"
-                editUrl="proteins/editLinker"
+                editUrl="proteins/editProtein"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Proteins"

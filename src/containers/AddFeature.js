@@ -40,8 +40,6 @@ const AddFeature = props => {
     GLYCO_PROTEIN: "GlycoProtein",
     GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE: "GlycoProtein linked GlycoPeptide",
     CONTROL: "Control",
-    NEGATIVE_CONTROL: "Negative Control",
-    COMPOUND: "Organic Compound",
     LANDING_LIGHT: "Landing Light"
   };
 
@@ -729,6 +727,7 @@ const AddFeature = props => {
       descriptorGroups: descriptorGroups,
       id: ""
     };
+
     return objectToBeSaved;
   }
 

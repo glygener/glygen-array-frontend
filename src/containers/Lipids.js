@@ -14,7 +14,7 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 
-const Lipids = (props) => {
+const Lipids = props => {
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
@@ -48,13 +48,13 @@ const Lipids = (props) => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: (row) => getToolTip(row.original.name),
+                    Cell: row => getToolTip(row.original.name)
                     // minWidth: 50,
                   },
                   {
                     Header: "PubChem ID",
                     accessor: "pubChemId",
-                    Cell: (row) => getToolTip(row.original.pubChemId),
+                    Cell: row => getToolTip(row.original.pubChemId)
                     // minWidth: 70,
                   },
                   {
@@ -62,9 +62,9 @@ const Lipids = (props) => {
                     accessor: "imageURL",
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
-                    Cell: (row) => <StructureImage imgUrl={row.value}></StructureImage>,
-                    minWidth: 150,
-                  },
+                    Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
+                    minWidth: 150
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -73,7 +73,7 @@ const Lipids = (props) => {
                 commentsRefColumn="comment"
                 customCommentColumn
                 deleteWS="linkerdelete"
-                editUrl="lipids/editLinker"
+                editUrl="lipids/editLipid"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Lipids"

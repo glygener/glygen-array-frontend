@@ -12,7 +12,7 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 
-const OtherMolecules = (props) => {
+const OtherMolecules = props => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -42,8 +42,8 @@ const OtherMolecules = (props) => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: (row) => getToolTip(row.original.name),
-                  },
+                    Cell: row => getToolTip(row.original.name)
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -56,7 +56,7 @@ const OtherMolecules = (props) => {
                 fetchWS="listmoleculesbytype"
                 paramTypeValue={"OTHER"}
                 deleteWS="linkerdelete"
-                editUrl="otherMolecules/editLinker"
+                editUrl="otherMolecules/editOtherMolecule"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Peptides"

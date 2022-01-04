@@ -1058,6 +1058,15 @@ const MetaData = props => {
           handleAddDescriptorSubGroups={handleAddDescriptorSubGroups}
           defaultSelectionChange={defaultSelectionChange}
         />
+
+        <div>
+          <sup>1</sup>
+          {` Information was not provided by vendor, manufacturer or customer etc.`}
+        </div>
+        <div>
+          <sup>2</sup>
+          {` Information was not recorded during the experiment.`}
+        </div>
       </>
     );
   };
@@ -1140,14 +1149,6 @@ const MetaData = props => {
         i.mandateGroup.defaultSelection === true
     );
 
-    // let latestDefaultSelection = itemDescriptors.find(
-    //   i =>
-    //     i.mandateGroup &&
-    //     i.mandateGroup.id === grp.mandateGroup.id &&
-    //     i.mandateGroup.defaultSelection === false &&
-    //     i.id === grp.id
-    // );
-
     if (currentDefaultSelection.length > 1) {
       let newlyAddedNonMGroupsofCurrentDefaultSelection = itemDescriptors.filter(
         i =>
@@ -1182,6 +1183,27 @@ const MetaData = props => {
       currentDefaultSelection[0].mandateGroup.notRecorded = false;
       itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
     } else if ((currentDefaultSelection.length === 1 && notApplicableOrRecorded) || !notApplicableOrRecorded) {
+      currentDefaultSelection[0].descriptors.forEach(d => {
+        if (d.group) {
+          var dg = d.descriptors;
+          dg.forEach(sgd => {
+            if (sgd.disabled) {
+              sgd.disabled = false;
+              sgd.notApplicable = false;
+              sgd.notRecorded = false;
+            }
+            sgd.value = undefined;
+          });
+        } else if (!d.group) {
+          if (d.disabled) {
+            d.disabled = false;
+            d.notApplicable = false;
+            d.notRecorded = false;
+          }
+          d.value = undefined;
+        }
+      });
+
       indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
       currentDefaultSelection[0].mandateGroup.defaultSelection = false;
       itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
@@ -1341,7 +1363,7 @@ const MetaData = props => {
           </Col>
         </Form.Group>
 
-        {(!isUpdate || !props.isCopy) && (
+        {!isUpdate && !props.isCopy && (
           <Form.Group as={Row} controlId="description">
             <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
             <Col md={6}>
@@ -1368,7 +1390,7 @@ const MetaData = props => {
           </Form.Group>
         )}
 
-        {isUpdate && props.isCopy && getListTemplate()}
+        {(isUpdate || props.isCopy) && getListTemplate()}
       </>
     );
   };
@@ -1390,11 +1412,7 @@ const MetaData = props => {
   function handleSubmit(e) {
     setValidated(true);
 
-    if (
-      e.currentTarget.checkValidity()
-
-      // && !isGroupMandate()
-    ) {
+    if (e.currentTarget.checkValidity() && !isGroupMandate()) {
       if (props.importedPageData) {
         props.handleNext(e);
         props.setImportedPageDataToSubmit(metadataToSubmit());
@@ -1430,7 +1448,7 @@ const MetaData = props => {
 
   function isGroupMandate() {
     let flag = false;
-    var selectedItemByType;
+    let selectedItemByType;
 
     if (isUpdate || props.isCopy) {
       selectedItemByType = sampleModel;
@@ -1439,6 +1457,19 @@ const MetaData = props => {
     }
 
     const groupDescriptors = selectedItemByType.descriptors.filter(i => i.group === true && i.mandateGroup);
+
+    const NAorNRSelectedGroups = selectedItemByType.descriptors.filter(
+      i => i.group === true && i.mandateGroup && (i.mandateGroup.notRecorded || i.mandateGroup.notApplicable)
+    );
+
+    const remainingGroups = NAorNRSelectedGroups.forEach(e => {
+      let deleteList = groupDescriptors.filter(i => i.mandateGroup.id === e.mandateGroup.id);
+
+      deleteList.forEach(i => {
+        var row = groupDescriptors.indexOf(i);
+        groupDescriptors.splice(row, 1);
+      });
+    });
 
     const mandatoryGroupsFilled = groupDescriptors.filter(function(e) {
       const filledDesc = e.descriptors.filter(function(subDescriptor) {
@@ -1461,13 +1492,13 @@ const MetaData = props => {
     let mandateGroupDeceed = new Map();
 
     groupDescriptors.filter(function(e) {
-      const sameGroupItems = mandatoryGroupsFilled.filter(i => i.mandateGroup === e.mandateGroup);
+      const sameGroupItems = mandatoryGroupsFilled.filter(i => i.mandateGroup.id === e.mandateGroup.id);
       if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.xorMandate).length > 1) {
-        mandateGroupExceed.set(e.mandateGroup, sameGroupItems);
+        mandateGroupExceed.set(e.mandateGroup.id, sameGroupItems);
       } else {
         let deceedGroup = [];
         if (mandateGroupDeceed.size > 0) {
-          deceedGroup = mandateGroupDeceed.get(e.mandateGroup);
+          deceedGroup = mandateGroupDeceed.get(e.mandateGroup.id);
           if (!deceedGroup) {
             deceedGroup = [];
           }
@@ -1478,7 +1509,7 @@ const MetaData = props => {
         //   (e.descriptors.filter(i => i.value).length === 0 && !e.xorMandate) ||
         //   (e.descriptors.filter(i => i.value).length < 1 && e.xorMandate)
         // ) {
-        mandateGroupDeceed.set(e.mandateGroup, deceedGroup);
+        mandateGroupDeceed.set(e.mandateGroup.id, deceedGroup);
         // }
       }
     });
@@ -1517,19 +1548,56 @@ const MetaData = props => {
     } else {
       selectedItemByType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
     }
+
     const simpleDescriptors = selectedItemByType.descriptors.filter(i => i.group === false);
 
-    descriptors = simpleDescriptors.map(descriptor => {
-      return {
-        id: descriptor.id,
-        value: descriptor.value,
-        unit: descriptor.unit,
-        key: {
-          "@type": "descriptortemplate",
-          ...getkey(descriptor)
-        },
-        "@type": "descriptor"
-      };
+    simpleDescriptors.forEach(descriptor => {
+      let notRecorded;
+      let notApplicable;
+
+      if (descriptor.mandateGroup) {
+        let notRecOrApp = simpleDescriptors.filter(
+          e =>
+            e.mandateGroup &&
+            e.mandateGroup.id === descriptor.mandateGroup.id &&
+            (e.mandateGroup.notRecorded || e.mandateGroup.notApplicable)
+        );
+
+        let oneDescSelectedFromSameGroup = simpleDescriptors.filter(
+          e =>
+            e.mandateGroup &&
+            e.mandateGroup.id === descriptor.mandateGroup.id &&
+            !e.mandateGroup.notRecorded &&
+            !e.mandateGroup.notApplicable &&
+            e.value &&
+            e.value.length > 0
+        );
+
+        if (notRecOrApp.length > 0) {
+          notRecorded = notRecOrApp[0].mandateGroup.notRecorded;
+          notApplicable = notRecOrApp[0].mandateGroup.notApplicable;
+        } else if (oneDescSelectedFromSameGroup.length > 0 && !descriptor.value) {
+          notRecorded = true;
+        }
+      } else if (!descriptor.value) {
+        notRecorded = descriptor.notRecorded;
+        notApplicable = descriptor.notApplicable;
+      }
+
+      if ((descriptor.value !== undefined && descriptor.value !== "") || notRecorded || notApplicable) {
+        descriptors.push({
+          id: descriptor.id,
+          value: descriptor.value,
+          notRecorded: notRecorded ? true : false,
+          notApplicable: notApplicable ? true : false,
+          unit: descriptor.unit,
+          key: {
+            "@type": "descriptortemplate",
+            ...getkey(descriptor)
+          },
+          "@type": "descriptor"
+        });
+      }
     });
 
     return descriptors;
@@ -1544,26 +1612,60 @@ const MetaData = props => {
       selectedItemByType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
     }
 
-    const descrGroups = selectedItemByType.descriptors.filter(
-      i => i.group === true && i.descriptors.filter(j => j.value)
-    );
+    const descrGroups = selectedItemByType.descriptors.filter(i => i.group === true);
+    // && (i.descriptors.filter(j => j.value).length > 0 || i.mandatory)
 
     var dArray = [];
     var dgArray = [];
     var sgdArray = [];
 
     descrGroups.forEach(d => {
-      var dgDescriptors = d.descriptors;
+      var dDescriptors = d.descriptors;
       dgArray = [];
-      dgDescriptors.forEach(dg => {
-        var dDescriptors = dg.descriptors;
+
+      dDescriptors.forEach(dg => {
+        var dgDescriptors = dg.descriptors;
         sgdArray = [];
-        if (dDescriptors && dDescriptors.length > 0) {
-          dDescriptors.forEach(sgd => {
-            if (sgd.value) {
+        if (dgDescriptors && dgDescriptors.length > 0) {
+          dgDescriptors.forEach(sgd => {
+            let notRecorded;
+            let notApplicable;
+
+            if (sgd.mandateGroup) {
+              let notRecOrApp = dgDescriptors.filter(
+                e =>
+                  e.mandateGroup &&
+                  e.mandateGroup.id === sgd.mandateGroup.id &&
+                  (e.mandateGroup.notRecorded || e.mandateGroup.notApplicable)
+              );
+
+              let oneDescSelectedFromSameGroup = dgDescriptors.filter(
+                e =>
+                  e.mandateGroup &&
+                  e.mandateGroup.id === sgd.mandateGroup.id &&
+                  !e.mandateGroup.notRecorded &&
+                  !e.mandateGroup.notApplicable &&
+                  e.value &&
+                  e.value.length > 0
+              );
+
+              if (notRecOrApp.length > 0) {
+                notRecorded = notRecOrApp[0].mandateGroup.notRecorded;
+                notApplicable = notRecOrApp[0].mandateGroup.notApplicable;
+              } else if (oneDescSelectedFromSameGroup.length > 0 && !sgd.value) {
+                notRecorded = true;
+              }
+            } else if (!sgd.value) {
+              notRecorded = sgd.notRecorded;
+              notApplicable = sgd.notApplicable;
+            }
+
+            if ((sgd.value !== undefined && sgd.value !== "") || notRecorded || notApplicable) {
               sgdArray.push({
                 name: sgd.name,
                 value: sgd.value,
+                notRecorded: notRecorded ? true : false,
+                notApplicable: notApplicable ? true : false,
                 unit: sgd.unit ? dg.unit : "",
                 key: {
                   "@type": "descriptortemplate",
@@ -1571,22 +1673,104 @@ const MetaData = props => {
                 },
                 "@type": "descriptor"
               });
+            } else {
+              if (d.mandateGroup && descrGroups) {
+                let filledMandateGrp = descrGroups.filter(
+                  e =>
+                    e.mandateGroup &&
+                    e.mandateGroup.id === d.mandateGroup.id &&
+                    (e.mandateGroup.notApplicable || e.mandateGroup.notRecorded)
+                );
+
+                filledMandateGrp.length > 0 &&
+                  sgdArray.push({
+                    name: sgd.name,
+                    value: "",
+                    notRecorded: filledMandateGrp[0].mandateGroup.notRecorded ? true : false,
+                    notApplicable: filledMandateGrp[0].mandateGroup.notApplicable ? true : false,
+                    unit: sgd.unit ? dg.unit : "",
+                    key: {
+                      "@type": "descriptortemplate",
+                      ...getkey(sgd)
+                    },
+                    "@type": "descriptor"
+                  });
+              }
             }
           });
-        } else if (dg.value) {
-          dgArray.push({
-            name: dg.name,
-            value: dg.value,
-            unit: dg.unit ? dg.unit : "",
-            key: {
-              "@type": "descriptortemplate",
-              ...getkey(dg)
-            },
-            "@type": "descriptor"
-          });
+        } else {
+          let notRecorded;
+          let notApplicable;
+
+          if (dg.mandateGroup && dgDescriptors) {
+            let notRecOrApp = dgDescriptors.filter(
+              e =>
+                e.mandateGroup &&
+                e.mandateGroup.id === dg.mandateGroup.id &&
+                (e.mandateGroup.notRecorded || e.mandateGroup.notApplicable)
+            );
+
+            let oneDescSelectedFromSameGroup = dgDescriptors.filter(
+              e =>
+                e.mandateGroup &&
+                e.mandateGroup.id === dg.mandateGroup.id &&
+                !e.mandateGroup.notRecorded &&
+                !e.mandateGroup.notApplicable &&
+                e.value &&
+                e.value.length > 0
+            );
+
+            if (notRecOrApp.length > 0) {
+              notRecorded = notRecOrApp[0].mandateGroup.notRecorded;
+              notApplicable = notRecOrApp[0].mandateGroup.notApplicable;
+            } else if (oneDescSelectedFromSameGroup.length > 0 && !dg.value) {
+              notRecorded = true;
+            }
+          } else if (!dg.value) {
+            notRecorded = dg.notRecorded;
+            notApplicable = dg.notApplicable;
+          }
+
+          if ((dg.value !== undefined && dg.value !== "") || notRecorded || notApplicable) {
+            dgArray.push({
+              name: dg.name,
+              value: dg.value,
+              notRecorded: notRecorded ? true : false,
+              notApplicable: notApplicable ? true : false,
+              unit: dg.unit ? dg.unit : "",
+              key: {
+                "@type": "descriptortemplate",
+                ...getkey(dg)
+              },
+              "@type": "descriptor"
+            });
+          } else {
+            if (d.mandateGroup) {
+              let filledMandateGrp = descrGroups.filter(
+                e =>
+                  e.mandateGroup &&
+                  e.mandateGroup.id === d.mandateGroup.id &&
+                  (e.mandateGroup.notApplicable || e.mandateGroup.notRecorded)
+              );
+
+              filledMandateGrp.length > 0 &&
+                sgdArray.push({
+                  name: dg.name,
+                  value: "",
+                  notRecorded: filledMandateGrp[0].mandateGroup.notRecorded ? true : false,
+                  notApplicable: filledMandateGrp[0].mandateGroup.notApplicable ? true : false,
+                  unit: dg.unit ? dg.unit : "",
+                  key: {
+                    "@type": "descriptortemplate",
+                    ...getkey(dg)
+                  },
+                  "@type": "descriptor"
+                });
+            }
+          }
         }
 
-        if (dDescriptors && sgdArray.length !== 0) {
+        if (dgDescriptors && sgdArray.length !== 0) {
           dgArray.push({
             descriptors: sgdArray,
             key: {
@@ -1614,9 +1798,10 @@ const MetaData = props => {
   }
 
   function getkey(descriptorGroup) {
-    return descriptorGroup.id.startsWith("newly")
-      ? { uri: descriptorGroup.uri, id: descriptorGroup.id }
-      : { id: descriptorGroup.id };
+    return { uri: descriptorGroup.uri, id: descriptorGroup.id };
+    // return descriptorGroup.id.startsWith("newly")
+    //   ? { uri: descriptorGroup.uri, id: descriptorGroup.id }
+    //   : { id: descriptorGroup.id };
   }
 
   function addMetaSuccess(response) {

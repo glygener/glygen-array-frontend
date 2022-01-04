@@ -12,7 +12,7 @@ import { PageHeading } from "../components/FormControls";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 
-const Peptides = (props) => {
+const Peptides = props => {
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
@@ -47,13 +47,13 @@ const Peptides = (props) => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: (row) => getToolTip(row.original.name),
+                    Cell: row => getToolTip(row.original.name)
                   },
                   {
                     Header: "Sequence",
                     accessor: "sequence",
-                    Cell: (row) => getToolTip(row.original.sequence),
-                  },
+                    Cell: row => getToolTip(row.original.sequence)
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -62,7 +62,7 @@ const Peptides = (props) => {
                 showSearchBox
                 commentsRefColumn="comment"
                 deleteWS="linkerdelete"
-                editUrl="peptides/editLinker"
+                editUrl="peptides/editPeptide"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Peptides"
@@ -90,7 +90,7 @@ const Peptides = (props) => {
 };
 
 Peptides.propTypes = {
-  authCheckAgent: PropTypes.func,
+  authCheckAgent: PropTypes.func
 };
 
 export { Peptides };

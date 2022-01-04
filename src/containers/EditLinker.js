@@ -3,7 +3,7 @@ import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import { Row, Col, Form } from "react-bootstrap";
 import Helmet from "react-helmet";
-import { FormLabel, Feedback, PageHeading, Title, LinkButton } from "../components/FormControls";
+import { FormLabel, Feedback, PageHeading } from "../components/FormControls";
 import { head, getMeta } from "../utils/head";
 import { useHistory, useParams, Link } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -16,13 +16,25 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { addCommas } from "../utils/commonUtils";
 
-const EditLinker = (props) => {
+const EditLinker = props => {
   useEffect(props.authCheckAgent, []);
 
   const history = useHistory();
-  let { linkerId } = useParams();
+  let { moleculeId } = useParams();
+
+  useEffect(() => {
+    if (props.authCheckAgent) {
+      props.authCheckAgent();
+    }
+
+    history && getHeadingFromHistory(history);
+
+    wsCall("getlinker", "GET", [moleculeId], true, null, getLinkerSuccess, getLinkerFailure);
+  }, [moleculeId, props]);
 
   const [source, setSource] = useState({});
+  const [title, setTitle] = useState("");
+  const [subTitle, setSubTitle] = useState("");
   const [validated, setValidated] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -37,18 +49,18 @@ const EditLinker = (props) => {
     commercial: {
       vendor: "",
       catalogueNumber: "",
-      batchId: "",
+      batchId: ""
     },
     nonCommercial: {
       providerLab: "",
       method: "",
       batchId: "",
-      comment: "",
+      comment: ""
     },
-    source: "",
+    source: ""
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -71,18 +83,10 @@ const EditLinker = (props) => {
     return sourceObj;
   }
 
-  useEffect(() => {
-    if (props.authCheckAgent) {
-      props.authCheckAgent();
-    }
-
-    wsCall("getlinker", "GET", [linkerId], true, null, getLinkerSuccess, getLinkerFailure);
-  }, [linkerId, props]);
-
   function getLinkerSuccess(response) {
     let sourceObj;
 
-    response.json().then((parsedJson) => {
+    response.json().then(parsedJson => {
       let resp = parsedJson;
       sourceObj = handleSource(resp);
 
@@ -91,13 +95,13 @@ const EditLinker = (props) => {
       setSource({
         type: resp.source.type,
         commercial: resp.source.type === "COMMERCIAL" ? sourceObj : {},
-        nonCommercial: resp.source.type === "NONCOMMERCIAL" ? sourceObj : {},
+        nonCommercial: resp.source.type === "NONCOMMERCIAL" ? sourceObj : {}
       });
     });
   }
 
   function getLinkerFailure(response) {
-    response.json().then((parsedJson) => {
+    response.json().then(parsedJson => {
       setValidated(false);
       setPageErrorsJson(parsedJson);
       setPageErrorMessage("");
@@ -131,6 +135,28 @@ const EditLinker = (props) => {
     }
   }
 
+  function getHeadingFromHistory(history) {
+    if (history.location.pathname.includes("peptide")) {
+      setPageHeading("Edit Peptide", "peptide");
+    } else if (history.location.pathname.includes("protein")) {
+      setPageHeading("Edit Protein", "protein");
+    } else if (history.location.pathname.includes("lipid")) {
+      setPageHeading("Edit Lipid", "lipid");
+    } else if (history.location.pathname.includes("linker")) {
+      setPageHeading("Edit Linker", "linker");
+    } else if (history.location.pathname.includes("otherMolecule")) {
+      setPageHeading("Edit OtherMolecule", "othermolecule");
+    }
+  }
+
+  function setPageHeading(title, subTitle) {
+    setTitle(title);
+    setSubTitle(
+      `Update ${subTitle} information.
+        Name must be unique in your ${subTitle} repository and cannot be used for more than one ${subTitle}.`
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -139,10 +165,8 @@ const EditLinker = (props) => {
       </Helmet>
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading
-            title="Edit Chemical/Linker"
-            subTitle="Update chemical/linker information. Name must be unique in your chemical/linker repository and cannot be used for more than one chemical/linker."
-          />
+          <PageHeading title={title} subTitle={subTitle} />
+
           <Card>
             <Card.Body className="mt-4">
               {showErrorSummary === true && (
@@ -154,7 +178,7 @@ const EditLinker = (props) => {
                 />
               )}
 
-              <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+              <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
                 <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
                   <Col xs={12} lg={9}>
                     <FormLabel label="Name" className="required-asterik" />
@@ -230,7 +254,7 @@ const EditLinker = (props) => {
                   <Form.Group as={Row} controlId="pdbIds" className="gg-align-center mb-3">
                     <Col xs={12} lg={9}>
                       <FormLabel label={"PDB IDs"} />
-                      {linkerDetails.pdbIds.map((pdb) => {
+                      {linkerDetails.pdbIds.map(pdb => {
                         return (
                           <>
                             <div>
@@ -358,7 +382,7 @@ const EditLinker = (props) => {
                     <Col xs={12} lg={9}>
                       <FormLabel label="Publication" />
                       {linkerDetails.publications && linkerDetails.publications.length > 0
-                        ? linkerDetails.publications.map((pub) => {
+                        ? linkerDetails.publications.map(pub => {
                             return (
                               <div>
                                 <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
@@ -458,7 +482,7 @@ const EditLinker = (props) => {
   }
 
   function updateLinkerFailure(response) {
-    response.json().then((parsedJson) => {
+    response.json().then(parsedJson => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
     });
