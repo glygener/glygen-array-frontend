@@ -25,7 +25,7 @@ import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
 
-const AddOtherMolecule = (props) => {
+const AddOtherMolecule = props => {
   useEffect(props.authCheckAgent, []);
 
   const [showErrorSummary, setShowErrorSummary] = useState(false);
@@ -37,6 +37,8 @@ const AddOtherMolecule = (props) => {
   const [validate, setValidate] = useState(false);
   const [newURL, setNewURL] = useState("");
   const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
+  const [duplicateName, setDuplicateName] = useState(false);
+
   const history = useHistory();
 
   const othermoleculeInitialState = {
@@ -47,18 +49,18 @@ const AddOtherMolecule = (props) => {
     urls: [],
     source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [otherMolecule, setOtherMolecule] = useReducer(reducer, othermoleculeInitialState);
 
-  const sourceSelection = (e) => {
+  const sourceSelection = e => {
     const newValue = e.target.value;
     setOtherMolecule({ source: newValue });
   };
 
-  const sourceChange = (e) => {
+  const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -80,18 +82,21 @@ const AddOtherMolecule = (props) => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setValidate(false);
-
     const name = e.target.name;
     const newValue = e.target.value;
+
+    if (name === "name") {
+      setDuplicateName(false);
+    }
 
     setOtherMolecule({ [name]: newValue });
   };
 
   function addPublication() {
     let publications = otherMolecule.publications;
-    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
       wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
@@ -100,17 +105,17 @@ const AddOtherMolecule = (props) => {
     }
 
     function addPublicationSuccess(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         setShowErrorSummary(false);
         setOtherMolecule({
-          publications: otherMolecule.publications.concat([responseJson]),
+          publications: otherMolecule.publications.concat([responseJson])
         });
         setNewPubMedId("");
       });
     }
 
     function addPublicationError(response) {
-      response.text().then((resp) => {
+      response.text().then(resp => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -123,7 +128,7 @@ const AddOtherMolecule = (props) => {
 
   function deletePublication(id, wscall) {
     const publications = otherMolecule.publications;
-    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     setOtherMolecule({ publications: publications });
@@ -132,7 +137,7 @@ const AddOtherMolecule = (props) => {
   function addURL() {
     var listUrls = otherMolecule.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find((i) => i === urlEntered);
+    const urlExists = listUrls.find(i => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -148,7 +153,7 @@ const AddOtherMolecule = (props) => {
     setNewURL("");
   }
 
-  const urlWidget = (enableDelete) => {
+  const urlWidget = enableDelete => {
     return (
       <>
         {otherMolecule.urls && otherMolecule.urls.length > 0
@@ -190,7 +195,7 @@ const AddOtherMolecule = (props) => {
   function getStepContent() {
     return (
       <>
-        <Form noValidate validated={validate && validatedCommNonComm} onSubmit={(e) => handleSubmit(e)}>
+        <Form noValidate validated={validate && validatedCommNonComm} onSubmit={e => handleSubmit(e)}>
           <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
             <Col xs={12} lg={9}>
               <FormLabel label="Name" className="required-asterik" />
@@ -200,11 +205,19 @@ const AddOtherMolecule = (props) => {
                 placeholder="Enter Name"
                 value={otherMolecule.name}
                 onChange={handleChange}
-                isInvalid={validate}
                 maxLength={100}
                 required
+                isInvalid={duplicateName || validate}
               />
-              <Feedback message="Name is required" />
+              <Feedback
+                message={
+                  duplicateName
+                    ? "Another molecule has the same Name. Please use a different Name."
+                    : validate
+                    ? "Name is required"
+                    : ""
+                }
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="comments" className="gg-align-center mb-3">
@@ -236,7 +249,7 @@ const AddOtherMolecule = (props) => {
                     name="urls"
                     placeholder="Enter URL and click +"
                     value={newURL}
-                    onChange={(e) => {
+                    onChange={e => {
                       setNewURL(e.target.value);
                       setInvalidUrls(false);
                     }}
@@ -269,7 +282,7 @@ const AddOtherMolecule = (props) => {
                     name="publication"
                     placeholder="Enter a Pubmed ID and click +"
                     value={newPubMedId}
-                    onChange={(e) => {
+                    onChange={e => {
                       const _value = e.target.value;
                       if (_value && !/^[0-9]+$/.test(_value)) {
                         return;
@@ -338,10 +351,13 @@ const AddOtherMolecule = (props) => {
   }
 
   function handleSubmit(e) {
-    setValidate(true);
+    // setValidate(true);
+    if (!otherMolecule.name || otherMolecule.name === "") {
+      setValidate(true);
+    }
 
     var source = {
-      type: "NOTRECORDED",
+      type: "NOTRECORDED"
     };
 
     if (otherMolecule.source === "commercial") {
@@ -373,7 +389,7 @@ const AddOtherMolecule = (props) => {
         description: otherMolecule.comment,
         publications: otherMolecule.publications,
         urls: otherMolecule.urls,
-        source: source,
+        source: source
       };
 
       wsCall(
@@ -382,14 +398,23 @@ const AddOtherMolecule = (props) => {
         null,
         true,
         othermoleculeObj,
-        (response) => history.push("/otherMolecules"),
+        response => {
+          setShowErrorSummary(false);
+          setValidate(false);
+          history.push("/otherMolecules");
+        },
         addOtherMoleculeFailure
       );
     }
 
     function addOtherMoleculeFailure(response) {
-      response.json().then((parsedJson) => {
-        setValidate(false);
+      response.json().then(parsedJson => {
+        debugger;
+        if (parsedJson.errors.filter(i => i.objectName === "name").length > 0) {
+          setValidate(false);
+          setDuplicateName(true);
+        }
+
         setPageErrorsJson(parsedJson);
         setPageErrorMessage("");
         setShowErrorSummary(true);

@@ -39,6 +39,7 @@ const EditLinker = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
+  const [duplicateName, setDuplicateName] = useState(false);
 
   const [linkerDetails, setLinkerDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
     name: "",
@@ -61,8 +62,13 @@ const EditLinker = props => {
   });
 
   const handleChange = e => {
+    setValidated(false);
     const name = e.target.name;
     const newValue = e.target.value;
+
+    if (name === "name") {
+      setDuplicateName(false);
+    }
 
     setLinkerDetails({ [name]: newValue });
   };
@@ -188,9 +194,19 @@ const EditLinker = props => {
                       name="name"
                       value={linkerDetails.name}
                       onChange={handleChange}
+                      maxLength={100}
                       required
+                      isInvalid={duplicateName || validated}
                     />
-                    <Feedback message="Please Enter Linker Name." />
+                    <Feedback
+                      message={
+                        duplicateName
+                          ? "Another molecule has the same Name. Please use a different Name."
+                          : validated
+                          ? "Name is required"
+                          : ""
+                      }
+                    />
                   </Col>
                 </Form.Group>
 
@@ -451,7 +467,11 @@ const EditLinker = props => {
   );
 
   function handleSubmit(e) {
-    setValidated(true);
+    // setValidated(true);
+
+    if (!linkerDetails.name || linkerDetails.name === "") {
+      setValidated(true);
+    }
 
     if (e.currentTarget.checkValidity()) {
       wsCall("updatelinker", "POST", null, true, linkerDetails, updateLinkerSuccess, updateLinkerFailure);
@@ -483,6 +503,11 @@ const EditLinker = props => {
 
   function updateLinkerFailure(response) {
     response.json().then(parsedJson => {
+      debugger;
+      if (parsedJson.errors.find(i => i.objectName === "name")) {
+        setDuplicateName(true);
+      }
+
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
     });
