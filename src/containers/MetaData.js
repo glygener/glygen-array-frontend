@@ -1146,29 +1146,45 @@ const MetaData = props => {
       i =>
         i.mandateGroup &&
         i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
-        i.mandateGroup.defaultSelection === true
+        (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
+      // i.mandateGroup.defaultSelection === true
     );
 
     if (currentDefaultSelection.length > 1) {
-      let newlyAddedNonMGroupsofCurrentDefaultSelection = itemDescriptors.filter(
-        i =>
-          i.mandateGroup &&
-          i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
-          i.mandateGroup.defaultSelection === true &&
-          i.id.startsWith("newly")
-      );
+      if (isUpdate) {
+        // let listOfRemoveDefaultSelection=
+        currentDefaultSelection.filter(e => {
+          if (e.id !== latestDefaultSelection.id) {
+            e.mandateGroup.notApplicable = false;
+            e.mandateGroup.notRecorded = false;
+            e.mandateGroup.defaultSelection = false;
+          }
+        });
 
-      newlyAddedNonMGroupsofCurrentDefaultSelection.forEach(desc => {
-        itemDescriptors.splice(itemDescriptors.indexOf(desc), 1);
-      });
+        latestDefaultSelection.mandateGroup.defaultSelection = true;
+        latestDefaultSelection.mandateGroup.notApplicable = false;
+        latestDefaultSelection.mandateGroup.notRecorded = false;
+      } else {
+        let newlyAddedNonMGroupsofCurrentDefaultSelection = itemDescriptors.filter(
+          i =>
+            i.mandateGroup &&
+            i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+            i.mandateGroup.defaultSelection === true &&
+            i.id.startsWith("newly")
+        );
 
-      currentDefaultSelection = itemDescriptors.filter(
-        i =>
-          i.mandateGroup &&
-          i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
-          i.mandateGroup.defaultSelection === true &&
-          !i.id.startsWith("newly")
-      );
+        newlyAddedNonMGroupsofCurrentDefaultSelection.forEach(desc => {
+          itemDescriptors.splice(itemDescriptors.indexOf(desc), 1);
+        });
+
+        currentDefaultSelection = itemDescriptors.filter(
+          i =>
+            i.mandateGroup &&
+            i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+            i.mandateGroup.defaultSelection === true &&
+            !i.id.startsWith("newly")
+        );
+      }
     } else if (currentDefaultSelection.length < 1 && !notApplicableOrRecorded) {
       currentDefaultSelection = itemDescriptors.filter(
         i =>
@@ -1208,6 +1224,8 @@ const MetaData = props => {
 
       indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
       currentDefaultSelection[0].mandateGroup.defaultSelection = false;
+      currentDefaultSelection[0].mandateGroup.notApplicable = false;
+      currentDefaultSelection[0].mandateGroup.notRecorded = false;
       itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
     }
 
@@ -1831,7 +1849,7 @@ const MetaData = props => {
         }
       }
     });
-    debugger;
+
     return dArray;
   }
 
@@ -1974,7 +1992,34 @@ const MetaData = props => {
 
           sampleModelUpdate.descriptors.push(newElement);
         } else {
-          templateDescriptorGroup = tempDescGroup;
+          if (group.key.mandateGroup && (group.notApplicable || group.notRecorded)) {
+            templateDescriptorGroup = tempDescGroup;
+            templateDescriptorGroup.mandateGroup.defaultSelection = false;
+
+            if (group.notApplicable) {
+              templateDescriptorGroup.mandateGroup.notApplicable = true;
+            } else if (group.notRecorded) {
+              templateDescriptorGroup.mandateGroup.notRecorded = true;
+            }
+          } else if (group.key.mandateGroup) {
+            templateDescriptorGroup = tempDescGroup;
+            if (group.descriptors.length > 0) {
+              templateDescriptorGroup.mandateGroup.defaultSelection = true;
+
+              let defaultSelectedUnfilledDesc = sampleModelUpdate.descriptors.find(
+                e =>
+                  e.mandateGroup &&
+                  e.mandateGroup.id === templateDescriptorGroup.mandateGroup.id &&
+                  e.mandateGroup.defaultSelection
+              );
+
+              if (defaultSelectedUnfilledDesc.id !== templateDescriptorGroup.id) {
+                defaultSelectedUnfilledDesc.mandateGroup.defaultSelection = false;
+              }
+            }
+          } else {
+            templateDescriptorGroup = tempDescGroup;
+          }
         }
 
         if (templateDescriptorGroup.descriptors) {

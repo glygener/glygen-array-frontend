@@ -126,7 +126,10 @@ const Descriptors = props => {
 
             //skipping the radio button display for mandategroup if there is one for current group
             let alreadyDisplayedXorGroupWiz = listTraversed.filter(
-              i => i.mandateGroup && i.mandateGroup.id === descriptor.mandateGroup.id && i.mandateGroup.defaultSelection
+              i =>
+                i.mandateGroup &&
+                i.mandateGroup.id === descriptor.mandateGroup.id &&
+                (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
             );
 
             let notRecordedorApp = false;
@@ -311,7 +314,12 @@ const Descriptors = props => {
         <Row>
           <Col>
             {!descriptor.id.startsWith("newly") && descriptor.group && (
-              <p style={{ textAlign: "left", fontWeight: "bold" }}>{descriptor.name}</p>
+              <p
+                style={{ textAlign: "left", fontWeight: "bold" }}
+                className={descriptor.mandatory ? "required-asterik" : ""}
+              >
+                {descriptor.name}
+              </p>
             )}
           </Col>
           <Col
