@@ -14,8 +14,9 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { Loading } from "../components/Loading";
 import Container from "@material-ui/core/Container";
 import { GlycoPeptides } from "../components/GlycoPeptides";
+import { PageHeading } from "../components/FormControls";
 
-const FeatureView = props => {
+const FeatureView = (props) => {
   let { featureId, editFeature } = useParams();
   const history = useHistory();
   const [showLoading, setShowLoading] = useState(false);
@@ -41,7 +42,7 @@ const FeatureView = props => {
   }, [featureId]);
 
   function getFeatureSuccess(response) {
-    response.json().then(parsedJson => {
+    response.json().then((parsedJson) => {
       setFeatureDetails(parsedJson);
     });
     setShowLoading(false);
@@ -64,7 +65,7 @@ const FeatureView = props => {
     lipid: {},
     peptide: {},
     isLipidLinkedToSurfaceUsingLinker: "No",
-    metadata: {}
+    metadata: {},
   });
 
   const getMetadataTable = () => {
@@ -72,18 +73,18 @@ const FeatureView = props => {
     return (
       <>
         {metadata &&
-          metadata.descriptorGroups.map(desc => {
+          metadata.descriptorGroups.map((desc) => {
             return (
-              <div>
-                <h5>{desc.name}</h5>
-                <Table bordered hover size="sm">
-                  <thead>
-                    <th>{"Name"}</th>
-                    <th>{"Value"}</th>
+              <div className="pb-4">
+                <h3 className="gg-blue">{desc.name}</h3>
+                <Table bordered hover className="mb-4">
+                  <thead className="table-header">
+                    <th>Name</th>
+                    <th>Value</th>
                   </thead>
                   <tbody>
                     {desc.descriptors &&
-                      desc.descriptors.map(subdesc => {
+                      desc.descriptors.map((subdesc) => {
                         let subGroup = [];
                         if (subdesc.group) {
                           //sub group title
@@ -91,7 +92,7 @@ const FeatureView = props => {
                             <th style={{ backgroundColor: "white", fontWeight: "bold" }}>{subdesc.name}</th>
                           );
 
-                          subdesc.descriptors.forEach(ele => {
+                          subdesc.descriptors.forEach((ele) => {
                             subGroup.push(
                               <>
                                 <tr>
@@ -125,22 +126,21 @@ const FeatureView = props => {
   const getGlycanTable = () => {
     return (
       <>
-        <h3>Glycans</h3>
-        &nbsp;
+        <h3 className="gg-blue">Glycans</h3>
         <GlygenTable
           columns={[
             {
               Header: "Name",
               accessor: "name",
-              Cell: row =>
+              Cell: (row) =>
                 featureDetails.type === "LINKEDGLYCAN"
                   ? getToolTip(row.original.glycan.name)
-                  : getToolTip(row.original.glycans[0].glycan.name)
+                  : getToolTip(row.original.glycans[0].glycan.name),
             },
             {
               Header: "Structure Image",
               accessor: "cartoon",
-              Cell: row => (
+              Cell: (row) => (
                 <StructureImage
                   base64={
                     featureDetails.type === "LINKEDGLYCAN"
@@ -149,12 +149,12 @@ const FeatureView = props => {
                   }
                 />
               ),
-              minWidth: 300
+              // minWidth: 300,
             },
             {
               Header: "Source",
               accessor: "source.type",
-              Cell: row => {
+              Cell: (row) => {
                 return featureDetails.type === "LINKEDGLYCAN"
                   ? row.original.source &&
                       (row.original.source.type === "NOTRECORDED"
@@ -169,16 +169,16 @@ const FeatureView = props => {
                         : row.original.glycans[0].source.type === "COMMERCIAL"
                         ? getToolTip("Commercial")
                         : getToolTip("Non Commercial"));
-              }
+              },
             },
             {
               Header: "Reducing end state",
               accessor: "opensRing",
-              Cell: row => {
+              Cell: (row) => {
                 return featureDetails.type === "LINKEDGLYCAN"
                   ? getToolTip(row.original.reducingEndConfiguration.type)
                   : getToolTip(row.original.glycans[0].reducingEndConfiguration.type);
-              }
+              },
             },
             ...(featureDetails.type === "GLYCOLIPID"
               ? [
@@ -188,10 +188,10 @@ const FeatureView = props => {
                     Cell: (row, index) => {
                       return row.original.linker ? getToolTip(row.original.linker.name) : "";
                     },
-                    minWidth: 150
-                  }
+                    minWidth: 150,
+                  },
                 ]
-              : [])
+              : []),
           ]}
           defaultPageSize={10}
           data={featureDetails.glycans}
@@ -289,7 +289,7 @@ const FeatureView = props => {
 
     generalData.push(<FormLabel label={"General Descriptors"} />);
 
-    props.metadata[0].descriptors.forEach(ele => {
+    props.metadata[0].descriptors.forEach((ele) => {
       if (ele.group) {
         if (ele.mandateGroup && ele.mandateGroup.defaultSelection) {
           groupData.push(
@@ -307,19 +307,19 @@ const FeatureView = props => {
         }
 
         if ((ele.mandateGroup && ele.mandateGroup.defaultSelection) || !ele.mandateGroup) {
-          ele.descriptors.forEach(subEle => {
-            if (subEle.group && subEle.descriptors.filter(i => i.value).length > 0) {
+          ele.descriptors.forEach((subEle) => {
+            if (subEle.group && subEle.descriptors.filter((i) => i.value).length > 0) {
               groupData.push(
                 <div
                   style={{
-                    marginLeft: "100px"
+                    marginLeft: "100px",
                   }}
                 >
                   <FormLabel label={subEle.name} />
                   <br />
                 </div>
               );
-              subEle.descriptors.forEach(lastSubEle => {
+              subEle.descriptors.forEach((lastSubEle) => {
                 if (lastSubEle.value) {
                   groupData.push(getField(lastSubEle.name, lastSubEle.value));
                 }
@@ -348,9 +348,9 @@ const FeatureView = props => {
     return (
       <>
         <Form.Group as={Row} className="gg-align-center mb-3" controlId={label}>
-          <Col xs={10} lg={7}>
+          <Col xs={12} lg={9}>
             <FormLabel label={label} />
-            <Form.Control type="text" name={label} placeholder="Name" value={value} disabled />
+            <Form.Control type="text" name={label} placeholder="Enter Name" value={value} disabled />
           </Col>
         </Form.Group>
       </>
@@ -393,7 +393,7 @@ const FeatureView = props => {
     );
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
 
@@ -401,11 +401,11 @@ const FeatureView = props => {
     setShowErrorSummary(false);
   };
 
-  const getMetadataNameandId = page => {
+  const getMetadataNameandId = (page) => {
     return (
       <>
         <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
-          <Col xs={10} lg={7}>
+          <Col xs={12} lg={9}>
             <FormLabel label="Name" className={editFeature ? "required-asterik" : ""} />
             <Form.Control
               type="text"
@@ -417,13 +417,13 @@ const FeatureView = props => {
               maxLength={50}
               required
             />
-            <Feedback message={"Name is required"} />
+            <Feedback message="Name is required" />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="featureId" className="gg-align-center mb-3">
-          <Col xs={10} lg={7}>
-            <FormLabel label="FeatureId" className={editFeature ? "required-asterik" : ""} />
+          <Col xs={12} lg={9}>
+            <FormLabel label="Feature ID" className={editFeature ? "required-asterik" : ""} />
             <Form.Control
               type="text"
               name="internalId"
@@ -434,17 +434,19 @@ const FeatureView = props => {
               maxLength={30}
               required
             />
-            <Feedback message={"Feature Id is required"} />
+            <Feedback message="Feature ID is required" />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="Type" className="gg-align-center mb-3">
-          <Col xs={10} lg={7}>
+          <Col xs={12} lg={9}>
             <FormLabel label="Type" />
             <Form.Control
               type="text"
-              disabled={page === "case4"}
-              plaintext={page === "view"}
+              // disabled={page === "case4"}
+              // plaintext={page === "view"}
+              disabled={page === "case4" && !editFeature}
+              plaintext={page === "view" && !editFeature}
               defaultValue={props.type ? props.type : featureDetails.type}
             />
           </Col>
@@ -456,23 +458,23 @@ const FeatureView = props => {
   const getSelectedGlycanList = () => {
     return (
       <>
-        <div className={"form-container"}>
+        <div>
           <GlygenTable
             columns={[
               {
                 Header: "Name",
                 accessor: "name",
-                Cell: row => {
+                Cell: (row) => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
                     ? getToolTip(row.original.glycan.name)
                     : getToolTip(row.original.name);
-                }
+                },
               },
               {
                 Header: "Structure Image",
                 accessor: "cartoon",
-                Cell: row => {
+                Cell: (row) => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0 ? (
                     <StructureImage base64={row.original.glycan.cartoon} />
@@ -480,12 +482,12 @@ const FeatureView = props => {
                     <StructureImage base64={row.value} />
                   );
                 },
-                minWidth: 300
+                // minWidth: 300,
               },
               {
                 Header: "Source",
                 accessor: "source.type",
-                Cell: row => {
+                Cell: (row) => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
                     ? row.original &&
@@ -503,27 +505,27 @@ const FeatureView = props => {
                           : row.original.source.type === "COMMERCIAL"
                           ? getToolTip("Commercial")
                           : getToolTip("Non Commercial"));
-                }
+                },
               },
               {
                 Header: "Reducing end state",
                 accessor: "opensRing",
-                Cell: row => {
+                Cell: (row) => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
                     ? getToolTip(getReducingEndState(row.original.glycan.opensRing))
                     : getToolTip(getReducingEndState(row.value));
-                }
+                },
               },
               ...((props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
                 ? [
                     {
                       Header: "Range",
                       accessor: "range",
-                      Cell: row => {
+                      Cell: (row) => {
                         return getToolTip(`${row.original.min} - ${row.original.max}`);
-                      }
-                    }
+                      },
+                    },
                   ]
                 : []),
 
@@ -536,10 +538,10 @@ const FeatureView = props => {
                       Cell: (row, index) => {
                         return row.original.linker ? getToolTip(row.original.linker.name) : "";
                       },
-                      minWidth: 150
-                    }
+                      minWidth: 150,
+                    },
                   ]
-                : [])
+                : []),
             ]}
             data={
               (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
@@ -579,7 +581,7 @@ const FeatureView = props => {
     );
   };
 
-  const getGlycanInfoDisplay = rowSelected => {
+  const getGlycanInfoDisplay = (rowSelected) => {
     let glycan;
 
     if (props.positionDetails && props.positionDetails.isPosition) {
@@ -606,7 +608,7 @@ const FeatureView = props => {
           id: featureDetails.id,
           name: featureDetails.name,
           internalId: featureDetails.internalId,
-          type: featureDetails.type
+          type: featureDetails.type,
         },
         updateFeatureSuccess,
         updateFeatureFailure
@@ -619,7 +621,7 @@ const FeatureView = props => {
     }
 
     function updateFeatureFailure(response) {
-      response.json().then(parsedJson => {
+      response.json().then((parsedJson) => {
         setShowErrorSummary(true);
         setErrorMessage("");
         setPageErrorsJson(parsedJson);
@@ -635,9 +637,16 @@ const FeatureView = props => {
           {getMeta(head.viewFeature)}
         </Helmet>
 
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
           <div className={featureId ? "page-container" : ""}>
-            <Title title={editFeature ? "Edit Feature" : "Feature View"} />
+            <PageHeading
+              title={editFeature ? "Edit Feature" : "Feature View"}
+              subTitle={
+                editFeature
+                  ? "Update feature information. Name must be unique in your feature repository and cannot be used for more than one feature."
+                  : ""
+              }
+            />
             <Card>
               <Card.Body>
                 {<Loading show={showLoading} />}

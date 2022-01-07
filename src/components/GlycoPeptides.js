@@ -25,7 +25,7 @@ const GlycoPeptides = props => {
             }
           },
           {
-            Header: "Feature Id",
+            Header: "Feature ID",
             accessor: "internalId",
             Cell: row => {
               return row.internalId
@@ -74,15 +74,13 @@ const GlycoPeptides = props => {
                       </div>
                     ) : (
                       <Button
-                        style={{
-                          backgroundColor: "lightgray"
-                        }}
+                        className="gg-btn-outline-reg"
                         onClick={() => {
                           props.setEnableGlycoPeptideRange(true);
                           props.setRowSelectedForRange(row);
                         }}
                       >
-                        Add range
+                        Add Range
                       </Button>
                     );
                   }

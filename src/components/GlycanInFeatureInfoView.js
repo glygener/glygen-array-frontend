@@ -149,7 +149,7 @@ const GlycanInFeatureInfoView = props => {
           <FormLabel label="Comment" />
           <Col md={4} rows={5} className="sequence-label-div">
             <Form.Control
-              rows={5}
+              rows={4}
               as="textarea"
               plaintext
               value={

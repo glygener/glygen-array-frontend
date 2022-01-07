@@ -4,13 +4,16 @@ import "../containers/Features.css";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
-import { Title } from "../components/FormControls";
+import { getToolTip } from "../utils/commonUtils";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { Button } from "react-bootstrap";
 
-const Features = props => {
+const Features = (props) => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -19,101 +22,111 @@ const Features = props => {
         <title>{head.features.title}</title>
         {getMeta(head.features)}
       </Helmet>
-
-      <div className="page-container">
-        <Title title="Features" />
-
-        <Col className={"col-link-button"}>
-          <Link to="/features/addFeature" className="link-button" style={{ width: "150px" }}>
-            Add Feature
-          </Link>
-        </Col>
-
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name",
-              // eslint-disable-next-line react/display-name
-              Cell: ({ row }, index) => <div key={index}>{row.name ? row.name : row.id}</div>,
-            },
-            {
-              Header: "Feature Id",
-              accessor: "internalId",
-            },
-            {
-              Header: "Type",
-              accessor: "type",
-              Cell: (row) => displayNames.feature[row.value],
-            },
-            {
-              Header: "Linker",
-              accessor: "linker",
-              // eslint-disable-next-line react/display-name
-              Cell: ({ value, index }) =>
-                value && value.name ? (
-                  <Link key={index} to={"/linkers/editLinker/" + value.id} target="_blank">
-                    {value.name}
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Your Features"
+            subTitle="The table below displays a list of all features that have been uploaded to your repository. New features may be added, old features can be edited, and unused features can be removed."
+          />
+          <Card>
+            <Card.Body>
+              <div className="text-center mb-4">
+                {!props.isImported && (
+                  <Link to="/features/addFeature">
+                    <Button className="gg-btn-blue mt-2">Add Feature</Button>
                   </Link>
-                ) : (
-                  ""
-                ),
-            },
-            {
-              Header: "Linker Type",
-              accessor: "linker",
-              // eslint-disable-next-line react/display-name
-              Cell: ({ row, index }) => {
-                return row.linker ? (
-                  <div key={index}>
-                    {
-                      row.linker.type
-                      // && displayNames.linker[row.linker.type]
-                    }
-                  </div>
-                ) : (
-                  ""
-                );
-              },
-            },
-            {
-              Header: "Glycans",
-              accessor: "glycans",
-              // eslint-disable-next-line react/display-name
-              Cell: (row, index) => (
-                <div key={index}>
-                  {row.value
-                    ? row.value.map(
-                        (glycans, i) =>
-                          glycans.glycan && (
-                            <div key={i}>
-                              <Link to={"/glycans/editGlycan/" + glycans.glycan.id} target="_blank">
-                                {glycans.glycan.name}
-                              </Link>
-                              <br />
-                            </div>
-                          )
-                      )
-                    : ""}
-                </div>
-              ),
-            },
-          ]}
-          defaultPageSize={10}
-          showDeleteButton
-          showEditButton
-          showSearchBox
-          showViewIcon
-          viewUrl="features/viewFeature"
-          commentsRefColumn="name"
-          fetchWS="featurelist"
-          deleteWS="featuredelete"
-          editUrl="features/editFeature/:editFeature"
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Features"
-        />
-      </div>
+                )}
+              </div>
+
+              <GlygenTable
+                columns={[
+                  {
+                    Header: "Name",
+                    accessor: "name",
+                    // eslint-disable-next-line react/display-name
+                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.name ? row.name : row.id)}</div>,
+                  },
+                  {
+                    Header: "Feature Id",
+                    accessor: "internalId",
+                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.internalId)}</div>,
+                  },
+                  {
+                    Header: "Type",
+                    accessor: "type",
+                    Cell: (row) => getToolTip(displayNames.feature[row.value]),
+                  },
+                  {
+                    Header: "Linker",
+                    accessor: "linker",
+                    // eslint-disable-next-line react/display-name
+                    Cell: ({ value, index }) =>
+                      value && value.name ? (
+                        <Link key={index} to={"/linkers/editLinker/" + value.id} target="_blank">
+                          {getToolTip(value.name)}
+                        </Link>
+                      ) : (
+                        ""
+                      ),
+                  },
+                  {
+                    Header: "Linker Type",
+                    accessor: "linker",
+                    // eslint-disable-next-line react/display-name
+                    Cell: ({ row, index }) => {
+                      return row.linker ? (
+                        <div key={index}>
+                          {getToolTip(
+                            row.linker.type
+                            // && displayNames.linker[row.linker.type]
+                          )}
+                        </div>
+                      ) : (
+                        ""
+                      );
+                    },
+                  },
+                  {
+                    Header: "Glycans",
+                    accessor: "glycans",
+                    // eslint-disable-next-line react/display-name
+                    Cell: (row, index) => (
+                      <div key={index}>
+                        {row.value
+                          ? row.value.map(
+                              (glycans, i) =>
+                                glycans.glycan && (
+                                  <div key={i}>
+                                    <Link to={"/glycans/editGlycan/" + glycans.glycan.id} target="_blank">
+                                      {getToolTip(glycans.glycan.name)}
+                                    </Link>
+                                    <br />
+                                  </div>
+                                )
+                            )
+                          : ""}
+                      </div>
+                    ),
+                  },
+                ]}
+                defaultPageSize={10}
+                showDeleteButton
+                showEditButton
+                showSearchBox
+                showViewIcon
+                viewUrl="features/viewFeature"
+                commentsRefColumn="name"
+                fetchWS="featurelist"
+                deleteWS="featuredelete"
+                editUrl="features/editFeature/:editFeature"
+                keyColumn="id"
+                showRowsInfo
+                infoRowsText="Features"
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

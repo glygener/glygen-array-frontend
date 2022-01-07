@@ -296,7 +296,10 @@ input[type]:not(:-ms-input-placeholder) + label {
   overflow: auto;
   margin-bottom: 20px;
 }
-
+.table-header {
+  background-color: var(--table-header);
+  color: #fff;
+}
 .table td,
 .table th {
   border: 1px solid #dee2e6;

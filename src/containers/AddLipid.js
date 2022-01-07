@@ -849,7 +849,7 @@ const AddLipid = (props) => {
         <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
         </Button>
-        <Button variant="contained" className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
+        <Button className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
           {activeStep === steps.length - 1 ? "Submit" : "Next"}
         </Button>
       </div>

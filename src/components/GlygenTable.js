@@ -5,7 +5,7 @@ import "react-table/react-table.css";
 import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import "./GlygenTable.css";
-import { OverlayTrigger, Popover, Form, Col, Row } from "react-bootstrap";
+import { OverlayTrigger, Popover, Form, Col, Row, Button } from "react-bootstrap";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { GlygenTableRowsInfo } from "./GlygenTableRowsInfo";
 import { ErrorSummary } from "./ErrorSummary";
@@ -13,8 +13,12 @@ import mirageIcon from "../images/mirageIcon.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "./CardLoader";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { BlueCheckbox } from "../components/FormControls";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import { BlueRadio } from "../components/FormControls";
 
-const GlygenTable = props => {
+const GlygenTable = (props) => {
   const history = useHistory();
   const [rows, setRows] = useState(0);
   const [data, setData] = useState([]);
@@ -47,7 +51,7 @@ const GlygenTable = props => {
     setShowDeleteModal(true);
   };
 
-  const makePublicPrompt = id => {
+  const makePublicPrompt = (id) => {
     setSelectedIdMakePublic(id);
     setShowMakePublicModal(true);
   };
@@ -66,7 +70,7 @@ const GlygenTable = props => {
     );
   };
 
-  const handleFilterChange = e => {
+  const handleFilterChange = (e) => {
     setSearchFilter(e.target.value);
   };
 
@@ -75,7 +79,7 @@ const GlygenTable = props => {
       Header: "Comments",
       accessor: props.commentsRefColumn,
       style: {
-        textAlign: "center"
+        textAlign: "center",
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) =>
@@ -121,7 +125,7 @@ const GlygenTable = props => {
         ) : (
           <div key={index}></div>
         ),
-      minWidth: 80
+      minWidth: 80,
     };
   }
 
@@ -129,7 +133,7 @@ const GlygenTable = props => {
     columnsToRender["actionsColumn"] = {
       Header: "Actions",
       style: {
-        textAlign: "center"
+        textAlign: "center",
       },
       sortable: false,
       // eslint-disable-next-line react/display-name
@@ -198,7 +202,7 @@ const GlygenTable = props => {
             <LineTooltip text="Mirage Compliance">
               <Link>
                 <img
-                  className="table-btn5 tbl-icon-btn image-icon5"
+                  className="tbl-icon-btn image-icon5"
                   src={mirageIcon}
                   alt="Mirage icon"
                   aria-hidden="true"
@@ -259,7 +263,7 @@ const GlygenTable = props => {
           )}
         </>
       ),
-      minWidth: 100
+      minWidth: 100,
     };
   }
 
@@ -268,13 +272,20 @@ const GlygenTable = props => {
       Header: props.selectButtonHeader !== undefined ? props.selectButtonHeader : "Select",
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
-        <input
+        <Button
+          className="gg-btn-outline-reg"
           key={index}
-          type="button"
           onClick={() => props.selectButtonHandler(row.original, props.isModal)}
-          value={props.selectButtonHeader || "Select"}
-        />
-      )
+        >
+          {props.selectButtonHeader || "Select"}
+        </Button>
+        // <input
+        //   key={index}
+        //   type="button"
+        //   onClick={() => props.selectButtonHandler(row.original, props.isModal)}
+        //   value={props.selectButtonHeader || "Select"}
+        // />
+      ),
     };
   }
 
@@ -283,13 +294,24 @@ const GlygenTable = props => {
       Header: "Select",
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
-        <input
-          key={index}
-          type="checkbox"
-          onChange={props.checkboxChangeHandler.bind(this, row.original)}
-          defaultChecked={props.defaultCheckboxHandler(row.original)}
+        // <input
+        //   key={index}
+        //   type="checkbox"
+        //   onChange={props.checkboxChangeHandler.bind(this, row.original)}
+        //   defaultChecked={props.defaultCheckboxHandler(row.original)}
+        // />
+        <FormControlLabel
+          control={
+            <BlueCheckbox
+              key={index}
+              name="multiSelectColumn"
+              defaultChecked={props.defaultCheckboxHandler(row.original)}
+              onChange={props.checkboxChangeHandler.bind(this, row.original)}
+              size="large"
+            />
+          }
         />
-      )
+      ),
     };
   }
 
@@ -298,14 +320,25 @@ const GlygenTable = props => {
       Header: "Select",
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
-        <input
-          key={index}
-          type="radio"
-          onClick={() => setSelectedRadio(row.original.name)}
+        // <input
+        //   key={index}
+        //   type="radio"
+        //   onClick={() => setSelectedRadio(row.original.name)}
+        //   onChange={() => props.selectRadioHandler(row.original)}
+        //   checked={row.original.name === selectedRadio ? true : false}
+        // />
+        <RadioGroup
+          name="selectRadio"
           onChange={() => props.selectRadioHandler(row.original)}
-          checked={row.original.name === selectedRadio ? true : false}
-        />
-      )
+          value={() => setSelectedRadio(row.original.name)}
+        >
+          <FormControlLabel
+            value={index}
+            control={<BlueRadio />}
+            label={row.original.name === selectedRadio ? true : false}
+          />
+        </RadioGroup>
+      ),
     };
   }
 
@@ -338,21 +371,32 @@ const GlygenTable = props => {
               <Col
                 style={{
                   marginTop: "10px",
-                  marginLeft: "40px"
+                  marginLeft: "40px",
                 }}
               >
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                  <Form.Check
+                  {/* <Form.Check
                     type="checkbox"
                     label={props.onlyMyLinkersGlycansCheckBoxLabel}
                     onChange={props.handleChangeForOnlyMyLinkersGlycans}
+                  /> */}
+                  <FormControlLabel
+                    control={
+                      <BlueCheckbox
+                        name="formBasicCheckbox"
+                        onChange={props.handleChangeForOnlyMyLinkersGlycans}
+                        checked={props.showOnlyMyLinkersOrGlycansCheckBox["formBasicCheckbox"]}
+                        size="large"
+                      />
+                    }
+                    label={props.onlyMyLinkersGlycansCheckBoxLabel}
                   />
                 </Form.Group>
               </Col>
             )}
 
             {props.showSearchBox && (
-              <Col md={5}>
+              <Col md={4}>
                 <Form.Control
                   type="text"
                   name="search"
@@ -385,8 +429,8 @@ const GlygenTable = props => {
         multiSort={false}
         showPaginationTop
         manual
-        ref={element => setTableElement(element)}
-        onFetchData={state => {
+        ref={(element) => setTableElement(element)}
+        onFetchData={(state) => {
           /*state obj structure:
           {
             sorted: [
@@ -416,8 +460,8 @@ const GlygenTable = props => {
                   loadAll: false, //only useful for features, blocks and slides
                   filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
                   type: props.paramTypeValue,
-                  ...props.qsParams
-                }
+                  ...props.qsParams,
+                },
               },
               // {
               //   offset: state.page * state.pageSize,
@@ -430,7 +474,7 @@ const GlygenTable = props => {
               // },
               true,
               null,
-              response => fetchSuccess(response, state),
+              (response) => fetchSuccess(response, state),
               fetchError
             );
           } else if (props.fetchWSCallFunction) {
@@ -489,7 +533,7 @@ const GlygenTable = props => {
   );
 
   function fetchSuccess(response, state) {
-    response.json().then(responseJson => {
+    response.json().then((responseJson) => {
       if (searchFilter !== "" && responseJson.total < 10 && !customOffset) {
         setCustomOffset(true);
         tableElement.fireFetchData();
@@ -504,7 +548,7 @@ const GlygenTable = props => {
   }
 
   function fetchError(response) {
-    response.json().then(response => {
+    response.json().then((response) => {
       setPageErrorsJson(response);
     });
     setShowErrorSummary(true);
@@ -519,7 +563,7 @@ const GlygenTable = props => {
   }
 
   function deleteError(response) {
-    response.json().then(response => {
+    response.json().then((response) => {
       setPageErrorsJson(response);
     });
     setShowErrorSummary(true);
@@ -540,7 +584,7 @@ const GlygenTable = props => {
   }
 
   function isMakePublicFailure(response) {
-    response.json().then(responseJson => {
+    response.json().then((responseJson) => {
       setPageErrorsJson(responseJson);
     });
     setShowErrorSummary(true);

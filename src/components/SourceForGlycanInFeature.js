@@ -320,16 +320,18 @@ const SourceForGlycanInFeature = props => {
           >
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
-              <Stepper activeStep={activeStep}>{getSteps()}</Stepper>
-              <div className="button-div text-center">
-                <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+              <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
+                {getSteps()}
+              </Stepper>
+              <div className="text-center mb-4">
+                <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
                   Back
                 </Button>
-                <Button variant="contained" onClick={handleNext} className="stepper-button">
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                <Button onClick={handleNext} className="gg-btn-blue mt-2 gg-ml-20">
+                  {activeStep === steps.length - 1 ? "Submit" : "Next"}
                 </Button>
               </div>
-              &nbsp;&nbsp;
+
               <ErrorSummary
                 show={showErrorSummary}
                 form="feature"
@@ -339,16 +341,16 @@ const SourceForGlycanInFeature = props => {
               <Typography component={"span"} variant={"body2"}>
                 {getStepContent(activeStep)}
               </Typography>
-              <div className="button-div text-center">
-                <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className="stepper-button">
+              <div className="text-center mb-2">
+                <Button disabled={activeStep === 0} onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
                   Back
                 </Button>
-                <Button variant="contained" onClick={handleNext} className="stepper-button">
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                <Button onClick={handleNext} className="gg-btn-blue mt-2 gg-ml-20">
+                  {activeStep === steps.length - 1 ? "Submit" : "Next"}
                 </Button>
               </div>
             </Modal.Body>
-            <Modal.Footer>
+            {/* <Modal.Footer>
               <Button
                 onClick={() => {
                   closeModal();
@@ -356,7 +358,7 @@ const SourceForGlycanInFeature = props => {
               >
                 Close
               </Button>
-            </Modal.Footer>
+            </Modal.Footer> */}
           </Modal>
         </>
       )}

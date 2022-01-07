@@ -13,14 +13,16 @@ const GlycanInfoViewModal = props => {
         onHide={() => props.setEnableGlycanViewInfoDialog(false)}
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Glycan Info</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter" className="gg-blue">
+            Glycan Information
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <GlycanInFeatureInfoView glycan={props.glycanViewInfo} />
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button onClick={() => props.setEnableGlycanViewInfoDialog(false)}>Close</Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
     </>
   );
