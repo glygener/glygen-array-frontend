@@ -957,12 +957,18 @@ const MetaData = props => {
       <>
         {!props.importedInAPage && (
           <>
-            <Form.Group as={Row} controlId="name">
-              <FormLabel label="Name" className="required-asterik" />
-              <Col md={6}>
+            <Form.Group
+              as={Row}
+              controlId="name"
+              style={{
+                paddingLeft: "0.7em"
+              }}
+            >
+              <Col xs={12} lg={9}>
+                <FormLabel label="Name" className="required-asterik" />
                 <Form.Control type="text" name="name" disabled value={metaDataDetails.name} />
               </Col>
-              <Col md={3}>
+              <Col xs={3} style={{ padding: "1.5em" }}>
                 {/* {getExpandCollapseIcon()} */}
                 {getAddons()}
               </Col>
@@ -970,9 +976,15 @@ const MetaData = props => {
 
             {(sampleModel && sampleModel.length > 1) ||
             (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
-              <Form.Group as={Row} controlId="type">
-                <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
-                <Col md={6}>
+              <Form.Group
+                as={Row}
+                controlId="type"
+                style={{
+                  paddingLeft: "0.7em"
+                }}
+              >
+                <Col xs={12} lg={9}>
+                  <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
                   <Form.Control type="text" name="type" disabled value={metaDataDetails.selectedtemplate} />
                 </Col>
               </Form.Group>
@@ -1346,8 +1358,8 @@ const MetaData = props => {
     return (
       <>
         <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" className="required-asterik" />
-          <Col md={6}>
+          <Col xs={12} lg={9}>
+            <FormLabel label="Name" className="required-asterik" />
             <Form.Control
               type="text"
               name="name"
@@ -1366,8 +1378,8 @@ const MetaData = props => {
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="description">
-          <FormLabel label="Description" />
-          <Col md={6}>
+          <Col xs={12} lg={9}>
+            <FormLabel label="Description" />
             <Form.Control
               as="textarea"
               rows={4}
@@ -1385,8 +1397,8 @@ const MetaData = props => {
 
         {!isUpdate && !props.isCopy && (
           <Form.Group as={Row} controlId="description">
-            <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
-            <Col md={6}>
+            <Col xs={12} lg={9}>
+              <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
               <Form.Control
                 as="select"
                 name="selectedtemplate"

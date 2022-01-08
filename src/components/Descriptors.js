@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../components/Descriptors.css";
-import { Feedback, BlueCheckbox, FormLabel } from "./FormControls";
+import { Feedback, BlueCheckbox, FormLabel, BlueRadio } from "./FormControls";
 import { HelpToolTip } from "./tooltip/HelpToolTip";
 import { Form, Col, Row, Accordion, Card, Image, Alert } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -158,75 +158,70 @@ const Descriptors = props => {
     return (
       <>
         <Row
+          className={"xorHeaderBox"}
           style={{
-            marginTop: "1em",
-            marginLeft: "1%"
+            border: descriptor.group ? "" : "none",
+            padding: descriptor.group ? "1em" : "none"
           }}
         >
-          <FormLabel
-            label={descriptor.mandateGroup && descriptor.mandateGroup.name}
-            className={"metadata-descriptor-title "}
-          />
-
-          <Col>
+          <Col md={12}>
+            <FormLabel label={descriptor.mandateGroup && descriptor.mandateGroup.name} className={"xorGroupHeader"} />
             {sameXorGroup.map((grp, index) => {
               return !grp.id.startsWith("newly") ? (
                 <>
-                  <Form.Check.Label>
-                    <Form.Check.Input
-                      name={grp.name}
-                      type="radio"
-                      value={grp.name}
-                      label={grp.name}
-                      onChange={() => {
-                        if (
-                          sameXorGroup.filter(e => {
-                            return e.value !== undefined;
-                          }).length > 0
-                        ) {
-                          setEnableModal(true);
-                        } else {
-                          setMandateGroupNewValue(grp);
-                          props.defaultSelectionChange(grp);
-                        }
-                      }}
-                      checked={grp.mandateGroup.defaultSelection === true ? true : false}
-                      // defaultChecked={grp.mandateGroup.defaultSelection}
-                    />
-                    {grp.name}&nbsp;&nbsp;&nbsp;&nbsp;
-                  </Form.Check.Label>
+                  <FormControlLabel
+                    control={<BlueRadio />}
+                    name={grp.name}
+                    value={grp.name}
+                    label={grp.name}
+                    onChange={() => {
+                      if (
+                        sameXorGroup.filter(e => {
+                          return e.value !== undefined;
+                        }).length > 0
+                      ) {
+                        setEnableModal(true);
+                      } else {
+                        setMandateGroupNewValue(grp);
+                        props.defaultSelectionChange(grp);
+                      }
+                    }}
+                    checked={grp.mandateGroup.defaultSelection === true ? true : false}
+                  />
 
                   {index === sameXorGroup.length - 1 && (
                     <>
-                      <Form.Check.Label>
-                        <Form.Check.Input
-                          name={`notApplicable${grp.name}`}
-                          type="radio"
-                          value={"notApplicable"}
-                          label={"Not Applicable"}
-                          onChange={() => {
-                            props.defaultSelectionChange(grp, "notApplicable");
-                          }}
-                          checked={grp.mandateGroup.notApplicable === true ? true : false}
-                        />
-                        {"Not Applicable"}
-                        <sup>1</sup>&nbsp;&nbsp;&nbsp;&nbsp;
-                      </Form.Check.Label>
+                      <FormControlLabel
+                        control={<BlueRadio />}
+                        name={`notApplicable${grp.name}`}
+                        value={"notApplicable"}
+                        label={
+                          <>
+                            Not Applicable
+                            <sup>1</sup>
+                          </>
+                        }
+                        onChange={() => {
+                          props.defaultSelectionChange(grp, "notApplicable");
+                        }}
+                        checked={grp.mandateGroup.notApplicable === true ? true : false}
+                      />
 
-                      <Form.Check.Label>
-                        <Form.Check.Input
-                          type="radio"
-                          name={`notRecorded${grp.name}`}
-                          value={"notRecorded"}
-                          label={"Not Recorded"}
-                          onChange={() => {
-                            props.defaultSelectionChange(grp, "notRecorded");
-                          }}
-                          checked={grp.mandateGroup.notRecorded === true ? true : false}
-                        />
-                        {"Not Recorded"}
-                        <sup>2</sup>&nbsp;&nbsp;&nbsp;&nbsp;
-                      </Form.Check.Label>
+                      <FormControlLabel
+                        control={<BlueRadio />}
+                        name={`notRecorded${grp.name}`}
+                        value={"notRecorded"}
+                        label={
+                          <>
+                            Not Recorded
+                            <sup>2</sup>
+                          </>
+                        }
+                        onChange={() => {
+                          props.defaultSelectionChange(grp, "notRecorded");
+                        }}
+                        checked={grp.mandateGroup.notRecorded === true ? true : false}
+                      />
                     </>
                   )}
                 </>
@@ -403,8 +398,9 @@ const Descriptors = props => {
                 element.mandateGroup.notRecorded) && (
                 <div
                   style={{
-                    paddingLeft: "10px",
-                    backgroundColor: "#f3f3f3"
+                    // paddingLeft: "10px",
+                    backgroundColor: "#f3f3f3",
+                    borderRadius: "0.4em"
                   }}
                   key={index + element.id}
                 >
