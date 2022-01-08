@@ -18,10 +18,10 @@ const ConfirmationModal = props => {
       </Modal.Header>
       <Modal.Body>{props.body}</Modal.Body>
       <Modal.Footer>
-        <Button className="gg-btn-blue-reg" onClick={handleCancel}>
+        <Button className="gg-btn-outline-reg" onClick={handleCancel}>
           Cancel
         </Button>
-        <Button className="gg-btn-outline-reg" onClick={handleConfirm}>
+        <Button className="gg-btn-blue-reg" onClick={handleConfirm}>
           OK
         </Button>
       </Modal.Footer>

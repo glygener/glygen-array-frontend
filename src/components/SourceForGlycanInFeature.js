@@ -44,7 +44,7 @@ const SourceForGlycanInFeature = props => {
     if (activeStep === 0) {
       if (!props.currentGlycanSelection) {
         setPageErrorsJson({});
-        setErrorMessage("Glycan Selection is required");
+        setErrorMessage("Glycan selection is required");
         setShowErrorSummary(true);
         return;
       } else {

@@ -102,7 +102,7 @@ const GlycoPeptides = props => {
         commentsRefColumn="description"
         data={props.data}
         fetchWS={!props.data ? "featurelistbytype" : ""}
-        infoRowsText="Glyco Peptides"
+        infoRowsText="GlycoPeptides"
         paramTypeValue={"GLYCOPEPTIDE"}
         selectButtonHeader={props.selectButtonHeader}
         showSelectButton={props.showSelectButton}

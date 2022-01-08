@@ -1909,7 +1909,7 @@ const AddFeature = (props) => {
                 <Form.Control
                   type="number"
                   name="maxRange"
-                  placeholder="Enter max range"
+                  placeholder="Enter Max Range"
                   value={
                     rowSelectedForRange.original &&
                     rowSelectedForRange.original.glycoPeptide &&
@@ -2245,15 +2245,12 @@ const AddFeature = (props) => {
                       ) : (
                         <Button
                           className="gg-btn-outline-reg"
-                          // style={{
-                          //   backgroundColor: "lightgray",
-                          // }}
                           onClick={() => {
                             setLinkerForSelectedGlycan(row.original);
                             setShowLinkerPicker(true);
                           }}
                         >
-                          Add linker
+                          Add Linker
                         </Button>
                       );
                     },

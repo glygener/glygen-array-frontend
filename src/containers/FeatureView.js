@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from "react";
 import { wsCall } from "../utils/wsUtils";
 import { useParams } from "react-router-dom";
 import { Row, Col, Form, Table, Button, Card } from "react-bootstrap";
-import { FormLabel, Title, Feedback } from "../components/FormControls";
+import { FormLabel, Feedback } from "../components/FormControls";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
@@ -75,47 +75,51 @@ const FeatureView = (props) => {
         {metadata &&
           metadata.descriptorGroups.map((desc) => {
             return (
-              <div className="pb-4">
-                <h3 className="gg-blue">{desc.name}</h3>
-                <Table bordered hover className="mb-4">
-                  <thead className="table-header">
-                    <th>Name</th>
-                    <th>Value</th>
-                  </thead>
-                  <tbody>
-                    {desc.descriptors &&
-                      desc.descriptors.map((subdesc) => {
-                        let subGroup = [];
-                        if (subdesc.group) {
-                          //sub group title
-                          subGroup.push(
-                            <th style={{ backgroundColor: "white", fontWeight: "bold" }}>{subdesc.name}</th>
-                          );
+              <div className="pb-3 pt-3">
+                <Row className="gg-align-center">
+                  <Col xs={12} lg={9}>
+                    <h4 className="gg-blue">{desc.name}</h4>
+                    <Table bordered hover className="mb-4">
+                      <thead className="table-header">
+                        <th>Name</th>
+                        <th>Value</th>
+                      </thead>
+                      <tbody>
+                        {desc.descriptors &&
+                          desc.descriptors.map((subdesc) => {
+                            let subGroup = [];
+                            if (subdesc.group) {
+                              //sub group title
+                              subGroup.push(
+                                <th style={{ backgroundColor: "white", fontWeight: "bold" }}>{subdesc.name}</th>
+                              );
 
-                          subdesc.descriptors.forEach((ele) => {
-                            subGroup.push(
-                              <>
-                                <tr>
-                                  <td>{ele.name}</td>
-                                  <td>{ele.value}</td>
-                                </tr>
-                              </>
-                            );
-                          });
-                        } else {
-                          subGroup.push(
-                            <>
-                              <tr>
-                                <td>{subdesc.name}</td>
-                                <td>{subdesc.value}</td>
-                              </tr>
-                            </>
-                          );
-                        }
-                        return subGroup;
-                      })}
-                  </tbody>
-                </Table>
+                              subdesc.descriptors.forEach((ele) => {
+                                subGroup.push(
+                                  <>
+                                    <tr>
+                                      <td>{ele.name}</td>
+                                      <td>{ele.value}</td>
+                                    </tr>
+                                  </>
+                                );
+                              });
+                            } else {
+                              subGroup.push(
+                                <>
+                                  <tr>
+                                    <td>{subdesc.name}</td>
+                                    <td>{subdesc.value}</td>
+                                  </tr>
+                                </>
+                              );
+                            }
+                            return subGroup;
+                          })}
+                      </tbody>
+                    </Table>
+                  </Col>
+                </Row>
               </div>
             );
           })}
@@ -126,7 +130,9 @@ const FeatureView = (props) => {
   const getGlycanTable = () => {
     return (
       <>
-        <h3 className="gg-blue">Glycans</h3>
+        {/* <Row className="gg-align-center">
+          <Col xs={12} lg={9}>
+            <h4 className="gg-blue">Glycans</h4> */}
         <GlygenTable
           columns={[
             {
@@ -172,7 +178,7 @@ const FeatureView = (props) => {
               },
             },
             {
-              Header: "Reducing end state",
+              Header: "Reducing End State",
               accessor: "opensRing",
               Cell: (row) => {
                 return featureDetails.type === "LINKEDGLYCAN"
@@ -204,6 +210,8 @@ const FeatureView = (props) => {
           showPagination={false}
           showRowsInfo={false}
         />
+        {/* </Col>
+        </Row> */}
         {enableGlycanViewInfoDialog && (
           <GlycanInfoViewModal
             setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
@@ -231,24 +239,21 @@ const FeatureView = (props) => {
     return (
       <>
         {linker.imageURL ? (
-          <Form.Group as={Row} controlId="image">
-            <Col md={{ span: 3, offset: 2 }}>
-              <FormLabel label={""} />
-            </Col>
+          <Form.Group as={Row} controlId="image" className="gg-align-center">
             <Col md={4}>
               <StructureImage imgUrl={linker.imageURL} />
             </Col>
           </Form.Group>
         ) : (
           (linker.description || linker.comment) && (
-            <Form.Group as={Row} controlId="comment">
-              <FormLabel label="Comment" />
-              <Col md={4} className="sequence-label-div">
+            <Form.Group as={Row} controlId="comment" className="gg-align-center mb-3">
+              <Col xs={12} lg={9}>
+                <FormLabel label="Comment" />
                 <Form.Control
-                  rows={3}
+                  rows={4}
                   as="textarea"
                   disabled={page === "case4"}
-                  plaintext={page === "view"}
+                  readOnly={page === "view"}
                   value={linker.comment ? linker.comment : linker.description ? linker.description : ""}
                 />
               </Col>
@@ -287,22 +292,34 @@ const FeatureView = (props) => {
     let groupData = [];
     let generalData = [];
 
-    generalData.push(<FormLabel label={"General Descriptors"} />);
+    generalData.push(
+      <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+        <Col xs={12} lg={9}>
+          <h4 className="gg-blue">General Descriptors</h4>
+          {/* <FormLabel label="General Descriptors" className="gg-blue" /> */}
+        </Col>
+      </Form.Group>
+    );
 
     props.metadata[0].descriptors.forEach((ele) => {
       if (ele.group) {
         if (ele.mandateGroup && ele.mandateGroup.defaultSelection) {
           groupData.push(
-            <div>
-              <FormLabel label={`${ele.mandateGroup.name} - ${ele.name}`} /> <br />
-            </div>
+            <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+              <Col xs={12} lg={9}>
+                <h4 className="gg-blue">{`${ele.mandateGroup.name} - ${ele.name}`}</h4>
+                {/* <FormLabel label={`${ele.mandateGroup.name} - ${ele.name}`} className="gg-blue" /> */}
+              </Col>
+            </Form.Group>
           );
         } else if (!ele.mandateGroup) {
           groupData.push(
-            <div>
-              <FormLabel label={ele.name} />
-              <br />
-            </div>
+            <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+              <Col xs={12} lg={9}>
+                <h4 className="gg-blue">{ele.name}</h4>
+                {/* <FormLabel label={ele.name} className="gg-blue" /> */}
+              </Col>
+            </Form.Group>
           );
         }
 
@@ -310,14 +327,12 @@ const FeatureView = (props) => {
           ele.descriptors.forEach((subEle) => {
             if (subEle.group && subEle.descriptors.filter((i) => i.value).length > 0) {
               groupData.push(
-                <div
-                  style={{
-                    marginLeft: "100px",
-                  }}
-                >
-                  <FormLabel label={subEle.name} />
-                  <br />
-                </div>
+                <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+                  <Col xs={12} lg={9}>
+                    <h4 className="gg-blue">{subEle.name}</h4>
+                    {/* <FormLabel label={subEle.name} className="gg-blue" /> */}
+                  </Col>
+                </Form.Group>
               );
               subEle.descriptors.forEach((lastSubEle) => {
                 if (lastSubEle.value) {
@@ -360,30 +375,34 @@ const FeatureView = (props) => {
   const displayDetails = (linker, page, label) => {
     return (
       <>
-        <FormLabel label={label} className={"metadata-descriptor-title"} />
-
-        <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" />
-          <Col md={4}>
-            <Form.Control type="text" disabled={page === "case4"} plaintext={page === "view"} value={linker.name} />
+        <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+          <Col xs={12} lg={9}>
+            <h4 className="gg-blue">{label}</h4>
+            {/* <FormLabel label={label} className="gg-blue" /> */}
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Name" />
+            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.name} />
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="type">
-          <FormLabel label="Type" />
-          <Col md={4}>
-            <Form.Control type="text" disabled={page === "case4"} plaintext={page === "view"} value={linker.type} />
+        <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Type" />
+            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.type} />
           </Col>
         </Form.Group>
 
         {linker.sequence && (
-          <Form.Group as={Row} controlId="sequence">
-            <FormLabel label="Sequence" />
-            <Col md={4}>
+          <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Sequence" />
               <Form.Control
                 type="text"
                 disabled={page === "case4"}
-                plaintext={page === "view"}
+                readOnly={page === "view"}
                 value={linker.sequence}
               />
             </Col>
@@ -411,7 +430,7 @@ const FeatureView = (props) => {
               type="text"
               name="name"
               disabled={page === "case4" && !editFeature}
-              plaintext={page === "view" && !editFeature}
+              readOnly={page === "view" && !editFeature}
               value={props.metadata ? props.name : featureDetails.name}
               onChange={editFeature ? handleChange : {}}
               maxLength={50}
@@ -428,7 +447,7 @@ const FeatureView = (props) => {
               type="text"
               name="internalId"
               disabled={page === "case4" && !editFeature}
-              plaintext={page === "view" && !editFeature}
+              readOnly={page === "view" && !editFeature}
               value={props.metadata ? props.featureId : featureDetails.internalId}
               onChange={editFeature ? handleChange : {}}
               maxLength={30}
@@ -446,7 +465,7 @@ const FeatureView = (props) => {
               // disabled={page === "case4"}
               // plaintext={page === "view"}
               disabled={page === "case4" && !editFeature}
-              plaintext={page === "view" && !editFeature}
+              readOnly={page === "view" && !editFeature}
               defaultValue={props.type ? props.type : featureDetails.type}
             />
           </Col>
@@ -458,7 +477,9 @@ const FeatureView = (props) => {
   const getSelectedGlycanList = () => {
     return (
       <>
-        <div>
+        <div className="mt-3 pt-3">
+          {/* <Row className="gg-align-center">
+            <Col xs={12} lg={9}> */}
           <GlygenTable
             columns={[
               {
@@ -482,7 +503,7 @@ const FeatureView = (props) => {
                     <StructureImage base64={row.value} />
                   );
                 },
-                // minWidth: 300,
+                minWidth: 300,
               },
               {
                 Header: "Source",
@@ -508,7 +529,7 @@ const FeatureView = (props) => {
                 },
               },
               {
-                Header: "Reducing end state",
+                Header: "Reducing End State",
                 accessor: "opensRing",
                 Cell: (row) => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
@@ -556,7 +577,8 @@ const FeatureView = (props) => {
             viewOnClick={getGlycanInfoDisplay}
             infoRowsText="Selected Glycans"
           />
-
+          {/* </Col>
+          </Row> */}
           {enableGlycanViewInfoDialog && (
             <GlycanInfoViewModal
               setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
@@ -649,51 +671,52 @@ const FeatureView = (props) => {
             />
             <Card>
               <Card.Body>
-                {<Loading show={showLoading} />}
-                <ErrorSummary
-                  show={showErrorSummary}
-                  form="feature"
-                  errorJson={pageErrorsJson}
-                  errorMessage={errorMessage}
-                />
+                <diiv>
+                  {<Loading show={showLoading} />}
+                  <ErrorSummary
+                    show={showErrorSummary}
+                    form="feature"
+                    errorJson={pageErrorsJson}
+                    errorMessage={errorMessage}
+                  />
 
-                <Form noValidate validated={validated} onSubmit={editFeature ? handleSubmit : ""}>
-                  {getMetadataNameandId(props.metadata ? "case4" : "view")}
+                  <Form noValidate validated={validated} onSubmit={editFeature ? handleSubmit : ""}>
+                    {getMetadataNameandId(props.metadata ? "case4" : "view")}
 
-                  {getLinker()}
+                    {getLinker()}
 
-                  {getLipid()}
+                    {getLipid()}
 
-                  {getPeptide()}
+                    {getPeptide()}
 
-                  {getProtein()}
+                    {getProtein()}
 
-                  {props.metadata
-                    ? case4MetadataWhileCreatingFeature()
-                    : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
+                    {props.metadata
+                      ? case4MetadataWhileCreatingFeature()
+                      : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
 
-                  {props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
-                  (props.rangeGlycoPeptides || props.glycoPeptides)
-                    ? getGlycoProteinLinkedPeptide()
-                    : props.glycans
-                    ? getSelectedGlycanList()
-                    : featureDetails.glycans.length > 0 && getGlycanTable()}
-                  <br />
+                    {props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
+                    (props.rangeGlycoPeptides || props.glycoPeptides)
+                      ? getGlycoProteinLinkedPeptide()
+                      : props.glycans
+                      ? getSelectedGlycanList()
+                      : featureDetails.glycans.length > 0 && getGlycanTable()}
 
-                  <div className="text-center mb-4 mt-4">
-                    {featureDetails && featureDetails.type && (
-                      <Link to="/features">
-                        <Button className="gg-btn-blue mt-2 gg-mr-20">{editFeature ? "Cancel" : "Back"}</Button>
-                      </Link>
-                    )}
+                    <div className="text-center mb-4 mt-4">
+                      {featureDetails && featureDetails.type && (
+                        <Link to="/features">
+                          <Button className="gg-btn-blue mt-2 gg-mr-20">{editFeature ? "Cancel" : "Back"}</Button>
+                        </Link>
+                      )}
 
-                    {editFeature && (
-                      <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-                        Submit
-                      </Button>
-                    )}
-                  </div>
-                </Form>
+                      {editFeature && (
+                        <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+                          Submit
+                        </Button>
+                      )}
+                    </div>
+                  </Form>
+                </diiv>
               </Card.Body>
             </Card>
           </div>

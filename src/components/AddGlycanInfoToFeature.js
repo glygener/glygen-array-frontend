@@ -251,9 +251,9 @@ const AddGlycanInfoToFeature = (props) => {
     return (
       <>
         <div className="line-break-2">
-          <Form.Group as={Row} controlId="name">
-            <FormLabel label="Name" className={"required-asterik"} />
-            <Col md={4}>
+          <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Name" className="required-asterik" />
               <Form.Control
                 type="text"
                 name="name"
@@ -271,7 +271,7 @@ const AddGlycanInfoToFeature = (props) => {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="featureId">
+          <Form.Group as={Row} controlId="featureId" className="gg-align-center mb-3">
             <FormLabel label="Feature ID" className={"required-asterik"} />
             <Col md={4}>
               <Form.Control
@@ -303,7 +303,7 @@ const AddGlycanInfoToFeature = (props) => {
           <Form.Group className="mb-3" controlId={`${purityField}`}>
             <Form.Check
               type="checkbox"
-              label={"not reported"}
+              label="Not Reported"
               onChange={() => {
                 purityDetails[purityField] = !purityDetails[purityField];
                 props.setMetadata({ [props.metadata.purity]: purityDetails });
@@ -337,7 +337,7 @@ const AddGlycanInfoToFeature = (props) => {
     return (
       <>
         <div className="line-break-2">
-          <Form.Group as={Row} controlId="value">
+          <Form.Group as={Row} controlId="value" className="gg-align-center mb-3">
             <FormLabel label="Value" className="required-asterik" />
             <Col md={4}>
               <Form.Control
@@ -355,14 +355,14 @@ const AddGlycanInfoToFeature = (props) => {
             {getDisableCheck("valueNotRecorded", "validateValue")}
           </Form.Group>
 
-          <Form.Group as={Row} controlId={"method"}>
-            <FormLabel label={"Method"} className={"required-asterik"} />
+          <Form.Group as={Row} controlId="method" className="gg-align-center mb-3">
+            <FormLabel label="Method" className="required-asterik" />
             <Col md={4}>
               <Form.Control
-                name={"method"}
+                name="method"
                 as="textarea"
                 rows={4}
-                placeholder={"Enter Method"}
+                placeholder="Enter Method"
                 value={props.metadata.purity && props.metadata.purity.method}
                 isInvalid={props.metadata.validateMethod}
                 onChange={purityInfoChange}
@@ -374,14 +374,14 @@ const AddGlycanInfoToFeature = (props) => {
             {getDisableCheck("methodNotRecorded", "validateMethod")}
           </Form.Group>
 
-          <Form.Group as={Row} controlId="purityComment">
+          <Form.Group as={Row} controlId="purityComment" className="gg-align-center mb-3">
             <FormLabel label="Comment" />
             <Col md={4}>
               <Form.Control
                 as="textarea"
                 rows={4}
-                name={"comment"}
-                placeholder={"comment"}
+                name="comment"
+                placeholder="Comment"
                 value={props.metadata.purity && props.metadata.purity.comment}
                 onChange={purityInfoChange}
                 maxLength={2000}
@@ -496,18 +496,16 @@ const AddGlycanInfoToFeature = (props) => {
     return (
       <>
         <Form noValidate validated={minRangeInValid && maxRangeInValid}>
-          <Form.Group as={Row} controlId="range">
-            <FormLabel label="Range" className={"metadata-descriptor-title "} />
+          <Form.Group as={Row} controlId="range" className="gg-align-center mb-3">
+            <FormLabel label="Add Range" className="gg-blue" />
           </Form.Group>
-
-          <Form.Group as={Row}>
-            <FormLabel label="Min" />
-
-            <Col md={4}>
+          <Form.Group as={Row} className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Min" />
               <Form.Control
                 type="number"
-                name={"minRange"}
-                placeholder={"min range"}
+                name="minRange"
+                placeholder="Enter Min Range"
                 value={props.addGlycanInfoToFeature.minRangeSelected}
                 isInvalid={minRangeInValid}
                 onChange={(e) => {
@@ -536,14 +534,13 @@ const AddGlycanInfoToFeature = (props) => {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row}>
-            <FormLabel label="Max" />
-
-            <Col md={4}>
+          <Form.Group as={Row} className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Max" />
               <Form.Control
                 type="number"
-                name={"maxRange"}
-                placeholder={"max range"}
+                name="maxRange"
+                placeholder="Enter Max Range"
                 value={props.addGlycanInfoToFeature.maxRangeSelected}
                 isInvalid={maxRangeInValid}
                 onChange={(e) => {
@@ -716,15 +713,17 @@ const AddGlycanInfoToFeature = (props) => {
         {props.isMetadata ? (
           <>
             {getMetadataNameandId()}
-            <Row
-              style={{
-                marginTop: "1em",
-              }}
-            >
-              <FormLabel label="Purity" className={"metadata-descriptor-title "} />
+            <Row className="gg-align-center mb-3">
+              <Col xs={12} lg={9}>
+                <FormLabel label="Purity" />
+                <RadioGroup row name="molecule-type" onChange={purityInfoChange} value={props.metadata.purity}>
+                  {/* Specify */}
+                  <FormControlLabel value="specify" control={<BlueRadio />} label="Specify" />
+                  {/* Not Specified */}
+                  <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
+                </RadioGroup>
 
-              <Col md={{ span: 6 }} style={{ marginLeft: "30px" }}>
-                <Form.Check.Label>
+                {/* <Form.Check.Label>
                   <Form.Check.Input
                     type="radio"
                     value={"specify"}
@@ -732,9 +731,8 @@ const AddGlycanInfoToFeature = (props) => {
                     onChange={purityInfoChange}
                     checked={props.metadata.purity.purityNotSpecified === "specify"}
                   />
-                  {"Specify"}&nbsp;&nbsp;&nbsp;&nbsp;
+                  {"Specify"}
                 </Form.Check.Label>
-                &nbsp;&nbsp; &nbsp;&nbsp;
                 <Form.Check.Label>
                   <Form.Check.Input
                     type="radio"
@@ -744,10 +742,9 @@ const AddGlycanInfoToFeature = (props) => {
                     checked={props.metadata.purity.purityNotSpecified === "notSpecified"}
                   />
                   {"Not Specified"}
-                </Form.Check.Label>
+                </Form.Check.Label> */}
               </Col>
             </Row>
-            &nbsp; &nbsp;&nbsp;
             {props.metadata.purity.purityNotSpecified === "specify" && getPurityDescriptors()}
             {/* commercial, non commercial and notspecified selection options  */}
             {getSourceOptions(props.metadata.source)}
