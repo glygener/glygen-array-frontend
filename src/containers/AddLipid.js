@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { PublicationCard } from "../components/PublicationCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import { csvToArray, isValidURL, externalizeUrl, numberLengthCheck } from "../utils/commonUtils";
 import { Button, Step, StepLabel, Stepper, Typography } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
@@ -27,7 +27,7 @@ import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
 
-const AddLipid = (props) => {
+const AddLipid = props => {
   useEffect(props.authCheckAgent, []);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -42,6 +42,7 @@ const AddLipid = (props) => {
   const [disablePubChemFields, setDisablePubChemFields] = useState(false);
   const [newURL, setNewURL] = useState("");
   const [disableReset, setDisableReset] = useState(false);
+  const [disableResetSecondStep, setDisableResetSecondStep] = useState(false);
   const [newPubMedId, setNewPubMedId] = useState("");
   const [isWscalldone, setIsWscalldone] = useState(true);
   const history = useHistory();
@@ -63,7 +64,7 @@ const AddLipid = (props) => {
     urls: [],
     source: "notSpecified",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -79,15 +80,15 @@ const AddLipid = (props) => {
     canonicalSmiles: { label: "Canonical SMILES", type: "text" },
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comment", type: "textarea", length: 10000 },
+    comment: { label: "Comment", type: "textarea", length: 10000 }
   };
 
-  const sourceSelection = (e) => {
+  const sourceSelection = e => {
     const newValue = e.target.value;
     setLipid({ source: newValue });
   };
 
-  const sourceChange = (e) => {
+  const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -107,11 +108,13 @@ const AddLipid = (props) => {
       nonComm[name] = newValue;
       setLipid({ [lipid.nonCommercial]: nonComm });
     }
+
+    clearFieldsReset();
   };
 
   const steps = getSteps();
 
-  const handleNext = (e) => {
+  const handleNext = e => {
     setValidate(false);
     var stepIncrement = 1;
 
@@ -162,19 +165,19 @@ const AddLipid = (props) => {
     if (activeStep === 1) {
       if (!isWscalldone && lipid.inChiSequence !== "") {
         setShowErrorSummary(false);
-        setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
+        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
       } else if (lipid.pubChemId !== "" || lipid.inChiKey !== "") {
         return;
       } else {
         setShowErrorSummary(false);
-        setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
+        setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
       }
     } else {
-      setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
+      setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setDisableReset(true);
 
     const name = e.target.name;
@@ -191,6 +194,7 @@ const AddLipid = (props) => {
     }
 
     setLipid({ [name]: newValue });
+    clearFieldsReset();
   };
 
   const handleBack = () => {
@@ -205,10 +209,10 @@ const AddLipid = (props) => {
         stepDecrement += 1;
       }
     }
-    setActiveStep((prevActiveStep) => prevActiveStep - stepDecrement);
+    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
   };
 
-  const handleSelect = (e) => {
+  const handleSelect = e => {
     setDisableReset(true);
     setDisablePubChemFields(false);
 
@@ -257,7 +261,7 @@ const AddLipid = (props) => {
     );
 
     function populateLinkerDetailsSuccess(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         setLipid({
           type: responseJson.type,
           pubChemId: responseJson.pubChemId,
@@ -271,7 +275,7 @@ const AddLipid = (props) => {
           isomericSmiles: responseJson.isomericSmiles,
           canonicalSmiles: responseJson.smiles,
           mass: responseJson.mass,
-          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`],
+          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`]
         });
 
         setShowErrorSummary(false);
@@ -284,7 +288,7 @@ const AddLipid = (props) => {
     }
 
     function populateLinkerDetailsError(response) {
-      response.json().then((resp) => {
+      response.json().then(resp => {
         setIsWscalldone(true);
         setPageErrorsJson(resp);
         setShowErrorSummary(true);
@@ -295,7 +299,7 @@ const AddLipid = (props) => {
 
   function deletePublication(id, wscall) {
     const publications = lipid.publications;
-    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     setLipid({ publications: publications });
@@ -304,7 +308,7 @@ const AddLipid = (props) => {
   function addURL() {
     var listUrls = lipid.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find((i) => i === urlEntered);
+    const urlExists = listUrls.find(i => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -320,7 +324,7 @@ const AddLipid = (props) => {
     setNewURL("");
   }
 
-  const urlWidget = (enableDelete) => {
+  const urlWidget = enableDelete => {
     return (
       <>
         {lipid.urls && lipid.urls.length > 0
@@ -330,7 +334,7 @@ const AddLipid = (props) => {
                   <Col
                     md={10}
                     style={{
-                      wordBreak: "break-all",
+                      wordBreak: "break-all"
                     }}
                   >
                     <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
@@ -364,16 +368,48 @@ const AddLipid = (props) => {
     );
   };
 
-  function clearPubChemFields() {
-    setDisablePubChemFields(false);
-    setLipid({ ...lipidInitialState, ...{ selectedLipid: lipid.selectedLipid } });
-    setShowErrorSummary(false);
-    setPageErrorsJson({});
+  function clearFieldsReset() {
+    if (activeStep === 1) {
+      setDisableReset(true);
+    }
+    if (activeStep === 2) {
+      setDisableResetSecondStep(true);
+    }
   }
+
+  const clearFields = () => {
+    if (activeStep === 1) {
+      setDisablePubChemFields(false);
+      setLipid({ ...lipidInitialState, ...{ selectedLipid: lipid.selectedLipid } });
+      setShowErrorSummary(false);
+      setPageErrorsJson({});
+
+      setDisableReset(false);
+    }
+
+    if (activeStep === 2) {
+      setLipid({
+        ...lipidInitialState,
+        commercial: lipidInitialState.commercial,
+        nonCommercial: lipidInitialState.nonCommercial,
+        ...{
+          selectedLipid: lipid.selectedLipid,
+          inChiSequence: lipid.inChiSequence,
+          source: lipid.source,
+          uniProtId: lipid.uniProtId,
+          pdbIds: lipid.pdbIds
+        }
+      });
+
+      setNewURL("");
+      setNewPubMedId("");
+      setDisableResetSecondStep(false);
+    }
+  };
 
   function addPublication() {
     let publications = lipid.publications;
-    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
       wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
@@ -382,17 +418,18 @@ const AddLipid = (props) => {
     }
 
     function addPublicationSuccess(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         setShowErrorSummary(false);
         setLipid({
-          publications: lipid.publications.concat([responseJson]),
+          publications: lipid.publications.concat([responseJson])
         });
         setNewPubMedId("");
+        clearFieldsReset();
       });
     }
 
     function addPublicationError(response) {
-      response.text().then((resp) => {
+      response.text().then(resp => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -473,13 +510,17 @@ const AddLipid = (props) => {
           <Col xs={12} lg={9}>
             <FormLabel label="Monoisotopic Mass" />
             <Form.Control
-              type="number"
               name="mass"
               placeholder="Enter Monoisotopic Mass"
               value={lipid.mass}
-              onChange={handleChange}
+              onChange={e => {
+                const _value = e.target.value;
+                if (_value && !/^[0-9]+$/.test(_value)) {
+                  return;
+                }
+                handleChange(e);
+              }}
               disabled={disablePubChemFields}
-              onKeyDown={(e) => isValidNumber(e)}
               isInvalid={invalidMass}
             />
             <Feedback message={`Monoisotopic Mass is Invalid`} />
@@ -576,23 +617,18 @@ const AddLipid = (props) => {
                   <Col xs={12} lg={9}>
                     <FormLabel label="PubChem Compound CID" />
                     <Form.Control
-                      type="number"
                       name="pubChemId"
                       placeholder="Enter PubChem Compound CID"
                       value={lipid.pubChemId}
-                      onChange={handleChange}
-                      disabled={disablePubChemFields}
-                      onKeyDown={(e) => {
-                        if (e.key.length === 1) {
-                          if (e.key !== "v" && e.key !== "V") {
-                            isValidNumber(e);
-                          }
+                      onChange={e => {
+                        const _value = e.target.value;
+                        if (_value && !/^[0-9]+$/.test(_value)) {
+                          return;
                         }
+                        handleChange(e);
                       }}
+                      disabled={disablePubChemFields}
                       maxLength={12}
-                      onInput={(e) => {
-                        numberLengthCheck(e);
-                      }}
                     />
 
                     {lipid.pubChemId !== "" && !disablePubChemFields && (
@@ -613,7 +649,7 @@ const AddLipid = (props) => {
                   <Button
                     variant="contained"
                     disabled={!disableReset}
-                    onClick={clearPubChemFields}
+                    onClick={clearFields}
                     className="gg-btn-blue btn-to-lower"
                   >
                     Clear Fields
@@ -673,9 +709,10 @@ const AddLipid = (props) => {
                           name="urls"
                           placeholder="Enter URL and click +"
                           value={newURL}
-                          onChange={(e) => {
+                          onChange={e => {
                             setNewURL(e.target.value);
                             setInvalidUrls(false);
+                            clearFieldsReset();
                           }}
                           maxLength={2048}
                           isInvalid={invalidUrls}
@@ -705,26 +742,19 @@ const AddLipid = (props) => {
                     <Row>
                       <Col md={10}>
                         <Form.Control
-                          // type="number"
                           name="publication"
                           placeholder="Enter a Pubmed ID and click +"
                           value={newPubMedId}
-                          onChange={(e) => {
+                          onChange={e => {
                             const _value = e.target.value;
                             if (_value && !/^[0-9]+$/.test(_value)) {
                               return;
                             }
                             setNewPubMedId(_value);
                             numberLengthCheck(e);
+                            clearFieldsReset();
                           }}
-                          // onChange={(e) => setNewPubMedId(e.target.value)}
                           maxLength={100}
-                          // onKeyDown={(e) => {
-                          //   isValidNumber(e);
-                          // }}
-                          // onInput={(e) => {
-                          //   numberLengthCheck(e);
-                          // }}
                         />
                       </Col>
                       <Col md={1}>
@@ -770,6 +800,18 @@ const AddLipid = (props) => {
                     />
                   )
                 )}
+
+                {/* Bottom Reset / Clear fields  Button */}
+                <div className="text-center mb-2 mt-2">
+                  <Button
+                    variant="contained"
+                    disabled={!disableResetSecondStep}
+                    onClick={clearFields}
+                    className="gg-btn-blue btn-to-lower"
+                  >
+                    Clear Fields
+                  </Button>
+                </div>
               </Form>
             </>
           );
@@ -777,7 +819,7 @@ const AddLipid = (props) => {
       case 3:
         return (
           <Form>
-            {Object.keys(reviewFields).map((key) =>
+            {Object.keys(reviewFields).map(key =>
               (key === "pubChemId" ||
                 key === "inChiKey" ||
                 key === "inChiSequence" ||
@@ -825,7 +867,7 @@ const AddLipid = (props) => {
               <Form.Group as={Row} className="gg-align-center mb-3" controlId="publications">
                 <Col xs={12} lg={9}>
                   <FormLabel label="Publications" />
-                  {lipid.publications.map((pub) => {
+                  {lipid.publications.map(pub => {
                     return <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />;
                   })}
                 </Col>
@@ -861,7 +903,7 @@ const AddLipid = (props) => {
     let unknownLipid = lipid.selectedLipid === "Unknown" ? true : false;
 
     var source = {
-      type: "NOTRECORDED",
+      type: "NOTRECORDED"
     };
 
     if (lipid.source === "commercial") {
@@ -892,7 +934,7 @@ const AddLipid = (props) => {
       description: lipid.comment,
       publications: lipid.publications,
       urls: lipid.urls,
-      source: source,
+      source: source
     };
 
     wsCall(
@@ -901,12 +943,12 @@ const AddLipid = (props) => {
       { unknown: unknownLipid },
       true,
       lipidObj,
-      (response) => history.push("/lipids"),
+      response => history.push("/lipids"),
       addLipidFailure
     );
 
     function addLipidFailure(response) {
-      response.json().then((parsedJson) => {
+      response.json().then(parsedJson => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
       });
@@ -914,7 +956,7 @@ const AddLipid = (props) => {
     }
   }
 
-  const isStepSkipped = (step) => {
+  const isStepSkipped = step => {
     return lipid.selectedLipid === "Unknown" && step === 1 && (activeStep === 2 || activeStep === 3);
   };
 

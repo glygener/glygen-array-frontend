@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PublicationCard } from "../components/PublicationCard";
-import { csvToArray, isValidURL, externalizeUrl, isValidNumber, numberLengthCheck } from "../utils/commonUtils";
+import { csvToArray, isValidURL, externalizeUrl, numberLengthCheck } from "../utils/commonUtils";
 import { Button } from "@material-ui/core";
 import "../containers/AddLinker.css";
 import { Source } from "../components/Source";
@@ -38,6 +38,7 @@ const AddOtherMolecule = props => {
   const [newURL, setNewURL] = useState("");
   const [validatedCommNonComm, setValidatedCommNonComm] = useState(false);
   const [duplicateName, setDuplicateName] = useState(false);
+  const [disableReset, setDisableReset] = useState(false);
 
   const history = useHistory();
 
@@ -80,9 +81,12 @@ const AddOtherMolecule = props => {
       nonComm[name] = newValue;
       setOtherMolecule({ [otherMolecule.nonCommercial]: nonComm });
     }
+
+    setDisableReset(true);
   };
 
   const handleChange = e => {
+    setDisableReset(true);
     setValidate(false);
     const name = e.target.name;
     const newValue = e.target.value;
@@ -111,6 +115,7 @@ const AddOtherMolecule = props => {
           publications: otherMolecule.publications.concat([responseJson])
         });
         setNewPubMedId("");
+        setDisableReset(true);
       });
     }
 
@@ -192,6 +197,20 @@ const AddOtherMolecule = props => {
     );
   };
 
+  const clearFields = () => {
+    setOtherMolecule({
+      ...othermoleculeInitialState,
+      commercial: othermoleculeInitialState.commercial,
+      nonCommercial: othermoleculeInitialState.nonCommercial,
+      ...{
+        source: otherMolecule.source
+      }
+    });
+    setNewURL("");
+    setNewPubMedId("");
+    setDisableReset(false);
+  };
+
   function getStepContent() {
     return (
       <>
@@ -252,6 +271,7 @@ const AddOtherMolecule = props => {
                     onChange={e => {
                       setNewURL(e.target.value);
                       setInvalidUrls(false);
+                      setDisableReset(true);
                     }}
                     maxLength={2048}
                     isInvalid={invalidUrls}
@@ -289,6 +309,7 @@ const AddOtherMolecule = props => {
                       }
                       setNewPubMedId(_value);
                       numberLengthCheck(e);
+                      setDisableReset(true);
                     }}
                     maxLength={100}
                   />
@@ -335,8 +356,19 @@ const AddOtherMolecule = props => {
               />
             )
           )}
-          {/* <FormButton className="line-break-1" type="submit" label="Submit" />
-          <LinkButton to="/linkers" label="Cancel" /> */}
+
+          {/* Bottom Reset / Clear fields  Button */}
+          <div className="text-center mb-2 mt-2">
+            <Button
+              variant="contained"
+              disabled={!disableReset}
+              onClick={clearFields}
+              className="gg-btn-blue btn-to-lower"
+            >
+              Clear Fields
+            </Button>
+          </div>
+
           <div className="text-center mb-2">
             <Link to="/otherMolecules">
               <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>

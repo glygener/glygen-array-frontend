@@ -732,12 +732,19 @@ const Descriptors = props => {
               name={element.name}
               value={element.value || ""}
               placeholder={`e.g., ${element.example}`}
-              onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+              // onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+              onChange={e => {
+                if (element.namespace.name === "number") {
+                  const _value = e.target.value;
+                  if (_value && !/^[0-9]+$/.test(_value)) {
+                    return;
+                  }
+                }
+                props.handleChange(descriptorDetails, e, subGroupName, "");
+              }}
               required={element.mandatory ? true : false}
               disabled={descriptorDetails.isHide || element.disabled}
-              onKeyDown={e => {
-                return element.namespace.name === "number" ? isValidNumber(e) : "";
-              }}
+              // maxLength={element.namespace.name === "number" && 3}
             />
           ) : element.namespace.name === "selection" ? (
             <Form.Control
