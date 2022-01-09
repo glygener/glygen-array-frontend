@@ -97,34 +97,31 @@ const GlycanInFeatureInfoView = props => {
 
   return (
     <>
-      <Form.Group as={Row} controlId="id">
-        <FormLabel label="Id" />
-        <Col md={4}>
-          <Form.Control type="text" plaintext value={glycanDetails.glycan.id} />
+      <Form.Group as={Row} controlId="id" className="gg-align-center mb-3">
+        <Col xs={12} lg={9}>
+          <FormLabel label="ID" />
+          <Form.Control type="text" readOnly value={glycanDetails.glycan.id} />
         </Col>
       </Form.Group>
 
       {glycanDetails.glycan.name && (
-        <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" />
-          <Col md={4}>
-            <Form.Control type="text" plaintext value={glycanDetails.glycan.name} />
+        <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Name" />
+            <Form.Control type="text" readOnly value={glycanDetails.glycan.name} />
           </Col>
         </Form.Group>
       )}
 
-      <Form.Group as={Row} controlId="type">
-        <FormLabel label="Type" />
-        <Col md={4}>
-          <Form.Control type="text" plaintext value={glycanDetails.glycan.type} />
+      <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
+        <Col xs={12} lg={9}>
+          <FormLabel label="Type" />
+          <Form.Control type="text" readOnly value={glycanDetails.glycan.type} />
         </Col>
       </Form.Group>
 
       {(glycanDetails.glycan.imageURL || glycanDetails.glycan.cartoon) && (
-        <Form.Group as={Row} controlId="image">
-          <Col md={{ span: 3, offset: 2 }}>
-            <FormLabel label={""} />
-          </Col>
+        <Form.Group as={Row} controlId="image" className="gg-align-center">
           <Col md={4}>
             {glycanDetails.glycan.imageURL ? (
               <StructureImage imgUrl={glycanDetails.glycan.imageURL} />
@@ -136,22 +133,22 @@ const GlycanInFeatureInfoView = props => {
       )}
 
       {glycanDetails.glycan.mass && (
-        <Form.Group as={Row} controlId="mass">
-          <FormLabel label="Mass" />
-          <Col md={4}>
-            <Form.Control type="text" plaintext value={parseFloat(glycanDetails.glycan.mass).toFixed(2)} />
+        <Form.Group as={Row} controlId="mass" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Monoisotopic Mass" />
+            <Form.Control type="text" readOnly value={parseFloat(glycanDetails.glycan.mass).toFixed(2)} />
           </Col>
         </Form.Group>
       )}
 
       {(glycanDetails.glycan.comment || glycanDetails.glycan.description) && (
-        <Form.Group as={Row} controlId="comment">
-          <FormLabel label="Comment" />
-          <Col md={4} rows={5} className="sequence-label-div">
+        <Form.Group as={Row} controlId="comment" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Comment" />
             <Form.Control
               rows={4}
               as="textarea"
-              plaintext
+              readOnly
               value={
                 glycanDetails.glycan.comment
                   ? glycanDetails.glycan.comment
@@ -165,22 +162,16 @@ const GlycanInFeatureInfoView = props => {
       )}
 
       {glycanDetails.glycan.urls && glycanDetails.glycan.urls.length > 0 && (
-        <Form.Group as={Row} controlId="urls">
-          <FormLabel label="Urls" />
-          <Col md={4}>
+        <Form.Group as={Row} controlId="urls" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="URLs" />
             {glycanDetails.glycan.urls.map((url, index) => {
               return (
-                <li style={{ marginTop: "8px" }} key={index}>
-                  <Link
-                    style={{ fontSize: "0.9em" }}
-                    href={externalizeUrl(url)}
-                    target="_blank"
-                    rel="external noopener noreferrer"
-                  >
+                <div className="mb-2" key={index}>
+                  <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
                     {url}
-                  </Link>
-                  <br />
-                </li>
+                  </a>
+                </div>
               );
             })}
           </Col>
@@ -188,25 +179,26 @@ const GlycanInFeatureInfoView = props => {
       )}
 
       {glycanDetails.glycan.papers && glycanDetails.glycan.papers.length > 0 && (
-        <Form.Group as={Row} controlId="publications">
+        <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3 mb-0">
+           <Col xs={12} lg={9}>
           <FormLabel label="Publications" />
-          <Col md={4}>
-            {glycanDetails.glycan.papers.map(pub => {
+            {glycanDetails.glycan.papers.map((pub) => {
               return (
-                <li>
+                <div>
                   <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
-                </li>
+                </div>
               );
             })}
           </Col>
         </Form.Group>
       )}
 
-      <Form.Group as={Row} controlId="opensRing">
-        <FormLabel label="Anomer/Ring configuration" />
-        <Col md={4}>
+      <Form.Group as={Row} controlId="opensRing" className="gg-align-center mb-3">
+        <Col xs={12} lg={9}>
+          <FormLabel label="Anomer/Ring Configuration" />
           <Form.Control
             type="text"
+            readOnly
             disabled
             value={
               isNaN(glycanDetails.glycan.opensRing)
@@ -218,19 +210,19 @@ const GlycanInFeatureInfoView = props => {
       </Form.Group>
 
       {glycanDetails.glycan.equilibriumComment && (
-        <Form.Group as={Row} controlId="equilibriumComment">
-          <FormLabel label="Equilibrium Comment" />
-          <Col md={4}>
-            <Form.Control type="text" disabled value={glycanDetails.glycan.equilibriumComment} />
+        <Form.Group as={Row} controlId="equilibriumComment" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Equilibrium Comment" />
+            <Form.Control type="text" readOnly disabled value={glycanDetails.glycan.equilibriumComment} />
           </Col>
         </Form.Group>
       )}
 
       {glycanDetails.glycan.source.type === "NOTRECORDED" ? (
-        <Form.Group as={Row} controlId="value">
-          <FormLabel label="Source" />
-          <Col md={4}>
-            <Form.Control type="text" disabled value={"Not Recorded"} />
+        <Form.Group as={Row} controlId="value" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Source" />
+            <Form.Control type="text" readOnly disabled value={"Not Recorded"} />
           </Col>
         </Form.Group>
       ) : (
