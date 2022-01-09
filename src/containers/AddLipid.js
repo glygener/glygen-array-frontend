@@ -62,7 +62,7 @@ const AddLipid = props => {
     isomericSmiles: "",
     publications: [],
     urls: [],
-    source: "notSpecified",
+    source: "commercial",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
     nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
   };
@@ -778,8 +778,8 @@ const AddLipid = props => {
                       <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
                       {/* Non Commercial */}
                       <FormControlLabel value="nonCommercial" control={<BlueRadio />} label="Non Commercial" />
-                      {/* Not Specified */}
-                      <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
+                      {/* Not Recorded */}
+                      <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Recorded" />
                     </RadioGroup>
                   </Col>
                 </Row>

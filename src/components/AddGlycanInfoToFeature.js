@@ -410,7 +410,7 @@ const AddGlycanInfoToFeature = (props) => {
               <FormControlLabel value="commercial" control={<BlueRadio />} label="Commercial" />
               {/* Non Commercial */}
               <FormControlLabel value="nonCommercial" control={<BlueRadio />} label="Non Commercial" />
-              {/* Not Specified */}
+              {/* Not Recorded */}
               <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Recorded" />
             </RadioGroup>
           </Col>
@@ -719,8 +719,8 @@ const AddGlycanInfoToFeature = (props) => {
                 <RadioGroup row name="molecule-type" onChange={purityInfoChange} value={props.metadata.purity}>
                   {/* Specify */}
                   <FormControlLabel value="specify" control={<BlueRadio />} label="Specify" />
-                  {/* Not Specified */}
-                  <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Specified" />
+                  {/* Not Recorded */}
+                  <FormControlLabel value="notSpecified" control={<BlueRadio />} label="Not Recorded" />
                 </RadioGroup>
 
                 {/* <Form.Check.Label>

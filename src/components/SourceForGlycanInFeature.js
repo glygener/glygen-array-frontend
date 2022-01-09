@@ -18,13 +18,13 @@ const SourceForGlycanInFeature = props => {
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
     nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
     validatedCommNonComm: false,
-    source: "notSpecified",
+    source: "commercial",
     urls: [],
     papers: [],
     opensRing: 3,
     equilibriumComment: "",
     minRangeSelected: "",
-    maxRangeSelected: ""
+    maxRangeSelected: "",
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
