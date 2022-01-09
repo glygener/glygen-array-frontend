@@ -197,19 +197,70 @@ const AddFeature = (props) => {
     }
   }
   function getStepLabel(stepIndex) {
-    switch (stepIndex) {
-      case 0:
-        return "Select the Feature Type";
-      case 1:
-        return `Select Linker From the Table Below (${getMoleculeType(featureAddState.type)})`;
-      case 2:
-        return `Select Lipid From the Table Below (${getMoleculeType(featureAddState.type)})`;
-      case 3:
-        return `Select Glycan From the Table Below (${getMoleculeType(featureAddState.type)})`;
-      case 4:
-        return `Add Generic Information (${getMoleculeType(featureAddState.type)})`;
-      case 5:
-        return "Review and Add Molecule to Repository";
+    const moleculeType = getMoleculeType(featureAddState.type);
+
+    const generalStepLabels = [
+      "Select the Feature Type",
+      `Select Linker From the Table Below (${moleculeType})`,
+      `Select Glycan From the Table Below (${moleculeType})`,
+      `Add Generic Information (${moleculeType})`,
+      "Review and Add Molecule to Repository",
+    ];
+
+    const glycoLipidStepLabels = [
+      "Select the Feature Type",
+      `Select Linker From the Table Below (${moleculeType})`,
+      `Select Lipid From the Table Below (${moleculeType})`,
+      `Select Glycan From the Table Below (${moleculeType})`,
+      `Add Generic Information (${moleculeType})`,
+      "Review and Add Molecule to Repository",
+    ];
+
+    const glycoPeptideStepLabels = [
+      "Select the Feature Type",
+      `Select Linker From the Table Below (${moleculeType})`,
+      `Select Peptide From the Table Below (${moleculeType})`,
+      `Select Glycan From the Table Below (${moleculeType})`,
+      `Add Generic Information (${moleculeType})`,
+      "Review and Add Molecule to Repository",
+    ];
+
+    const glycoProteinStepLabels = [
+      "Select the Feature Type",
+      `Select Linker From the Table Below (${moleculeType})`,
+      `Select Protein From the Table Below (${moleculeType})`,
+      `Select Glycan From the Table Below (${moleculeType})`,
+      `Add Generic Information (${moleculeType})`,
+      "Review and Add Molecule to Repository",
+    ];
+
+    const glycoProteinLinkedGlycoPeptideStepLabels = [
+      "Select the Feature Type",
+      `Select Linker From the Table Below (${moleculeType})`,
+      `Select Protein From the Table Below (${moleculeType})`,
+      `Select Glycan From the Table Below (${moleculeType})`,
+      `Add Generic Information (${moleculeType})`,
+      "Review and Add Molecule to Repository",
+    ];
+
+    switch (featureAddState.type) {
+      case "LINKED_GLYCAN":
+      case "CONTROL":
+      case "NEGATIVE_CONTROL":
+      case "COMPOUND":
+      case "LANDING_LIGHT":
+        return generalStepLabels[stepIndex];
+
+      case "GLYCO_LIPID":
+        return glycoLipidStepLabels[stepIndex];
+
+      case "GLYCO_PEPTIDE":
+        return glycoPeptideStepLabels[stepIndex];
+      case "GLYCO_PROTEIN":
+        return glycoProteinStepLabels[stepIndex];
+      case "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE":
+        return glycoProteinLinkedGlycoPeptideStepLabels[stepIndex];
+
       default:
         return "Unknown stepIndex";
     }
