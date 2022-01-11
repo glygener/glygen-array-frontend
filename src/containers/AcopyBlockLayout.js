@@ -2,7 +2,6 @@ import React, { useReducer, useState, useEffect } from "react";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { Title } from "../components/FormControls";
 import "../containers/AddGlycan.css";
 import { GlygenGrid } from "../components/GlygenGrid";
 import { AddFeatureToBlock } from "../components/AddFeatureToBlock";
@@ -45,7 +44,7 @@ const AddBlockLayout = (props) => {
         getBlockLayoutFailure
       );
       setTitle("Update Block Layout");
-      setSubTitle("You can update the block layout information.");
+      setSubTitle("Please update the block layout information.");
     } else if (props.publicView) {
       setShowLoading(true);
       wsCall(
@@ -555,28 +554,19 @@ const AddBlockLayout = (props) => {
                   {/*loading addfeature and submit button */}
                   {loadGrid && (
                     <>
-                      <Row
-                        className="gg-align-center text-center"
-                        // </>style={{ width: "1200px" }}
-                      >
-                        <Col xs={12} md={12} lg={8} className="pb-3 pt-3" style={{ width: "800px" }}>
-                          <div
-                            className="grid-table"
-                            style={{
-                              height: gridParams.rows > 30 ? "600px" : "fit-content",
-                            }}
-                          >
-                            {createGrid()}
-                          </div>
-                          {/* <div
-                            style={{
-                              paddingBottom: "30px",
-                            }}
-                          ></div> */}
+                      <Row className="gg-align-center">
+                        <Col
+                          xs={12}
+                          lg={8}
+                          className="pb-3 pt-3"
+                          style={{
+                            height: gridParams.rows > 30 ? "800px" : "fit-content",
+                          }}
+                        >
+                          {createGrid()}
                         </Col>
 
-                        {/* <Col md={4} style={{ paddingBottom: "10%" }}> */}
-                        <Col xs={12} md={12} lg={3} className="ml-3 pl-3 pb-3 pt-3">
+                        <Col xs={12} lg={3} className="ml-3 pl-3 pb-3 pt-3">
                           <ColorNotation pageLabels={"blocklayout"} isUpdate={isUpdateBlock} />
 
                           {!isUpdateBlock && !props.publicView && (
@@ -598,9 +588,9 @@ const AddBlockLayout = (props) => {
                                   borderRadius: "8px",
                                 }}
                               >
-                                <div className={"summary-border"}>
-                                  <h4>Spot Metadata</h4>
-                                </div>
+                                {/* <div className={"summary-border"}> */}
+                                <h4>Spot Metadata</h4>
+                                {/* </div> */}
                                 {isUpdateBlock && spotFeatureCard.metadata ? (
                                   <MetadataKeyPairs metadata={spotFeatureCard.metadata} showLoading={false} />
                                 ) : (

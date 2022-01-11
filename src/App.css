@@ -182,9 +182,9 @@ input[type]:not(:-ms-input-placeholder) + label {
   /* margin-top: 2em; */
 }
 
-.line-break-2 {
+/* .line-break-2 {
   margin-bottom: 1em;
-}
+} */
 
 .hide-content {
   display: none !important;

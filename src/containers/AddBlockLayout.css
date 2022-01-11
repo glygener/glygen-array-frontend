@@ -12,9 +12,9 @@
   position: sticky !important;
 }
 
-.spot-title {
+/* .spot-title {
   font-size: 0rem;
-}
+} */
 
 .grid-table {
   overflow: auto;
@@ -25,7 +25,7 @@
   width: 90%;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 0.5em;
   height: 0.5em;
 }
@@ -37,4 +37,4 @@
 }
 ::-webkit-scrollbar-thumb {
   background: #888;
-}
+} */

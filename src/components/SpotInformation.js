@@ -96,7 +96,7 @@ SpotInformation.propTypes = {
   spotFeaturedCard: PropTypes.object
 };
 
-const SelectedSpotsBlock = props => {
+const SelectedSpotsBlock = (props) => {
   const { currentSpotsSelected } = props;
   var spotsSelected = [];
   return (
@@ -105,10 +105,10 @@ const SelectedSpotsBlock = props => {
         <Popover.Title as="h3" className="popover-header-custom">
           Spots Selected
         </Popover.Title>
-        <Popover.Content className="popover-body-custom">
+        <Popover.Content className="popover-body-custom5">
           {currentSpotsSelected.map((element, index) => {
             spotsSelected = currentSpotsSelected.filter(
-              spot => spot.selectedRow === element.selectedRow && spot.selectedCol === element.selectedCol
+              (spot) => spot.selectedRow === element.selectedRow && spot.selectedCol === element.selectedCol
             );
 
             if (element.selectedFeatures.length < 1) {
@@ -118,7 +118,7 @@ const SelectedSpotsBlock = props => {
                   style={{
                     backgroundColor: spotsSelected.length > 1 ? "darkgreen" : "white",
                     color: spotsSelected.length > 1 ? "white" : "black",
-                    fontSize: "medium"
+                    fontSize: "medium",
                   }}
                 >
                   ({element.selectedRow} , {element.selectedCol})
@@ -133,10 +133,10 @@ const SelectedSpotsBlock = props => {
   );
 };
 SelectedSpotsBlock.propTypes = {
-  currentSpotsSelected: PropTypes.array
+  currentSpotsSelected: PropTypes.array,
 };
 
-const SelectedSpotsSlide = props => {
+const SelectedSpotsSlide = (props) => {
   const { currentSpotsSelected } = props;
 
   const iterator_obj = currentSpotsSelected.entries();
@@ -160,7 +160,7 @@ const SelectedSpotsSlide = props => {
               style={{
                 backgroundColor: blockSelectedLength > 1 ? "darkgreen" : "white",
                 color: blockSelectedLength > 1 ? "white" : "black",
-                fontSize: "medium"
+                fontSize: "medium",
               }}
             >
               ({value.selectedRow} , {value.selectedCol})
@@ -177,7 +177,7 @@ const SelectedSpotsSlide = props => {
         <Popover.Title as="h3" className="popover-header-custom">
           Spots Selected
         </Popover.Title>
-        <Popover.Content className="popover-body-custom">{getSpots()}</Popover.Content>
+        <Popover.Content className="popover-body-custom5">{getSpots()}</Popover.Content>
       </Popover>
     </>
   );

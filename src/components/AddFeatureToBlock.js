@@ -64,7 +64,7 @@ const AddFeatureToBlock = props => {
 
   const steps = getSteps();
 
-  const handleNext = e => {
+  const handleNext = (e) => {
     setValidate(false);
     setPageErrorMessage();
     setShowErrorSummary(false);
@@ -88,16 +88,16 @@ const AddFeatureToBlock = props => {
       stepIncrement += 1;
     }
 
-    if (e.currentTarget.innerText === "FINISH") {
+    if (e.currentTarget.innerText === "SUBMIT") {
       //increment group counter
       ++groupCounter;
 
-      spotsSelected.forEach(spot => {
+      spotsSelected.forEach((spot) => {
         if (spot.selectedFeatures.length < 1) {
-          featuresSelected.featureSelected.forEach(feature => {
+          featuresSelected.featureSelected.forEach((feature) => {
             spot.selectedFeatures.push({
               feature: feature,
-              ratio: feature.ratio
+              ratio: feature.ratio,
             });
           });
           spot.selectedConcentration = spotConcentration;
@@ -114,7 +114,7 @@ const AddFeatureToBlock = props => {
       return;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
+    setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
   };
 
   const handleBack = () => {
@@ -127,13 +127,15 @@ const AddFeatureToBlock = props => {
       stepDecrement += 1;
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
+    setActiveStep((prevActiveStep) => prevActiveStep - stepDecrement);
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const id = e.currentTarget.id;
     const value = e.currentTarget.value;
-
+    if (value && !/^[0-9]+$/.test(value)) {
+      return;
+    }
     var rowUpdated = [...featuresSelected.featureSelected];
 
     rowUpdated[id].ratio = Number(value);
@@ -142,9 +144,9 @@ const AddFeatureToBlock = props => {
     setShowErrorSummary(false);
   };
 
-  const handleChecboxChange = row => {
+  const handleChecboxChange = (row) => {
     var selectedrow = [...rowSelected];
-    var deselectedRow = selectedrow.find(e => e.id === row.id);
+    var deselectedRow = selectedrow.find((e) => e.id === row.id);
 
     if (deselectedRow) {
       var deselectedRowIndex = selectedrow.indexOf(deselectedRow);
@@ -157,16 +159,16 @@ const AddFeatureToBlock = props => {
     setRowSelected(selectedrow);
   };
 
-  const checkSelection = row => {
+  const checkSelection = (row) => {
     if (featuresSelected && featuresSelected.featureSelected.length > 0) {
       rowSelected = [...featuresSelected.featureSelected];
     }
-    return rowSelected.find(e => e.id === row.id);
+    return rowSelected.find((e) => e.id === row.id);
   };
 
   const validFeatureRatios = () => {
     let sumOfRatios = 0;
-    featuresSelected.featureSelected.forEach(element => {
+    featuresSelected.featureSelected.forEach((element) => {
       if (element.ratio && element.ratio !== "" && element.ratio !== undefined) {
         sumOfRatios = sumOfRatios + element.ratio;
       }
@@ -178,7 +180,7 @@ const AddFeatureToBlock = props => {
     return true;
   };
 
-  const handleConcentration = e => {
+  const handleConcentration = (e) => {
     var name = e.currentTarget.name;
     var value = e.currentTarget.value;
 
@@ -188,21 +190,23 @@ const AddFeatureToBlock = props => {
   const getSelectedFeatures = () => {
     return (
       <>
-        <div className="feature-ratio-div">
+        <div className="pt-3">
           {featuresSelected.featureSelected.map((element, index) => {
             return (
               <div key={index}>
-                <Form.Group as={Row} controlId={index}>
-                  <FormLabel label={element.name} style={{ textAlign: "right" }} />
+                <Form.Group as={Row} controlId={index} className="gg-align-center mb-3">
+                  <Col md={2} style={{ textAlign: "right" }}>
+                    <FormLabel label={element.name} />
+                  </Col>
                   <Col md={2} style={{ textAlign: "left" }}>
                     <FormControl
-                      type="number"
+                      // type="number"
                       name="featureRatio"
                       onChange={handleChange}
                       value={element.ratio}
-                      onKeyDown={e => {
-                        isValidNumber(e);
-                      }}
+                      // onKeyDown={(e) => {
+                      //   isValidNumber(e);
+                      // }}
                     />
                   </Col>
                   <span className="percentage-symbol">%</span>
@@ -244,7 +248,7 @@ const AddFeatureToBlock = props => {
               name="concentration"
               value={spotConcentration.concentration}
               onChange={handleConcentration}
-              onKeyDown={e => {
+              onKeyDown={(e) => {
                 isValidNumber(e);
               }}
             />
@@ -256,7 +260,7 @@ const AddFeatureToBlock = props => {
               value={spotConcentration.unitlevel}
               onChange={handleConcentration}
               style={{
-                marginLeft: "-20px"
+                marginLeft: "-20px",
               }}
             >
               {unitLevelsSelection()}
@@ -284,7 +288,7 @@ const AddFeatureToBlock = props => {
     );
   };
 
-  const handleSpotSelectionChange = e => {
+  const handleSpotSelectionChange = (e) => {
     const id = e.target.value !== "" ? e.target.options[e.target.value].id : "";
     const name = e.target.name;
     const value = e.target.value;
@@ -354,7 +358,7 @@ const AddFeatureToBlock = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
             },
             {
               Header: "Ratio",
@@ -366,7 +370,7 @@ const AddFeatureToBlock = props => {
                       <span
                         key={index}
                         style={{
-                          marginLeft: "65px"
+                          marginLeft: "65px",
                         }}
                       >
                         {row.original.ratio}
@@ -377,7 +381,7 @@ const AddFeatureToBlock = props => {
                     )}
                   </Col>
                 </>
-              )
+              ),
             },
             {
               Header: "Linker",
@@ -386,7 +390,7 @@ const AddFeatureToBlock = props => {
                 <input
                   style={{
                     textAlign: "center",
-                    border: "none"
+                    border: "none",
                   }}
                   name="linker"
                   key={index}
@@ -395,26 +399,26 @@ const AddFeatureToBlock = props => {
                   }
                   disabled
                 />
-              )
+              ),
             },
             {
               Header: "Sequence",
               Cell: (row, index) => {
                 return row.original && row.original.glycans
-                  ? row.original.glycans.map(element => (
+                  ? row.original.glycans.map((element) => (
                       <StructureImage
                         key={index}
                         base64={element.glycan ? element.glycan.cartoon : element.cartoon}
                         style={{
                           maxWidth: "100px",
-                          overflow: "scroll"
+                          overflow: "scroll",
                         }}
                       />
                     ))
                   : "";
               },
-              minWidth: 250
-            }
+              minWidth: 250,
+            },
           ]}
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
@@ -429,7 +433,7 @@ const AddFeatureToBlock = props => {
     );
   };
 
-  const isStepSkipped = step => {
+  const isStepSkipped = (step) => {
     return featuresSelected.featureSelected && featuresSelected.featureSelected.length === 1
       ? step === 1 && activeStep === 2
       : false;
@@ -437,7 +441,7 @@ const AddFeatureToBlock = props => {
 
   return (
     <>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeStep} alternativeLabel className="steper-responsive text-center">
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
@@ -462,10 +466,10 @@ const AddFeatureToBlock = props => {
           <ErrorSummary show={showErrorSummary} form="glycans" errorMessage={pageErrorMessage}></ErrorSummary>
         )}
 
-        <div>
-          <Typography className={classes.instructions} component={"span"} variant={"body2"}>
-            {getStepContent(activeStep, validate)}
-          </Typography>
+        <div className="mt-4 mb-4">
+          {/* <Typography className={classes.instructions} component={"span"} variant={"body2"}> */}
+          <span>{getStepContent(activeStep, validate)}</span>
+          {/* </Typography> */}
         </div>
 
         {activeStep !== 3 && getNavigationButtons("button-div line-break-1 text-center")}
@@ -485,40 +489,44 @@ const AddFeatureToBlock = props => {
             {/* <div className="spots-selected-featurepage"> */}
             {/* </div> */}
             {/* <div className="glygen-table"> */}
-            <Row>
-              <Col md={8}>
-                <GlygenTable
-                  columns={[
-                    {
-                      Header: "Name",
-                      accessor: "name"
-                    },
-                    {
-                      Header: "Feature Id",
-                      accessor: "internalId"
-                    }
-                  ]}
-                  defaultPageSize={10}
-                  defaultSortColumn="id"
-                  showCommentsButton
-                  showDeleteButton
-                  showEditButton
-                  showCheckboxColumn
-                  commentsRefColumn="description"
-                  fetchWS="featurelist"
-                  deleteWS=""
-                  editUrl=""
-                  keyColumn="id"
-                  showRowsInfo
-                  infoRowsText="Features"
-                  checkboxChangeHandler={handleChecboxChange}
-                  defaultCheckboxHandler={checkSelection}
-                />
-              </Col>
-              <Col md={4} style={{ marginTop: "15%" }}>
-                <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
-              </Col>
+            {/* <Row> */}
+            <Row className="gg-align-center pt-4 pb-2 ">
+              <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
             </Row>
+
+            {/* <Col md={8}> */}
+            <GlygenTable
+              columns={[
+                {
+                  Header: "Name",
+                  accessor: "name",
+                },
+                {
+                  Header: "Feature ID",
+                  accessor: "internalId",
+                },
+              ]}
+              defaultPageSize={10}
+              defaultSortColumn="id"
+              showCommentsButton
+              showDeleteButton
+              showEditButton
+              showCheckboxColumn
+              commentsRefColumn="description"
+              fetchWS="featurelist"
+              deleteWS=""
+              editUrl=""
+              keyColumn="id"
+              showRowsInfo
+              infoRowsText="Features"
+              checkboxChangeHandler={handleChecboxChange}
+              defaultCheckboxHandler={checkSelection}
+            />
+            {/* </Col> */}
+            {/* <Col md={4} style={{ marginTop: "15%" }}>
+                <SelectedSpotsBlock currentSpotsSelected={spotsSelected} />
+              </Col> */}
+            {/* </Row> */}
             {/* </div> */}
           </>
         );
@@ -542,12 +550,12 @@ const AddFeatureToBlock = props => {
 
   function getNavigationButtons(className) {
     return (
-      <div className={className}>
-        <Button onClick={handleBack} className="stepper-button">
+      <div className="text-center mb-2">
+        <Button onClick={handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
           Back
         </Button>
-        <Button variant="contained" className="stepper-button" onClick={handleNext}>
-          {activeStep === steps.length - 1 ? "Finish" : "Next"}
+        <Button className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
+          {activeStep === steps.length - 1 ? "Submit" : "Next"}
         </Button>
       </div>
     );

@@ -292,6 +292,9 @@ const GlygenTable = (props) => {
   if (props.showCheckboxColumn) {
     columnsToRender["multiSelectColumn"] = {
       Header: "Select",
+      style: {
+        textAlign: "center",
+      },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
         // <input
@@ -307,9 +310,9 @@ const GlygenTable = (props) => {
               name="multiSelectColumn"
               defaultChecked={props.defaultCheckboxHandler(row.original)}
               onChange={props.checkboxChangeHandler.bind(this, row.original)}
-              size="large"
             />
           }
+          className="mb-0 pb-0 mt-0 pt-0"
         />
       ),
     };
