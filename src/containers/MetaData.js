@@ -8,7 +8,7 @@ import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import { Descriptors } from "../components/Descriptors";
 import "../containers/MetaData.css";
-import { useHistory, Prompt } from "react-router-dom";
+import { useHistory, Prompt, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Form, Row, Col, Button, Popover, OverlayTrigger, Alert } from "react-bootstrap";
 import { DragDropContext } from "react-beautiful-dnd";
@@ -649,7 +649,7 @@ const MetaData = props => {
     let maxCurrentOrder;
 
     if (isUpdate) {
-      selectedGroup = { ...sampleModel };
+      sampleModelUpdate = { ...sampleModel };
     } else {
       sampleModelUpdate = [...sampleModel];
 
@@ -674,7 +674,7 @@ const MetaData = props => {
       );
 
       if (isUpdate) {
-        setSampleModel(selectedGroup);
+        setSampleModel(sampleModelUpdate);
       } else {
         selectedDescriptorIndex = itemByType.descriptors.indexOf(selectedGroup);
         itemByType.descriptors[selectedDescriptorIndex] = selectedGroup;
@@ -737,9 +737,13 @@ const MetaData = props => {
     var itemByTypeIndex;
 
     if (isUpdate || props.isCopy) {
-      itemByType = { ...sampleModel };
+      sampleModelDelete = { ...sampleModel };
+
+      itemByType = sampleModelDelete.find(i => i.name === metaDataDetails.selectedtemplate);
+      itemByTypeIndex = sampleModelDelete.indexOf(itemByType);
     } else {
       sampleModelDelete = [...sampleModel];
+
       itemByType = sampleModelDelete.find(i => i.name === metaDataDetails.selectedtemplate);
       itemByTypeIndex = sampleModelDelete.indexOf(itemByType);
     }
@@ -2039,26 +2043,46 @@ const MetaData = props => {
             templateDescriptorGroup.id = "newlyAddedItems" + templateDescriptorGroup.id;
             templateDescriptorGroup.isNewlyAdded = true;
           }
-          group.descriptors.forEach(descriptor => {
-            const subdescriptor =
-              templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === descriptor.key.id);
-            if (subdescriptor && !subdescriptor.group) {
-              subdescriptor.value = descriptor.value;
-              subdescriptor.unit = descriptor.unit ? descriptor.unit : "";
+          group.descriptors.forEach(dbRetrivedDesc => {
+            const subDescriptor =
+              templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === dbRetrivedDesc.key.id);
+            const newlyAddedGroupsInDBRetrivedDesc =
+              templateDescriptorGroup && group.descriptors.filter(i => i.key.id === dbRetrivedDesc.key.id);
+
+            if (subDescriptor && !subDescriptor.group) {
+              subDescriptor.value = dbRetrivedDesc.value;
+              subDescriptor.unit = dbRetrivedDesc.unit ? dbRetrivedDesc.unit : "";
             } else {
-              if (subdescriptor && !subdescriptor.mandatory) {
-                subdescriptor.id = "newlyAddedItems" + subdescriptor.id;
-                subdescriptor.isNewlyAdded = true;
+              if (subDescriptor && !subDescriptor.mandatory && newlyAddedGroupsInDBRetrivedDesc.length < 2) {
+                subDescriptor.id = "newlyAddedItems" + subDescriptor.id;
+                subDescriptor.isNewlyAdded = true;
+              } else if (
+                newlyAddedGroupsInDBRetrivedDesc.length > 1 &&
+                subDescriptor.descriptors.filter(e => e.value && e.value.length > 0).length > 0
+              ) {
+                var newElement = JSON.parse(JSON.stringify(subDescriptor));
+                newElement.id = "newlyAddedItems" + dbRetrivedDesc.id;
+                newElement.isNewlyAdded = true;
+                newElement.order = subDescriptor.order;
+                newElement.group &&
+                  newElement.descriptors.forEach(ele => {
+                    let retrievedItem = dbRetrivedDesc.descriptors.find(j => j.name === ele.name);
+                    ele.id = "newlyAddedItems" + retrievedItem.id;
+                    ele.value = retrievedItem.value;
+                  });
+
+                templateDescriptorGroup.descriptors.push(newElement);
+              } else {
+                dbRetrivedDesc.group &&
+                  dbRetrivedDesc.descriptors.forEach(subGroupDesc => {
+                    if (subDescriptor && subDescriptor.group) {
+                      const subGrp =
+                        subDescriptor.group && subDescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
+                      subGrp.value = subGroupDesc.value;
+                      subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
+                    }
+                  });
               }
-              descriptor.group &&
-                descriptor.descriptors.forEach(subGroupDesc => {
-                  if (subdescriptor && subdescriptor.group) {
-                    const subGrp =
-                      subdescriptor.group && subdescriptor.descriptors.find(i => i.id === subGroupDesc.key.id);
-                    subGrp.value = subGroupDesc.value;
-                    subGrp.unit = subGroupDesc.unit ? subGroupDesc.unit : "";
-                  }
-                });
             }
           });
         }
@@ -2194,17 +2218,31 @@ const MetaData = props => {
   const getButtonsForImportedPage = () => {
     return (
       <>
-        <div className={"button-div line-break-2 text-center"}>
-          <Button onClick={props.handleBack} className={"button-test"}>
-            <span className={"MuiButton-label"}>Back</span>
-            <span className={"MuiTouchRipple-root"}></span>
-          </Button>
+        {props.type === "FEATURE" ? (
+          <div className="mt-4 mb-4 text-center">
+            <Link to="/features">
+              <Button className="gg-btn-outline mt-2 gg-mr-20 btn-to-lower">Back to Features</Button>
+            </Link>
+            <Button onClick={props.handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
+              Back
+            </Button>
+            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+              {"Next"}
+            </Button>
+          </div>
+        ) : (
+          <div className={"button-div line-break-2 text-center"}>
+            <Button onClick={props.handleBack} className={"button-test"}>
+              <span className={"MuiButton-label"}>Back</span>
+              <span className={"MuiTouchRipple-root"}></span>
+            </Button>
 
-          <Button type="submit" className={"button-test"}>
-            <span className={"MuiButton-label"}>Next</span>
-            <span className={"MuiTouchRipple-root"}></span>
-          </Button>
-        </div>
+            <Button type="submit" className={"button-test"}>
+              <span className={"MuiButton-label"}>Next</span>
+              <span className={"MuiTouchRipple-root"}></span>
+            </Button>
+          </div>
+        )}
       </>
     );
   };
