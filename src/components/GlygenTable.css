@@ -35,6 +35,7 @@
 .tbl-icon-btn {
   margin-right: 10px;
   margin-left: 10px;
+  cursor: pointer;
 }
 /* .edit-icon {
   color: var(--gg-blue);
@@ -59,8 +60,8 @@
 /* Table Sortiing */
 .MyReactTableClass .-sort-desc,
 .MyReactTableClass .-sort-asc {
-box-shadow: none !important;
-background-color: transparent !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
 }
 
 .MyReactTableClass .-sort-desc::before {
