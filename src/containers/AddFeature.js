@@ -373,6 +373,10 @@ const AddFeature = props => {
             count++;
           }
         }
+
+        if (featureAddState.rangeGlycans.length < 1 && featureAddState.glycans.length < 1) {
+          count++;
+        }
       } else if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
         if (featureAddState.rangeGlycoPeptides.length < 1) {
           let unfilledPositions = featureAddState.glycoPeptides.filter(i => !i.glycoPeptide);
@@ -507,14 +511,14 @@ const AddFeature = props => {
   };
 
   const handlePeptideSelect = peptide => {
-    setFeatureAddState({ peptide: peptide });
+    setFeatureAddState({ peptide: peptide, glycans: [] });
     setLinkerValidated(false);
 
     ScrollToTop();
   };
 
   const handleProteinSelect = protein => {
-    setFeatureAddState({ protein: protein });
+    setFeatureAddState({ protein: protein, glycans: [] });
     setLinkerValidated(false);
 
     if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
@@ -851,7 +855,7 @@ const AddFeature = props => {
 
       name: featureAddState.name,
       internalId: featureAddState.featureId,
-      linker: featureAddState.linker,
+      ...getLinker(featureAddState.linker),
       glycans: featureAddState.glycans.map(glycanObj => {
         let glycanDetails = {};
         let reducingEndConfiguration = {};
@@ -918,11 +922,11 @@ const AddFeature = props => {
       metadata: metadataToSubmit()
     };
 
-    function getLinker(linker) {
-      return featureAddState.linker && featureAddState.linker.id ? { linker: featureAddState.linker } : null;
-    }
-
     return featureObj;
+  }
+
+  function getLinker(linker) {
+    return featureAddState.linker && featureAddState.linker.id ? { linker: featureAddState.linker } : null;
   }
 
   function getGlycoData(featureObj, type) {
@@ -971,7 +975,7 @@ const AddFeature = props => {
       type: type,
       name: featureAddState.name,
       internalId: featureAddState.featureId,
-      linker: featureAddState.linker,
+      ...getLinker(featureAddState.linker),
       ...getKey(type),
       glycans: glycans,
       positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
@@ -1025,7 +1029,7 @@ const AddFeature = props => {
       type: type,
       name: featureAddState.name,
       internalId: featureAddState.featureId,
-      linker: featureAddState.linker,
+      ...getLinker(featureAddState.linker),
       protein: featureAddState.protein,
       peptides: glycoPep,
       positionMap: featureAddState.glycoPeptides.reduce((map, glycoPeptideObj) => {
@@ -1835,7 +1839,7 @@ const AddFeature = props => {
             displaySelectedGlycanInfoInFeature={displaySelectedGlycanInfoInFeature}
             maxRange={
               featureAddState.type === "GLYCO_PEPTIDE"
-                ? featureAddState.peptide.sequence.length
+                ? featureAddState.peptide.sequence && featureAddState.peptide.sequence.length
                 : featureAddState.type === "GLYCO_PROTEIN" ||
                   featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
                 ? featureAddState.protein.sequence.length
