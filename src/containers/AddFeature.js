@@ -368,8 +368,8 @@ const AddFeature = props => {
 
       if (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") {
         if (featureAddState.rangeGlycans.length < 1) {
-          let unfilledPositions = featureAddState.glycans.filter(i => !i.glycan);
-          if (unfilledPositions.length > 0) {
+          let filledPositions = featureAddState.glycans.filter(i => i.glycan);
+          if (filledPositions.length < 1) {
             count++;
           }
         }
@@ -379,8 +379,8 @@ const AddFeature = props => {
         }
       } else if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
         if (featureAddState.rangeGlycoPeptides.length < 1) {
-          let unfilledPositions = featureAddState.glycoPeptides.filter(i => !i.glycoPeptide);
-          if (unfilledPositions.length > 0) {
+          let filledPositions = featureAddState.glycoPeptides.filter(i => i.glycoPeptide);
+          if (filledPositions.length < 1) {
             count++;
           }
         }
