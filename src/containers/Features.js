@@ -47,7 +47,7 @@ const Features = (props) => {
                     Cell: ({ row }, index) => <div key={index}>{getToolTip(row.name ? row.name : row.id)}</div>,
                   },
                   {
-                    Header: "Feature Id",
+                    Header: "Feature ID",
                     accessor: "internalId",
                     Cell: ({ row }, index) => <div key={index}>{getToolTip(row.internalId)}</div>,
                   },
@@ -100,7 +100,6 @@ const Features = (props) => {
                                     <Link to={"/glycans/editGlycan/" + glycans.glycan.id} target="_blank">
                                       {getToolTip(glycans.glycan.name)}
                                     </Link>
-                                    <br />
                                   </div>
                                 )
                             )

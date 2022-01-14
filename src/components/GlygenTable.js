@@ -263,7 +263,7 @@ const GlygenTable = (props) => {
           )}
         </>
       ),
-      minWidth: 100,
+      minWidth: 170,
     };
   }
 
