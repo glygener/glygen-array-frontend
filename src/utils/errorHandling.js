@@ -42,9 +42,13 @@ const FORM_ERROR_MESSAGES = {
     NotValid_file: "The file is invalid. Please verify the file and format selection before re-uploading."
   },
   linkers: {
-    NotValid_pubchemid: "PubChem did not recognize that PubChem ID. Please try once more.",
     NotValid_pubmedid: "The PubMed ID you entered is invalid. Please try once more.",
+    NotValid_pubchemid: "PubChem did not recognize that Input. Please try once more.",
     Duplicate_pubchemid: "There is already a linker in your collection with that PubChem ID.",
+    NotValid_inChiKey: "PubChem did not recognize that Input. Please try once more.",
+    Duplicate_inChiKey: "There is already a linker in your collection with that InChiKey.",
+    NotValid_smiles: "PubChem did not recognize that Input. Please try once more.",
+    Duplicate_smiles: "There is already a linker in your collection with that InChiKey or Smiles.",
     Duplicate_name: "The name of another molecule in your collection is the same. Please use a different name.",
     Duplicate_sequence: "The sequence is repeated in another item in your collection. Please use a different sequence.",
     LengthExceeded_name: "The length of the name has been exceeded. Please choose a different name."
