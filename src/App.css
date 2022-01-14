@@ -463,9 +463,8 @@ input[type]:not(:-ms-input-placeholder) + label {
   align-items: center;
   /* text-align: right; */
 }
-.gg-btn-outline:disabled,
+
 .gg-btn-blue:disabled,
-.gg-btn-outline:disabled:hover,
 .gg-btn-blue:disabled:hover {
   /* cursor: no-drop !important; */
   /* color: #ffffff !important;
@@ -474,6 +473,16 @@ input[type]:not(:-ms-input-placeholder) + label {
   color: rgba(255, 255, 255) !important;
   background-color: rgba(47, 120, 183, 0.6) !important;
   border-color: rgba(47, 120, 183, 0.6) !important;
+  cursor: no-drop !important;
+}
+.gg-btn-outline:disabled,
+.gg-btn-outline:disabled:hover,
+.gg-btn-outline-reg:disabled,
+.gg-btn-outline-reg:disabled:hover {
+  color: rgba(47, 120, 183, 0.6) !important;
+  background-color: #fff !important;
+  border-color: rgba(47, 120, 183, 0.6) !important;
+  cursor: no-drop !important;
 }
 
 /* .no-drop {cursor: no-drop !important;} */
