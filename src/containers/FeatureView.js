@@ -16,7 +16,7 @@ import Container from "@material-ui/core/Container";
 import { GlycoPeptides } from "../components/GlycoPeptides";
 import { PageHeading } from "../components/FormControls";
 
-const FeatureView = (props) => {
+const FeatureView = props => {
   let { featureId, editFeature } = useParams();
   const history = useHistory();
   const [showLoading, setShowLoading] = useState(false);
@@ -42,7 +42,7 @@ const FeatureView = (props) => {
   }, [featureId]);
 
   function getFeatureSuccess(response) {
-    response.json().then((parsedJson) => {
+    response.json().then(parsedJson => {
       setFeatureDetails(parsedJson);
     });
     setShowLoading(false);
@@ -65,7 +65,7 @@ const FeatureView = (props) => {
     lipid: {},
     peptide: {},
     isLipidLinkedToSurfaceUsingLinker: "No",
-    metadata: {},
+    metadata: {}
   });
 
   const getMetadataTable = () => {
@@ -73,7 +73,7 @@ const FeatureView = (props) => {
     return (
       <>
         {metadata &&
-          metadata.descriptorGroups.map((desc) => {
+          metadata.descriptorGroups.map(desc => {
             return (
               <div className="pb-3 pt-3">
                 <Row className="gg-align-center">
@@ -86,7 +86,7 @@ const FeatureView = (props) => {
                       </thead>
                       <tbody>
                         {desc.descriptors &&
-                          desc.descriptors.map((subdesc) => {
+                          desc.descriptors.map(subdesc => {
                             let subGroup = [];
                             if (subdesc.group) {
                               //sub group title
@@ -94,7 +94,7 @@ const FeatureView = (props) => {
                                 <th style={{ backgroundColor: "white", fontWeight: "bold" }}>{subdesc.name}</th>
                               );
 
-                              subdesc.descriptors.forEach((ele) => {
+                              subdesc.descriptors.forEach(ele => {
                                 subGroup.push(
                                   <>
                                     <tr>
@@ -138,15 +138,15 @@ const FeatureView = (props) => {
             {
               Header: "Name",
               accessor: "name",
-              Cell: (row) =>
+              Cell: row =>
                 featureDetails.type === "LINKEDGLYCAN"
                   ? getToolTip(row.original.glycan.name)
-                  : getToolTip(row.original.glycans[0].glycan.name),
+                  : getToolTip(row.original.glycans[0].glycan.name)
             },
             {
               Header: "Structure Image",
               accessor: "cartoon",
-              Cell: (row) => (
+              Cell: row => (
                 <StructureImage
                   base64={
                     featureDetails.type === "LINKEDGLYCAN"
@@ -154,13 +154,13 @@ const FeatureView = (props) => {
                       : row.original.glycans[0].glycan.cartoon
                   }
                 />
-              ),
+              )
               // minWidth: 300,
             },
             {
               Header: "Source",
               accessor: "source.type",
-              Cell: (row) => {
+              Cell: row => {
                 return featureDetails.type === "LINKEDGLYCAN"
                   ? row.original.source &&
                       (row.original.source.type === "NOTRECORDED"
@@ -175,16 +175,16 @@ const FeatureView = (props) => {
                         : row.original.glycans[0].source.type === "COMMERCIAL"
                         ? getToolTip("Commercial")
                         : getToolTip("Non Commercial"));
-              },
+              }
             },
             {
               Header: "Reducing End State",
               accessor: "opensRing",
-              Cell: (row) => {
+              Cell: row => {
                 return featureDetails.type === "LINKEDGLYCAN"
                   ? getToolTip(row.original.reducingEndConfiguration.type)
                   : getToolTip(row.original.glycans[0].reducingEndConfiguration.type);
-              },
+              }
             },
             ...(featureDetails.type === "GLYCOLIPID"
               ? [
@@ -194,10 +194,10 @@ const FeatureView = (props) => {
                     Cell: (row, index) => {
                       return row.original.linker ? getToolTip(row.original.linker.name) : "";
                     },
-                    minWidth: 150,
-                  },
+                    minWidth: 150
+                  }
                 ]
-              : []),
+              : [])
           ]}
           defaultPageSize={10}
           data={featureDetails.glycans}
@@ -301,7 +301,7 @@ const FeatureView = (props) => {
       </Form.Group>
     );
 
-    props.metadata[0].descriptors.forEach((ele) => {
+    props.metadata[0].descriptors.forEach(ele => {
       if (ele.group) {
         if (ele.mandateGroup && ele.mandateGroup.defaultSelection) {
           groupData.push(
@@ -324,8 +324,8 @@ const FeatureView = (props) => {
         }
 
         if ((ele.mandateGroup && ele.mandateGroup.defaultSelection) || !ele.mandateGroup) {
-          ele.descriptors.forEach((subEle) => {
-            if (subEle.group && subEle.descriptors.filter((i) => i.value).length > 0) {
+          ele.descriptors.forEach(subEle => {
+            if (subEle.group && subEle.descriptors.filter(i => i.value).length > 0) {
               groupData.push(
                 <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
                   <Col xs={12} lg={9}>
@@ -334,7 +334,7 @@ const FeatureView = (props) => {
                   </Col>
                 </Form.Group>
               );
-              subEle.descriptors.forEach((lastSubEle) => {
+              subEle.descriptors.forEach(lastSubEle => {
                 if (lastSubEle.value) {
                   groupData.push(getField(lastSubEle.name, lastSubEle.value));
                 }
@@ -412,7 +412,7 @@ const FeatureView = (props) => {
     );
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     let name = e.target.name;
     let value = e.target.value;
 
@@ -420,7 +420,7 @@ const FeatureView = (props) => {
     setShowErrorSummary(false);
   };
 
-  const getMetadataNameandId = (page) => {
+  const getMetadataNameandId = page => {
     return (
       <>
         <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
@@ -485,17 +485,17 @@ const FeatureView = (props) => {
               {
                 Header: "Name",
                 accessor: "name",
-                Cell: (row) => {
+                Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
                     ? getToolTip(row.original.glycan.name)
                     : getToolTip(row.original.name);
-                },
+                }
               },
               {
                 Header: "Structure Image",
                 accessor: "cartoon",
-                Cell: (row) => {
+                Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0 ? (
                     <StructureImage base64={row.original.glycan.cartoon} />
@@ -503,12 +503,12 @@ const FeatureView = (props) => {
                     <StructureImage base64={row.value} />
                   );
                 },
-                minWidth: 300,
+                minWidth: 300
               },
               {
                 Header: "Source",
                 accessor: "source.type",
-                Cell: (row) => {
+                Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
                     ? row.original &&
@@ -526,27 +526,27 @@ const FeatureView = (props) => {
                           : row.original.source.type === "COMMERCIAL"
                           ? getToolTip("Commercial")
                           : getToolTip("Non Commercial"));
-                },
+                }
               },
               {
                 Header: "Reducing End State",
                 accessor: "opensRing",
-                Cell: (row) => {
+                Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
                     ? getToolTip(getReducingEndState(row.original.glycan.opensRing))
                     : getToolTip(getReducingEndState(row.value));
-                },
+                }
               },
               ...((props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
                 ? [
                     {
                       Header: "Range",
                       accessor: "range",
-                      Cell: (row) => {
+                      Cell: row => {
                         return getToolTip(`${row.original.min} - ${row.original.max}`);
-                      },
-                    },
+                      }
+                    }
                   ]
                 : []),
 
@@ -559,10 +559,10 @@ const FeatureView = (props) => {
                       Cell: (row, index) => {
                         return row.original.linker ? getToolTip(row.original.linker.name) : "";
                       },
-                      minWidth: 150,
-                    },
+                      minWidth: 150
+                    }
                   ]
-                : []),
+                : [])
             ]}
             data={
               (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
@@ -603,7 +603,7 @@ const FeatureView = (props) => {
     );
   };
 
-  const getGlycanInfoDisplay = (rowSelected) => {
+  const getGlycanInfoDisplay = rowSelected => {
     let glycan;
 
     if (props.positionDetails && props.positionDetails.isPosition) {
@@ -630,7 +630,7 @@ const FeatureView = (props) => {
           id: featureDetails.id,
           name: featureDetails.name,
           internalId: featureDetails.internalId,
-          type: featureDetails.type,
+          type: featureDetails.type
         },
         updateFeatureSuccess,
         updateFeatureFailure
@@ -643,7 +643,7 @@ const FeatureView = (props) => {
     }
 
     function updateFeatureFailure(response) {
-      response.json().then((parsedJson) => {
+      response.json().then(parsedJson => {
         setShowErrorSummary(true);
         setErrorMessage("");
         setPageErrorsJson(parsedJson);

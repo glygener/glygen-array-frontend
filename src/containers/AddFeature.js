@@ -1389,13 +1389,6 @@ const AddFeature = props => {
   const getCase3PeptideFeature = () => {
     return (
       <>
-        {/* <div className="text-center mt-4 mb-4">
-          <h3 className="gg-blue">List of Glycans in Positions</h3>
-          <h5>
-            Add glycan and linker for each available position below by clicking <strong>Pick Glycan</strong> and
-            providing the glycan details.
-          </h5>
-        </div> */}
         <PageHeading
           title="List of Glycans in Positions"
           subTitle="Add glycan and linker for each available position below and provide the glycan details."
@@ -1828,6 +1821,7 @@ const AddFeature = props => {
         showGlycanPicker ? (
           <SourceForGlycanInFeature
             showGlycanPicker={showGlycanPicker}
+            setShowErrorSummary={setShowErrorSummary}
             setShowGlycanPicker={setShowGlycanPicker}
             getGlycanTabletoSelect={getGlycanTabletoSelect}
             glycoProteinPepTideListStep4={glycoProteinPepTideListStep4}

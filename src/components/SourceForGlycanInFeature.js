@@ -24,7 +24,7 @@ const SourceForGlycanInFeature = props => {
     opensRing: 3,
     equilibriumComment: "",
     minRangeSelected: "",
-    maxRangeSelected: "",
+    maxRangeSelected: ""
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -209,6 +209,7 @@ const SourceForGlycanInFeature = props => {
 
     props.setShowGlycanPicker(false);
     props.setCurrentGlycanSelection();
+    props.setShowErrorSummary(false);
   }
 
   const handleBack = () => {
