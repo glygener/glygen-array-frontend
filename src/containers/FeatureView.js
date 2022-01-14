@@ -488,7 +488,7 @@ const FeatureView = props => {
                 Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
-                    ? getToolTip(row.original.glycan.name)
+                    ? getToolTip(row.original.glycan && row.original.glycan.name)
                     : getToolTip(row.original.name);
                 }
               },
@@ -498,7 +498,7 @@ const FeatureView = props => {
                 Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0 ? (
-                    <StructureImage base64={row.original.glycan.cartoon} />
+                    <StructureImage base64={row.original.glycan && row.original.glycan.cartoon} />
                   ) : (
                     <StructureImage base64={row.value} />
                   );
@@ -534,7 +534,7 @@ const FeatureView = props => {
                 Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0
-                    ? getToolTip(getReducingEndState(row.original.glycan.opensRing))
+                    ? getToolTip(getReducingEndState(row.original.glycan && row.original.glycan.opensRing))
                     : getToolTip(getReducingEndState(row.value));
                 }
               },
@@ -557,7 +557,7 @@ const FeatureView = props => {
                       Header: "Linker",
                       accessor: "linker",
                       Cell: (row, index) => {
-                        return row.original.linker ? getToolTip(row.original.linker.name) : "";
+                        return row.original.linker ? getToolTip(row.original.linker && row.original.linker.name) : "";
                       },
                       minWidth: 150
                     }
