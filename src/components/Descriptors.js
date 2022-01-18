@@ -6,7 +6,7 @@ import { HelpToolTip } from "./tooltip/HelpToolTip";
 import { Form, Col, Row, Accordion, Card, Image, Alert } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { ScrollTo } from "react-scroll-to";
-import { ContextAwareToggle, isValidNumber } from "../utils/commonUtils";
+import { ContextAwareToggle } from "../utils/commonUtils";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import { Droppable, Draggable } from "react-beautiful-dnd";
@@ -63,8 +63,11 @@ const Descriptors = props => {
     const accorSimpleDesc = descMetaData.filter(i => i.group !== true);
 
     //General Descriptors
-    if (accorSimpleDesc.length > 0) {
-      descriptorForm.push(getSimpleDescriptors(accorSimpleDesc));
+
+    if (metaType !== "Feature") {
+      if (accorSimpleDesc.length > 0) {
+        descriptorForm.push(getSimpleDescriptors(accorSimpleDesc));
+      }
     }
 
     //sorting for assay to display in order or regular metadatas
@@ -98,9 +101,78 @@ const Descriptors = props => {
 
     descriptorForm.push(accorGroup);
 
+    //General Descriptors for FeatureMetadata
+    if (metaType === "Feature") {
+      if (accorSimpleDesc.length > 0) {
+        descriptorForm.push(loadSimpleDesc(accorSimpleDesc));
+      }
+    }
+
     setLoadDataOnFirstNextInUpdate && setLoadDataOnFirstNextInUpdate(true);
 
     return descriptorForm;
+  };
+
+  const getSimpleDescriptors = generalDescriptors => {
+    let keyIndex = 0;
+    const cardHeader = (
+      <Card.Header style={{ height: "65px" }}>
+        <Row>
+          <Col md={6} className="font-awesome-color " style={{ textAlign: "left" }}>
+            <span className="descriptor-header"> {" " + simpleDescriptorTitle}</span>
+          </Col>
+          <Col md={6} style={{ textAlign: "right" }}>
+            <ContextAwareToggle eventKey={isAllExpanded ? generalDescriptors.id : 0} classname={"font-awesome-color"} />
+          </Col>
+        </Row>
+      </Card.Header>
+    );
+
+    const cardBody = <Card.Body>{loadSimpleDesc(generalDescriptors)}</Card.Body>;
+
+    return (
+      <div key={keyIndex++} style={{ padding: "10px" }}>
+        <Accordion defaultActiveKey={isAllExpanded ? generalDescriptors.id : 0}>
+          <Card>
+            {cardHeader}
+            <Accordion.Collapse eventKey={isAllExpanded ? generalDescriptors.id : 0}>{cardBody}</Accordion.Collapse>
+          </Card>
+        </Accordion>
+      </div>
+    );
+  };
+
+  const loadSimpleDesc = generalDescriptors => {
+    return generalDescriptors.map((element, index) => {
+      return !element.mandateGroup ? (
+        <div
+          style={{
+            paddingLeft: "10px",
+            backgroundColor: element.id.startsWith("newly") ? "#f3f3f3" : ""
+          }}
+          key={index + element.id}
+        >
+          {getCardBody(element, 0, generalDescriptors, false)}
+          {getNewField(element, element, "")}
+        </div>
+      ) : (
+        element.mandateGroup &&
+          (element.mandateGroup.defaultSelection ||
+            element.mandateGroup.notApplicable ||
+            element.mandateGroup.notRecorded) && (
+            <div
+              style={{
+                // paddingLeft: "10px",
+                backgroundColor: "#f3f3f3",
+                borderRadius: "0.4em"
+              }}
+              key={index + element.id}
+            >
+              {getMandateGroupsforSimpleDescriptors(element, index)}
+            </div>
+          )
+      );
+    });
   };
 
   const loadDescGroups = (descMetaData, isUpdate, isCopySample) => {
@@ -282,7 +354,7 @@ const Descriptors = props => {
     );
   };
 
-  const getCardBody = (descriptor, index, groupElement, isSubGroup) => {
+  const getCardBody = (descriptor, index, groupElement, isSubGroup, duplicateGroup) => {
     let lastAddedIsNewMandatory = false;
     let lastAddedIsNewMandatoryCount;
     let listofGroupElementItems;
@@ -362,68 +434,6 @@ const Descriptors = props => {
     );
   };
 
-  const getSimpleDescriptors = generalDescriptors => {
-    let keyIndex = 0;
-    const cardHeader = (
-      <Card.Header style={{ height: "65px" }}>
-        <Row>
-          <Col md={6} className="font-awesome-color " style={{ textAlign: "left" }}>
-            <span className="descriptor-header"> {" " + simpleDescriptorTitle}</span>
-          </Col>
-          <Col md={6} style={{ textAlign: "right" }}>
-            <ContextAwareToggle eventKey={isAllExpanded ? generalDescriptors.id : 0} classname={"font-awesome-color"} />
-          </Col>
-        </Row>
-      </Card.Header>
-    );
-
-    const cardBody = (
-      <Card.Body>
-        {generalDescriptors.map((element, index) => {
-          return !element.mandateGroup ? (
-            <div
-              style={{
-                paddingLeft: "10px",
-                backgroundColor: element.id.startsWith("newly") ? "#f3f3f3" : ""
-              }}
-              key={index + element.id}
-            >
-              {getCardBody(element, 0, generalDescriptors, false)}
-              {getNewField(element, element, "")}
-            </div>
-          ) : (
-            element.mandateGroup &&
-              (element.mandateGroup.defaultSelection ||
-                element.mandateGroup.notApplicable ||
-                element.mandateGroup.notRecorded) && (
-                <div
-                  style={{
-                    // paddingLeft: "10px",
-                    backgroundColor: "#f3f3f3",
-                    borderRadius: "0.4em"
-                  }}
-                  key={index + element.id}
-                >
-                  {getMandateGroupsforSimpleDescriptors(element, index)}
-                </div>
-              )
-          );
-        })}
-      </Card.Body>
-    );
-
-    return (
-      <div key={keyIndex++} style={{ padding: "10px" }}>
-        <Accordion defaultActiveKey={isAllExpanded ? generalDescriptors.id : 0}>
-          <Card>
-            {cardHeader}
-            <Accordion.Collapse eventKey={isAllExpanded ? generalDescriptors.id : 0}>{cardBody}</Accordion.Collapse>
-          </Card>
-        </Accordion>
-      </div>
-    );
-  };
-
   const getMandateGroupsforSimpleDescriptors = (element, index) => {
     let listTraversed = descMetaData.slice(0, index);
 
@@ -476,7 +486,9 @@ const Descriptors = props => {
                 )}
 
                 <div key={descriptor.id.toString()}>
-                  {getCardBody(descriptor, index, groupElement, true)}
+                  {groupElement.isNewlyAdded
+                    ? getCardBody(descriptor, index, groupElement, true, true)
+                    : getCardBody(descriptor, index, groupElement, true, false)}
 
                   {!descriptor.id.startsWith("newly") && (
                     /* Creating Sub group Table */
@@ -523,12 +535,6 @@ const Descriptors = props => {
                       </tbody>
                     </table>
                   )}
-
-                  {/* {descriptor.descriptors.map(field => {
-                  return getNewField(field, groupElement, descriptor.id);
-                })} */}
-
-                  {/* {descriptor.id.startsWith("newly") ? <p> &nbsp;</p> : <p> &nbsp;&nbsp;</p>} */}
                 </div>
               </>
             );
@@ -581,10 +587,6 @@ const Descriptors = props => {
           </span>
 
           <div style={{ float: "right" }} key={groupElement.id}>
-            {/* {groupElement.isNewlyAddedNonMandatory && addSubGroupValidation(groupElement) && (
-              <span>{descriptorSubGroup(groupElement)}</span>
-            )} */}
-
             {groupElement.maxOccurrence > 1 && displayPlusIcon(groupElement, descriptorsByMetaType.descriptors, false) && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
@@ -617,27 +619,13 @@ const Descriptors = props => {
         }}
         key={index}
       >
-        <Accordion
-          // {...(isAllExpanded && metaType !== "Assay"
-          //   ? `defaultActiveKey = ${isAllExpanded} ? 0 : ${groupElement.id}`
-          //   : null)}
-          defaultActiveKey={isAllExpanded ? groupElement.id : 0}
-        >
-          {card}
-        </Accordion>
+        <Accordion defaultActiveKey={isAllExpanded ? groupElement.id : 0}>{card}</Accordion>
       </div>
     ) : (
       <Draggable key={groupElement.id} draggableId={groupElement.id} index={index}>
         {provided => (
           <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-            <Accordion
-              style={{ padding: "10px", paddingBottom: "20px" }}
-              // style={{ ...provided.draggableProps.style }}
-              // className="alert alert-primary"
-              // defaultActiveKey={isAllExpanded ? 0 : groupElement.id}
-            >
-              {card}
-            </Accordion>
+            <Accordion style={{ padding: "10px", paddingBottom: "20px" }}>{card}</Accordion>
           </div>
         )}
       </Draggable>
@@ -712,7 +700,7 @@ const Descriptors = props => {
                 as="textarea"
                 name={element.name}
                 value={element.value || ""}
-                placeholder={`e.g., ${element.example}`}
+                placeholder={element.example && `e.g., ${element.example}`}
                 onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
                 required={element.mandatory ? true : false}
                 maxLength={2000}
