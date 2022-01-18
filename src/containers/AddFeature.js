@@ -877,7 +877,7 @@ const AddFeature = props => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.uri) {
           map[glycanObj.position] = glycanObj.glycan.uri;
         } else if (glycanObj && glycanObj.uri) {
-          map[glycanObj.position] = glycanObj.glycan.uri;
+          map[glycanObj.position] = glycanObj.uri;
         }
         return map;
       }, {}),
@@ -918,7 +918,7 @@ const AddFeature = props => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.uri) {
           map[glycanObj.position] = glycanObj.glycan.uri;
         } else if (glycanObj && glycanObj.uri) {
-          map[glycanObj.position] = glycanObj.glycan.uri;
+          map[glycanObj.position] = glycanObj.uri;
         }
         return map;
       }, {}),
@@ -990,7 +990,7 @@ const AddFeature = props => {
         if (glycanObj && glycanObj.glycan && glycanObj.glycan.uri) {
           map[glycanObj.position] = glycanObj.glycan.uri;
         } else if (glycanObj && glycanObj.uri) {
-          map[glycanObj.position] = glycanObj.glycan.uri;
+          map[glycanObj.position] = glycanObj.uri;
         }
         return map;
       }, {}),
