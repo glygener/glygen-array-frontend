@@ -308,7 +308,7 @@ const EditLinker = props => {
                   <Form.Group as={Row} controlId="imageURL" className="gg-align-center mb-3">
                     <Col xs={12} lg={9}>
                       <FormLabel label={"Image"} />
-                      <StructureImage imgUrl={linkerDetails.imageURL} />,
+                      <StructureImage imgUrl={linkerDetails.imageURL} />
                     </Col>
                   </Form.Group>
                 )}
