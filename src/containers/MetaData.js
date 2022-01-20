@@ -12,6 +12,7 @@ import { useHistory, Prompt, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Form, Row, Col, Button, Popover, OverlayTrigger, Alert } from "react-bootstrap";
 import { DragDropContext } from "react-beautiful-dnd";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const MetaData = props => {
   // useEffect(props.authCheckAgent, []);
@@ -434,14 +435,18 @@ const MetaData = props => {
     );
 
     return (
-      <OverlayTrigger rootClose trigger="click" placement="left" overlay={popover}>
-        <FontAwesomeIcon
-          className={"add-subGroup-button"}
-          icon={["fas", "cog"]}
-          size="xs"
-          title="Add Sub Group Descriptors"
-        />
-      </OverlayTrigger>
+      <LineTooltip text="Add Sub Group Descriptors">
+        <Link to={"cog"}>
+          <OverlayTrigger rootClose trigger="click" placement="left" overlay={popover}>
+            <FontAwesomeIcon
+              className={"add-subGroup-button"}
+              icon={["fas", "cog"]}
+              size="xs"
+              title={"Add Sub Group Descriptors"}
+            />
+          </OverlayTrigger>
+        </Link>
+      </LineTooltip>
     );
   };
 
@@ -451,23 +456,27 @@ const MetaData = props => {
         id="popover-basic"
         style={{
           width: "30%",
-          paddingTop: 0
+          paddingTop: 0,
+          border: "none"
         }}
       >
-        <Popover.Title as="h3">Descriptors</Popover.Title>
         <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
       </Popover>
     );
 
     return (
-      <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
-        <FontAwesomeIcon
-          className={"add-subGroup-button"}
-          icon={["fas", "cog"]}
-          size="xs"
-          title="Add Sub Group Descriptors"
-        />
-      </OverlayTrigger>
+      <LineTooltip text="Add Descriptors">
+        <Link to={"cog"}>
+          <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
+            <FontAwesomeIcon
+              className={"add-subGroup-button"}
+              icon={["fas", "cog"]}
+              size="xs"
+              title={"Add Descriptors"}
+            />
+          </OverlayTrigger>
+        </Link>
+      </LineTooltip>
     );
   };
 
@@ -520,6 +529,8 @@ const MetaData = props => {
 
     if (isUpdate || props.isCopy) {
       sampleType = { ...sampleModel };
+    } else if (props.importedInAPage) {
+      sampleType = sampleModel[0];
     } else {
       sampleType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
     }
@@ -777,9 +788,15 @@ const MetaData = props => {
             var dg = d.descriptors;
             dg.forEach(sgd => {
               sgd.value = undefined;
+              sgd.notApplicable = false;
+              sgd.notRecorded = false;
+              sgd.disabled = false;
             });
           } else if (!d.group) {
             d.value = undefined;
+            d.notApplicable = false;
+            d.notRecorded = false;
+            d.disabled = false;
           }
         });
       }
@@ -801,9 +818,15 @@ const MetaData = props => {
           var dg = d.descriptors;
           dg.forEach(sgd => {
             sgd.value = undefined;
+            sgd.notApplicable = false;
+            sgd.notRecorded = false;
+            sgd.disabled = false;
           });
         } else {
           d.value = undefined;
+          d.notApplicable = false;
+          d.notRecorded = false;
+          d.disabled = false;
         }
       });
     }
@@ -977,7 +1000,6 @@ const MetaData = props => {
                 {getAddons()}
               </Col>
             </Form.Group>
-
             {(sampleModel && sampleModel.length > 1) ||
             (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
               <Form.Group
@@ -1018,6 +1040,8 @@ const MetaData = props => {
                 />
                 <Feedback message="Name is required" />
               </Col>
+
+              <Col xs={3}>{getAddons()}</Col>
             </Form.Group>
 
             <Form.Group as={Row} className="gg-align-center mb-3" controlId="featureId">
@@ -1038,6 +1062,7 @@ const MetaData = props => {
                 />
                 <Feedback message="Feature Id is required" />
               </Col>
+              <Col xs={3} />
             </Form.Group>
           </>
         )}
@@ -2295,7 +2320,17 @@ const MetaData = props => {
       {mandateGroupLimitDeceed.size > 0 &&
         getXorList(mandateGroupLimitDeceed, "Enter Atleast 1 Descriptor from below group")}
 
-      {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
+      {enablePrompt && (
+        <Prompt
+          message={(location, action) => {
+            if (location.pathname.includes("cog")) {
+              return false;
+            } else {
+              return "If you leave you will lose this data!";
+            }
+          }}
+        />
+      )}
       <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
         {!loadDescriptors && !props.importedInAPage && (
           <>

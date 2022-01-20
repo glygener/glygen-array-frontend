@@ -1,13 +1,13 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { wsCall } from "../utils/wsUtils";
 import { useParams } from "react-router-dom";
-import { Row, Col, Form, Table, Button, Card } from "react-bootstrap";
+import { Row, Col, Form, Table, Button, Card, Modal } from "react-bootstrap";
 import { FormLabel, Feedback } from "../components/FormControls";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
-import { getToolTip } from "../utils/commonUtils";
+import { getToolTip, addCommas } from "../utils/commonUtils";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 import { useHistory, Link } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -15,11 +15,16 @@ import { Loading } from "../components/Loading";
 import Container from "@material-ui/core/Container";
 import { GlycoPeptides } from "../components/GlycoPeptides";
 import { PageHeading } from "../components/FormControls";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "../components/FeatureView.css";
+import { ViewSourceInfo } from "../components/ViewSourceInfo";
 
 const FeatureView = props => {
   let { featureId, editFeature } = useParams();
   const history = useHistory();
   const [showLoading, setShowLoading] = useState(false);
+  const [showLinkerView, setShowLinkerView] = useState(false);
 
   const [validated, setValidated] = useState(false);
   const [glycanViewInfo, setGlycanViewInfo] = useState(false);
@@ -224,15 +229,121 @@ const FeatureView = props => {
   };
 
   const getLinker = () => {
+    let linkerDisplay = [];
+
+    linkerDisplay.push(
+      <>
+        <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+          <Col xs={12} lg={9}>
+            <Row style={{ marginLeft: "0px" }}>
+              <h4 className="gg-blue" style={{ marginRight: "50px" }}>
+                {"Linker"}
+              </h4>
+              <LineTooltip text="Linker Details">
+                <div className={"view-more-btn-icon"} onClick={() => setShowLinkerView(true)}>
+                  <FontAwesomeIcon
+                    key={"linkerView"}
+                    icon={["far", "eye"]}
+                    alt="View icon"
+                    size="lg"
+                    color="#45818e"
+                    className="tbl-icon-btn"
+                    onClick={() => setShowLinkerView(true)}
+                  />
+                  {"View More"}
+                </div>
+              </LineTooltip>
+            </Row>
+          </Col>
+        </Form.Group>
+      </>
+    );
+
     if (props.linker) {
       if ((props.type !== "LINKED_GLYCAN" && props.linkerSeletion !== "No") || props.type === "LINKED_GLYCAN") {
-        return <> {displayDetails(props.linker, "case4", "Linker") && linkerDetails(props.linker, "case4")}</>;
+        linkerDisplay.push(linkerDetails(props.linker, "case4"));
+        return linkerDisplay;
       }
     } else if (featureDetails.linker) {
-      return (
-        <> {displayDetails(featureDetails.linker, "view", "Linker") && linkerDetails(featureDetails.linker, "view")}</>
-      );
+      linkerDisplay.push(linkerDetails(featureDetails.linker, "view"));
+      return linkerDisplay;
     }
+  };
+
+  const getLinkerDetailsModal = () => {
+    return (
+      <>
+        <Modal
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          show={showLinkerView}
+          onHide={() => setShowLinkerView(false)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter" className="gg-blue">
+              Linker Information
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {displayDetails(props.linker, "case4", "Linker")}
+            {linkerDetailsOnModal(props.linker, "case4")}
+          </Modal.Body>
+        </Modal>
+      </>
+    );
+  };
+
+  const linkerDetailsOnModal = (linker, page) => {
+    return (
+      <>
+        {linker.mass && (
+          <Form.Group as={Row} controlId="mass" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label="Monoisotopic Mass" />
+              <Form.Control
+                type="text"
+                disabled={page === "case4"}
+                readOnly={page === "view"}
+                value={addCommas(parseInt(linker.mass).toFixed(2)) + " Da"}
+              />
+            </Col>
+          </Form.Group>
+        )}
+
+        {linker.iupacName && (
+          <Form.Group as={Row} controlId="iupacName" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label={"IUPAC Name"} />
+              <Form.Control
+                type="text"
+                value={linker.iupacName}
+                disabled={page === "case4"}
+                readOnly={page === "view"}
+              />
+            </Col>
+          </Form.Group>
+        )}
+
+        {linker.smiles && (
+          <Form.Group as={Row} controlId="smiles" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label={"Canonical SMILES"} />
+              <Form.Control type="text" value={linker.smiles} disabled={page === "case4"} readOnly={page === "view"} />
+            </Col>
+          </Form.Group>
+        )}
+
+        {linker.source && (
+          <ViewSourceInfo
+            source={linker.source.type}
+            commercial={linker.source.commercial}
+            nonCommercial={linker.source.nonCommercial}
+            isUpdate
+          />
+        )}
+      </>
+    );
   };
 
   const linkerDetails = (linker, page) => {
@@ -259,6 +370,57 @@ const FeatureView = props => {
               </Col>
             </Form.Group>
           )
+        )}
+      </>
+    );
+  };
+
+  const displayDetails = (linker, page, label) => {
+    return (
+      <>
+        {label !== "Linker" && (
+          <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+            <Col xs={12} lg={9}>
+              <h4 className="gg-blue">{label}</h4>
+            </Col>
+          </Form.Group>
+        )}
+
+        <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Name" />
+            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.name} />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Type" />
+            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.type} />
+          </Col>
+        </Form.Group>
+
+        {(linker.sequence || linker.inChiSequence) && linker.type !== "LIPID" && (
+          <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
+            <Col xs={12} lg={9}>
+              <FormLabel label={linker.sequence ? "Sequence" : "InChI"} />
+              <Form.Control
+                rows={linker.sequence ? "10" : "4"}
+                as="textarea"
+                disabled={page === "case4"}
+                readOnly={page === "view"}
+                value={linker.sequence ? linker.sequence : linker.inChiSequence}
+              />
+            </Col>
+          </Form.Group>
+        )}
+
+        {linker.type === "LIPID" && linker.imageURL && (
+          <Form.Group as={Row} controlId="image" className="gg-align-center">
+            <Col md={4}>
+              <StructureImage imgUrl={linker.imageURL} />
+            </Col>
+          </Form.Group>
         )}
       </>
     );
@@ -292,32 +454,69 @@ const FeatureView = props => {
     let groupData = [];
     let generalData = [];
 
+    groupData.push(
+      <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+        <Col xs={12} lg={9}>
+          <h4 className="gg-blue">{"Metadata"}</h4>
+        </Col>
+      </Form.Group>
+    );
+
     generalData.push(
       <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
         <Col xs={12} lg={9}>
-          <h4 className="gg-blue">General Descriptors</h4>
-          {/* <FormLabel label="General Descriptors" className="gg-blue" /> */}
+          <h4 className="gg-blue">{"General Descriptors"}</h4>
         </Col>
       </Form.Group>
     );
 
     props.metadata[0].descriptors.forEach(ele => {
+      let notApplicable;
+
+      let sourceGroup = props.metadata[0].descriptors.filter(
+        e =>
+          e.mandateGroup &&
+          ele.mandateGroup &&
+          e.mandateGroup.id === ele.mandateGroup.id &&
+          (e.mandateGroup.notApplicable || e.mandateGroup.notRecorded)
+      );
+
+      if (sourceGroup.length > 0) {
+        if (sourceGroup[0].mandateGroup.notApplicable) {
+          notApplicable = true;
+        }
+      }
+
       if (ele.group) {
         if (ele.mandateGroup && ele.mandateGroup.defaultSelection) {
           groupData.push(
             <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
               <Col xs={12} lg={9}>
                 <h4 className="gg-blue">{`${ele.mandateGroup.name} - ${ele.name}`}</h4>
-                {/* <FormLabel label={`${ele.mandateGroup.name} - ${ele.name}`} className="gg-blue" /> */}
               </Col>
             </Form.Group>
           );
         } else if (!ele.mandateGroup) {
+          if (ele.descriptors.filter(i => i.value).length > 0) {
+            groupData.push(
+              <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+                <Col xs={12} lg={9}>
+                  <h4 className="gg-blue">{ele.name}</h4>
+                </Col>
+              </Form.Group>
+            );
+          }
+        } else if (sourceGroup.length > 0 && ele.name !== "Non-commercial") {
           groupData.push(
             <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
               <Col xs={12} lg={9}>
-                <h4 className="gg-blue">{ele.name}</h4>
-                {/* <FormLabel label={ele.name} className="gg-blue" /> */}
+                <h4 className="gg-blue">{`${ele.mandateGroup.name}`}</h4>
+                <Form.Control
+                  type="text"
+                  name={"source"}
+                  value={notApplicable ? "Not Applicable" : "Not Recorded"}
+                  disabled
+                />
               </Col>
             </Form.Group>
           );
@@ -330,84 +529,52 @@ const FeatureView = props => {
                 <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
                   <Col xs={12} lg={9}>
                     <h4 className="gg-blue">{subEle.name}</h4>
-                    {/* <FormLabel label={subEle.name} className="gg-blue" /> */}
                   </Col>
                 </Form.Group>
               );
               subEle.descriptors.forEach(lastSubEle => {
-                if (lastSubEle.value) {
-                  groupData.push(getField(lastSubEle.name, lastSubEle.value));
+                if (lastSubEle.value || lastSubEle.notApplicable || lastSubEle.notRecorded) {
+                  groupData.push(
+                    getField(lastSubEle.name, lastSubEle.value, lastSubEle.notApplicable, lastSubEle.notRecorded)
+                  );
                 }
               });
             } else {
-              if (subEle.value) {
-                groupData.push(getField(subEle.name, subEle.value));
+              if (subEle.value || subEle.notApplicable || subEle.notRecorded) {
+                groupData.push(getField(subEle.name, subEle.value, subEle.notApplicable, subEle.notRecorded));
               }
             }
           });
         }
       } else {
-        if (ele.value) {
-          generalData.push(getField(ele.name, ele.value));
+        if (ele.value || ele.notApplicable || ele.notRecorded) {
+          generalData.push(getField(ele.name, ele.value, ele.notApplicable, ele.notRecorded));
         }
       }
     });
 
     if (generalData.length > 1) {
-      generalData.push(groupData);
+      groupData.push(generalData);
     }
-    return <>{generalData}</>;
+
+    return groupData;
   };
 
-  const getField = (label, value) => {
+  const getField = (label, value, notApplicable, notRecorded) => {
     return (
       <>
         <Form.Group as={Row} className="gg-align-center mb-3" controlId={label}>
           <Col xs={12} lg={9}>
             <FormLabel label={label} />
-            <Form.Control type="text" name={label} placeholder="Enter Name" value={value} disabled />
+            <Form.Control
+              type="text"
+              name={label}
+              placeholder="Enter Name"
+              value={value ? value : notApplicable ? "Not Applicable" : "Not Recorded"}
+              disabled
+            />
           </Col>
         </Form.Group>
-      </>
-    );
-  };
-
-  const displayDetails = (linker, page, label) => {
-    return (
-      <>
-        <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
-          <Col xs={12} lg={9}>
-            <h4 className="gg-blue">{label}</h4>
-            {/* <FormLabel label={label} className="gg-blue" /> */}
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
-          <Col xs={12} lg={9}>
-            <FormLabel label="Name" />
-            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.name} />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
-          <Col xs={12} lg={9}>
-            <FormLabel label="Type" />
-            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.type} />
-          </Col>
-        </Form.Group>
-
-        {linker.sequence && (
-          <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
-            <Col xs={12} lg={9}>
-              <FormLabel label="Sequence" />
-              <Form.Control
-                type="text"
-                disabled={page === "case4"}
-                readOnly={page === "view"}
-                value={linker.sequence}
-              />
-            </Col>
-          </Form.Group>
-        )}
       </>
     );
   };
@@ -684,6 +851,8 @@ const FeatureView = props => {
                     {getMetadataNameandId(props.metadata ? "case4" : "view")}
 
                     {getLinker()}
+
+                    {showLinkerView && getLinkerDetailsModal()}
 
                     {getLipid()}
 

@@ -1,0 +1,11 @@
+.view-more-btn-icon {
+  border: 0.1em solid #d6d5d7;
+  border-radius: 0.39em;
+  color: var(--gg-blue);
+  width: 17%;
+  height: 40px;
+  padding: 5px;
+  font-size: medium;
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -2469,7 +2469,9 @@ const AddFeature = props => {
                       featureAddState.type === "GLYCO_LIPID" ||
                       featureAddState.type === "GLYCO_PEPTIDE" ||
                       featureAddState.type === "GLYCO_PROTEIN" ||
-                      featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+                      featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ||
+                      featureAddState.type === "CONTROL" ||
+                      featureAddState.type === "LANDING_LIGHT"
                         ? handleNextGlycoLipid
                         : handleNextLinker
                     }
@@ -2507,7 +2509,9 @@ const AddFeature = props => {
                       featureAddState.type === "GLYCO_LIPID" ||
                       featureAddState.type === "GLYCO_PEPTIDE" ||
                       featureAddState.type === "GLYCO_PROTEIN" ||
-                      featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE"
+                      featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ||
+                      featureAddState.type === "CONTROL" ||
+                      featureAddState.type === "LANDING_LIGHT"
                         ? handleNextGlycoLipid
                         : handleNextLinker
                     }
