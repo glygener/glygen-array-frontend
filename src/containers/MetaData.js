@@ -466,19 +466,29 @@ const MetaData = props => {
 
     return (
       <LineTooltip text="Add Descriptors">
-        <Link to={"cog"}>
-          <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
-            <FontAwesomeIcon
-              className={"add-subGroup-button"}
-              icon={["fas", "cog"]}
-              size="xs"
-              title={"Add Descriptors"}
-            />
-          </OverlayTrigger>
-        </Link>
+        {props.metadataType === "Feature" ? (
+          <Link>{getLinkForCog(popover)}</Link>
+        ) : (
+          <Link to={"cog"}>{getLinkForCog(popover)}</Link>
+        )}
       </LineTooltip>
     );
   };
+
+  function getLinkForCog(popover) {
+    return (
+      <>
+        <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
+          <FontAwesomeIcon
+            className={"add-subGroup-button"}
+            icon={["fas", "cog"]}
+            size="xs"
+            title={"Add Descriptors"}
+          />
+        </OverlayTrigger>
+      </>
+    );
+  }
 
   const addDescriptorsandDescriptorGroups = () => {
     let sampleModelUpdate;
