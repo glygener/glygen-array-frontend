@@ -73,71 +73,18 @@ const FeatureView = props => {
     metadata: {}
   });
 
-  const getMetadataTable = () => {
-    let metadata = featureDetails.metadata;
-    return (
-      <>
-        {metadata &&
-          metadata.descriptorGroups.map(desc => {
-            return (
-              <div className="pb-3 pt-3">
-                <Row className="gg-align-center">
-                  <Col xs={12} lg={9}>
-                    <h4 className="gg-blue">{desc.name}</h4>
-                    <Table bordered hover className="mb-4">
-                      <thead className="table-header">
-                        <th>Name</th>
-                        <th>Value</th>
-                      </thead>
-                      <tbody>
-                        {desc.descriptors &&
-                          desc.descriptors.map(subdesc => {
-                            let subGroup = [];
-                            if (subdesc.group) {
-                              //sub group title
-                              subGroup.push(
-                                <th style={{ backgroundColor: "white", fontWeight: "bold" }}>{subdesc.name}</th>
-                              );
-
-                              subdesc.descriptors.forEach(ele => {
-                                subGroup.push(
-                                  <>
-                                    <tr>
-                                      <td>{ele.name}</td>
-                                      <td>{ele.value}</td>
-                                    </tr>
-                                  </>
-                                );
-                              });
-                            } else {
-                              subGroup.push(
-                                <>
-                                  <tr>
-                                    <td>{subdesc.name}</td>
-                                    <td>{subdesc.value}</td>
-                                  </tr>
-                                </>
-                              );
-                            }
-                            return subGroup;
-                          })}
-                      </tbody>
-                    </Table>
-                  </Col>
-                </Row>
-              </div>
-            );
-          })}
-      </>
-    );
-  };
-
   const getGlycanTable = () => {
     return (
       <>
         {/* <Row className="gg-align-center">
           <Col xs={12} lg={9}>
-            <h4 className="gg-blue">Glycans</h4> */}
+            <h4 className="gg-blue" style={{ paddingTop: "30px", paddingBottom: "15px" }}>
+              Glycans
+            </h4> */}
+        <h4 className="gg-blue" style={{ paddingTop: "30px", paddingBottom: "15px" }}>
+          Glycans
+        </h4>
+
         <GlygenTable
           columns={[
             {
@@ -270,7 +217,7 @@ const FeatureView = props => {
     }
   };
 
-  const getLinkerDetailsModal = () => {
+  const getLinkerDetailsModal = (linker, display) => {
     return (
       <>
         <Modal
@@ -286,8 +233,8 @@ const FeatureView = props => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {displayDetails(props.linker, "case4", "Linker")}
-            {linkerDetailsOnModal(props.linker, "case4")}
+            {displayDetails(linker, display, "Linker")}
+            {linkerDetailsOnModal(linker, display)}
           </Modal.Body>
         </Modal>
       </>
@@ -470,25 +417,89 @@ const FeatureView = props => {
       </Form.Group>
     );
 
-    props.metadata[0].descriptors.forEach(ele => {
+    groupData = displayMetadata(groupData, generalData, props.metadata[0].descriptors);
+
+    return groupData;
+  };
+
+  const featureMetadata = () => {
+    let groupData = [];
+    let generalData = [];
+    let simpleDesc = featureDetails.metadata.descriptors;
+    let groupDesc = featureDetails.metadata.descriptorGroups;
+
+    if (simpleDesc.length > 0) {
+      simpleDesc.forEach(ele => {
+        groupDesc.push(ele);
+      });
+    }
+
+    groupData.push(
+      <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+        <Col xs={12} lg={9}>
+          <h4 className="gg-blue">{"Metadata"}</h4>
+        </Col>
+      </Form.Group>
+    );
+
+    generalData.push(
+      <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+        <Col xs={12} lg={9}>
+          <h4 className="gg-blue">{"General Descriptors"}</h4>
+        </Col>
+      </Form.Group>
+    );
+
+    groupData = displayMetadata(groupData, generalData, groupDesc);
+
+    return groupData;
+  };
+
+  function displayMetadata(groupData, generalData, mergedDesc) {
+    mergedDesc.forEach(ele => {
       let notApplicable;
+      let sourceGroup;
 
-      let sourceGroup = props.metadata[0].descriptors.filter(
-        e =>
-          e.mandateGroup &&
-          ele.mandateGroup &&
-          e.mandateGroup.id === ele.mandateGroup.id &&
-          (e.mandateGroup.notApplicable || e.mandateGroup.notRecorded)
-      );
+      if (props.linker) {
+        sourceGroup = mergedDesc.filter(
+          e =>
+            e.mandateGroup &&
+            ele.mandateGroup &&
+            e.mandateGroup.id === ele.mandateGroup.id &&
+            (e.mandateGroup.notApplicable || e.mandateGroup.notRecorded)
+        );
 
-      if (sourceGroup.length > 0) {
-        if (sourceGroup[0].mandateGroup.notApplicable) {
-          notApplicable = true;
+        if (sourceGroup.length > 0) {
+          if (sourceGroup[0].mandateGroup.notApplicable) {
+            notApplicable = true;
+          }
+        }
+      } else {
+        sourceGroup = mergedDesc.filter(
+          e =>
+            e.key.mandateGroup &&
+            ele.key.mandateGroup &&
+            e.key.mandateGroup.id === ele.key.mandateGroup.id &&
+            (e.notApplicable || e.notRecorded)
+        );
+
+        if (sourceGroup.length > 0) {
+          if (sourceGroup[0].notApplicable) {
+            notApplicable = true;
+          }
+        }
+
+        if (ele.key.mandateGroup) {
+          ele.mandateGroup = ele.key.mandateGroup;
         }
       }
 
       if (ele.group) {
-        if (ele.mandateGroup && ele.mandateGroup.defaultSelection) {
+        if (
+          ((props.linker && ele.mandateGroup && ele.mandateGroup.defaultSelection) ||
+            (!props.linker && ele.mandateGroup)) &&
+          sourceGroup.length < 1
+        ) {
           groupData.push(
             <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
               <Col xs={12} lg={9}>
@@ -522,7 +533,11 @@ const FeatureView = props => {
           );
         }
 
-        if ((ele.mandateGroup && ele.mandateGroup.defaultSelection) || !ele.mandateGroup) {
+        if (
+          (props.linker && ele.mandateGroup && ele.mandateGroup.defaultSelection) ||
+          (!props.linker && ele.mandateGroup) ||
+          !ele.mandateGroup
+        ) {
           ele.descriptors.forEach(subEle => {
             if (subEle.group && subEle.descriptors.filter(i => i.value).length > 0) {
               groupData.push(
@@ -558,7 +573,7 @@ const FeatureView = props => {
     }
 
     return groupData;
-  };
+  }
 
   const getField = (label, value, notApplicable, notRecorded) => {
     return (
@@ -852,7 +867,9 @@ const FeatureView = props => {
 
                     {getLinker()}
 
-                    {showLinkerView && getLinkerDetailsModal()}
+                    {showLinkerView && props.linker
+                      ? getLinkerDetailsModal(props.linker, "case4")
+                      : getLinkerDetailsModal(featureDetails.linker, "view")}
 
                     {getLipid()}
 
@@ -862,7 +879,11 @@ const FeatureView = props => {
 
                     {props.metadata
                       ? case4MetadataWhileCreatingFeature()
-                      : featureDetails.metadata && featureDetails.metadata.descriptorGroups && getMetadataTable()}
+                      : featureDetails.metadata &&
+                        ((featureDetails.metadata.descriptorGroups &&
+                          featureDetails.metadata.descriptorGroups.length > 0) ||
+                          (featureDetails.metadata.descriptors && featureDetails.metadata.descriptors.length > 0)) &&
+                        featureMetadata()}
 
                     {props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
                     (props.rangeGlycoPeptides || props.glycoPeptides)

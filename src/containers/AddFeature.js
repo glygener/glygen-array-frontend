@@ -19,7 +19,6 @@ import { Peptides } from "./Peptides";
 import { Proteins } from "./Proteins";
 import { Lipids } from "./Lipids";
 import { SourceForGlycanInFeature } from "../components/SourceForGlycanInFeature";
-import { getMetadataSubmitData } from "../containers/FeatureMetadata";
 import { FeatureView } from "./FeatureView";
 import { getToolTip } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,7 +27,7 @@ import { GlycoPeptides } from "../components/GlycoPeptides";
 import { useHistory, Link } from "react-router-dom";
 import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
-import { MetaData } from "./MetaData";
+import { MetaData, getDescriptorGroups, getDescriptors } from "./MetaData";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
@@ -831,9 +830,9 @@ const AddFeature = props => {
   }
 
   function metadataToSubmit() {
-    const descriptorGroups = getMetadataSubmitData(featureMetadata);
+    const descriptorGroups = getDescriptorGroups(featureMetadata[0]);
 
-    // const descriptors = getDescriptors();
+    const descriptors = getDescriptors(featureMetadata[0]);
 
     let objectToBeSaved = {
       name: featureAddState.name,
@@ -841,7 +840,7 @@ const AddFeature = props => {
         name: window.localStorage.getItem("loggedinuser")
       },
       template: "Default Feature",
-      descriptors: [],
+      descriptors: descriptors,
       descriptorGroups: descriptorGroups,
       id: ""
     };
