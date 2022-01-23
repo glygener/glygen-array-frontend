@@ -3,8 +3,10 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useParams, useLocation } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddImageAnalysis = props => {
   let type = "IMAGEANALYSISSOFTWARE";
@@ -30,20 +32,28 @@ const AddImageAnalysis = props => {
         {getMeta(head.addImageAnalysis)}
       </Helmet>
 
-      <Title title="Create Image Analysis" />
-
-      <div className="page-container">
-        <MetaData
-          metaID={imageAnalysisId}
-          isCopy={isCopyImageAnalysis}
-          type={type}
-          getMetaData={"getimageanalysis"}
-          addMeta={"addimageanalysis"}
-          updateMeta={"updateimageanalysis"}
-          redirectTo={"imageanalysis"}
-          metadataType={"Image Analysis"}
-        />
-      </div>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Create Image Analysis"
+            subTitle="Please provide the information for the new image analysis."
+          />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={imageAnalysisId}
+                isCopy={isCopyImageAnalysis}
+                type={type}
+                getMetaData={"getimageanalysis"}
+                addMeta={"addimageanalysis"}
+                updateMeta={"updateimageanalysis"}
+                redirectTo={"imageanalysis"}
+                metadataType={"Image Analysis"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

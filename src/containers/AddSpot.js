@@ -3,8 +3,10 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useParams, useLocation } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddSpot = props => {
   let type = "SPOT";
@@ -29,19 +31,26 @@ const AddSpot = props => {
         <title>{head.addSpot.title}</title>
         {getMeta(head.addSpot)}
       </Helmet>
-      <div className="page-container">
-        <Title title="Create Spot" />
-        <MetaData
-          metaID={spotId}
-          isCopy={isCopySpot}
-          type={type}
-          getMetaData={"getspotmetadata"}
-          addMeta={"addspotmetadata"}
-          updateMeta={"updatespotmetadata"}
-          redirectTo={"spots"}
-          metadataType={"Spot"}
-        />
-      </div>
+
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Create Spot" subTitle="Please provide the information for the new spot." />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={spotId}
+                isCopy={isCopySpot}
+                type={type}
+                getMetaData={"getspotmetadata"}
+                addMeta={"addspotmetadata"}
+                updateMeta={"updatespotmetadata"}
+                redirectTo={"spots"}
+                metadataType={"Spot"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

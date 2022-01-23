@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
-import { Col, ButtonToolbar } from "react-bootstrap";
 import { head, getMeta } from "../utils/head";
 import PropTypes from "prop-types";
-import { Title } from "../components/FormControls";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { Button } from "react-bootstrap";
 
 const SlideMeta = props => {
   useEffect(props.authCheckAgent, []);
@@ -17,46 +19,52 @@ const SlideMeta = props => {
         {getMeta(head.slidemeta)}
       </Helmet>
 
-      <div className="page-container">
-        <Title title="Slide Meta" />
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Your Slide Meta"
+            subTitle="The table below displays a list of all slide metas that have been uploaded to your repository. New slide metas may be added, old slide metas can be edited, and unused slide metas can be removed."
+          />
+          <Card>
+            <Card.Body>
+              <div className="text-center mb-4">
+                <Link to="/listSlideMeta/addSlideMeta">
+                  <Button className="gg-btn-blue mt-2">Add Slide Meta</Button>
+                </Link>
+              </div>
 
-        <ButtonToolbar>
-          <Col className={"col-link-button"}>
-            <Link to="/listSlideMeta/addSlideMeta" className="link-button" style={{ width: "150px" }}>
-              Add Slide Meta
-            </Link>
-          </Col>
-        </ButtonToolbar>
-
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name",
-            },
-            {
-              Header: "Template",
-              accessor: "template",
-            },
-          ]}
-          defaultPageSize={10}
-          defaultSortColumn="id"
-          showCommentsButton
-          showDeleteButton
-          showEditButton
-          showCopyButton
-          showMirageCompliance
-          commentsRefColumn="description"
-          fetchWS="listslidemeta"
-          deleteWS="slideMetaDelete"
-          editUrl="listSlideMeta/editSlideMeta"
-          copyUrl="listSlideMeta/copySlideMeta"
-          copyPage="copySlideMeta"
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Slide Meta"
-        />
-      </div>
+              <GlygenTable
+                columns={[
+                  {
+                    Header: "Name",
+                    accessor: "name",
+                  },
+                  {
+                    Header: "Template",
+                    accessor: "template",
+                  },
+                ]}
+                defaultPageSize={10}
+                defaultSortColumn="id"
+                showCommentsButton
+                showDeleteButton
+                showEditButton
+                showCopyButton
+                showMirageCompliance
+                commentsRefColumn="description"
+                fetchWS="listslidemeta"
+                deleteWS="slideMetaDelete"
+                editUrl="listSlideMeta/editSlideMeta"
+                copyUrl="listSlideMeta/copySlideMeta"
+                copyPage="copySlideMeta"
+                keyColumn="id"
+                showRowsInfo
+                infoRowsText="Slide Meta"
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

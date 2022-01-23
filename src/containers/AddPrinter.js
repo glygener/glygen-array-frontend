@@ -3,8 +3,10 @@ import { MetaData } from "./MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useParams, useLocation } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddPrinter = props => {
   let type = "PRINTER";
@@ -30,19 +32,25 @@ const AddPrinter = props => {
         {getMeta(head.addPrinter)}
       </Helmet>
 
-      <div className="page-container">
-        <Title title="Create Printer" />
-        <MetaData
-          metaID={printerId}
-          isCopy={isCopyPrinter}
-          type={type}
-          getMetaData={"getprinter"}
-          addMeta={"addprinter"}
-          updateMeta={"updateprinter"}
-          redirectTo={"printers"}
-          metadataType={"Printer"}
-        />
-      </div>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Create Printer" subTitle="Please provide the information for the new printer." />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={printerId}
+                isCopy={isCopyPrinter}
+                type={type}
+                getMetaData={"getprinter"}
+                addMeta={"addprinter"}
+                updateMeta={"updateprinter"}
+                redirectTo={"printers"}
+                metadataType={"Printer"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

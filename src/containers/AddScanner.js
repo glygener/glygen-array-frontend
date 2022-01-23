@@ -3,8 +3,10 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useParams, useLocation } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddScanner = props => {
   let type = "SCANNER";
@@ -30,19 +32,25 @@ const AddScanner = props => {
         {getMeta(head.addScanner)}
       </Helmet>
 
-      <div className="page-container">
-        <Title title="Create Scanner" />
-        <MetaData
-          metaID={scannerId}
-          isCopy={isCopyScanner}
-          type={type}
-          getMetaData={"getscanner"}
-          addMeta={"addscanner"}
-          updateMeta={"updatescanner"}
-          redirectTo={"scanners"}
-          metadataType={"Scanner"}
-        />
-      </div>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Create Scanner" subTitle="Please provide the information for the new scanner." />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={scannerId}
+                isCopy={isCopyScanner}
+                type={type}
+                getMetaData={"getscanner"}
+                addMeta={"addscanner"}
+                updateMeta={"updatescanner"}
+                redirectTo={"scanners"}
+                metadataType={"Scanner"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

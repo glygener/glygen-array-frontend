@@ -3,8 +3,10 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useParams } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddAssay = props => {
   let type = "ASSAY";
@@ -29,20 +31,25 @@ const AddAssay = props => {
         {getMeta(head.addAssay)}
       </Helmet>
 
-      <div className="page-container">
-        <Title title="Create Assay" />
-
-        <MetaData
-          metaID={assayId}
-          isCopy={isCopyAssay}
-          type={type}
-          getMetaData={"getassaymetadata"}
-          addMeta={"addassaymetadata"}
-          updateMeta={"updateassaymetadata"}
-          redirectTo={"assays"}
-          metadataType={"Assay"}
-        />
-      </div>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Create Assay" subTitle="Please provide the information for the new assay." />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={assayId}
+                isCopy={isCopyAssay}
+                type={type}
+                getMetaData={"getassaymetadata"}
+                addMeta={"addassaymetadata"}
+                updateMeta={"updateassaymetadata"}
+                redirectTo={"assays"}
+                metadataType={"Assay"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

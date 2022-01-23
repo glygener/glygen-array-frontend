@@ -3,8 +3,10 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useParams, useLocation } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddSample = props => {
   let type = "SAMPLE";
@@ -29,20 +31,26 @@ const AddSample = props => {
         <title>{head.addSample.title}</title>
         {getMeta(head.addSample)}
       </Helmet>
-      <div className="page-container">
-        <Title title="Create Sample" />
 
-        <MetaData
-          metaID={sampleId}
-          isCopy={isCopySample}
-          type={type}
-          getMetaData={"getsample"}
-          addMeta={"addsample"}
-          updateMeta={"updatesample"}
-          redirectTo={"samples"}
-          metadataType={"Sample"}
-        />
-      </div>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Create Sample" subTitle="Please provide the information for the new sample." />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={sampleId}
+                isCopy={isCopySample}
+                type={type}
+                getMetaData={"getsample"}
+                addMeta={"addsample"}
+                updateMeta={"updatesample"}
+                redirectTo={"samples"}
+                metadataType={"Sample"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

@@ -3,8 +3,10 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useLocation, useParams } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddSlideMeta = props => {
   let type = "SLIDE";
@@ -29,20 +31,26 @@ const AddSlideMeta = props => {
         <title>{head.addSlideMeta.title}</title>
         {getMeta(head.addSlideMeta)}
       </Helmet>
-      <div className="page-container">
-        <Title title="Create Slide Metadata" />
 
-        <MetaData
-          metaID={slideMetaId}
-          isCopy={isCopySlideMeta}
-          type={type}
-          getMetaData={"getslidemeta"}
-          addMeta={"addslidemeta"}
-          updateMeta={"updateslidemeta"}
-          redirectTo={"listslidemeta"}
-          metadataType={"Slide Metadata"}
-        />
-      </div>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Create Slide Metadata" subTitle="Please provide the information for the new printer." />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={slideMetaId}
+                isCopy={isCopySlideMeta}
+                type={type}
+                getMetaData={"getslidemeta"}
+                addMeta={"addslidemeta"}
+                updateMeta={"updateslidemeta"}
+                redirectTo={"listslidemeta"}
+                metadataType={"Slide Metadata"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

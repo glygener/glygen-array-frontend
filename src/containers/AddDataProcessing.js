@@ -3,8 +3,10 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { useParams, useLocation } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddDataProcessing = props => {
   let type = "DATAPROCESSINGSOFTWARE";
@@ -29,20 +31,26 @@ const AddDataProcessing = props => {
         <title>{head.addDataProcessing.title}</title>
         {getMeta(head.addDataProcessing)}
       </Helmet>
-      <div className="page-container">
-        <Title title="Create Data Processing" />
 
-        <MetaData
-          metaID={dataProcessingId}
-          isCopy={isCopyDataProcessing}
-          type={type}
-          getMetaData={"getdataprocessing"}
-          addMeta={"adddataprocessing"}
-          updateMeta={"updatedataprocessing"}
-          redirectTo={"dataprocessing"}
-          metadataType={"Data Processing"}
-        />
-      </div>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Create Data Processing" subTitle="Please provide the information for the new data processing." />
+          <Card>
+            <Card.Body>
+              <MetaData
+                metaID={dataProcessingId}
+                isCopy={isCopyDataProcessing}
+                type={type}
+                getMetaData={"getdataprocessing"}
+                addMeta={"adddataprocessing"}
+                updateMeta={"updatedataprocessing"}
+                redirectTo={"dataprocessing"}
+                metadataType={"Data Processing"}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

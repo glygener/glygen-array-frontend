@@ -1366,12 +1366,12 @@ const MetaData = props => {
   const getListTemplate = () => {
     return (
       <>
-        <Form.Group as={Row} controlId="type">
-          {(sampleModel && sampleModel.length > 1) ||
-            (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default") && (
-              <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
-            ))}
-          <Col md={6}>
+        <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            {(sampleModel && sampleModel.length > 1) ||
+              (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default") && (
+                <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+              ))}
             {((sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ||
               sampleModel.length > 0) && (
               <Form.Control
@@ -1396,13 +1396,13 @@ const MetaData = props => {
   const getStartMetadataPage = () => {
     return (
       <>
-        <Form.Group as={Row} controlId="name">
+        <Form.Group as={Row} controlId="name" className="gg-align-center mb-3 mt-2">
           <Col xs={12} lg={9}>
             <FormLabel label="Name" className="required-asterik" />
             <Form.Control
               type="text"
               name="name"
-              placeholder="name"
+              placeholder="Enter Name"
               value={metaDataDetails.name}
               onChange={handleChange}
               required
@@ -1416,14 +1416,14 @@ const MetaData = props => {
             />
           </Col>
         </Form.Group>
-        <Form.Group as={Row} controlId="description">
+        <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label="Description" />
             <Form.Control
               as="textarea"
               rows={4}
               name="description"
-              placeholder="description"
+              placeholder="Enter Description"
               value={metaDataDetails.description}
               onChange={handleChange}
               maxLength={2000}
@@ -1435,7 +1435,7 @@ const MetaData = props => {
         </Form.Group>
 
         {!isUpdate && !props.isCopy && (
-          <Form.Group as={Row} controlId="description">
+          <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
             <Col xs={12} lg={9}>
               <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
               <Form.Control
@@ -1447,7 +1447,7 @@ const MetaData = props => {
                 disabled={isUpdate || props.isCopy}
                 required
               >
-                <option value="select">Select</option>
+                <option value="select">Select {`${props.metadataType} Type`}</option>
                 {sampleModel.map((element, index) => {
                   return (
                     <option key={index} value={element.name}>
@@ -1516,12 +1516,12 @@ const MetaData = props => {
       name: metaDataDetails.name,
       description: metaDataDetails.description,
       user: {
-        name: window.localStorage.getItem("loggedinuser")
+        name: window.localStorage.getItem("loggedinuser"),
       },
       template: metaDataDetails.selectedtemplate,
       descriptors: descriptors,
       descriptorGroups: descriptorGroups,
-      id: isUpdate ? metaDataDetails.id : ""
+      id: isUpdate ? metaDataDetails.id : "",
     };
     return props.importedPageData ? objectToBeSaved : JSON.stringify(objectToBeSaved);
   }
@@ -1551,8 +1551,8 @@ const MetaData = props => {
       });
     });
 
-    const mandatoryGroupsFilled = groupDescriptors.filter(function(e) {
-      const filledDesc = e.descriptors.filter(function(subDescriptor) {
+    const mandatoryGroupsFilled = groupDescriptors.filter(function (e) {
+      const filledDesc = e.descriptors.filter(function (subDescriptor) {
         if (!subDescriptor.group && subDescriptor.value) {
           return subDescriptor;
         } else if (subDescriptor.group) {
@@ -1571,7 +1571,7 @@ const MetaData = props => {
     let mandateGroupExceed = new Map();
     let mandateGroupDeceed = new Map();
 
-    groupDescriptors.filter(function(e) {
+    groupDescriptors.filter(function (e) {
       const sameGroupItems = mandatoryGroupsFilled.filter(i => i.mandateGroup.id === e.mandateGroup.id);
       if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.xorMandate).length > 1) {
         mandateGroupExceed.set(e.mandateGroup.id, sameGroupItems);
@@ -1599,7 +1599,7 @@ const MetaData = props => {
 
       for (var descriptorPair of itr) {
         var pair = descriptorPair[1];
-        pair.filter(function(desc) {
+        pair.filter(function (desc) {
           if (!desc.xorMandate && desc.descriptors.filter(i => i.value).length > 0) {
             mandateGroupDeceed.delete(descriptorPair[0]);
           } else if (desc.xorMandate && desc.descriptors.filter(i => i.value && i.value !== undefined).length > 0) {
@@ -1691,7 +1691,7 @@ const MetaData = props => {
         selectedtemplate: responseJson.template,
         description: responseJson.description,
         sample: responseJson,
-        id: responseJson.id
+        id: responseJson.id,
       });
 
       !props.isCopy && setUpdateSampleName(responseJson.name);
@@ -1704,7 +1704,7 @@ const MetaData = props => {
   function getSampleTemplateSuccess(response) {
     response.json().then(responseJson => {
       setMetaDataDetails({
-        type: responseJson.name
+        type: responseJson.name,
       });
 
       if (props.importedInAPage && props.importedPageData && props.importedPageData.id) {
@@ -1970,7 +1970,7 @@ const MetaData = props => {
               Back
             </Button>
             <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-              {"Next"}
+              Next
             </Button>
           </div>
         ) : (
@@ -2052,24 +2052,21 @@ const MetaData = props => {
       <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
         {!loadDescriptors && !props.importedInAPage && (
           <>
-            <Row>
-              <Col md={10}>
-                {getStartMetadataPage()}
-                <Row className={"text-center"}>
-                  <Col span={6}>
-                    <Button
-                      disabled={
-                        (metaDataDetails.name === "" && metaDataDetails.selectedtemplate === "" && !isUpdate) ||
-                        errorName
-                      }
-                      onClick={handleNext}
-                    >
-                      Next
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+            {getStartMetadataPage()}
+            <div className="text-center mb-2">
+              <Link to={"/" + props.redirectTo}>
+                <Button className="gg-btn-outline mt-2 gg-mr-20">Back to {`${props.metadataType}`}</Button>
+              </Link>
+              <Button
+                disabled={
+                  (metaDataDetails.name === "" && metaDataDetails.selectedtemplate === "" && !isUpdate) || errorName
+                }
+                onClick={handleNext}
+                className="gg-btn-blue mt-2 gg-ml-20"
+              >
+                Next
+              </Button>
+            </div>
           </>
         )}
 
@@ -2080,7 +2077,7 @@ const MetaData = props => {
                 <div
                   style={{
                     marginBottom: "100px",
-                    marginTop: "30px"
+                    marginTop: "30px",
                   }}
                 >
                   {getMetaData()}
