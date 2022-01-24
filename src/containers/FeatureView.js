@@ -1,14 +1,14 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { wsCall } from "../utils/wsUtils";
 import { useParams } from "react-router-dom";
-import { Row, Col, Form, Table, Button, Card, Modal } from "react-bootstrap";
+import { Row, Col, Form, Button, Card, Modal } from "react-bootstrap";
 import { FormLabel, Feedback } from "../components/FormControls";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
-import { getToolTip, addCommas } from "../utils/commonUtils";
-import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
+import { getToolTip, addCommas, viewGlycoPeptide } from "../utils/commonUtils";
+import { ViewInfoModal } from "../components/ViewInfoModal";
 import { useHistory, Link } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Loading } from "../components/Loading";
@@ -32,6 +32,7 @@ const FeatureView = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [displayLinkerInfo, setDisplayLinkerInfo] = useState("");
 
   // useEffect(() => props.authCheckAgent, []);
 
@@ -143,8 +144,29 @@ const FeatureView = props => {
                   {
                     Header: "Linker",
                     accessor: "linker",
+                    style: {
+                      textAlign: "center"
+                    },
                     Cell: (row, index) => {
-                      return row.original.linker ? getToolTip(row.original.linker.name) : "";
+                      return (
+                        row.original.linker && (
+                          <>
+                            <LineTooltip text="Linker Details">
+                              <FontAwesomeIcon
+                                key={"linkerView"}
+                                icon={["far", "eye"]}
+                                alt="View icon"
+                                size="lg"
+                                color="#45818e"
+                                className="tbl-icon-btn"
+                                onClick={() => {
+                                  setDisplayLinkerInfo(row.original.linker);
+                                }}
+                              />
+                            </LineTooltip>
+                          </>
+                        )
+                      );
                     },
                     minWidth: 150
                   }
@@ -165,10 +187,11 @@ const FeatureView = props => {
         {/* </Col>
         </Row> */}
         {enableGlycanViewInfoDialog && (
-          <GlycanInfoViewModal
-            setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
-            enableGlycanViewInfoDialog={enableGlycanViewInfoDialog}
+          <ViewInfoModal
+            setEnableModal={setEnableGlycanViewInfoDialog}
+            enableModal={enableGlycanViewInfoDialog}
             glycanViewInfo={glycanViewInfo}
+            glycanView
           />
         )}
       </>
@@ -186,20 +209,26 @@ const FeatureView = props => {
               <h4 className="gg-blue" style={{ marginRight: "50px" }}>
                 {"Linker"}
               </h4>
-              <LineTooltip text="Linker Details">
-                <div className={"view-more-btn-icon"} onClick={() => setShowLinkerView(true)}>
-                  <FontAwesomeIcon
-                    key={"linkerView"}
-                    icon={["far", "eye"]}
-                    alt="View icon"
-                    size="lg"
-                    color="#45818e"
-                    className="tbl-icon-btn"
-                    onClick={() => setShowLinkerView(true)}
-                  />
-                  {"View More"}
-                </div>
-              </LineTooltip>
+
+              {(props.linker && Object.keys(props.linker).length > 0) ||
+              (featureDetails.linker && Object.keys(featureDetails.linker).length > 0) ? (
+                <LineTooltip text="Linker Details">
+                  <div className={"view-more-btn-icon"} onClick={() => setShowLinkerView(true)}>
+                    <FontAwesomeIcon
+                      key={"linkerView"}
+                      icon={["far", "eye"]}
+                      alt="View icon"
+                      size="lg"
+                      color="#45818e"
+                      className="tbl-icon-btn"
+                      onClick={() => setShowLinkerView(true)}
+                    />
+                    {"View More"}
+                  </div>
+                </LineTooltip>
+              ) : (
+                <Form.Control type="text" value={"no linker"} readOnly style={{ width: "98.2%" }} />
+              )}
             </Row>
           </Col>
         </Form.Group>
@@ -209,12 +238,12 @@ const FeatureView = props => {
     if (props.linker) {
       if ((props.type !== "LINKED_GLYCAN" && props.linkerSeletion !== "No") || props.type === "LINKED_GLYCAN") {
         linkerDisplay.push(linkerDetails(props.linker, "case4"));
-        return linkerDisplay;
       }
     } else if (featureDetails.linker) {
       linkerDisplay.push(linkerDetails(featureDetails.linker, "view"));
-      return linkerDisplay;
     }
+
+    return linkerDisplay;
   };
 
   const getLinkerDetailsModal = (linker, display) => {
@@ -224,8 +253,11 @@ const FeatureView = props => {
           size="xl"
           aria-labelledby="contained-modal-title-vcenter"
           centered
-          show={showLinkerView}
-          onHide={() => setShowLinkerView(false)}
+          show={showLinkerView || displayLinkerInfo}
+          onHide={() => {
+            showLinkerView && setShowLinkerView(false);
+            displayLinkerInfo && setDisplayLinkerInfo();
+          }}
         >
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter" className="gg-blue">
@@ -233,62 +265,11 @@ const FeatureView = props => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {displayDetails(linker, display, "Linker")}
-            {linkerDetailsOnModal(linker, display)}
+            {showLinkerView && <>{linkerDetailsOnModal(linker, display)}</>}
+
+            {displayLinkerInfo && <>{linkerDetailsOnModal(displayLinkerInfo, display)}</>}
           </Modal.Body>
         </Modal>
-      </>
-    );
-  };
-
-  const linkerDetailsOnModal = (linker, page) => {
-    return (
-      <>
-        {linker.mass && (
-          <Form.Group as={Row} controlId="mass" className="gg-align-center mb-3">
-            <Col xs={12} lg={9}>
-              <FormLabel label="Monoisotopic Mass" />
-              <Form.Control
-                type="text"
-                disabled={page === "case4"}
-                readOnly={page === "view"}
-                value={addCommas(parseInt(linker.mass).toFixed(2)) + " Da"}
-              />
-            </Col>
-          </Form.Group>
-        )}
-
-        {linker.iupacName && (
-          <Form.Group as={Row} controlId="iupacName" className="gg-align-center mb-3">
-            <Col xs={12} lg={9}>
-              <FormLabel label={"IUPAC Name"} />
-              <Form.Control
-                type="text"
-                value={linker.iupacName}
-                disabled={page === "case4"}
-                readOnly={page === "view"}
-              />
-            </Col>
-          </Form.Group>
-        )}
-
-        {linker.smiles && (
-          <Form.Group as={Row} controlId="smiles" className="gg-align-center mb-3">
-            <Col xs={12} lg={9}>
-              <FormLabel label={"Canonical SMILES"} />
-              <Form.Control type="text" value={linker.smiles} disabled={page === "case4"} readOnly={page === "view"} />
-            </Col>
-          </Form.Group>
-        )}
-
-        {linker.source && (
-          <ViewSourceInfo
-            source={linker.source.type}
-            commercial={linker.source.commercial}
-            nonCommercial={linker.source.nonCommercial}
-            isUpdate
-          />
-        )}
       </>
     );
   };
@@ -317,57 +298,6 @@ const FeatureView = props => {
               </Col>
             </Form.Group>
           )
-        )}
-      </>
-    );
-  };
-
-  const displayDetails = (linker, page, label) => {
-    return (
-      <>
-        {label !== "Linker" && (
-          <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
-            <Col xs={12} lg={9}>
-              <h4 className="gg-blue">{label}</h4>
-            </Col>
-          </Form.Group>
-        )}
-
-        <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
-          <Col xs={12} lg={9}>
-            <FormLabel label="Name" />
-            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.name} />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
-          <Col xs={12} lg={9}>
-            <FormLabel label="Type" />
-            <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.type} />
-          </Col>
-        </Form.Group>
-
-        {(linker.sequence || linker.inChiSequence) && linker.type !== "LIPID" && (
-          <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
-            <Col xs={12} lg={9}>
-              <FormLabel label={linker.sequence ? "Sequence" : "InChI"} />
-              <Form.Control
-                rows={linker.sequence ? "10" : "4"}
-                as="textarea"
-                disabled={page === "case4"}
-                readOnly={page === "view"}
-                value={linker.sequence ? linker.sequence : linker.inChiSequence}
-              />
-            </Col>
-          </Form.Group>
-        )}
-
-        {linker.type === "LIPID" && linker.imageURL && (
-          <Form.Group as={Row} controlId="image" className="gg-align-center">
-            <Col md={4}>
-              <StructureImage imgUrl={linker.imageURL} />
-            </Col>
-          </Form.Group>
         )}
       </>
     );
@@ -720,6 +650,7 @@ const FeatureView = props => {
                     : getToolTip(getReducingEndState(row.value));
                 }
               },
+
               ...((props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
                 ? [
                     {
@@ -732,14 +663,34 @@ const FeatureView = props => {
                   ]
                 : []),
 
-              ...(props.type === "GLYCO_LIPID" ||
-              ((props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0)
+              ...(props.type === "GLYCO_LIPID" || props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN"
                 ? [
                     {
                       Header: "Linker",
                       accessor: "linker",
+                      style: {
+                        textAlign: "center"
+                      },
                       Cell: (row, index) => {
-                        return row.original.linker ? getToolTip(row.original.linker && row.original.linker.name) : "";
+                        return row.original.linker ? (
+                          <>
+                            <LineTooltip text="Linker Details">
+                              <FontAwesomeIcon
+                                key={"linkerView"}
+                                icon={["far", "eye"]}
+                                alt="View icon"
+                                size="lg"
+                                color="#45818e"
+                                className="tbl-icon-btn"
+                                onClick={() => {
+                                  setDisplayLinkerInfo(row.original.linker);
+                                }}
+                              />
+                            </LineTooltip>
+                          </>
+                        ) : (
+                          ""
+                        );
                       },
                       minWidth: 150
                     }
@@ -749,7 +700,9 @@ const FeatureView = props => {
             data={
               (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
                 ? props.rangeGlycans
-                : props.glycans
+                : props.type === "GLYCO_LIPID" || props.type === "LINKED_GLYCAN"
+                ? props.glycans
+                : props.glycans.filter(e => e.glycan)
             }
             defaultPageSize={5}
             showPagination={false}
@@ -762,10 +715,11 @@ const FeatureView = props => {
           {/* </Col>
           </Row> */}
           {enableGlycanViewInfoDialog && (
-            <GlycanInfoViewModal
-              setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
-              enableGlycanViewInfoDialog={enableGlycanViewInfoDialog}
+            <ViewInfoModal
+              setEnableModal={setEnableGlycanViewInfoDialog}
+              enableModal={enableGlycanViewInfoDialog}
               glycanViewInfo={glycanViewInfo}
+              glycanView
             />
           )}
         </div>
@@ -777,9 +731,17 @@ const FeatureView = props => {
     return (
       <>
         <GlycoPeptides
-          data={props.rangeGlycoPeptides.length > 0 ? props.rangeGlycoPeptides : props.glycoPeptides}
+          data={
+            props.rangeGlycoPeptides && props.rangeGlycoPeptides.length > 0
+              ? props.rangeGlycoPeptides
+              : featureDetails.peptides && featureDetails.type === "GPLINKEDGLYCOPEPTIDE"
+              ? featureDetails.peptides
+              : props.glycoPeptides
+          }
           customViewonClick
-          viewOnClick={props.viewGlycoPeptide}
+          viewOnClick={viewGlycoPeptide}
+          setDisplayLinkerInfo={setDisplayLinkerInfo}
+          displayLinkerInfo={displayLinkerInfo}
         />
       </>
     );
@@ -853,7 +815,7 @@ const FeatureView = props => {
             />
             <Card>
               <Card.Body>
-                <diiv>
+                <div>
                   {<Loading show={showLoading} />}
                   <ErrorSummary
                     show={showErrorSummary}
@@ -867,7 +829,7 @@ const FeatureView = props => {
 
                     {getLinker()}
 
-                    {showLinkerView && props.linker
+                    {(showLinkerView && props.linker) || displayLinkerInfo
                       ? getLinkerDetailsModal(props.linker, "case4")
                       : getLinkerDetailsModal(featureDetails.linker, "view")}
 
@@ -885,8 +847,9 @@ const FeatureView = props => {
                           (featureDetails.metadata.descriptors && featureDetails.metadata.descriptors.length > 0)) &&
                         featureMetadata()}
 
-                    {props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" &&
-                    (props.rangeGlycoPeptides || props.glycoPeptides)
+                    {(props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ||
+                      featureDetails.type === "GPLINKEDGLYCOPEPTIDE") &&
+                    (props.rangeGlycoPeptides || props.glycoPeptides || featureDetails.peptides)
                       ? getGlycoProteinLinkedPeptide()
                       : props.glycans
                       ? getSelectedGlycanList()
@@ -906,7 +869,7 @@ const FeatureView = props => {
                       )}
                     </div>
                   </Form>
-                </diiv>
+                </div>
               </Card.Body>
             </Card>
           </div>
@@ -915,6 +878,106 @@ const FeatureView = props => {
     );
   };
   return <>{getFeatureDetails()}</>;
+};
+
+const displayDetails = (linker, page, label) => {
+  return (
+    <>
+      {label !== "Linker" && (
+        <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
+          <Col xs={12} lg={9}>
+            <h4 className="gg-blue">{label}</h4>
+          </Col>
+        </Form.Group>
+      )}
+
+      <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+        <Col xs={12} lg={9}>
+          <FormLabel label="Name" />
+          <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.name} />
+        </Col>
+      </Form.Group>
+
+      <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
+        <Col xs={12} lg={9}>
+          <FormLabel label="Type" />
+          <Form.Control type="text" disabled={page === "case4"} readOnly={page === "view"} value={linker.type} />
+        </Col>
+      </Form.Group>
+
+      {(linker.sequence || linker.inChiSequence) && linker.type !== "LIPID" && (
+        <Form.Group as={Row} controlId="sequence" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={linker.sequence ? "Sequence" : "InChI"} />
+            <Form.Control
+              rows={linker.sequence ? "10" : "4"}
+              as="textarea"
+              disabled={page === "case4"}
+              readOnly={page === "view"}
+              value={linker.sequence ? linker.sequence : linker.inChiSequence}
+            />
+          </Col>
+        </Form.Group>
+      )}
+
+      {linker.type === "LIPID" && linker.imageURL && (
+        <Form.Group as={Row} controlId="image" className="gg-align-center">
+          <Col md={4}>
+            <StructureImage imgUrl={linker.imageURL} />
+          </Col>
+        </Form.Group>
+      )}
+    </>
+  );
+};
+
+const linkerDetailsOnModal = (linker, page) => {
+  return (
+    <>
+      {displayDetails(linker, page, "Linker")}
+
+      {linker.mass && (
+        <Form.Group as={Row} controlId="mass" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Monoisotopic Mass" />
+            <Form.Control
+              type="text"
+              disabled={page === "case4"}
+              readOnly={page === "view"}
+              value={addCommas(parseInt(linker.mass).toFixed(2)) + " Da"}
+            />
+          </Col>
+        </Form.Group>
+      )}
+
+      {linker.iupacName && (
+        <Form.Group as={Row} controlId="iupacName" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"IUPAC Name"} />
+            <Form.Control type="text" value={linker.iupacName} disabled={page === "case4"} readOnly={page === "view"} />
+          </Col>
+        </Form.Group>
+      )}
+
+      {linker.smiles && (
+        <Form.Group as={Row} controlId="smiles" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Canonical SMILES"} />
+            <Form.Control type="text" value={linker.smiles} disabled={page === "case4"} readOnly={page === "view"} />
+          </Col>
+        </Form.Group>
+      )}
+
+      {linker.source && (
+        <ViewSourceInfo
+          source={linker.source.type}
+          commercial={linker.source.commercial}
+          nonCommercial={linker.source.nonCommercial}
+          isUpdate
+        />
+      )}
+    </>
+  );
 };
 
 function getReducingEndState(opensRing) {
@@ -935,4 +998,4 @@ function getReducingEndState(opensRing) {
   }
 }
 
-export { FeatureView, getReducingEndState };
+export { FeatureView, getReducingEndState, linkerDetailsOnModal, displayDetails };

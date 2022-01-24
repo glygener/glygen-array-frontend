@@ -20,12 +20,12 @@ import { Proteins } from "./Proteins";
 import { Lipids } from "./Lipids";
 import { SourceForGlycanInFeature } from "../components/SourceForGlycanInFeature";
 import { FeatureView } from "./FeatureView";
-import { getToolTip } from "../utils/commonUtils";
+import { getToolTip, viewGlycoPeptide } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { GlycoPeptides } from "../components/GlycoPeptides";
 import { useHistory, Link } from "react-router-dom";
-import { GlycanInfoViewModal } from "../components/GlycanInfoViewModal";
+import { ViewInfoModal } from "../components/ViewInfoModal";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { MetaData, getDescriptorGroups, getDescriptors } from "./MetaData";
 import Container from "@material-ui/core/Container";
@@ -88,8 +88,12 @@ const AddFeature = props => {
   const [invalidMinRange, setInvalidMinRange] = useState(false);
   const [invalidMaxRange, setInvalidMaxRange] = useState(false);
 
-  const [glycanViewInfo, setGlycanViewInfo] = useState(false);
+  const [glycanViewInfo, setGlycanViewInfo] = useState();
   const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
+
+  const [linkerViewInfo, setLinkerViewInfo] = useState();
+  const [enableLinkerView, setEnableLinkerView] = useState(false);
+
   const [enableGlycoPeptideRange, setEnableGlycoPeptideRange] = useState(false);
   const [rowSelectedForRange, setRowSelectedForRange] = useState(false);
 
@@ -1042,8 +1046,10 @@ const AddFeature = props => {
       protein: featureAddState.protein,
       peptides: glycoPep,
       positionMap: featureAddState.glycoPeptides.reduce((map, glycoPeptideObj) => {
-        if (glycoPeptideObj && glycoPeptideObj.glycoPeptide && glycoPeptideObj.glycoPeptide.id) {
-          map[glycoPeptideObj.position] = glycoPeptideObj.glycoPeptide.id;
+        if (glycoPeptideObj && glycoPeptideObj.glycoPeptide && glycoPeptideObj.glycoPeptide.uri) {
+          map[glycoPeptideObj.position] = glycoPeptideObj.glycoPeptide.uri;
+        } else if (glycoPeptideObj && glycoPeptideObj.uri) {
+          map[glycoPeptideObj.position] = glycoPeptideObj.uri;
         }
         return map;
       }, {}),
@@ -1241,7 +1247,9 @@ const AddFeature = props => {
     return (
       <>
         <Form className="radioform">
-          <Row className5="gg-align-center">
+          <Row
+          // className5="gg-align-center"
+          >
             <Col sm="auto">
               <RadioGroup name="molecule-type" onChange={handleTypeSelect} value={featureAddState.type}>
                 {Object.keys(featureTypes).map(key => {
@@ -1339,7 +1347,6 @@ const AddFeature = props => {
                     defaultValue={featureAddState.linker.name ? featureAddState.linker.name : ""}
                   />
                 </>
-                // <label> {featureAddState.linker.name ? featureAddState.linker.name : ""}</label>
               )}
             </Col>
           </Form.Group>
@@ -1356,7 +1363,6 @@ const AddFeature = props => {
                     defaultValue={featureAddState.linker.iupacName ? featureAddState.linker.iupacName : ""}
                   />
                 </>
-                {/* <label>{featureAddState.linker.iupacName ? featureAddState.linker.iupacName : ""}</label> */}
               </Col>
             </Form.Group>
           )}
@@ -1441,7 +1447,22 @@ const AddFeature = props => {
                     accessor: "linker",
                     Cell: (row, index) => {
                       return row.original.linker ? (
-                        getToolTip(row.original.linker.name)
+                        <>
+                          <LineTooltip text="Linker Details">
+                            <FontAwesomeIcon
+                              key={"linkerView"}
+                              icon={["far", "eye"]}
+                              alt="View icon"
+                              size="lg"
+                              color="#45818e"
+                              className="tbl-icon-btn"
+                              onClick={() => {
+                                setEnableLinkerView(true);
+                                setLinkerViewInfo(row.original.linker);
+                              }}
+                            />
+                          </LineTooltip>
+                        </>
                       ) : (
                         <Button
                           className="gg-btn-outline-reg"
@@ -1463,11 +1484,23 @@ const AddFeature = props => {
                 ]
               : []),
             {
-              Header: "",
+              Header: "Action",
               // eslint-disable-next-line react/display-name
-              Cell: ({ row, index }) => {
-                return row.glycan ? (
+              Cell: (row, index) => {
+                return row.original && row.original.glycan ? (
                   <>
+                    <LineTooltip text="View Details">
+                      <FontAwesomeIcon
+                        key={"view" + index}
+                        icon={["far", "eye"]}
+                        alt="View icon"
+                        size="lg"
+                        color="#45818e"
+                        className="tbl-icon-btn"
+                        onClick={() => getGlycanInfoDisplay(row)}
+                      />
+                    </LineTooltip>
+
                     <FontAwesomeIcon
                       key={"delete" + index}
                       icon={["far", "trash-alt"]}
@@ -1478,7 +1511,7 @@ const AddFeature = props => {
                       onClick={() => {
                         let glycansList = featureAddState.glycans;
 
-                        let selectedPosition = glycansList.find(e => e.position === row.position);
+                        let selectedPosition = glycansList.find(e => e.position === row.original.position);
                         let positionIndex = featureAddState.glycans.indexOf(selectedPosition);
 
                         selectedPosition.glycan = undefined;
@@ -1497,7 +1530,7 @@ const AddFeature = props => {
                       onClick={() => {
                         displayGlycanPicker(index);
                         let positionSelected = {};
-                        positionSelected.number = row.position;
+                        positionSelected.number = row.original.position;
                         positionSelected.isPosition = true;
 
                         setFeatureAddState({ positionDetails: positionSelected });
@@ -1531,12 +1564,6 @@ const AddFeature = props => {
   const getCase3GlycoProteinLinkedPeptideFeature = () => {
     return (
       <>
-        {/* <div className="text-center mt-4 mb-4">
-          <h3 className="gg-blue">List of GlycoPeptides in Positions</h3>
-          <h5>
-            Add GlycoPeptide and linker for each available position below by clicking <strong>Pick Glycan</strong>
-          </h5>
-        </div> */}
         <PageHeading
           title="List of GlycoPeptides in Positions"
           subTitle="Add glycoPeptide and linker for each available position below."
@@ -1578,33 +1605,46 @@ const AddFeature = props => {
               accessor: "glycoPeptide",
               Cell: (row, index) => {
                 return row.value && row.value.linker ? (
-                  <Link key={index} to={"/linkers/editLinker/" + row.value.id} target="_blank">
-                    {getToolTip(row.value.linker.name)}
-                  </Link>
+                  <>
+                    <LineTooltip text="Linker Details">
+                      <FontAwesomeIcon
+                        key={"linkerView"}
+                        icon={["far", "eye"]}
+                        alt="View icon"
+                        size="lg"
+                        color="#45818e"
+                        className="tbl-icon-btn"
+                        onClick={() => {
+                          setEnableLinkerView(true);
+                          setLinkerViewInfo(row.value.linker);
+                        }}
+                      />
+                    </LineTooltip>
+                  </>
                 ) : (
                   "No Linker Selected"
                 );
-                //   <Button
-                //     style={{
-                //       backgroundColor: "lightgray"
-                //     }}
-                //     onClick={() => {
-                //       setLinkerForSelectedGlycoPeptide(row.original);
-                //       setShowLinkerPicker(true);
-                //     }}
-                //     disabled={!row.original.glycoPeptide}
-                //   >
-                //     Add linker
-                //   </Button>
               },
               minWidth: 100
             },
             {
               Header: "",
               // eslint-disable-next-line react/display-name
-              Cell: ({ row, index }) => {
-                return row.glycoPeptide && row.glycoPeptide.name ? (
+              Cell: (row, index) => {
+                return row.original && row.original.glycoPeptide && row.original.glycoPeptide.name ? (
                   <>
+                    <LineTooltip text="View Details">
+                      <FontAwesomeIcon
+                        key={"view" + index}
+                        icon={["far", "eye"]}
+                        alt="View icon"
+                        size="lg"
+                        color="#45818e"
+                        className="tbl-icon-btn"
+                        onClick={() => viewGlycoPeptide(row)}
+                      />
+                    </LineTooltip>
+
                     <FontAwesomeIcon
                       key={"delete" + index}
                       icon={["far", "trash-alt"]}
@@ -1615,7 +1655,7 @@ const AddFeature = props => {
                       onClick={() => {
                         let glycoPeptidesList = featureAddState.glycoPeptides;
 
-                        let selectedPosition = glycoPeptidesList.find(e => e.position === row.position);
+                        let selectedPosition = glycoPeptidesList.find(e => e.position === row.original.position);
                         let positionIndex = featureAddState.glycoPeptides.indexOf(selectedPosition);
 
                         selectedPosition.glycoPeptide = undefined;
@@ -1634,7 +1674,7 @@ const AddFeature = props => {
                         setShowGlycoPeptides(true);
 
                         let positionSelected = {};
-                        positionSelected.number = row.position;
+                        positionSelected.number = row.original.position;
                         positionSelected.isPosition = true;
 
                         setFeatureAddState({ positionDetails: positionSelected });
@@ -1656,6 +1696,16 @@ const AddFeature = props => {
           showSearchBox
         />
         {showGlycoPeptides && getGlycoPeptidesModal()}
+
+        {enableLinkerView && (
+          <ViewInfoModal
+            setEnableModal={setEnableLinkerView}
+            enableModal={enableLinkerView}
+            linker={linkerViewInfo}
+            title={"Linker Information"}
+            display={"view"}
+          />
+        )}
       </>
     );
   };
@@ -1670,17 +1720,6 @@ const AddFeature = props => {
     setFeatureAddState({ rangeGlycoPeptides: glycoPeptidesList });
   };
 
-  const viewGlycoPeptide = row => {
-    let glycoPeptideId =
-      row.original && row.original.glycoPeptide
-        ? row.original.glycoPeptide.id
-        : row.original && row.original.id
-        ? row.original.id
-        : row.id;
-
-    window.open(`/features/viewFeature/${glycoPeptideId}`, "_blank");
-  };
-
   const glycoPeptideList = () => {
     return (
       <>
@@ -1689,7 +1728,6 @@ const AddFeature = props => {
           viewOnClick={viewGlycoPeptide}
           selectButtonHeader="Select"
           showSelectButton
-          // ={featureAddState.rangeGlycoPeptides.length > 0 ? false : true}
           selectButtonHandler={
             featureAddState.positionDetails.isPosition
               ? handleGlycoPeptideSelectionForPosition
@@ -1716,9 +1754,6 @@ const AddFeature = props => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>{glycoPeptideList()}</Modal.Body>
-          {/* <Modal.Footer>
-            <Button onClick={() => setShowGlycoPeptides(false)}>Close</Button>
-          </Modal.Footer> */}
         </Modal>
       </>
     );
@@ -1743,9 +1778,6 @@ const AddFeature = props => {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>{getTableforLinkers(true)}</Modal.Body>
-            {/* <Modal.Footer>
-              <Button onClick={() => setShowLinkerPicker(false)}>Close</Button>
-            </Modal.Footer> */}
           </Modal>
         )}
       </>
@@ -1794,12 +1826,6 @@ const AddFeature = props => {
                     Header: "",
                     // eslint-disable-next-line react/display-name
                     Cell: ({ index }) => (
-                      // <input
-                      //   key={index}
-                      //   type="button"
-                      //   onClick={() => displayGlycanPicker(index)}
-                      //   value={"Pick Glycan"}
-                      // />
                       <Button key={index} onClick={() => displayGlycanPicker(index)} className="gg-btn-outline-reg">
                         {/* Pick Glycan */}
                         Select Glycan
@@ -1864,13 +1890,6 @@ const AddFeature = props => {
   const getSelectedGlycanListWizard = () => {
     return (
       <>
-        {/* <div className="text-center mt-4 mb-4">
-          <h3 className="gg-blue">List of Glycans</h3>
-          <h5>
-            Add one or more glycans to the linker by clicking <strong>Pick Glycan</strong> and providing the glycan
-            details.
-          </h5>
-        </div> */}
         <PageHeading
           title="List of Glycans"
           subTitle="Add one or more glycans to the linker and provide the glycan details."
@@ -1905,10 +1924,6 @@ const AddFeature = props => {
   const getSelectedGlycoPeptideListWizard = () => {
     return (
       <>
-        {/* <div style={{ textAlign: "center", marginTop: "50px" }}>
-          <h3>{"List of GlycoPeptides"}</h3>
-          <p>{"Add one or more glycopeptides to the protein by clicking ‘Pick GlycoPeptide."}</p>
-        </div> */}
         <PageHeading title="List of GlycoPeptides" subTitle="Add one or more glycoPeptides to the protein." />
         <div className="text-center mb-4">
           <Button
@@ -2009,18 +2024,6 @@ const AddFeature = props => {
               </div>
             </Row>
           </Modal.Body>
-          {/* <Modal.Footer>
-            <Button
-              onClick={() => setEnableGlycoPeptideRange(false)}
-              style={{
-                backgroundColor: "lightgray",
-                border: "none",
-                color: "black",
-              }}
-            >
-              Close
-            </Button>
-          </Modal.Footer> */}
         </Modal>
       </>
     );
@@ -2071,6 +2074,8 @@ const AddFeature = props => {
         setEnableGlycoPeptideRange={setEnableGlycoPeptideRange}
         enableGlycoPeptideRange={enableGlycoPeptideRange}
         setRowSelectedForRange={setRowSelectedForRange}
+        setDisplayLinkerInfo={setLinkerViewInfo}
+        displayLinkerInfo={linkerViewInfo}
       />
     );
   };
@@ -2307,7 +2312,23 @@ const AddFeature = props => {
                     accessor: "linker",
                     Cell: (row, index) => {
                       return row.original.linker ? (
-                        getToolTip(row.original.linker.name)
+                        <>
+                          <LineTooltip text="Linker Details">
+                            <FontAwesomeIcon
+                              key={"linkerView"}
+                              icon={["far", "eye"]}
+                              alt="View icon"
+                              size="lg"
+                              color="#45818e"
+                              className="tbl-icon-btn"
+                              onClick={() => {
+                                // linkerDetailsOnModal(row.original.linker, "view");
+                                setEnableLinkerView(true);
+                                setLinkerViewInfo(row.original.linker);
+                              }}
+                            />
+                          </LineTooltip>
+                        </>
                       ) : (
                         <Button
                           className="gg-btn-outline-reg"
@@ -2380,11 +2401,24 @@ const AddFeature = props => {
           showRowsInfo={false}
           infoRowsText="Selected Glycans"
         />
+
         {enableGlycanViewInfoDialog && (
-          <GlycanInfoViewModal
-            setEnableGlycanViewInfoDialog={setEnableGlycanViewInfoDialog}
-            enableGlycanViewInfoDialog={enableGlycanViewInfoDialog}
+          <ViewInfoModal
+            setEnableModal={setEnableGlycanViewInfoDialog}
+            enableModal={enableGlycanViewInfoDialog}
             glycanViewInfo={glycanViewInfo}
+            title={"Glycan Information"}
+            glycanView
+          />
+        )}
+
+        {enableLinkerView && (
+          <ViewInfoModal
+            setEnableModal={setEnableLinkerView}
+            enableModal={enableLinkerView}
+            linker={linkerViewInfo}
+            title={"Linker Information"}
+            display={"view"}
           />
         )}
       </>
@@ -2407,7 +2441,7 @@ const AddFeature = props => {
         metadata={featureMetadata}
         rangeGlycans={featureAddState.rangeGlycans}
         rangeGlycoPeptides={featureAddState.rangeGlycoPeptides}
-        viewGlycoPeptide={viewGlycoPeptide}
+        // viewGlycoPeptide={viewGlycoPeptide}
         glycoPeptides={featureAddState.glycoPeptides}
         glycans={
           (featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN") &&

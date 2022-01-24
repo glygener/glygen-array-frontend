@@ -48,7 +48,7 @@
     "GLYCOLIPID": "GlycoLipid",
     "GLYCOPEPTIDE": "GlycoPeptide",
     "GLYCOPROTEIN": "GlycoProtein",
-    "GPLINKEDGLYCOPEPTIDE,": "GlycoProtein Linked GlycoPeptide",
+    "GPLINKEDGLYCOPEPTIDE": "GlycoProtein Linked GlycoPeptide",
     "CONTROL": "Control",
     "NEGATIVE_CONTROL": "Negative Control",
     "COMPOUND": "Organic Compound",

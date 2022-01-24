@@ -6,6 +6,9 @@ import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
 import { getToolTip } from "../utils/commonUtils";
 import { Button } from "@material-ui/core";
+import { LineTooltip } from "./tooltip/LineTooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ViewInfoModal } from "./ViewInfoModal";
 
 const GlycoPeptides = props => {
   return (
@@ -47,17 +50,38 @@ const GlycoPeptides = props => {
           },
           {
             Header: "Linker",
-            accessor: "linker",
-            // eslint-disable-next-line react/display-name
-            Cell: ({ value, index }) => {
-              return value && value.name ? (
-                <Link key={index} to={"/linkers/editLinker/" + value.id} target="_blank">
-                  {getToolTip(value.name)}
+            accessor: "glycoPeptide",
+            Cell: (row, index) => {
+              debugger;
+              return props.setDisplayLinkerInfo &&
+                row.original &&
+                ((row.original.glycoPeptide && row.original.glycoPeptide.linker) || row.original.linker) ? (
+                <>
+                  <LineTooltip text="Linker Details">
+                    <FontAwesomeIcon
+                      key={"linkerView"}
+                      icon={["far", "eye"]}
+                      alt="View icon"
+                      size="lg"
+                      color="#45818e"
+                      className="tbl-icon-btn"
+                      onClick={() => {
+                        row.original.glycoPeptide
+                          ? props.setDisplayLinkerInfo(row.original.glycoPeptide.linker)
+                          : props.setDisplayLinkerInfo(row.original.linker);
+                      }}
+                    />
+                  </LineTooltip>
+                </>
+              ) : row.original && row.original.linker && row.original.name ? (
+                <Link key={index} to={"/linkers/editLinker/" + row.original.linker.id} target="_blank">
+                  {getToolTip(row.original.linker.name)}
                 </Link>
               ) : (
-                ""
+                "No Linker Selected"
               );
-            }
+            },
+            minWidth: 100
           },
           ...(props.LinkerandRange
             ? [
@@ -108,6 +132,16 @@ const GlycoPeptides = props => {
         showSelectButton={props.showSelectButton}
         selectButtonHandler={props.selectButtonHandler}
       />
+
+      {props.displayLinkerInfo && (
+        <ViewInfoModal
+          setEnableModal={props.setDisplayLinkerInfo}
+          enableModal={props.displayLinkerInfo}
+          linker={props.displayLinkerInfo}
+          title={"Linker Information"}
+          display={"view"}
+        />
+      )}
     </>
   );
 };

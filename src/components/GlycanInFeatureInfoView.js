@@ -3,7 +3,6 @@ import { Row, Col, Form } from "react-bootstrap";
 import { FormLabel } from "../components/FormControls";
 import { StructureImage } from "./StructureImage";
 import { externalizeUrl } from "../utils/commonUtils";
-import { Link } from "@material-ui/core";
 import { PublicationCard } from "./PublicationCard";
 import { ViewSourceInfo } from "./ViewSourceInfo";
 import { getReducingEndState } from "../containers/FeatureView";
@@ -53,9 +52,26 @@ const GlycanInFeatureInfoView = props => {
       glycanInfo.glycan.papers = props.glycan.publications;
 
       setGlycanDetails(glycanInfo);
+    } else if (props.glycan && props.glycan.position) {
+      glycanInfo = props.glycan.glycan;
+
+      if (source.type) {
+        glycanInfo.source = source;
+      } else {
+        source = getSource(glycanInfo.source);
+        source.type = glycanInfo.source.type;
+        glycanInfo.source = source;
+      }
+
+      setGlycanDetails({ glycan: glycanInfo });
     } else {
       glycanInfo = props.glycan;
+
       if (source.type) {
+        glycanInfo.source = source;
+      } else {
+        source = getSource(glycanInfo.source);
+        source.type = glycanInfo.source.type;
         glycanInfo.source = source;
       }
 
@@ -78,22 +94,49 @@ const GlycanInFeatureInfoView = props => {
 
   function getNonCommercial(source) {
     let nonComm = {};
-    nonComm.providerLab = source.providerLab;
-    nonComm.method = source.method;
-    nonComm.batchId = source.batchId;
-    nonComm.sourceComment = source.comment;
+
+    if (source.nonCommercial) {
+      nonComm.providerLab = source.nonCommercial.providerLab;
+      nonComm.method = source.nonCommercial.method;
+      nonComm.batchId = source.nonCommercial.batchId;
+      nonComm.sourceComment = source.nonCommercial.sourceComment;
+    } else {
+      nonComm.providerLab = source.providerLab;
+      nonComm.method = source.method;
+      nonComm.batchId = source.batchId;
+      nonComm.sourceComment = source.comment;
+    }
 
     return nonComm;
   }
 
   function getCommercial(source) {
     let comm = {};
-    comm.vendor = source.vendor;
-    comm.catalogueNumber = source.catalogueNumber;
-    comm.batchId = source.batchId;
+
+    if (source.commercial) {
+      comm.vendor = source.commercial.vendor;
+      comm.catalogueNumber = source.commercialcatalogueNumber;
+      comm.batchId = source.commercial.batchId;
+    } else {
+      comm.vendor = source.vendor;
+      comm.catalogueNumber = source.catalogueNumber;
+      comm.batchId = source.batchId;
+    }
 
     return comm;
   }
+
+  const getViewSource = () => {
+    return (
+      <>
+        <ViewSourceInfo
+          source={glycanDetails.glycan.source.type}
+          commercial={glycanDetails.glycan.source.commercial}
+          nonCommercial={glycanDetails.glycan.source.nonCommercial}
+        />
+      </>
+    );
+  };
 
   return (
     <>
@@ -180,9 +223,9 @@ const GlycanInFeatureInfoView = props => {
 
       {glycanDetails.glycan.papers && glycanDetails.glycan.papers.length > 0 && (
         <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3 mb-0">
-           <Col xs={12} lg={9}>
-          <FormLabel label="Publications" />
-            {glycanDetails.glycan.papers.map((pub) => {
+          <Col xs={12} lg={9}>
+            <FormLabel label="Publications" />
+            {glycanDetails.glycan.papers.map(pub => {
               return (
                 <div>
                   <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
@@ -226,11 +269,7 @@ const GlycanInFeatureInfoView = props => {
           </Col>
         </Form.Group>
       ) : (
-        <ViewSourceInfo
-          source={glycanDetails.glycan.source.type}
-          commercial={glycanDetails.glycan.source.commercial}
-          nonCommercial={glycanDetails.glycan.source.nonCommercial}
-        />
+        getViewSource()
       )}
     </>
   );
