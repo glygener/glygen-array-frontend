@@ -36,7 +36,6 @@ const MetaData = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [addDescriptorSelection, setAddDescriptorSelection] = useState("select");
   const [loadDataOnFirstNextInUpdate, setLoadDataOnFirstNextInUpdate] = useState(false);
-  const [addDescriptorSubGroupSelection, setAddDescriptorSubGroupSelection] = useState("select");
   const [mandateGroupLimitDeceed, setMandateGroupLimitDeceed] = useState(new Map());
   const [mandateGroupLimitExceed, setMandateGroupLimitExceed] = useState(new Map());
 
@@ -339,117 +338,6 @@ const MetaData = props => {
     return dateField;
   }
 
-  const editDescriptorGroup = selectedDescriptorSubGroup => {
-    return (
-      <>
-        <div>
-          <Form.Group
-            as={Row}
-            controlId={""}
-            style={{
-              textAlign: "right"
-            }}
-          >
-            <Col md={8}>
-              <h6
-                style={{
-                  textAlign: "left"
-                }}
-              >
-                Descriptors
-              </h6>
-              <Form.Control
-                as="select"
-                value={addDescriptorSubGroupSelection}
-                onChange={handleDescriptorSubGroupSelectChange}
-                key={addDescriptorSubGroupSelection}
-              >
-                {getDescriptorSubGroupOptions(selectedDescriptorSubGroup)}
-              </Form.Control>
-            </Col>
-            {addDescriptorSubGroupSelection !== "Select" && addDescriptorSubGroupSelection !== "select" && (
-              <FontAwesomeIcon
-                className={"plus-button-icon"}
-                icon={["fas", "plus"]}
-                size="lg"
-                title="Add Sub Group Descriptors"
-                // onClick={() => handleAddSubGroupDescriptors(selectedDescriptorSubGroup, addDescriptorSubGroupSelection)}
-              />
-            )}
-          </Form.Group>
-        </div>
-      </>
-    );
-  };
-
-  const getDescriptorSubGroupOptions = selectedDescriptorSubGroup => {
-    var sampleType;
-    var options = [];
-    var sortOptions = [];
-
-    if (isUpdate) {
-      sampleType = { ...sampleModel };
-    } else {
-      sampleType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
-    }
-    const subGroupSelected = sampleType.descriptors.find(i => i.name === selectedDescriptorSubGroup.name);
-
-    options.push(
-      <option key={0} value={"select"}>
-        select
-      </option>
-    );
-
-    subGroupSelected.descriptors.forEach(descriptor => {
-      if (!descriptor.group && descriptor.maxOccurrence > 1) {
-        const occurrances = sortOptions.filter(i => i === descriptor.name);
-        occurrances.length < 1 && sortOptions.push(descriptor.name);
-      } else if (descriptor.maxOccurrence > 1) {
-        const occurrances = sortOptions.filter(i => i === descriptor.name);
-        occurrances.length < 1 && sortOptions.push(descriptor.name);
-      }
-    });
-
-    sortOptions.sort().forEach((element, index) => {
-      options.push(
-        <option key={index} value={element}>
-          {element}
-        </option>
-      );
-    });
-
-    return options;
-  };
-
-  const getDescriptorSubGroup = selectedDescriptorSubGroup => {
-    const popover = (
-      <Popover
-        id="popover-basic"
-        style={{
-          width: "30%"
-        }}
-      >
-        <Popover.Title as="h3"> &nbsp;</Popover.Title>
-        <Popover.Content>{editDescriptorGroup(selectedDescriptorSubGroup)}</Popover.Content>
-      </Popover>
-    );
-
-    return (
-      <LineTooltip text="Add Sub Group Descriptors">
-        <Link to={"cog"}>
-          <OverlayTrigger rootClose trigger="click" placement="left" overlay={popover}>
-            <FontAwesomeIcon
-              className={"add-subGroup-button"}
-              icon={["fas", "cog"]}
-              size="xs"
-              title={"Add Sub Group Descriptors"}
-            />
-          </OverlayTrigger>
-        </Link>
-      </LineTooltip>
-    );
-  };
-
   const getAddons = () => {
     const popover = (
       <Popover
@@ -527,11 +415,6 @@ const MetaData = props => {
     );
   };
 
-  const handleDescriptorSubGroupSelectChange = e => {
-    const value = e.target.value;
-    setAddDescriptorSubGroupSelection(value);
-  };
-
   const getDescriptorOptions = () => {
     const options = [];
     var sortOptions = [];
@@ -559,14 +442,12 @@ const MetaData = props => {
       if (!desc.mandateGroup) {
         if (desc.maxOccurrence === 1 && !desc.mandatory) {
           if (desc.group) {
-            debugger;
             if (desc.isDeleted) {
               occurrances.length < 1 && sortOptions.push(desc.name);
             }
           }
         } else if (desc.maxOccurrence > 1) {
           let currentDisplayCount = descriptors.filter(e => e.name === desc.name);
-
           if (currentDisplayCount.length < desc.maxOccurrence) {
             occurrances.length < 1 && sortOptions.push(desc.name);
           }
@@ -1553,7 +1434,7 @@ const MetaData = props => {
       i => i.group === true && i.mandateGroup && (i.mandateGroup.notRecorded || i.mandateGroup.notApplicable)
     );
 
-    const remainingGroups = NAorNRSelectedGroups.forEach(e => {
+    NAorNRSelectedGroups.forEach(e => {
       let deleteList = groupDescriptors.filter(i => i.mandateGroup.id === e.mandateGroup.id);
 
       deleteList.forEach(i => {
