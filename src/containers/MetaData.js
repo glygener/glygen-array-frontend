@@ -553,16 +553,26 @@ const MetaData = props => {
       </option>
     );
 
-    descriptors &&
-      descriptors.forEach(descriptor => {
-        if (!descriptor.group && descriptor.maxOccurrence > 0) {
-          const occurrances = sortOptions.filter(i => i === descriptor.name);
-          occurrances.length < 1 && sortOptions.push(descriptor.name);
-        } else if (descriptor.maxOccurrence > 0) {
-          const occurrances = sortOptions.filter(i => i === descriptor.name);
-          occurrances.length < 1 && sortOptions.push(descriptor.name);
+    descriptors.forEach(desc => {
+      const occurrances = sortOptions.filter(i => i === desc.name);
+
+      if (!desc.mandateGroup) {
+        if (desc.maxOccurrence === 1 && !desc.mandatory) {
+          if (desc.group) {
+            debugger;
+            if (desc.isDeleted) {
+              occurrances.length < 1 && sortOptions.push(desc.name);
+            }
+          }
+        } else if (desc.maxOccurrence > 1) {
+          let currentDisplayCount = descriptors.filter(e => e.name === desc.name);
+
+          if (currentDisplayCount.length < desc.maxOccurrence) {
+            occurrances.length < 1 && sortOptions.push(desc.name);
+          }
         }
-      });
+      }
+    });
 
     sortOptions.sort().forEach((element, index) => {
       options.push(
@@ -753,6 +763,7 @@ const MetaData = props => {
   };
 
   const handleDelete = id => {
+    debugger;
     var sampleModelDelete;
     var itemByType;
     var itemByTypeIndex;
@@ -1516,12 +1527,12 @@ const MetaData = props => {
       name: metaDataDetails.name,
       description: metaDataDetails.description,
       user: {
-        name: window.localStorage.getItem("loggedinuser"),
+        name: window.localStorage.getItem("loggedinuser")
       },
       template: metaDataDetails.selectedtemplate,
       descriptors: descriptors,
       descriptorGroups: descriptorGroups,
-      id: isUpdate ? metaDataDetails.id : "",
+      id: isUpdate ? metaDataDetails.id : ""
     };
     return props.importedPageData ? objectToBeSaved : JSON.stringify(objectToBeSaved);
   }
@@ -1551,8 +1562,8 @@ const MetaData = props => {
       });
     });
 
-    const mandatoryGroupsFilled = groupDescriptors.filter(function (e) {
-      const filledDesc = e.descriptors.filter(function (subDescriptor) {
+    const mandatoryGroupsFilled = groupDescriptors.filter(function(e) {
+      const filledDesc = e.descriptors.filter(function(subDescriptor) {
         if (!subDescriptor.group && subDescriptor.value) {
           return subDescriptor;
         } else if (subDescriptor.group) {
@@ -1571,7 +1582,7 @@ const MetaData = props => {
     let mandateGroupExceed = new Map();
     let mandateGroupDeceed = new Map();
 
-    groupDescriptors.filter(function (e) {
+    groupDescriptors.filter(function(e) {
       const sameGroupItems = mandatoryGroupsFilled.filter(i => i.mandateGroup.id === e.mandateGroup.id);
       if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.xorMandate).length > 1) {
         mandateGroupExceed.set(e.mandateGroup.id, sameGroupItems);
@@ -1599,7 +1610,7 @@ const MetaData = props => {
 
       for (var descriptorPair of itr) {
         var pair = descriptorPair[1];
-        pair.filter(function (desc) {
+        pair.filter(function(desc) {
           if (!desc.xorMandate && desc.descriptors.filter(i => i.value).length > 0) {
             mandateGroupDeceed.delete(descriptorPair[0]);
           } else if (desc.xorMandate && desc.descriptors.filter(i => i.value && i.value !== undefined).length > 0) {
@@ -1661,6 +1672,7 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
+      debugger;
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
           if (desc.group) {
@@ -1691,7 +1703,7 @@ const MetaData = props => {
         selectedtemplate: responseJson.template,
         description: responseJson.description,
         sample: responseJson,
-        id: responseJson.id,
+        id: responseJson.id
       });
 
       !props.isCopy && setUpdateSampleName(responseJson.name);
@@ -1704,7 +1716,7 @@ const MetaData = props => {
   function getSampleTemplateSuccess(response) {
     response.json().then(responseJson => {
       setMetaDataDetails({
-        type: responseJson.name,
+        type: responseJson.name
       });
 
       if (props.importedInAPage && props.importedPageData && props.importedPageData.id) {
@@ -2077,7 +2089,7 @@ const MetaData = props => {
                 <div
                   style={{
                     marginBottom: "100px",
-                    marginTop: "30px",
+                    marginTop: "30px"
                   }}
                 >
                   {getMetaData()}

@@ -6,6 +6,7 @@ import { externalizeUrl } from "../utils/commonUtils";
 import { PublicationCard } from "./PublicationCard";
 import { ViewSourceInfo } from "./ViewSourceInfo";
 import { getReducingEndState } from "../containers/FeatureView";
+import { getSource } from "../utils/FeatureUtils";
 
 const GlycanInFeatureInfoView = props => {
   const glycanInfoInit = {
@@ -78,53 +79,6 @@ const GlycanInFeatureInfoView = props => {
       setGlycanDetails({ glycan: glycanInfo });
     }
   }, []);
-
-  function getSource(sourceInfo) {
-    let source = {};
-    if (sourceInfo.type === "COMMERCIAL") {
-      let comm = getCommercial(sourceInfo);
-      source.commercial = comm;
-    } else if (sourceInfo.type === "NONCOMMERCIAL") {
-      let nonComm = getNonCommercial(sourceInfo);
-      source.nonCommercial = nonComm;
-    }
-
-    return source;
-  }
-
-  function getNonCommercial(source) {
-    let nonComm = {};
-
-    if (source.nonCommercial) {
-      nonComm.providerLab = source.nonCommercial.providerLab;
-      nonComm.method = source.nonCommercial.method;
-      nonComm.batchId = source.nonCommercial.batchId;
-      nonComm.sourceComment = source.nonCommercial.sourceComment;
-    } else {
-      nonComm.providerLab = source.providerLab;
-      nonComm.method = source.method;
-      nonComm.batchId = source.batchId;
-      nonComm.sourceComment = source.comment;
-    }
-
-    return nonComm;
-  }
-
-  function getCommercial(source) {
-    let comm = {};
-
-    if (source.commercial) {
-      comm.vendor = source.commercial.vendor;
-      comm.catalogueNumber = source.commercialcatalogueNumber;
-      comm.batchId = source.commercial.batchId;
-    } else {
-      comm.vendor = source.vendor;
-      comm.catalogueNumber = source.catalogueNumber;
-      comm.batchId = source.batchId;
-    }
-
-    return comm;
-  }
 
   const getViewSource = () => {
     return (

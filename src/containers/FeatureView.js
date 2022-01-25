@@ -7,7 +7,8 @@ import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
-import { getToolTip, addCommas, viewGlycoPeptide } from "../utils/commonUtils";
+import { getToolTip, addCommas } from "../utils/commonUtils";
+import { viewGlycoPeptide, getSource } from "../utils/FeatureUtils";
 import { ViewInfoModal } from "../components/ViewInfoModal";
 import { useHistory, Link } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -932,6 +933,23 @@ const displayDetails = (linker, page, label) => {
 };
 
 const linkerDetailsOnModal = (linker, page) => {
+  const buildSource = () => {
+    let source = {};
+    source = getSource(linker.source);
+    source.type = linker.source.type;
+
+    return (
+      <>
+        <ViewSourceInfo
+          source={source.type}
+          commercial={source.commercial}
+          nonCommercial={source.nonCommercial}
+          isUpdate
+        />
+      </>
+    );
+  };
+
   return (
     <>
       {displayDetails(linker, page, "Linker")}
@@ -968,14 +986,7 @@ const linkerDetailsOnModal = (linker, page) => {
         </Form.Group>
       )}
 
-      {linker.source && (
-        <ViewSourceInfo
-          source={linker.source.type}
-          commercial={linker.source.commercial}
-          nonCommercial={linker.source.nonCommercial}
-          isUpdate
-        />
-      )}
+      {linker.source && buildSource()}
     </>
   );
 };

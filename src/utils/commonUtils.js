@@ -375,14 +375,3 @@ export function getToolTip(displayValue) {
     </>
   );
 }
-
-export const viewGlycoPeptide = row => {
-  let glycoPeptideId =
-    row.original && row.original.glycoPeptide
-      ? row.original.glycoPeptide.id
-      : row.original && row.original.id
-      ? row.original.id
-      : row.id;
-
-  window.open(`/features/viewFeature/${glycoPeptideId}`, "_blank");
-};
