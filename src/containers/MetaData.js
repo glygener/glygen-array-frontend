@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Form, Row, Col, Button, Popover, OverlayTrigger, Alert } from "react-bootstrap";
 import { DragDropContext } from "react-beautiful-dnd";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Loading } from "../components/Loading";
 
 const MetaData = props => {
   // useEffect(props.authCheckAgent, []);
@@ -25,6 +26,7 @@ const MetaData = props => {
   const [errorName, setErrorName] = useState(false);
   const [errorType, setErrorType] = useState(false);
   const [sampleModel, setSampleModel] = useState([]);
+  const [showLoading, setShowLoading] = useState(false);
   const [enablePrompt, setEnablePrompt] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
@@ -40,8 +42,11 @@ const MetaData = props => {
   const [mandateGroupLimitExceed, setMandateGroupLimitExceed] = useState(new Map());
 
   useEffect(() => {
+    setShowLoading(true);
+
     if (props.metaID) {
       !props.isCopy && setIsUpdate(true);
+
       wsCall(
         props.getMetaData,
         "GET",
@@ -644,7 +649,6 @@ const MetaData = props => {
   };
 
   const handleDelete = id => {
-    debugger;
     var sampleModelDelete;
     var itemByType;
     var itemByTypeIndex;
@@ -1142,28 +1146,32 @@ const MetaData = props => {
       currentDefaultSelection[0].mandateGroup.notRecorded = false;
       itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
     } else if ((currentDefaultSelection.length === 1 && notApplicableOrRecorded) || !notApplicableOrRecorded) {
-      currentDefaultSelection[0] &&
-        currentDefaultSelection[0].descriptors &&
-        currentDefaultSelection[0].descriptors.forEach(d => {
-          if (d.group) {
-            var dg = d.descriptors;
-            dg.forEach(sgd => {
-              if (sgd.disabled) {
-                sgd.disabled = false;
-                sgd.notApplicable = false;
-                sgd.notRecorded = false;
+      if (currentDefaultSelection[0]) {
+        if (currentDefaultSelection[0].group) {
+          currentDefaultSelection[0].descriptors.forEach(d => {
+            if (d.group) {
+              var dg = d.descriptors;
+              dg.forEach(sgd => {
+                if (sgd.disabled) {
+                  sgd.disabled = false;
+                  sgd.notApplicable = false;
+                  sgd.notRecorded = false;
+                }
+                sgd.value = undefined;
+              });
+            } else if (!d.group) {
+              if (d.disabled) {
+                d.disabled = false;
+                d.notApplicable = false;
+                d.notRecorded = false;
               }
-              sgd.value = undefined;
-            });
-          } else if (!d.group) {
-            if (d.disabled) {
-              d.disabled = false;
-              d.notApplicable = false;
-              d.notRecorded = false;
+              d.value = undefined;
             }
-            d.value = undefined;
-          }
-        });
+          });
+        } else {
+          currentDefaultSelection[0].value = undefined;
+        }
+      }
 
       indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
       currentDefaultSelection[0].mandateGroup.defaultSelection = false;
@@ -1376,15 +1384,19 @@ const MetaData = props => {
     setValidated(true);
 
     if (e.currentTarget.checkValidity() && !isGroupMandate()) {
+      setShowLoading(true);
+
       if (props.importedPageData) {
         props.handleNext(e);
         props.setImportedPageDataToSubmit(metadataToSubmit());
+        setShowLoading(false);
       } else {
         if (isUpdate) {
           wsCall(props.updateMeta, "POST", null, true, metadataToSubmit(), addMetaSuccess, addMetaFailure);
         } else {
           wsCall(props.addMeta, "POST", null, true, metadataToSubmit(), addMetaSuccess, addMetaFailure);
         }
+        setShowLoading(false);
       }
     }
 
@@ -1553,7 +1565,6 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
-      debugger;
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
           if (desc.group) {
@@ -1574,6 +1585,7 @@ const MetaData = props => {
       if (responseJson.length === 1) {
         setMetaDataDetails({ selectedtemplate: responseJson[0].name });
       }
+      setShowLoading(false);
     });
   }
 
@@ -1606,6 +1618,7 @@ const MetaData = props => {
         setSampleModel(responseJson);
         props.importedInAPage && props.setMetadataforImportedPage(responseJson);
       }
+      setShowLoading(false);
     });
   }
 
@@ -1614,15 +1627,48 @@ const MetaData = props => {
 
     if (sampleModel.descriptors && sampleModel.descriptors.length > 0) {
       metaDataDetails.sample.descriptors.forEach(generalDsc => {
-        let simpleDescs;
+        let simpleDesc;
+        // let templateDesc = sampleModelUpdate.descriptors.find(i => i.id === generalDsc.key.id);
 
         if (generalDsc.key && generalDsc.key.id) {
-          simpleDescs = sampleModelUpdate.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
+          simpleDesc = sampleModelUpdate.descriptors.find(i => i.id === generalDsc.key.id && i.group === false);
         }
 
-        if (simpleDescs) {
-          simpleDescs.value = generalDsc.value;
-          simpleDescs.unit = generalDsc.unit ? generalDsc.unit : "";
+        if (simpleDesc) {
+          if (generalDsc.key.mandateGroup && (generalDsc.notApplicable || generalDsc.notRecorded)) {
+            simpleDesc.mandateGroup.defaultSelection = false;
+
+            if (generalDsc.notApplicable) {
+              simpleDesc.mandateGroup.notApplicable = true;
+            } else if (generalDsc.notRecorded) {
+              simpleDesc.mandateGroup.notRecorded = true;
+            }
+          } else if (generalDsc.key.mandateGroup) {
+            simpleDesc.mandateGroup.defaultSelection = true;
+
+            let defaultSelectedUnfilledDesc = sampleModelUpdate.descriptors.find(
+              e => e.mandateGroup && e.mandateGroup.id === simpleDesc.mandateGroup.id && e.mandateGroup.defaultSelection
+            );
+
+            if (defaultSelectedUnfilledDesc.id !== simpleDesc.id) {
+              simpleDesc.mandateGroup.defaultSelection = false;
+            } else if (generalDsc.value) {
+              simpleDesc.value = generalDsc.value;
+              simpleDesc.unit = generalDsc.unit ? generalDsc.unit : "";
+            }
+          } else {
+            if (generalDsc.value) {
+              simpleDesc.value = generalDsc.value;
+              simpleDesc.unit = generalDsc.unit ? generalDsc.unit : "";
+            } else {
+              simpleDesc.disabled = true;
+              if (generalDsc.notApplicable) {
+                simpleDesc.notApplicable = true;
+              } else if (generalDsc.notRecorded) {
+                simpleDesc.notRecorded = true;
+              }
+            }
+          }
         }
       });
 
@@ -1814,6 +1860,7 @@ const MetaData = props => {
     });
     setPageErrorMessage("");
     setShowErrorSummary(true);
+    setShowLoading(false);
   }
 
   function getSampleTemplateFailure(response) {
@@ -1822,6 +1869,7 @@ const MetaData = props => {
     });
     setPageErrorMessage("");
     setShowErrorSummary(true);
+    setShowLoading(false);
   }
 
   function getSampleForUpdateFailure(response) {
@@ -1830,6 +1878,7 @@ const MetaData = props => {
     });
     setPageErrorMessage("");
     setShowErrorSummary(true);
+    setShowLoading(false);
   }
 
   function checkMetadataNameSuccess(response) {
@@ -1839,6 +1888,7 @@ const MetaData = props => {
         setErrorName(true);
         setDuplicateName(true);
       }
+      setShowLoading(false);
     });
   }
 
@@ -1849,6 +1899,7 @@ const MetaData = props => {
     });
     setPageErrorMessage("");
     setShowErrorSummary(true);
+    setShowLoading(false);
   }
 
   const getButtonsForImportedPage = () => {
@@ -1986,6 +2037,8 @@ const MetaData = props => {
         )}
 
         {props.importedInAPage ? <>{getPageLoaded()}</> : ""}
+
+        {showLoading && <Loading show={showLoading} />}
       </Form>
     </>
   );
@@ -2015,22 +2068,24 @@ function getDescriptors(selectedItemByType) {
           (e.mandateGroup.notRecorded || e.mandateGroup.notApplicable)
       );
 
-      let oneDescSelectedFromSameGroup = simpleDescriptors.filter(
-        e =>
-          e.mandateGroup &&
-          e.mandateGroup.id === descriptor.mandateGroup.id &&
-          !e.mandateGroup.notRecorded &&
-          !e.mandateGroup.notApplicable &&
-          e.value &&
-          e.value.length > 0
-      );
+      // let oneDescSelectedFromSameGroup = simpleDescriptors.filter(
+      //   e =>
+      //     e.mandateGroup &&
+      //     e.mandateGroup.id === descriptor.mandateGroup.id &&
+      //     !e.mandateGroup.notRecorded &&
+      //     !e.mandateGroup.notApplicable &&
+      //     e.value &&
+      //     e.value.length > 0
+      // );
 
       if (notRecOrApp.length > 0) {
         notRecorded = notRecOrApp[0].mandateGroup.notRecorded;
         notApplicable = notRecOrApp[0].mandateGroup.notApplicable;
-      } else if (oneDescSelectedFromSameGroup.length > 0 && !descriptor.value) {
-        notRecorded = true;
       }
+
+      // else if (oneDescSelectedFromSameGroup.length > 0 && !descriptor.value) {
+      //   notRecorded = true;
+      // }
     } else if (!descriptor.value) {
       notRecorded = descriptor.notRecorded;
       notApplicable = descriptor.notApplicable;
