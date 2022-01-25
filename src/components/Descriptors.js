@@ -31,8 +31,6 @@ const Descriptors = props => {
     isAllExpanded
   } = props;
 
-  const [enableModal, setEnableModal] = useState(false);
-  const [mandateGroupNewValue, setMandateGroupNewValue] = useState();
   const [enableSubGroupAddModal, setEnableSubGroupAddModal] = useState(false);
   const [subGroupAddElement, setSubGroupAddElement] = useState();
   const [subGroupAddDescriptor, setSubGroupAddDescriptor] = useState();
@@ -168,11 +166,35 @@ const Descriptors = props => {
               }}
               key={index + element.id}
             >
-              {getMandateGroupsforSimpleDescriptors(element, index)}
+              {getMandateGroupsforSimpleDescriptors(generalDescriptors, element, index)}
             </div>
           )
       );
     });
+  };
+
+  const getMandateGroupsforSimpleDescriptors = (generalDescriptors, element, index) => {
+    let listTraversed = generalDescriptors.slice(0, index);
+
+    //skipping the radio button display for mandategroup if there is one for current group
+    let alreadyDisplayedXorGroupWiz = listTraversed.filter(
+      i =>
+        i.mandateGroup &&
+        i.mandateGroup.id === element.mandateGroup.id &&
+        (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
+    );
+
+    let notRecordedorApp = false;
+    if (element.mandateGroup.notApplicable || element.mandateGroup.notRecorded) {
+      notRecordedorApp = true;
+    }
+
+    return (
+      <>
+        {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, descMetaData)}
+        {!notRecordedorApp && getNewField(element, element, "", true)}
+      </>
+    );
   };
 
   const loadDescGroups = (descMetaData, isUpdate, isCopySample) => {
@@ -247,16 +269,7 @@ const Descriptors = props => {
                     value={grp.name}
                     label={grp.name}
                     onChange={() => {
-                      if (
-                        sameXorGroup.filter(e => {
-                          return e.value !== undefined;
-                        }).length > 0
-                      ) {
-                        setEnableModal(true);
-                      } else {
-                        setMandateGroupNewValue(grp);
-                        props.defaultSelectionChange(grp);
-                      }
+                      props.defaultSelectionChange(grp);
                     }}
                     checked={grp.mandateGroup.defaultSelection === true ? true : false}
                   />
@@ -430,27 +443,6 @@ const Descriptors = props => {
             )}
           </Col>
         </Row>
-      </>
-    );
-  };
-
-  const getMandateGroupsforSimpleDescriptors = (element, index) => {
-    let listTraversed = descMetaData.slice(0, index);
-
-    //skipping the radio button display for mandategroup if there is one for current group
-    let alreadyDisplayedXorGroupWiz = listTraversed.filter(
-      i => i.mandateGroup && i.mandateGroup.id === element.mandateGroup.id && i.mandateGroup.defaultSelection
-    );
-
-    let notRecordedorApp = false;
-    if (element.mandateGroup.notApplicable || element.mandateGroup.notRecorded) {
-      notRecordedorApp = true;
-    }
-
-    return (
-      <>
-        {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, descMetaData)}
-        {!notRecordedorApp && getNewField(element, element, "", true)}
       </>
     );
   };
@@ -719,7 +711,7 @@ const Descriptors = props => {
               type="text"
               name={element.name}
               value={element.value || ""}
-              placeholder={`e.g., ${element.example}`}
+              placeholder={element.example && `e.g., ${element.example}`}
               // onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
               onChange={e => {
                 if (element.namespace.name === "number") {
@@ -903,20 +895,6 @@ const Descriptors = props => {
   return (
     <>
       {buildDescriptors()}
-      {enableModal && (
-        <ConfirmationModal
-          showModal={enableModal}
-          onCancel={() => setEnableModal(false)}
-          onConfirm={() => (
-            <>
-              {props.defaultSelectionChange(mandateGroupNewValue)}
-              {setEnableModal(false)}
-            </>
-          )}
-          title="Mandate Group Change"
-          body="You will loose the Current Data if you change the group. Do you wish to proceed ?"
-        />
-      )}
 
       {enableSubGroupAddModal && (
         <ConfirmationModal
