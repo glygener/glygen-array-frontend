@@ -71,7 +71,7 @@ const ResumableUploader = props => {
             disableDragAndDrop={false}
             onFileSuccess={(file, message) => {
               setFiles(file, message);
-              debugger;
+              
             }}
             onFileRemoved={file => {
               // fetch()

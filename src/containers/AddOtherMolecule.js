@@ -441,7 +441,7 @@ const AddOtherMolecule = props => {
 
     function addOtherMoleculeFailure(response) {
       response.json().then(parsedJson => {
-        debugger;
+        
         if (parsedJson.errors.filter(i => i.objectName === "name").length > 0) {
           setValidate(false);
           setDuplicateName(true);

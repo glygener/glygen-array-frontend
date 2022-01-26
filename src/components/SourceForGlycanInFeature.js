@@ -241,7 +241,7 @@ const SourceForGlycanInFeature = props => {
   function getStepContent(activeStep) {
     switch (activeStep) {
       case 0:
-        return <>{props.getGlycanTabletoSelect(true)}</>;
+        return <>{props.listGlycans(true)}</>;
 
       case 1:
         return (
@@ -382,7 +382,7 @@ const SourceForGlycanInFeature = props => {
 SourceForGlycanInFeature.propTypes = {
   showGlycanPicker: PropTypes.bool,
   setShowGlycanPicker: PropTypes.func,
-  getGlycanTabletoSelect: PropTypes.func,
+  listGlycans: PropTypes.func,
   glycoProteinPepTideListStep4: PropTypes.array,
   setGlycoProteinPepTideListStep4: PropTypes.func
 };

@@ -49,7 +49,7 @@ const AddMultipleGlycans = (props) => {
   }
 
   function handleSubmit(e) {
-    debugger;
+    
     setShowLoading(true);
     setShowErrorSummary(false);
 

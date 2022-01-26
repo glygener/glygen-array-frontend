@@ -79,7 +79,7 @@ const Linkers = props => {
                 showDeleteButton={props.isImported ? false : true}
                 showEditButton={props.isImported ? false : true}
                 fetchWS={props.onlyMyLinkers ? "listallmoleculesbytype" : "listmoleculesbytype"}
-                paramTypeValue={"SMALLMOLECULE"}
+                paramTypeValue={props.linkerType ? props.linkerType : "SMALLMOLECULE"}
                 isModal={props.isModal}
                 selectButtonHeader={props.selectButtonHeader ? "Select" : ""}
                 showSelectButton={props.showSelectButton}

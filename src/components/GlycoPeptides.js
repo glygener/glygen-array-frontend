@@ -52,7 +52,6 @@ const GlycoPeptides = props => {
             Header: "Linker",
             accessor: "glycoPeptide",
             Cell: (row, index) => {
-              debugger;
               return props.setDisplayLinkerInfo &&
                 row.original &&
                 ((row.original.glycoPeptide && row.original.glycoPeptide.linker) || row.original.linker) ? (

@@ -1073,6 +1073,7 @@ const MetaData = props => {
   };
 
   function defaultSelectionChange(latestDefaultSelection, notApplicableOrRecorded) {
+    
     var sampleModelDragandDrop;
     var itemByType;
     var itemByTypeIndex;
@@ -1186,6 +1187,8 @@ const MetaData = props => {
       );
       if (sameXorGroup.length > 0) {
         let lastElementIntheGroup = sameXorGroup[sameXorGroup.length - 1];
+        lastElementIntheGroup.mandateGroup.defaultSelection = false;
+
         if (notApplicableOrRecorded === "notApplicable") {
           lastElementIntheGroup.mandateGroup.notApplicable = true;
           lastElementIntheGroup.mandateGroup.notRecorded = false;

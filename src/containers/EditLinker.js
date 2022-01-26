@@ -503,7 +503,7 @@ const EditLinker = props => {
 
   function updateLinkerFailure(response) {
     response.json().then(parsedJson => {
-      debugger;
+      
       if (parsedJson.errors.find(i => i.objectName === "name")) {
         setDuplicateName(true);
       }
