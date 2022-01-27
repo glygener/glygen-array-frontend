@@ -1073,7 +1073,6 @@ const MetaData = props => {
   };
 
   function defaultSelectionChange(latestDefaultSelection, notApplicableOrRecorded) {
-    
     var sampleModelDragandDrop;
     var itemByType;
     var itemByTypeIndex;
@@ -1399,7 +1398,6 @@ const MetaData = props => {
         } else {
           wsCall(props.addMeta, "POST", null, true, metadataToSubmit(), addMetaSuccess, addMetaFailure);
         }
-        setShowLoading(false);
       }
     }
 
@@ -1530,6 +1528,7 @@ const MetaData = props => {
     console.log(response);
 
     setEnablePrompt(false);
+    setShowLoading(false);
     history.push("/" + props.redirectTo);
   }
 
@@ -1563,6 +1562,8 @@ const MetaData = props => {
         setPageErrorMessage(aggregatedSummary);
         setShowErrorSummary(true);
       }
+
+      setShowLoading(false);
     });
   }
 

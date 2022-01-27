@@ -439,11 +439,7 @@ const AddFeature = props => {
     }
 
     if (activeStep === 1) {
-      if (
-        featureAddState.controlSubType !== "Negative Control" &&
-        featureAddState.molecule &&
-        featureAddState.molecule.length < 1
-      ) {
+      if (featureAddState.controlSubType !== "Negative Control" && checkMoleculeSelection()) {
         setPageErrorsJson({});
         setErrorMessage("Molecule selection is required.");
         setShowErrorSummary(true);
@@ -460,6 +456,26 @@ const AddFeature = props => {
     setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
 
+  function checkMoleculeSelection() {
+    switch (featureAddState.controlSubType) {
+      case "Glycan":
+        return featureAddState.glycans && featureAddState.glycans.length < 1;
+      case "Peptide":
+        return featureAddState.peptide && featureAddState.peptide.id ? false : true;
+      case "Protein":
+        return featureAddState.protein && featureAddState.protein.id ? false : true;
+      case "Lipid":
+        return featureAddState.lipid && featureAddState.lipid.id ? false : true;
+      case "Linker":
+        return featureAddState.linker && featureAddState.linker.id ? false : true;
+      case "Other":
+        return featureAddState.linker && featureAddState.linker.id ? false : true;
+
+      default:
+        return false;
+    }
+  }
+
   function getControlSubTypeSelectionTable(moleculeSelected) {
     switch (moleculeSelected) {
       case "Glycan":
@@ -473,7 +489,7 @@ const AddFeature = props => {
       case "Linker":
         return listLinkers(false);
       case "Other":
-        //using same table for Other molecule list as the backend api is same for each table
+        //using same listlinkers table for Other molecule list as the backend api is same for each table differed by type
         return listLinkers(false, "OTHER");
 
       default:
@@ -511,7 +527,6 @@ const AddFeature = props => {
       featureAddState.type === "CONTROL" &&
       featureAddState.controlSubType === "Negative Control"
     ) {
-      
       stepDecrement += 1;
     }
 
@@ -577,7 +592,10 @@ const AddFeature = props => {
         left: 0,
         behavior: "smooth"
       });
+
       setValidLinker(true);
+      setErrorMessage("");
+      setShowErrorSummary(false);
     }
   };
 
@@ -585,12 +603,17 @@ const AddFeature = props => {
     setFeatureAddState({ lipid: lipid });
     setLinkerValidated(false);
 
+    setErrorMessage("");
+    setShowErrorSummary(false);
+
     ScrollToTop();
   };
 
   const handlePeptideSelect = peptide => {
     setFeatureAddState({ peptide: peptide, glycans: [] });
     setLinkerValidated(false);
+    setErrorMessage("");
+    setShowErrorSummary(false);
 
     ScrollToTop();
   };
@@ -602,6 +625,9 @@ const AddFeature = props => {
     if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
       setFeatureAddState({ glycoPeptides: [] });
     }
+
+    setErrorMessage("");
+    setShowErrorSummary(false);
 
     ScrollToTop();
   };
@@ -661,9 +687,12 @@ const AddFeature = props => {
       <RadioGroup
         name="molecule-type-b"
         onChange={e => {
-          
           setFeatureAddState({
-            controlSubType: e.target.value
+            ...featureAddInitState,
+            ...{
+              type: featureAddState.type,
+              controlSubType: e.target.value
+            }
           });
           setLinkerValidated(false);
         }}
@@ -687,9 +716,12 @@ const AddFeature = props => {
       <RadioGroup
         name="molecule-type-c"
         onChange={e => {
-          
           setFeatureAddState({
-            controlSubType: e.target.value
+            ...featureAddInitState,
+            ...{
+              type: featureAddState.type,
+              controlSubType: e.target.value
+            }
           });
           setLinkerValidated(false);
         }}
@@ -929,6 +961,8 @@ const AddFeature = props => {
       featureObj = getGlycoData(featureObj, "GLYCOPROTEIN");
     } else if (featureAddState.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") {
       featureObj = getGlycoProteinLinkedPeptide(featureObj, "GPLINKEDGLYCOPEPTIDE");
+    } else if (featureAddState.type === "CONTROL" || featureAddState.type === "LANDING_LIGHT") {
+      featureObj = getControlLandingData(featureObj);
     }
 
     setShowLoading(true);
@@ -1174,6 +1208,72 @@ const AddFeature = props => {
     };
 
     return featureObj;
+  }
+
+  function getControlLandingData(featureObj) {
+    let featureType =
+      featureAddState.type === "CONTROL" && featureAddState.controlSubType === "Negative Control"
+        ? "NEGATIVE_CONTROL"
+        : featureAddState.type === "CONTROL"
+        ? "CONTROL"
+        : "LANDING_LIGHT";
+
+    featureObj = {
+      type: featureType,
+      name: featureAddState.name,
+      internalId: featureAddState.featureId,
+      ...(featureAddState.controlSubType === "Negative Control"
+        ? null
+        : getLinkerControlLandingLight(featureAddState.controlSubType)),
+
+      glycans: [],
+
+      // featureAddState.glycans.map(glycanObj => {
+      //   let glycanDetails = {};
+      //   glycanDetails.glycan = glycanObj;
+      //   return glycanDetails;
+      // }),
+
+      positionMap: featureAddState.glycans.reduce((map, glycanObj) => {
+        if (glycanObj && glycanObj.glycan && glycanObj.glycan.uri) {
+          map[glycanObj.position] = glycanObj.glycan.uri;
+        } else if (glycanObj && glycanObj.uri) {
+          map[glycanObj.position] = glycanObj.uri;
+        }
+        return map;
+      }, {}),
+
+      metadata: metadataToSubmit()
+    };
+
+    return featureObj;
+  }
+
+  function getLinkerControlLandingLight(subType) {
+    let linkerTypeSelected;
+
+    switch (subType) {
+      case "Peptide":
+        linkerTypeSelected = featureAddState.peptide;
+        break;
+      case "Protein":
+        linkerTypeSelected = featureAddState.protein;
+        break;
+      case "Lipid":
+        linkerTypeSelected = featureAddState.lipid;
+        break;
+      case "Linker":
+        linkerTypeSelected = featureAddState.linker;
+        break;
+      case "Other":
+        linkerTypeSelected = featureAddState.linker;
+        break;
+
+      default:
+        return false;
+    }
+
+    return linkerTypeSelected ? { linker: linkerTypeSelected } : null;
   }
 
   function getKey(type) {
@@ -2578,6 +2678,7 @@ const AddFeature = props => {
             ? featureAddState.rangeGlycans
             : featureAddState.glycans
         }
+        controlSubType={featureAddState.controlSubType}
       />
     );
   };

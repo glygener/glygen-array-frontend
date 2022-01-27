@@ -305,7 +305,11 @@ const FeatureView = props => {
   };
 
   const getLipid = () => {
-    if (props.type === "GLYCO_LIPID" && props.lipid) {
+    if (
+      (props.type === "GLYCO_LIPID" || props.type === "CONTROL" || props.type === "LANDING_LIGHT") &&
+      props.lipid &&
+      props.lipid.id
+    ) {
       return displayDetails(props.lipid, "case4", "Lipid");
     } else if (featureDetails && featureDetails.type === "GLYCOLIPID") {
       return displayDetails(featureDetails.lipid, "view", "Lipid");
@@ -313,7 +317,11 @@ const FeatureView = props => {
   };
 
   const getPeptide = () => {
-    if (props.type === "GLYCO_PEPTIDE" && props.peptide) {
+    if (
+      (props.type === "GLYCO_PEPTIDE" || props.type === "CONTROL" || props.type === "LANDING_LIGHT") &&
+      props.peptide &&
+      props.peptide.id
+    ) {
       return displayDetails(props.peptide, "case4", "Peptide");
     } else if (featureDetails && featureDetails.type === "GLYCOPEPTIDE") {
       return displayDetails(featureDetails.peptide, "view", "Peptide");
@@ -321,10 +329,27 @@ const FeatureView = props => {
   };
 
   const getProtein = () => {
-    if (props.type === "GLYCO_PROTEIN" && props.protein) {
+    if (
+      (props.type === "GLYCO_PROTEIN" || props.type === "CONTROL" || props.type === "LANDING_LIGHT") &&
+      props.protein &&
+      props.protein.id
+    ) {
       return displayDetails(props.protein, "case4", "Protein");
     } else if (featureDetails && featureDetails.type === "GLYCOPROTEIN") {
       return displayDetails(featureDetails.protein, "view", "Protein");
+    }
+  };
+
+  const getOtherMolecule = () => {
+    if (
+      (props.type === "CONTROL" || props.type === "LANDING_LIGHT") &&
+      props.controlSubType === "Other" &&
+      props.linker &&
+      props.linker.id
+    ) {
+      return displayDetails(props.protein, "case4", "Linker");
+    } else if (featureDetails && (featureDetails.type === "CONTROL" || featureDetails.type === "LANDING_LIGHT")) {
+      return displayDetails(featureDetails.linker, "view", "Linker");
     }
   };
 
@@ -579,7 +604,13 @@ const FeatureView = props => {
               // plaintext={page === "view"}
               disabled={page === "case4" && !editFeature}
               readOnly={page === "view" && !editFeature}
-              defaultValue={props.type ? props.type : featureDetails.type}
+              defaultValue={
+                props.type
+                  ? props.type === "CONTROL" || props.type === "LANDING_LIGHT"
+                    ? `${props.type} - ${props.controlSubType}`
+                    : props.type
+                  : featureDetails.type
+              }
             />
           </Col>
         </Form.Group>
@@ -828,7 +859,10 @@ const FeatureView = props => {
                   <Form noValidate validated={validated} onSubmit={editFeature ? handleSubmit : ""}>
                     {getMetadataNameandId(props.metadata ? "case4" : "view")}
 
-                    {getLinker()}
+                    {props.controlSubType === "Linker" &&
+                      props.type !== "CONTORL" &&
+                      props.type !== "LANDING_LIGHT" &&
+                      getLinker()}
 
                     {(showLinkerView && props.linker) || displayLinkerInfo
                       ? getLinkerDetailsModal(props.linker, "case4")
@@ -840,6 +874,8 @@ const FeatureView = props => {
 
                     {getProtein()}
 
+                    {getOtherMolecule()}
+
                     {props.metadata
                       ? case4MetadataWhileCreatingFeature()
                       : featureDetails.metadata &&
@@ -848,13 +884,16 @@ const FeatureView = props => {
                           (featureDetails.metadata.descriptors && featureDetails.metadata.descriptors.length > 0)) &&
                         featureMetadata()}
 
-                    {(props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ||
-                      featureDetails.type === "GPLINKEDGLYCOPEPTIDE") &&
-                    (props.rangeGlycoPeptides || props.glycoPeptides || featureDetails.peptides)
-                      ? getGlycoProteinLinkedPeptide()
-                      : props.glycans
-                      ? getSelectedGlycanList()
-                      : featureDetails.glycans.length > 0 && getGlycanTable()}
+                    {props.type &&
+                      props.type !== "CONTROL" &&
+                      props.type !== "LANDING_LIGHT" &&
+                      ((props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ||
+                        featureDetails.type === "GPLINKEDGLYCOPEPTIDE") &&
+                      (props.rangeGlycoPeptides || props.glycoPeptides || featureDetails.peptides)
+                        ? getGlycoProteinLinkedPeptide()
+                        : props.glycans
+                        ? getSelectedGlycanList()
+                        : featureDetails.glycans.length > 0 && getGlycanTable())}
 
                     <div className="text-center mb-4 mt-4">
                       {featureDetails && featureDetails.type && (
