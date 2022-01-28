@@ -1226,7 +1226,7 @@ const AddFeature = props => {
         ? null
         : getLinkerControlLandingLight(featureAddState.controlSubType)),
 
-      glycans: [],
+      // glycans: [],
 
       // featureAddState.glycans.map(glycanObj => {
       //   let glycanDetails = {};
