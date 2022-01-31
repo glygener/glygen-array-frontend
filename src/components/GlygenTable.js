@@ -18,7 +18,7 @@ import { BlueCheckbox } from "../components/FormControls";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 
-const GlygenTable = (props) => {
+const GlygenTable = props => {
   const history = useHistory();
   const [rows, setRows] = useState(0);
   const [data, setData] = useState([]);
@@ -51,7 +51,7 @@ const GlygenTable = (props) => {
     setShowDeleteModal(true);
   };
 
-  const makePublicPrompt = (id) => {
+  const makePublicPrompt = id => {
     setSelectedIdMakePublic(id);
     setShowMakePublicModal(true);
   };
@@ -70,7 +70,7 @@ const GlygenTable = (props) => {
     );
   };
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = e => {
     setSearchFilter(e.target.value);
   };
 
@@ -79,7 +79,7 @@ const GlygenTable = (props) => {
       Header: "Comments",
       accessor: props.commentsRefColumn,
       style: {
-        textAlign: "center",
+        textAlign: "center"
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) =>
@@ -125,7 +125,7 @@ const GlygenTable = (props) => {
         ) : (
           <div key={index}></div>
         ),
-      minWidth: 80,
+      minWidth: 80
     };
   }
 
@@ -133,7 +133,7 @@ const GlygenTable = (props) => {
     columnsToRender["actionsColumn"] = {
       Header: "Actions",
       style: {
-        textAlign: "center",
+        textAlign: "center"
       },
       sortable: false,
       // eslint-disable-next-line react/display-name
@@ -263,7 +263,7 @@ const GlygenTable = (props) => {
           )}
         </>
       ),
-      minWidth: 170,
+      minWidth: 170
     };
   }
 
@@ -285,7 +285,7 @@ const GlygenTable = (props) => {
         //   onClick={() => props.selectButtonHandler(row.original, props.isModal)}
         //   value={props.selectButtonHeader || "Select"}
         // />
-      ),
+      )
     };
   }
 
@@ -293,7 +293,7 @@ const GlygenTable = (props) => {
     columnsToRender["multiSelectColumn"] = {
       Header: "Select",
       style: {
-        textAlign: "center",
+        textAlign: "center"
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
@@ -314,7 +314,7 @@ const GlygenTable = (props) => {
           }
           className="mb-0 pb-0 mt-0 pt-0"
         />
-      ),
+      )
     };
   }
 
@@ -330,18 +330,17 @@ const GlygenTable = (props) => {
         //   onChange={() => props.selectRadioHandler(row.original)}
         //   checked={row.original.name === selectedRadio ? true : false}
         // />
-        <RadioGroup
-          name="selectRadio"
-          onChange={() => props.selectRadioHandler(row.original)}
-          value={() => setSelectedRadio(row.original.name)}
-        >
-          <FormControlLabel
-            value={index}
-            control={<BlueRadio />}
-            label={row.original.name === selectedRadio ? true : false}
-          />
-        </RadioGroup>
-      ),
+
+        <FormControlLabel
+          control={<BlueRadio />}
+          name={"selectRadio"}
+          onChange={() => {
+            props.selectRadioHandler(row.original);
+            setSelectedRadio(row.original.name);
+          }}
+          checked={row.original.name === selectedRadio ? true : false}
+        />
+      )
     };
   }
 
@@ -374,7 +373,7 @@ const GlygenTable = (props) => {
               <Col
                 style={{
                   marginTop: "10px",
-                  marginLeft: "40px",
+                  marginLeft: "40px"
                 }}
               >
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -432,8 +431,8 @@ const GlygenTable = (props) => {
         multiSort={false}
         showPaginationTop
         manual
-        ref={(element) => setTableElement(element)}
-        onFetchData={(state) => {
+        ref={element => setTableElement(element)}
+        onFetchData={state => {
           /*state obj structure:
           {
             sorted: [
@@ -463,8 +462,8 @@ const GlygenTable = (props) => {
                   loadAll: false, //only useful for features, blocks and slides
                   filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
                   type: props.paramTypeValue,
-                  ...props.qsParams,
-                },
+                  ...props.qsParams
+                }
               },
               // {
               //   offset: state.page * state.pageSize,
@@ -477,7 +476,7 @@ const GlygenTable = (props) => {
               // },
               true,
               null,
-              (response) => fetchSuccess(response, state),
+              response => fetchSuccess(response, state),
               fetchError
             );
           } else if (props.fetchWSCallFunction) {
@@ -536,7 +535,7 @@ const GlygenTable = (props) => {
   );
 
   function fetchSuccess(response, state) {
-    response.json().then((responseJson) => {
+    response.json().then(responseJson => {
       if (searchFilter !== "" && responseJson.total < 10 && !customOffset) {
         setCustomOffset(true);
         tableElement.fireFetchData();
@@ -551,7 +550,7 @@ const GlygenTable = (props) => {
   }
 
   function fetchError(response) {
-    response.json().then((response) => {
+    response.json().then(response => {
       setPageErrorsJson(response);
     });
     setShowErrorSummary(true);
@@ -566,7 +565,7 @@ const GlygenTable = (props) => {
   }
 
   function deleteError(response) {
-    response.json().then((response) => {
+    response.json().then(response => {
       setPageErrorsJson(response);
     });
     setShowErrorSummary(true);
@@ -587,7 +586,7 @@ const GlygenTable = (props) => {
   }
 
   function isMakePublicFailure(response) {
-    response.json().then((responseJson) => {
+    response.json().then(responseJson => {
       setPageErrorsJson(responseJson);
     });
     setShowErrorSummary(true);

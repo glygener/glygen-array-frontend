@@ -55,7 +55,7 @@ const AddFeature = props => {
   };
 
   const controlAndLandingOptions = {
-    Glycan: "Glycan",
+    // Glycan: "Glycan",
     PEPTIDE: "Peptide",
     PROTEIN: "Protein",
     LIPID: "Lipid",
@@ -80,7 +80,7 @@ const AddFeature = props => {
     peptide: {},
     protein: {},
     isLipidLinkedToSurfaceUsingLinker: "No",
-    controlSubType: "Glycan",
+    controlSubType: "Peptide",
     positionDetails: {
       isPosition: false,
       number: ""
