@@ -73,7 +73,7 @@ const MetaData = props => {
     name: "",
     selectedtemplate: "",
     description: "",
-    sample: {}
+    sample: {},
   };
 
   const [metaDataDetails, setMetaDataDetails] = useReducer(
@@ -343,55 +343,57 @@ const MetaData = props => {
     return dateField;
   }
 
+  // const getAddons = () => {
+  //   const popover = (
+  //     <Popover
+  //       id="popover-basic"
+  //       style={{
+  //         width: "30%",
+  //         paddingTop: 0,
+  //         border: "none",
+  //       }}
+  //     >
+  //       <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
+  //     </Popover>
+  //   );
+
+  //   return (
+  //     <LineTooltip text="Add Descriptors">
+  //       {props.metadataType === "Feature" ? (
+  //         <Link>{getLinkForCog(popover)}</Link>
+  //       ) : (
+  //         <Link to={"cog"}>{getLinkForCog(popover)}</Link>
+  //       )}
+  //     </LineTooltip>
+  //   );
+  // };
+
+  // function getLinkForCog(popover) {
+  //   return (
+  //     <>
+  //       <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
+  //         <FontAwesomeIcon
+  //           className={"add-subGroup-button"}
+  //           icon={["fas", "cog"]}
+  //           size="xs"
+  //           title={"Add Descriptors"}
+  //         />
+  //       </OverlayTrigger>
+  //     </>
+  //   );
+  // }
+
   const getAddons = () => {
-    const popover = (
-      <Popover
-        id="popover-basic"
-        style={{
-          width: "30%",
-          paddingTop: 0,
-          border: "none"
-        }}
-      >
-        <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
-      </Popover>
-    );
-
-    return (
-      <LineTooltip text="Add Descriptors">
-        {props.metadataType === "Feature" ? (
-          <Link>{getLinkForCog(popover)}</Link>
-        ) : (
-          <Link to={"cog"}>{getLinkForCog(popover)}</Link>
-        )}
-      </LineTooltip>
-    );
-  };
-
-  function getLinkForCog(popover) {
-    return (
-      <>
-        <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
-          <FontAwesomeIcon
-            className={"add-subGroup-button"}
-            icon={["fas", "cog"]}
-            size="xs"
-            title={"Add Descriptors"}
-          />
-        </OverlayTrigger>
-      </>
-    );
-  }
-
-  const addDescriptorsandDescriptorGroups = () => {
+    // const addDescriptorsandDescriptorGroups = () => {
     let sampleModelUpdate;
     let selectedSample;
     let name;
 
     return (
       <>
-        <Form.Group as={Row} controlId={""}>
-          <Col md={10}>
+        <Form.Group as={Row} controlId={""} className="gg-align-center">
+          <Col xs={12} lg={4}>
+            <FormLabel label="Add Descriptors" />
             <Form.Control
               as="select"
               value={addDescriptorSelection}
@@ -437,7 +439,7 @@ const MetaData = props => {
 
     options.push(
       <option key={0} value={"Select"}>
-        select
+        Select Descriptor
       </option>
     );
 
@@ -890,31 +892,15 @@ const MetaData = props => {
       <>
         {!props.importedInAPage && (
           <>
-            <Form.Group
-              as={Row}
-              controlId="name"
-              style={{
-                paddingLeft: "0.7em",
-              }}
-            >
+            <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
               <Col xs={12} lg={9}>
                 <FormLabel label="Name" className="required-asterik" />
                 <Form.Control type="text" name="name" disabled value={metaDataDetails.name} />
               </Col>
-              <Col xs={3} style={{ padding: "1.5em" }}>
-                {/* {getExpandCollapseIcon()} */}
-                {getAddons()}
-              </Col>
             </Form.Group>
             {(sampleModel && sampleModel.length > 1) ||
             (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
-              <Form.Group
-                as={Row}
-                controlId="type"
-                style={{
-                  paddingLeft: "0.7em",
-                }}
-              >
+              <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
                   <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
                   <Form.Control type="text" name="type" disabled value={metaDataDetails.selectedtemplate} />
@@ -923,13 +909,19 @@ const MetaData = props => {
             ) : (
               ""
             )}
+            {/* <Row className="gg-align-center mb-3">
+              <Col xs={12} lg={9}> */}
+            {/* {getExpandCollapseIcon()} */}
+            {getAddons()}
+            {/* </Col>
+            </Row> */}
           </>
         )}
 
         {props.metadataType === "Feature" && (
           <>
             <Form.Group as={Row} className="gg-align-center mb-3" controlId="name">
-              <Col xs={10} lg={7}>
+              <Col xs={12} lg={9}>
                 <FormLabel label="Name" className={"required-asterik"} />
                 <Form.Control
                   type="text"
@@ -946,17 +938,16 @@ const MetaData = props => {
                 />
                 <Feedback message="Name is required" />
               </Col>
-
-              <Col xs={3}>{getAddons()}</Col>
+              {/* <Col xs={3}>{getAddons()}</Col> */}
             </Form.Group>
 
             <Form.Group as={Row} className="gg-align-center mb-3" controlId="featureId">
-              <Col xs={10} lg={7}>
+              <Col xs={12} lg={9}>
                 <FormLabel label="Feature ID" className={"required-asterik"} />
                 <Form.Control
                   type="text"
                   name="featureId"
-                  placeholder="Feature Id"
+                  placeholder="Feature ID"
                   value={props.featureAddState.featureId}
                   onChange={e => {
                     props.setFeatureAddState({ featureId: e.target.value });
@@ -968,8 +959,12 @@ const MetaData = props => {
                 />
                 <Feedback message="Feature ID is required" />
               </Col>
-              <Col xs={3} />
             </Form.Group>
+            {/* <Row className="gg-align-center mb-3">
+              <Col xs={12} lg={9}> */}
+            {getAddons()}
+            {/* </Col>
+            </Row> */}
           </>
         )}
 

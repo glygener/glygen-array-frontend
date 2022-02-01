@@ -723,7 +723,7 @@ const Descriptors = props => {
                 </div>
               </>
             ) : element.namespace.name === "number" ? (
-              <Col className="ml-0 pl-0">
+              <Col className="ml-0 pl-0 mr-0 pr-0">
                 <Form.Control
                   type="text"
                   name={element.name}
