@@ -14,6 +14,7 @@ import { FormControlLabel, Button } from "@material-ui/core";
 import { LineTooltip } from "./tooltip/LineTooltip";
 import plusIcon from "../images/icons/plus.svg";
 import { ConfirmationModal } from "./ConfirmationModal";
+import { Link } from "react-router-dom";
 
 const Descriptors = props => {
   let descriptorsByMetaType;
@@ -28,7 +29,7 @@ const Descriptors = props => {
     isUpdate,
     isCopySample,
     setLoadDataOnFirstNextInUpdate,
-    isAllExpanded
+    isAllExpanded,
   } = props;
 
   const [enableSubGroupAddModal, setEnableSubGroupAddModal] = useState(false);
@@ -44,7 +45,7 @@ const Descriptors = props => {
     id: "dateField",
     required: true,
     placeholder: "Select Date",
-    readOnly: true
+    readOnly: true,
   };
 
   const buildDescriptors = () => {
@@ -114,9 +115,9 @@ const Descriptors = props => {
   const getSimpleDescriptors = generalDescriptors => {
     let keyIndex = 0;
     const cardHeader = (
-      <Card.Header style={{ height: "65px" }}>
+      <Card.Header style5={{ height: "65px" }}>
         <Row>
-          <Col md={6} className="font-awesome-color " style={{ textAlign: "left" }}>
+          <Col md={6} className="font-awesome-color" style={{ textAlign: "left" }}>
             <span className="descriptor-header"> {" " + simpleDescriptorTitle}</span>
           </Col>
           <Col md={6} style={{ textAlign: "right" }}>
@@ -146,7 +147,7 @@ const Descriptors = props => {
         <div
           style={{
             paddingLeft: "10px",
-            backgroundColor: element.id.startsWith("newly") ? "#f3f3f3" : ""
+            backgroundColor: element.id.startsWith("newly") ? "#f3f3f3" : "",
           }}
           key={index + element.id}
         >
@@ -162,7 +163,7 @@ const Descriptors = props => {
               style={{
                 // paddingLeft: "10px",
                 backgroundColor: "#f3f3f3",
-                borderRadius: "0.4em"
+                borderRadius: "0.4em",
               }}
               key={index + element.id}
             >
@@ -255,7 +256,7 @@ const Descriptors = props => {
           className={"xorHeaderBox"}
           style={{
             border: descriptor.group ? "" : "none",
-            padding: descriptor.group ? "1em" : "none"
+            padding: descriptor.group ? "1em" : "none",
           }}
         >
           <Col md={12}>
@@ -404,7 +405,7 @@ const Descriptors = props => {
           </Col>
           <Col
             style={{
-              textAlign: isSubGroup ? "left" : "right"
+              textAlign: isSubGroup ? "left" : "right",
             }}
           >
             {!descriptor.id.startsWith("newly") &&
@@ -413,33 +414,43 @@ const Descriptors = props => {
                   descriptor.descriptors &&
                   descriptor.descriptors.filter(e => !e.value || (e.value && e.value.length < 1)).length > 1)) &&
               groupElement.group && (
-                <FontAwesomeIcon
-                  icon={["fas", "plus"]}
-                  size="lg"
-                  title="Add Descriptor Group"
-                  style={{
-                    marginRight: "10px",
-                    marginBottom: "6px"
-                  }}
-                  // onClick={() => props.handleAddDescriptorSubGroups(groupElement, descriptor)}
-                  onClick={() => {
-                    setEnableSubGroupAddModal(true);
-                    setSubGroupAddElement(groupElement);
-                    setSubGroupAddDescriptor(descriptor);
-                  }}
-                />
+                <LineTooltip text="Add Descriptor Group">
+                  <span>
+                    <FontAwesomeIcon
+                      icon={["fas", "plus"]}
+                      size="lg"
+                      title="Add Descriptor Group"
+                      alt="Add Descriptor Group"
+                      style={{
+                        marginRight: "10px",
+                        marginBottom: "6px",
+                      }}
+                      // onClick={() => props.handleAddDescriptorSubGroups(groupElement, descriptor)}
+                      onClick={() => {
+                        setEnableSubGroupAddModal(true);
+                        setSubGroupAddElement(groupElement);
+                        setSubGroupAddDescriptor(descriptor);
+                      }}
+                    />
+                  </span>
+                </LineTooltip>
               )}
 
             {descriptor.id.startsWith("newly") && !isSubGroup && metaType !== "Feature" && (
-              <FontAwesomeIcon
-                key={"delete" + index}
-                icon={["far", "trash-alt"]}
-                size="1x"
-                title="Delete Descriptor"
-                className="delete-icon table-btn"
-                style={{ marginRight: "10px", marginBottom: "4px" }}
-                onClick={() => handleSubGroupDelete(descriptor.id)}
-              />
+              <LineTooltip text="Delete Descriptor">
+                <span>
+                  <FontAwesomeIcon
+                    key={"delete" + index}
+                    icon={["far", "trash-alt"]}
+                    size="large"
+                    title="Delete Descriptor"
+                    alt="Delete Descriptor"
+                    className="caution-color tbl-icon-btn"
+                    style={{ marginRight: "10px", marginBottom: "4px" }}
+                    onClick={() => handleSubGroupDelete(descriptor.id)}
+                  />
+                </span>
+              </LineTooltip>
             )}
           </Col>
         </Row>
@@ -510,15 +521,20 @@ const Descriptors = props => {
                             );
                             rowData.push(
                               <td>
-                                <FontAwesomeIcon
-                                  key={"delete" + index}
-                                  icon={["far", "trash-alt"]}
-                                  size="1x"
-                                  title="Delete Descriptor"
-                                  className="delete-icon table-btn"
-                                  style={{ marginRight: "10px", marginBottom: "4px" }}
-                                  onClick={() => handleSubGroupDelete(desc.id, desc)}
-                                />
+                                <LineTooltip text="Delete Descriptor">
+                                  <span>
+                                    <FontAwesomeIcon
+                                      key={"delete" + index}
+                                      icon={["far", "trash-alt"]}
+                                      size="large"
+                                      alt="Delete Descriptor"
+                                      title="Delete Descriptor"
+                                      className="caution-color tbl-icon-btn"
+                                      style={{ marginRight: "10px", marginBottom: "4px" }}
+                                      onClick={() => handleSubGroupDelete(desc.id, desc)}
+                                    />
+                                  </span>
+                                </LineTooltip>
                               </td>
                             );
                           }
@@ -535,7 +551,7 @@ const Descriptors = props => {
               <div
                 style={{
                   textAlign: "left",
-                  paddingLeft: "10px"
+                  paddingLeft: "10px",
                   // backgroundColor: "#f3f3f3"
                 }}
                 key={descriptor.id.toString()}
@@ -559,7 +575,7 @@ const Descriptors = props => {
     var card = (
       <Card>
         <Card.Header style={{ height: "65px" }}>
-          <span className="font-awesome-color " style={{ float: "left" }}>
+          <span className="font-awesome-color" style={{ float: "left" }}>
             <span>
               <HelpToolTip
                 title={groupElement.name}
@@ -586,7 +602,7 @@ const Descriptors = props => {
                 title="Add Descriptor Group"
                 style={{
                   marginRight: "10px",
-                  marginBottom: "6px"
+                  marginBottom: "6px",
                 }}
                 onClick={() => props.handleAddDescriptorGroups(groupElement)}
               />
@@ -607,7 +623,7 @@ const Descriptors = props => {
       <div
         style={{
           padding: "10px",
-          paddingBottom: "20px"
+          paddingBottom: "20px",
         }}
         key={index}
       >
@@ -630,12 +646,13 @@ const Descriptors = props => {
         <FontAwesomeIcon
           key={"delete" + index}
           icon={["far", "trash-alt"]}
-          size="1x"
+          size="lg"
           title="Delete Descriptor"
-          className="delete-icon table-btn"
+          alt="Delete icon"
+          className="delete-icon tbl-icon-btn"
           style={{
-            marginRight: "10px",
-            marginBottom: "4px"
+            marginRight: "20px",
+            marginBottom: "6px",
           }}
           onClick={() => handleDelete(groupElement.id)}
         />
@@ -650,8 +667,9 @@ const Descriptors = props => {
     let lastAddedIsNewMandatoryElement;
 
     if (group) {
-      lastAddedIsNewMandatoryCount = desc.filter(i => !i.group && i.isNewlyAddedNonMandatory && i.name === element.name)
-        .length;
+      lastAddedIsNewMandatoryCount = desc.filter(
+        i => !i.group && i.isNewlyAddedNonMandatory && i.name === element.name
+      ).length;
     } else {
       lastAddedIsNewMandatoryCount = desc.filter(i => i.isNewlyAddedNonMandatory && i.name === element.name).length;
     }
@@ -677,139 +695,162 @@ const Descriptors = props => {
     }
     return (
       <Form.Group as={Row} controlId={element.id} key={element.id.toString()} className="gg-align-center mb-3">
-        <Col xs={10} lg={7}>
-          <span className="font-awesome-color " style={{ float: "left" }}>
+        <Col xs={12} lg={7}>
+          <span className="font-awesome-color" style={{ float: "left" }}>
             <span>
               <HelpToolTip url={element.wikiLink} text={element.description} helpIcon="gg-helpicon-detail" />
             </span>
           </span>
 
           <FormLabel label={element.name} className={element.mandatory ? "required-asterik" : ""} />
-
-          {element.namespace.name === "text" ? (
-            <>
+          <Row>
+            {element.namespace.name === "text" ? (
+              <>
+                <Form.Control
+                  as="textarea"
+                  name={element.name}
+                  value={element.value || ""}
+                  placeholder={element.example && `e.g., ${element.example}`}
+                  onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+                  required={element.mandatory ? true : false}
+                  maxLength={2000}
+                  rows={4}
+                  disabled={descriptorDetails.isHide || element.disabled}
+                />
+                <div className="text-right text-muted">
+                  {element.value && element.value.length > 0 ? element.value.length : "0"}
+                  /2000
+                </div>
+              </>
+            ) : element.namespace.name === "number" ? (
+              <Col className="ml-0 pl-0">
+                <Form.Control
+                  type="text"
+                  name={element.name}
+                  value={element.value || ""}
+                  placeholder={element.example && `e.g., ${element.example}`}
+                  // onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+                  onChange={e => {
+                    if (element.namespace.name === "number") {
+                      const _value = e.target.value;
+                      if (_value && !/^[0-9]+$/.test(_value)) {
+                        return;
+                      }
+                    }
+                    props.handleChange(descriptorDetails, e, subGroupName, "");
+                  }}
+                  required={element.mandatory ? true : false}
+                  disabled={descriptorDetails.isHide || element.disabled}
+                  // maxLength={element.namespace.name === "number" && 3}
+                />
+              </Col>
+            ) : element.namespace.name === "label" || element.namespace.name === "dictionary" ? (
               <Form.Control
-                as="textarea"
+                type="text"
                 name={element.name}
                 value={element.value || ""}
                 placeholder={element.example && `e.g., ${element.example}`}
-                onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+                // onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+                onChange={e => {
+                  // if (element.namespace.name === "number") {
+                  //   const _value = e.target.value;
+                  //   if (_value && !/^[0-9]+$/.test(_value)) {
+                  //     return;
+                  //   }
+                  // }
+                  props.handleChange(descriptorDetails, e, subGroupName, "");
+                }}
                 required={element.mandatory ? true : false}
-                maxLength={2000}
-                rows={4}
                 disabled={descriptorDetails.isHide || element.disabled}
+                // maxLength={element.namespace.name === "number" && 3}
               />
-              <div className="text-right text-muted">
-                {element.value && element.value.length > 0 ? element.value.length : "0"}
-                /2000
-              </div>
-            </>
-          ) : element.namespace.name === "label" ||
-            element.namespace.name === "dictionary" ||
-            element.namespace.name === "number" ? (
-            <Form.Control
-              type="text"
-              name={element.name}
-              value={element.value || ""}
-              placeholder={element.example && `e.g., ${element.example}`}
-              // onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
-              onChange={e => {
-                if (element.namespace.name === "number") {
-                  const _value = e.target.value;
-                  if (_value && !/^[0-9]+$/.test(_value)) {
-                    return;
-                  }
-                }
-                props.handleChange(descriptorDetails, e, subGroupName, "");
-              }}
-              required={element.mandatory ? true : false}
-              disabled={descriptorDetails.isHide || element.disabled}
-              // maxLength={element.namespace.name === "number" && 3}
-            />
-          ) : element.namespace.name === "selection" ? (
-            <Form.Control
-              as="select"
-              name={element.name}
-              value={element.value}
-              onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
-              required={true}
-              disabled={descriptorDetails.isHide || element.disabled}
-            >
-              <option value="id">select</option>
-              {element.selectionList.map((li, index) => {
-                return (
-                  <option value={li} key={index}>
-                    {li}
-                  </option>
-                );
-              })}
-            </Form.Control>
-          ) : element.namespace.name === "date" ? (
-            <Datetime
-              inputProps={inputProps}
-              timeFormat={false}
-              name={element.name}
-              value={element.value}
-              closeOnSelect
-              onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
-              disabled={descriptorDetails.isHide || element.disabled}
-            />
-          ) : element.namespace.name === "boolean" ? (
-            <FormControlLabel
-              control={
-                <BlueCheckbox
-                  name={element.name}
-                  onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
-                  size="small"
-                  defaultChecked={element.notApplicable}
-                  disabled={descriptorDetails.isHide || element.disabled}
-                />
-              }
-              label={element.name}
-            />
-          ) : (
-            ""
-          )}
-          <Feedback message={`${element.name} is required`} />
-          {/* </Col> */}
-
-          {element.units.length > 0 && (
-            // <Col md={2}>
-            <>
+            ) : element.namespace.name === "selection" ? (
               <Form.Control
                 as="select"
-                name="unitlevel"
-                value={element.unit}
-                onChange={e => props.handleUnitSelectionChange(descriptorDetails, e, subGroupName, "")}
-                required={element.mandatory ? true : false}
+                name={element.name}
+                value={element.value}
+                onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+                required={true}
                 disabled={descriptorDetails.isHide || element.disabled}
               >
-                <option value="">select Unit</option>
-                {element.units.map((unit, index) => {
+                <option value="id">Select</option>
+                {element.selectionList.map((li, index) => {
                   return (
-                    <option key={index} value={unit} id={element.id} name={element.name}>
-                      {unit}
+                    <option value={li} key={index}>
+                      {li}
                     </option>
                   );
                 })}
               </Form.Control>
-              <Feedback message={`Unit is required`} />
-            </>
-            // {/* // </Col> */}
-          )}
+            ) : element.namespace.name === "date" ? (
+              <Datetime
+                inputProps={inputProps}
+                timeFormat={false}
+                name={element.name}
+                value={element.value}
+                closeOnSelect
+                onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
+                disabled={descriptorDetails.isHide || element.disabled}
+              />
+            ) : element.namespace.name === "boolean" ? (
+              <FormControlLabel
+                control={
+                  <BlueCheckbox
+                    name={element.name}
+                    onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
+                    size="large"
+                    defaultChecked={element.notApplicable}
+                    disabled={descriptorDetails.isHide || element.disabled}
+                  />
+                }
+                label={element.name}
+              />
+            ) : (
+              ""
+            )}
+            <Feedback message={`${element.name} is required`} />
+            {/* </Col> */}
 
+            {element.units.length > 0 && (
+              <Col className="pr-0 mr-0">
+                <>
+                  <Form.Control
+                    as="select"
+                    name="unitlevel"
+                    value={element.unit}
+                    onChange={e => props.handleUnitSelectionChange(descriptorDetails, e, subGroupName, "")}
+                    required={element.mandatory ? true : false}
+                    disabled={descriptorDetails.isHide || element.disabled}
+                  >
+                    <option value="">Select Unit</option>
+                    {element.units.map((unit, index) => {
+                      return (
+                        <option key={index} value={unit} id={element.id} name={element.name}>
+                          {unit}
+                        </option>
+                      );
+                    })}
+                  </Form.Control>
+                  <Feedback message={`Unit is required`} />
+                </>
+              </Col>
+            )}
+          </Row>
+        </Col>
+        <Col xs={12} lg={3} className="mt-2 pt-2">
           {(element.allowNotApplicable || element.allowNotRecorded) && !simpleDescAndMandateGroup && (
             <>
-              {/* // <Col style={{ marginTop: "-11px" }} md={2}> */}
+              {/* <Col style={{ marginTop: "-11px" }} md={2}>  */}
               {element.allowNotApplicable && (
                 <FormControlLabel
+                  style={{ marginBottom: "-15px" }}
                   control={
                     <BlueCheckbox
                       key={Math.random()}
                       name="notApplicable"
                       checked={element.notApplicable}
                       onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
-                      size="small"
+                      size="large"
                       defaultChecked={element.notApplicable}
                     />
                   }
@@ -821,18 +862,18 @@ const Descriptors = props => {
                   }
                 />
               )}
-              <br />
+              {/* <br /> */}
               {element.allowNotRecorded && (
-                <>
+                <div>
                   <FormControlLabel
-                    style={{ marginTop: "-25px" }}
+                    style={{ marginBottom: "-8px" }}
                     control={
                       <BlueCheckbox
                         key={Math.random()}
                         name="notRecorded"
                         checked={element.notRecorded}
                         onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
-                        size="small"
+                        size="large"
                         defaultChecked={element.notRecorded}
                       />
                     }
@@ -843,16 +884,16 @@ const Descriptors = props => {
                       </>
                     }
                   />
-                </>
+                </div>
               )}
+              {/* </Col>   */}
             </>
-            // {/* </Col> */}
           )}
 
           {element && element.maxOccurrence > 1 && displayPlusIcon(element, descMetaData, true) && (
             // <Col md={1}>
             <Button onClick={() => props.handleAddDescriptorGroups(descriptorDetails)}>
-              <LineTooltip text="Add descriptor">
+              <LineTooltip text="Add Descriptor">
                 <Image src={plusIcon} alt="plus button" />
               </LineTooltip>
             </Button>

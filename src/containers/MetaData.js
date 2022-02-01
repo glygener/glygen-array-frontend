@@ -894,7 +894,7 @@ const MetaData = props => {
               as={Row}
               controlId="name"
               style={{
-                paddingLeft: "0.7em"
+                paddingLeft: "0.7em",
               }}
             >
               <Col xs={12} lg={9}>
@@ -912,7 +912,7 @@ const MetaData = props => {
                 as={Row}
                 controlId="type"
                 style={{
-                  paddingLeft: "0.7em"
+                  paddingLeft: "0.7em",
                 }}
               >
                 <Col xs={12} lg={9}>
@@ -952,7 +952,7 @@ const MetaData = props => {
 
             <Form.Group as={Row} className="gg-align-center mb-3" controlId="featureId">
               <Col xs={10} lg={7}>
-                <FormLabel label="Feature Id" className={"required-asterik"} />
+                <FormLabel label="Feature ID" className={"required-asterik"} />
                 <Form.Control
                   type="text"
                   name="featureId"
@@ -966,7 +966,7 @@ const MetaData = props => {
                   maxLength={30}
                   required
                 />
-                <Feedback message="Feature Id is required" />
+                <Feedback message="Feature ID is required" />
               </Col>
               <Col xs={3} />
             </Form.Group>
@@ -1005,14 +1005,15 @@ const MetaData = props => {
           handleAddDescriptorSubGroups={handleAddDescriptorSubGroups}
           defaultSelectionChange={defaultSelectionChange}
         />
-
-        <div>
-          <sup>1</sup>
-          {` Information was not provided by vendor, manufacturer or customer etc.`}
-        </div>
-        <div>
-          <sup>2</sup>
-          {` Information was not recorded during the experiment.`}
+        <div className="mb-3">
+          <div>
+            <sup>1</sup>
+            {` Information was not provided by vendor, manufacturer or customer etc.`}
+          </div>
+          <div>
+            <sup>2</sup>
+            {` Information was not recorded during the experiment.`}
+          </div>
         </div>
       </>
     );
@@ -1227,7 +1228,7 @@ const MetaData = props => {
           variant="danger"
           style={{
             width: "fit-content",
-            marginLeft: "25%"
+            marginLeft: "25%",
           }}
         >
           <span
@@ -1236,7 +1237,7 @@ const MetaData = props => {
               fontWeight: "bold",
               // paddingRight: "600px",
               borderColor: "#f5c6cb",
-              textTransform: "uppercase"
+              textTransform: "uppercase",
             }}
           >
             {message}
@@ -1421,12 +1422,12 @@ const MetaData = props => {
       name: metaDataDetails.name,
       description: metaDataDetails.description,
       user: {
-        name: window.localStorage.getItem("loggedinuser")
+        name: window.localStorage.getItem("loggedinuser"),
       },
       template: metaDataDetails.selectedtemplate,
       descriptors: descriptors,
       descriptorGroups: descriptorGroups,
-      id: isUpdate ? metaDataDetails.id : ""
+      id: isUpdate ? metaDataDetails.id : "",
     };
     return props.importedPageData ? objectToBeSaved : JSON.stringify(objectToBeSaved);
   }
@@ -1456,8 +1457,8 @@ const MetaData = props => {
       });
     });
 
-    const mandatoryGroupsFilled = groupDescriptors.filter(function(e) {
-      const filledDesc = e.descriptors.filter(function(subDescriptor) {
+    const mandatoryGroupsFilled = groupDescriptors.filter(function (e) {
+      const filledDesc = e.descriptors.filter(function (subDescriptor) {
         if (!subDescriptor.group && subDescriptor.value) {
           return subDescriptor;
         } else if (subDescriptor.group) {
@@ -1476,7 +1477,7 @@ const MetaData = props => {
     let mandateGroupExceed = new Map();
     let mandateGroupDeceed = new Map();
 
-    groupDescriptors.filter(function(e) {
+    groupDescriptors.filter(function (e) {
       const sameGroupItems = mandatoryGroupsFilled.filter(i => i.mandateGroup.id === e.mandateGroup.id);
       if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.xorMandate).length > 1) {
         mandateGroupExceed.set(e.mandateGroup.id, sameGroupItems);
@@ -1504,7 +1505,7 @@ const MetaData = props => {
 
       for (var descriptorPair of itr) {
         var pair = descriptorPair[1];
-        pair.filter(function(desc) {
+        pair.filter(function (desc) {
           if (!desc.xorMandate && desc.descriptors.filter(i => i.value).length > 0) {
             mandateGroupDeceed.delete(descriptorPair[0]);
           } else if (desc.xorMandate && desc.descriptors.filter(i => i.value && i.value !== undefined).length > 0) {
@@ -1600,7 +1601,7 @@ const MetaData = props => {
         selectedtemplate: responseJson.template,
         description: responseJson.description,
         sample: responseJson,
-        id: responseJson.id
+        id: responseJson.id,
       });
 
       !props.isCopy && setUpdateSampleName(responseJson.name);
@@ -1613,7 +1614,7 @@ const MetaData = props => {
   function getSampleTemplateSuccess(response) {
     response.json().then(responseJson => {
       setMetaDataDetails({
-        type: responseJson.name
+        type: responseJson.name,
       });
 
       if (props.importedInAPage && props.importedPageData && props.importedPageData.id) {
@@ -1922,17 +1923,25 @@ const MetaData = props => {
             </Button>
           </div>
         ) : (
-          <div className={"button-div line-break-2 text-center"}>
-            <Button onClick={props.handleBack} className={"button-test"}>
-              <span className={"MuiButton-label"}>Back</span>
-              <span className={"MuiTouchRipple-root"}></span>
+          <div className="mt-4 mb-4 text-center">
+            <Button onClick={props.handleBack} className="gg-btn-blue mt-2 gg-ml-20 gg-mr-20">
+              Back
             </Button>
-
-            <Button type="submit" className={"button-test"}>
-              <span className={"MuiButton-label"}>Next</span>
-              <span className={"MuiTouchRipple-root"}></span>
+            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+              Next
             </Button>
           </div>
+          // <div className={"button-div line-break-2 text-center"}>
+          //   <Button onClick={props.handleBack} className={"button-test"}>
+          //     <span className={"MuiButton-label"}>Back</span>
+          //     <span className={"MuiTouchRipple-root"}></span>
+          //   </Button>
+
+          //   <Button type="submit" className={"button-test"}>
+          //     <span className={"MuiButton-label"}>Next</span>
+          //     <span className={"MuiTouchRipple-root"}></span>
+          //   </Button>
+          // </div>
         )}
       </>
     );
@@ -2022,17 +2031,15 @@ const MetaData = props => {
           <>
             <Row>
               <Col>
-                <div
-                  style={{
-                    marginBottom: "100px",
-                    marginTop: "30px"
-                  }}
-                >
+                <div>
                   {getMetaData()}
-                  <div className={"button-div line-break-2 text-center"}>
-                    <Button onClick={() => setLoadDescriptors(false)}>Back</Button>
-                    &nbsp;
-                    <Button type="submit">Submit</Button>
+                  <div className="text-center mb-3">
+                    <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
+                      Back
+                    </Button>
+                    <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+                      Submit
+                    </Button>
                   </div>
                 </div>
               </Col>
