@@ -12,7 +12,14 @@ const ConfirmationModal = props => {
   };
 
   return (
-    <Modal show={props.showModal} onHide={handleCancel} animation={false}>
+    <Modal
+      show={props.showModal}
+      onHide={handleCancel}
+      animation={false}
+      size="xl"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
       <Modal.Header closeButton>
         <Modal.Title>{props.title}</Modal.Title>
       </Modal.Header>

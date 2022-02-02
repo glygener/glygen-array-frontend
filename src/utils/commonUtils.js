@@ -150,7 +150,7 @@ export function ContextAwareToggle({ children, eventKey, callback, classname }) 
 
   return (
     <FontAwesomeIcon
-      icon={["fas", isCurrentEventKey ? "angle-down" : "angle-up"]}
+      icon={["fas", isCurrentEventKey ? "angle-up" : "angle-down"]}
       size="2x"
       title="Collapse and Expand"
       onClick={decoratedOnClick}
