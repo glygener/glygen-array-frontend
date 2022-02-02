@@ -56,11 +56,11 @@ tr:nth-child(even) {
 
 .xorHeaderBox {
   margin-top: 1em;
+  margin-bottom: 1em;
   margin-left: 1% !important;
-  /* padding: 1em; */
   width: 98%;
   border-style: solid;
   border-width: thin;
-  border-radius: 0.4em;
+  border-radius: 2px;
   border-color: lightgrey;
 }

@@ -159,14 +159,7 @@ const Descriptors = props => {
           (element.mandateGroup.defaultSelection ||
             element.mandateGroup.notApplicable ||
             element.mandateGroup.notRecorded) && (
-            <div
-              style={{
-                // paddingLeft: "10px",
-                backgroundColor: "#f3f3f3",
-                borderRadius: "0.4em",
-              }}
-              key={index + element.id}
-            >
+            <div key={index + element.id}>
               {getMandateGroupsforSimpleDescriptors(generalDescriptors, element, index)}
             </div>
           )
@@ -253,14 +246,15 @@ const Descriptors = props => {
     return (
       <>
         <Row
-          className={"xorHeaderBox"}
+          className="xorHeaderBox gg-align-center"
           style={{
             border: descriptor.group ? "" : "none",
             padding: descriptor.group ? "1em" : "none",
+            paddingLeft: descriptor.group ? "1em" : "1em",
           }}
         >
-          <Col md={12}>
-            <FormLabel label={descriptor.mandateGroup && descriptor.mandateGroup.name} className={"xorGroupHeader"} />
+          <Col md={12} lg={descriptor.group ? 12 : 11}>
+            <FormLabel label={descriptor.mandateGroup && descriptor.mandateGroup.name} className="xorGroupHeader" />
             {sameXorGroup.map((grp, index) => {
               return !grp.id.startsWith("newly") ? (
                 <>
