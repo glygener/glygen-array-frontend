@@ -64,7 +64,7 @@ const Descriptors = props => {
 
     if (metaType !== "Feature") {
       if (accorSimpleDesc.length > 0) {
-        descriptorForm.push(getSimpleDescriptors(accorSimpleDesc));
+        descriptorForm.push(getSimpleDescriptorsAccord(accorSimpleDesc));
       }
     }
 
@@ -102,7 +102,7 @@ const Descriptors = props => {
     //General Descriptors for FeatureMetadata
     if (metaType === "Feature") {
       if (accorSimpleDesc.length > 0) {
-        descriptorForm.push(loadSimpleDesc(accorSimpleDesc));
+        descriptorForm.push(loadSimpleDescs(accorSimpleDesc));
       }
     }
 
@@ -111,7 +111,7 @@ const Descriptors = props => {
     return descriptorForm;
   };
 
-  const getSimpleDescriptors = generalDescriptors => {
+  const getSimpleDescriptorsAccord = generalDescriptors => {
     let keyIndex = 0;
     const cardHeader = (
       <Card.Header style5={{ height: "65px" }}>
@@ -126,7 +126,7 @@ const Descriptors = props => {
       </Card.Header>
     );
 
-    const cardBody = <Card.Body>{loadSimpleDesc(generalDescriptors)}</Card.Body>;
+    const cardBody = <Card.Body>{loadSimpleDescs(generalDescriptors)}</Card.Body>;
 
     return (
       <div key={keyIndex++} style={{ padding: "10px" }}>
@@ -140,7 +140,7 @@ const Descriptors = props => {
     );
   };
 
-  const loadSimpleDesc = generalDescriptors => {
+  const loadSimpleDescs = generalDescriptors => {
     return generalDescriptors.map((element, index) => {
       return !element.mandateGroup ? (
         <div
@@ -159,15 +159,13 @@ const Descriptors = props => {
           (element.mandateGroup.defaultSelection ||
             element.mandateGroup.notApplicable ||
             element.mandateGroup.notRecorded) && (
-            <div key={index + element.id}>
-              {getMandateGroupsforSimpleDescriptors(generalDescriptors, element, index)}
-            </div>
+            <div key={index + element.id}>{getXorGroupsforSimpleDescs(generalDescriptors, element, index)}</div>
           )
       );
     });
   };
 
-  const getMandateGroupsforSimpleDescriptors = (generalDescriptors, element, index, subGroupSimpleDescriptors) => {
+  const getXorGroupsforSimpleDescs = (generalDescriptors, element, index, subGroupSimpleDescriptors) => {
     let listTraversed = generalDescriptors.slice(0, index);
 
     //skipping the radio button display for mandategroup if there is one for current group
@@ -197,7 +195,7 @@ const Descriptors = props => {
     );
   };
 
-  const nonXorGroupsApplicableOrRecorded = descriptor => {
+  const nonXorGroupsWithApplOrRecordEnabled = descriptor => {
     return (
       <>
         <Row
@@ -266,11 +264,11 @@ const Descriptors = props => {
         if (!descriptor.mandateGroup) {
           if (descriptor.allowNotApplicable || descriptor.allowNotRecorded) {
             if (descriptor.notApplicable || descriptor.notRecorded) {
-              return <>{nonXorGroupsApplicableOrRecorded(descriptor)}</>;
+              return <>{nonXorGroupsWithApplOrRecordEnabled(descriptor)}</>;
             } else {
               return (
                 <>
-                  {nonXorGroupsApplicableOrRecorded(descriptor)}
+                  {nonXorGroupsWithApplOrRecordEnabled(descriptor)}
 
                   {getDescriptorGroups(descriptor, index)}
                 </>
@@ -284,7 +282,6 @@ const Descriptors = props => {
             }
           }
         } else {
-          
           if (
             descriptor.mandateGroup &&
             descriptor.mandateGroup.xOrMandate &&
@@ -682,7 +679,7 @@ const Descriptors = props => {
                 descriptor.mandateGroup.notApplicable ||
                 descriptor.mandateGroup.notRecorded) ? (
               <div key={index + descriptor.id}>
-                {getMandateGroupsforSimpleDescriptors(groupElement.descriptors, descriptor, index, groupElement)}
+                {getXorGroupsforSimpleDescs(groupElement.descriptors, descriptor, index, groupElement)}
               </div>
             ) : (
               (!descriptor.mandateGroup || (descriptor.mandateGroup && !descriptor.mandateGroup.xOrMandate)) && (
@@ -750,7 +747,7 @@ const Descriptors = props => {
               groupElement.isNewlyAddedNonMandatory ||
               (!groupElement.mandatory && !groupElement.mandateGroup) ||
               (groupElement.mandateGroup && groupElement.maxOccurrence > 1 && groupElement.id.startsWith("newly"))) &&
-              createDeleteIcon(groupElement, index)}
+              displayDeleteIcon(groupElement, index)}
             {/* toggle */}
             {accToggle}
           </div>
@@ -780,7 +777,7 @@ const Descriptors = props => {
     );
   };
 
-  const createDeleteIcon = (groupElement, index) => {
+  const displayDeleteIcon = (groupElement, index) => {
     return (
       <>
         <FontAwesomeIcon
@@ -1028,7 +1025,7 @@ const Descriptors = props => {
     );
   };
 
-  const getSubGroupDescriptorBody = () => {
+  const getSubNonXorGroupDescBody = () => {
     let duplicateGroups;
     let CurrentGroup;
 
@@ -1047,7 +1044,7 @@ const Descriptors = props => {
     });
   };
 
-  function handleConfirmAddSubGroups() {
+  function handleConfirmAddSubNonXorGroups() {
     if (props.validateUserInput(subGroupAddElement, subGroupAddDescriptor)) {
       props.handleAddDescriptorSubGroups(subGroupAddElement, subGroupAddDescriptor);
       setModalInputValidateError(false);
@@ -1069,7 +1066,7 @@ const Descriptors = props => {
             setEnableSubGroupAddModal(false);
             handleCancelModal(subGroupAddDescriptor, subGroupAddElement);
           }}
-          onConfirm={() => handleConfirmAddSubGroups()}
+          onConfirm={() => handleConfirmAddSubNonXorGroups()}
           title={`Add ${subGroupAddDescriptor.name}`}
           body={
             <>
@@ -1077,7 +1074,7 @@ const Descriptors = props => {
                 {"Enter all mandatory fields"}
               </Alert>
 
-              {getSubGroupDescriptorBody()}
+              {getSubNonXorGroupDescBody()}
             </>
           }
         />
