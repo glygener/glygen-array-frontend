@@ -9,10 +9,8 @@ import PropTypes from "prop-types";
 import { Descriptors } from "../components/Descriptors";
 import "../containers/MetaData.css";
 import { useHistory, Prompt, Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Form, Row, Col, Button, Popover, OverlayTrigger, Alert } from "react-bootstrap";
+import { Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { DragDropContext } from "react-beautiful-dnd";
-import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { Loading } from "../components/Loading";
 
 const MetaData = props => {
@@ -73,7 +71,7 @@ const MetaData = props => {
     name: "",
     selectedtemplate: "",
     description: "",
-    sample: {},
+    sample: {}
   };
 
   const [metaDataDetails, setMetaDataDetails] = useReducer(
@@ -998,7 +996,9 @@ const MetaData = props => {
           handleUnitSelectionChange={handleChangeMetaForm}
           handleAddDescriptorGroups={handleAddDescriptorGroups}
           handleAddDescriptorSubGroups={handleAddDescriptorSubGroups}
-          defaultSelectionChange={defaultSelectionChange}
+          defaultSelectionChangeSuperGroup={defaultSelectionChangeSuperGroup}
+          defaultSelectionChangeSubGroup={defaultSelectionChangeSubGroup}
+          nonXorGroupApporRec={nonXorGroupApporRec}
         />
         <div className="mb-3">
           <div>
@@ -1068,7 +1068,8 @@ const MetaData = props => {
     }
   };
 
-  function defaultSelectionChange(latestDefaultSelection, notApplicableOrRecorded) {
+  function defaultSelectionChangeSuperGroup(latestDefaultSelection, notApplicableOrRecorded) {
+    
     var sampleModelDragandDrop;
     var itemByType;
     var itemByTypeIndex;
@@ -1127,6 +1128,10 @@ const MetaData = props => {
             i.mandateGroup.defaultSelection === true &&
             !i.id.startsWith("newly")
         );
+
+        currentDefaultSelection[0].mandateGroup.defaultSelection = false;
+        currentDefaultSelection[0].mandateGroup.notApplicable = false;
+        currentDefaultSelection[0].mandateGroup.notRecorded = false;
       }
     } else if (currentDefaultSelection.length < 1 && !notApplicableOrRecorded) {
       currentDefaultSelection = itemDescriptors.filter(
@@ -1208,6 +1213,150 @@ const MetaData = props => {
     }
   }
 
+  function defaultSelectionChangeSubGroup(latestDefaultSelection, notApplicableOrRecorded, sg) {
+    
+    var sampleModelDragandDrop;
+    var itemByType;
+    var itemByTypeIndex;
+    let indexOfCurrentDefaultSelection;
+    let indexOfLatestDefaultSelection;
+    let currentDefaultSelection;
+    let superGroup = sg.descriptors ? sg.descriptors : sg;
+
+    if (isUpdate || props.isCopy) {
+      itemByType = { ...sampleModel };
+    } else {
+      sampleModelDragandDrop = [...sampleModel];
+      itemByType = sampleModelDragandDrop.find(i => i.name === metaDataDetails.selectedtemplate);
+      itemByTypeIndex = sampleModelDragandDrop.indexOf(itemByType);
+    }
+
+    var itemDescriptors = itemByType.descriptors;
+
+    superGroup.filter(
+      i =>
+        i.mandateGroup &&
+        i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+        (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
+    );
+
+    currentDefaultSelection = superGroup.filter(
+      i =>
+        i.mandateGroup &&
+        i.mandateGroup.id === latestDefaultSelection.mandateGroup.id &&
+        (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
+      // i.mandateGroup.defaultSelection === true
+    );
+
+    if ((currentDefaultSelection.length === 1 && notApplicableOrRecorded) || !notApplicableOrRecorded) {
+      if (currentDefaultSelection[0]) {
+        if (currentDefaultSelection[0].group) {
+          currentDefaultSelection[0].descriptors.forEach(d => {
+            if (d.group) {
+              var dg = d.descriptors;
+              dg.forEach(sgd => {
+                if (sgd.disabled) {
+                  sgd.disabled = false;
+                  sgd.notApplicable = false;
+                  sgd.notRecorded = false;
+                }
+                sgd.value = undefined;
+              });
+            } else if (!d.group) {
+              if (d.disabled) {
+                d.disabled = false;
+                d.notApplicable = false;
+                d.notRecorded = false;
+              }
+              d.value = undefined;
+            }
+          });
+        } else {
+          currentDefaultSelection[0].value = undefined;
+        }
+      }
+
+      indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
+      currentDefaultSelection[0].mandateGroup.defaultSelection = false;
+      currentDefaultSelection[0].mandateGroup.notApplicable = false;
+      currentDefaultSelection[0].mandateGroup.notRecorded = false;
+      itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
+    }
+
+    if (notApplicableOrRecorded) {
+      let sameXorGroup = superGroup.filter(
+        i => i.mandateGroup && i.mandateGroup.id === latestDefaultSelection.mandateGroup.id
+      );
+
+      if (sameXorGroup.length > 0) {
+        let lastElementIntheGroup = sameXorGroup[sameXorGroup.length - 1];
+        lastElementIntheGroup.mandateGroup.defaultSelection = false;
+
+        if (notApplicableOrRecorded === "notApplicable") {
+          lastElementIntheGroup.mandateGroup.notApplicable = true;
+          lastElementIntheGroup.mandateGroup.notRecorded = false;
+        } else if (notApplicableOrRecorded === "notRecorded") {
+          lastElementIntheGroup.mandateGroup.notRecorded = true;
+          lastElementIntheGroup.mandateGroup.notApplicable = false;
+        }
+      }
+    } else {
+      indexOfLatestDefaultSelection = itemDescriptors.indexOf(latestDefaultSelection);
+      latestDefaultSelection.mandateGroup.defaultSelection = true;
+      itemDescriptors[indexOfLatestDefaultSelection] = latestDefaultSelection;
+    }
+
+    itemByType.descriptors = itemDescriptors;
+
+    if (isUpdate || props.isCopy) {
+      setSampleModel(itemByType);
+    } else {
+      sampleModelDragandDrop[itemByTypeIndex] = itemByType;
+      setSampleModel(sampleModelDragandDrop);
+    }
+  }
+
+  function nonXorGroupApporRec(desc, notAppOrRec) {
+    var sampleModelNonXorGroup;
+    var itemByType;
+    var itemByTypeIndex;
+    let indexOfLatestSelection;
+
+    if (isUpdate || props.isCopy) {
+      itemByType = { ...sampleModel };
+    } else {
+      sampleModelNonXorGroup = [...sampleModel];
+      itemByType = sampleModelNonXorGroup.find(i => i.name === metaDataDetails.selectedtemplate);
+      itemByTypeIndex = sampleModelNonXorGroup.indexOf(itemByType);
+    }
+
+    var itemDescriptors = itemByType.descriptors;
+
+    indexOfLatestSelection = itemDescriptors.indexOf(desc);
+
+    if (!notAppOrRec) {
+      desc.notApplicable = false;
+      desc.notRecorded = false;
+    } else if (notAppOrRec === "notApplicable") {
+      desc.notApplicable = true;
+      desc.notRecorded = false;
+    } else if (notAppOrRec === "notRecorded") {
+      desc.notRecorded = true;
+      desc.notApplicable = false;
+    }
+
+    itemDescriptors[indexOfLatestSelection] = desc;
+
+    itemByType.descriptors = itemDescriptors;
+
+    if (isUpdate || props.isCopy) {
+      setSampleModel(itemByType);
+    } else {
+      sampleModelNonXorGroup[itemByTypeIndex] = itemByType;
+      setSampleModel(sampleModelNonXorGroup);
+    }
+  }
+
   const getXorList = (mandateGroupMap, message) => {
     let itr = mandateGroupMap.entries();
     let listMandatoryGroup = [];
@@ -1223,7 +1372,7 @@ const MetaData = props => {
           variant="danger"
           style={{
             width: "fit-content",
-            marginLeft: "25%",
+            marginLeft: "25%"
           }}
         >
           <span
@@ -1232,7 +1381,7 @@ const MetaData = props => {
               fontWeight: "bold",
               // paddingRight: "600px",
               borderColor: "#f5c6cb",
-              textTransform: "uppercase",
+              textTransform: "uppercase"
             }}
           >
             {message}
@@ -1417,12 +1566,12 @@ const MetaData = props => {
       name: metaDataDetails.name,
       description: metaDataDetails.description,
       user: {
-        name: window.localStorage.getItem("loggedinuser"),
+        name: window.localStorage.getItem("loggedinuser")
       },
       template: metaDataDetails.selectedtemplate,
       descriptors: descriptors,
       descriptorGroups: descriptorGroups,
-      id: isUpdate ? metaDataDetails.id : "",
+      id: isUpdate ? metaDataDetails.id : ""
     };
     return props.importedPageData ? objectToBeSaved : JSON.stringify(objectToBeSaved);
   }
@@ -1452,8 +1601,8 @@ const MetaData = props => {
       });
     });
 
-    const mandatoryGroupsFilled = groupDescriptors.filter(function (e) {
-      const filledDesc = e.descriptors.filter(function (subDescriptor) {
+    const mandatoryGroupsFilled = groupDescriptors.filter(function(e) {
+      const filledDesc = e.descriptors.filter(function(subDescriptor) {
         if (!subDescriptor.group && subDescriptor.value) {
           return subDescriptor;
         } else if (subDescriptor.group) {
@@ -1472,7 +1621,7 @@ const MetaData = props => {
     let mandateGroupExceed = new Map();
     let mandateGroupDeceed = new Map();
 
-    groupDescriptors.filter(function (e) {
+    groupDescriptors.filter(function(e) {
       const sameGroupItems = mandatoryGroupsFilled.filter(i => i.mandateGroup.id === e.mandateGroup.id);
       if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.xorMandate).length > 1) {
         mandateGroupExceed.set(e.mandateGroup.id, sameGroupItems);
@@ -1500,7 +1649,7 @@ const MetaData = props => {
 
       for (var descriptorPair of itr) {
         var pair = descriptorPair[1];
-        pair.filter(function (desc) {
+        pair.filter(function(desc) {
           if (!desc.xorMandate && desc.descriptors.filter(i => i.value).length > 0) {
             mandateGroupDeceed.delete(descriptorPair[0]);
           } else if (desc.xorMandate && desc.descriptors.filter(i => i.value && i.value !== undefined).length > 0) {
@@ -1596,7 +1745,7 @@ const MetaData = props => {
         selectedtemplate: responseJson.template,
         description: responseJson.description,
         sample: responseJson,
-        id: responseJson.id,
+        id: responseJson.id
       });
 
       !props.isCopy && setUpdateSampleName(responseJson.name);
@@ -1609,7 +1758,7 @@ const MetaData = props => {
   function getSampleTemplateSuccess(response) {
     response.json().then(responseJson => {
       setMetaDataDetails({
-        type: responseJson.name,
+        type: responseJson.name
       });
 
       if (props.importedInAPage && props.importedPageData && props.importedPageData.id) {

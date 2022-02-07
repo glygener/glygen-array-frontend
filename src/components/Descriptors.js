@@ -14,7 +14,6 @@ import { FormControlLabel, Button } from "@material-ui/core";
 import { LineTooltip } from "./tooltip/LineTooltip";
 import plusIcon from "../images/icons/plus.svg";
 import { ConfirmationModal } from "./ConfirmationModal";
-import { Link } from "react-router-dom";
 
 const Descriptors = props => {
   let descriptorsByMetaType;
@@ -29,7 +28,7 @@ const Descriptors = props => {
     isUpdate,
     isCopySample,
     setLoadDataOnFirstNextInUpdate,
-    isAllExpanded,
+    isAllExpanded
   } = props;
 
   const [enableSubGroupAddModal, setEnableSubGroupAddModal] = useState(false);
@@ -45,7 +44,7 @@ const Descriptors = props => {
     id: "dateField",
     required: true,
     placeholder: "Select Date",
-    readOnly: true,
+    readOnly: true
   };
 
   const buildDescriptors = () => {
@@ -147,7 +146,7 @@ const Descriptors = props => {
         <div
           style={{
             paddingLeft: "10px",
-            backgroundColor: element.id.startsWith("newly") ? "#f3f3f3" : "",
+            backgroundColor: element.id.startsWith("newly") ? "#f3f3f3" : ""
           }}
           key={index + element.id}
         >
@@ -156,6 +155,7 @@ const Descriptors = props => {
         </div>
       ) : (
         element.mandateGroup &&
+          element.mandateGroup.xOrMandate &&
           (element.mandateGroup.defaultSelection ||
             element.mandateGroup.notApplicable ||
             element.mandateGroup.notRecorded) && (
@@ -167,13 +167,14 @@ const Descriptors = props => {
     });
   };
 
-  const getMandateGroupsforSimpleDescriptors = (generalDescriptors, element, index) => {
+  const getMandateGroupsforSimpleDescriptors = (generalDescriptors, element, index, subGroupSimpleDescriptors) => {
     let listTraversed = generalDescriptors.slice(0, index);
 
     //skipping the radio button display for mandategroup if there is one for current group
     let alreadyDisplayedXorGroupWiz = listTraversed.filter(
       i =>
         i.mandateGroup &&
+        i.mandateGroup.xOrMandate &&
         i.mandateGroup.id === element.mandateGroup.id &&
         (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
     );
@@ -183,10 +184,75 @@ const Descriptors = props => {
       notRecordedorApp = true;
     }
 
+    return element.mandateGroup.xOrMandate ? (
+      <>
+        {alreadyDisplayedXorGroupWiz.length < 1 && subGroupSimpleDescriptors
+          ? getXorMandateHeader(element, generalDescriptors, subGroupSimpleDescriptors)
+          : alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, descMetaData)}
+
+        {!notRecordedorApp && getNewField(element, element, "", true)}
+      </>
+    ) : (
+      getNewField(element, element, "", true)
+    );
+  };
+
+  const nonXorGroupsApplicableOrRecorded = descriptor => {
     return (
       <>
-        {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, descMetaData)}
-        {!notRecordedorApp && getNewField(element, element, "", true)}
+        <Row
+          className={"xorHeaderBox"}
+          style={{
+            border: "",
+            padding: "1em"
+          }}
+        >
+          <Col md={12}>
+            <FormLabel label={descriptor.name} className="xorGroupHeader" />
+            <FormControlLabel
+              control={<BlueRadio />}
+              name={descriptor.name}
+              value={descriptor.name}
+              label={"Information available"}
+              onChange={() => {
+                props.nonXorGroupApporRec(descriptor);
+              }}
+              checked={!descriptor.notApplicable && !descriptor.notRecorded ? true : false}
+            />
+
+            <FormControlLabel
+              control={<BlueRadio />}
+              name={`notApplicable${descriptors.name}`}
+              value={"notApplicable"}
+              label={
+                <>
+                  Not Applicable
+                  <sup>1</sup>
+                </>
+              }
+              onChange={() => {
+                props.nonXorGroupApporRec(descriptor, "notApplicable");
+              }}
+              checked={descriptor.notApplicable === true ? true : false}
+            />
+
+            <FormControlLabel
+              control={<BlueRadio />}
+              name={`notRecorded${descriptor.name}`}
+              value={"notRecorded"}
+              label={
+                <>
+                  Not Recorded
+                  <sup>2</sup>
+                </>
+              }
+              onChange={() => {
+                props.nonXorGroupApporRec(descriptor, "notRecorded");
+              }}
+              checked={descriptor.notRecorded === true ? true : false}
+            />
+          </Col>
+        </Row>
       </>
     );
   };
@@ -198,14 +264,30 @@ const Descriptors = props => {
         (descriptor.group && !descriptor.mandatory && !descriptor.isDeleted)
       ) {
         if (!descriptor.mandateGroup) {
-          if (isUpdate || isCopySample) {
-            return descriptor.descriptors.find(i => i.value) && getDescriptorGroups(descriptor, index);
+          if (descriptor.allowNotApplicable || descriptor.allowNotRecorded) {
+            if (descriptor.notApplicable || descriptor.notRecorded) {
+              return <>{nonXorGroupsApplicableOrRecorded(descriptor)}</>;
+            } else {
+              return (
+                <>
+                  {nonXorGroupsApplicableOrRecorded(descriptor)}
+
+                  {getDescriptorGroups(descriptor, index)}
+                </>
+              );
+            }
           } else {
-            return <>{getDescriptorGroups(descriptor, index)}</>;
+            if (isUpdate || isCopySample) {
+              return descriptor.descriptors.find(i => i.value) && getDescriptorGroups(descriptor, index);
+            } else {
+              return <>{getDescriptorGroups(descriptor, index)}</>;
+            }
           }
         } else {
+          
           if (
             descriptor.mandateGroup &&
+            descriptor.mandateGroup.xOrMandate &&
             (descriptor.mandateGroup.defaultSelection ||
               descriptor.mandateGroup.notApplicable ||
               descriptor.mandateGroup.notRecorded)
@@ -216,6 +298,7 @@ const Descriptors = props => {
             let alreadyDisplayedXorGroupWiz = listTraversed.filter(
               i =>
                 i.mandateGroup &&
+                i.mandateGroup.xOrMandate &&
                 i.mandateGroup.id === descriptor.mandateGroup.id &&
                 (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
             );
@@ -240,8 +323,14 @@ const Descriptors = props => {
     });
   };
 
-  const getXorMandateHeader = (descriptor, descMetaData) => {
-    let sameXorGroup = descMetaData.filter(i => i.mandateGroup && i.mandateGroup.id === descriptor.mandateGroup.id);
+  const getXorMandateHeader = (descriptor, descMetaData, superGroup) => {
+    let sameXorGroup = descMetaData.filter(
+      e =>
+        e.mandateGroup &&
+        e.mandateGroup.xOrMandate &&
+        e.mandateGroup.id === descriptor.mandateGroup.id &&
+        !e.id.startsWith("newly")
+    );
 
     return (
       <>
@@ -250,11 +339,14 @@ const Descriptors = props => {
           style={{
             border: descriptor.group ? "" : "none",
             padding: descriptor.group ? "1em" : "none",
-            paddingLeft: descriptor.group ? "1em" : "1em",
+            paddingLeft: descriptor.group ? "1em" : "1em"
           }}
         >
           <Col md={12} lg={descriptor.group ? 12 : 11}>
-            <FormLabel label={descriptor.mandateGroup && descriptor.mandateGroup.name} className="xorGroupHeader" />
+            <FormLabel
+              label={descriptor.mandateGroup && descriptor.mandateGroup.xOrMandate && descriptor.mandateGroup.name}
+              className="xorGroupHeader"
+            />
             {sameXorGroup.map((grp, index) => {
               return !grp.id.startsWith("newly") ? (
                 <>
@@ -264,7 +356,9 @@ const Descriptors = props => {
                     value={grp.name}
                     label={grp.name}
                     onChange={() => {
-                      props.defaultSelectionChange(grp);
+                      superGroup
+                        ? props.defaultSelectionChangeSubGroup(grp, undefined, superGroup)
+                        : props.defaultSelectionChangeSuperGroup(grp);
                     }}
                     checked={grp.mandateGroup.defaultSelection === true ? true : false}
                   />
@@ -282,7 +376,9 @@ const Descriptors = props => {
                           </>
                         }
                         onChange={() => {
-                          props.defaultSelectionChange(grp, "notApplicable");
+                          superGroup
+                            ? props.defaultSelectionChangeSubGroup(grp, "notApplicable", superGroup)
+                            : props.defaultSelectionChangeSuperGroup(grp, "notApplicable");
                         }}
                         checked={grp.mandateGroup.notApplicable === true ? true : false}
                       />
@@ -298,7 +394,9 @@ const Descriptors = props => {
                           </>
                         }
                         onChange={() => {
-                          props.defaultSelectionChange(grp, "notRecorded");
+                          superGroup
+                            ? props.defaultSelectionChangeSubGroup(grp, "notRecorded", superGroup)
+                            : props.defaultSelectionChangeSuperGroup(grp, "notRecorded");
                         }}
                         checked={grp.mandateGroup.notRecorded === true ? true : false}
                       />
@@ -399,7 +497,7 @@ const Descriptors = props => {
           </Col>
           <Col
             style={{
-              textAlign: isSubGroup ? "left" : "right",
+              textAlign: isSubGroup ? "left" : "right"
             }}
           >
             {!descriptor.id.startsWith("newly") &&
@@ -417,9 +515,8 @@ const Descriptors = props => {
                       alt="Add Descriptor Group"
                       style={{
                         marginRight: "10px",
-                        marginBottom: "6px",
+                        marginBottom: "6px"
                       }}
-                      // onClick={() => props.handleAddDescriptorSubGroups(groupElement, descriptor)}
                       onClick={() => {
                         setEnableSubGroupAddModal(true);
                         setSubGroupAddElement(groupElement);
@@ -452,6 +549,42 @@ const Descriptors = props => {
     );
   };
 
+  const getSubGroupXorMandateGroup = (descriptor, groupElement, index) => {
+    if (
+      descriptor.mandateGroup &&
+      descriptor.mandateGroup.xOrMandate &&
+      (descriptor.mandateGroup.defaultSelection ||
+        descriptor.mandateGroup.notApplicable ||
+        descriptor.mandateGroup.notRecorded)
+    ) {
+      let listTraversed = groupElement.descriptors.slice(0, index);
+
+      //skipping the radio button display for mandategroup if there is one for current group
+      let alreadyDisplayedXorGroupWiz = listTraversed.filter(
+        i =>
+          i.mandateGroup &&
+          i.mandateGroup.xOrMandate &&
+          i.mandateGroup.id === descriptor.mandateGroup.id &&
+          (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
+      );
+
+      let notRecordedorApp = false;
+
+      if (descriptor.mandateGroup.notApplicable || descriptor.mandateGroup.notRecorded) {
+        notRecordedorApp = true;
+      }
+
+      return (
+        <>
+          {alreadyDisplayedXorGroupWiz.length < 1 &&
+            getXorMandateHeader(descriptor, groupElement.descriptors, groupElement)}
+
+          {!notRecordedorApp && getDescriptorGroups(descriptor, index)}
+        </>
+      );
+    }
+  };
+
   const getDescriptorGroups = (groupElement, index) => {
     const descriptorWithSubGroups = groupElement.descriptors.filter(i => i.group === true);
 
@@ -463,8 +596,10 @@ const Descriptors = props => {
 
     const cardBody = (
       <Card.Body>
-        {groupElement.descriptors.map(descriptor => {
-          if (descriptor.group) {
+        {groupElement.descriptors.map((descriptor, index) => {
+          if (descriptor.group && descriptor.mandateGroup) {
+            return getSubGroupXorMandateGroup(descriptor, groupElement, index);
+          } else if (descriptor.group) {
             let commonGroups = groupElement.descriptors.filter(i => i.name === descriptor.name);
 
             return (
@@ -541,17 +676,26 @@ const Descriptors = props => {
               </>
             );
           } else {
-            return (
-              <div
-                style={{
-                  textAlign: "left",
-                  paddingLeft: "10px",
-                  // backgroundColor: "#f3f3f3"
-                }}
-                key={descriptor.id.toString()}
-              >
-                {getNewField(descriptor, groupElement, "")}
+            return descriptor.mandateGroup &&
+              descriptor.mandateGroup.xOrMandate &&
+              (descriptor.mandateGroup.defaultSelection ||
+                descriptor.mandateGroup.notApplicable ||
+                descriptor.mandateGroup.notRecorded) ? (
+              <div key={index + descriptor.id}>
+                {getMandateGroupsforSimpleDescriptors(groupElement.descriptors, descriptor, index, groupElement)}
               </div>
+            ) : (
+              (!descriptor.mandateGroup || (descriptor.mandateGroup && !descriptor.mandateGroup.xOrMandate)) && (
+                <div
+                  style={{
+                    textAlign: "left",
+                    paddingLeft: "10px"
+                  }}
+                  key={descriptor.id.toString()}
+                >
+                  {getNewField(descriptor, groupElement, "")}
+                </div>
+              )
             );
           }
         })}
@@ -596,14 +740,16 @@ const Descriptors = props => {
                 title="Add Descriptor Group"
                 style={{
                   marginRight: "10px",
-                  marginBottom: "6px",
+                  marginBottom: "6px"
                 }}
                 onClick={() => props.handleAddDescriptorGroups(groupElement)}
               />
             )}
 
-            {(groupElement.isNewlyAdded || groupElement.isNewlyAddedNonMandatory || !groupElement.mandatory) &&
-              !groupElement.mandateGroup &&
+            {(groupElement.isNewlyAdded ||
+              groupElement.isNewlyAddedNonMandatory ||
+              (!groupElement.mandatory && !groupElement.mandateGroup) ||
+              (groupElement.mandateGroup && groupElement.maxOccurrence > 1 && groupElement.id.startsWith("newly"))) &&
               createDeleteIcon(groupElement, index)}
             {/* toggle */}
             {accToggle}
@@ -617,7 +763,7 @@ const Descriptors = props => {
       <div
         style={{
           padding: "10px",
-          paddingBottom: "20px",
+          paddingBottom: "20px"
         }}
         key={index}
       >
@@ -646,7 +792,7 @@ const Descriptors = props => {
           className="delete-icon tbl-icon-btn"
           style={{
             marginRight: "20px",
-            marginBottom: "6px",
+            marginBottom: "6px"
           }}
           onClick={() => handleDelete(groupElement.id)}
         />
@@ -661,9 +807,8 @@ const Descriptors = props => {
     let lastAddedIsNewMandatoryElement;
 
     if (group) {
-      lastAddedIsNewMandatoryCount = desc.filter(
-        i => !i.group && i.isNewlyAddedNonMandatory && i.name === element.name
-      ).length;
+      lastAddedIsNewMandatoryCount = desc.filter(i => !i.group && i.isNewlyAddedNonMandatory && i.name === element.name)
+        .length;
     } else {
       lastAddedIsNewMandatoryCount = desc.filter(i => i.isNewlyAddedNonMandatory && i.name === element.name).length;
     }
@@ -723,7 +868,6 @@ const Descriptors = props => {
                   name={element.name}
                   value={element.value || ""}
                   placeholder={element.example && `e.g., ${element.example}`}
-                  // onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
                   onChange={e => {
                     if (element.namespace.name === "number") {
                       const _value = e.target.value;
@@ -735,7 +879,7 @@ const Descriptors = props => {
                   }}
                   required={element.mandatory ? true : false}
                   disabled={descriptorDetails.isHide || element.disabled}
-                  // maxLength={element.namespace.name === "number" && 3}
+                  // maxLength={3}
                 />
               </Col>
             ) : element.namespace.name === "label" || element.namespace.name === "dictionary" ? (
@@ -744,19 +888,9 @@ const Descriptors = props => {
                 name={element.name}
                 value={element.value || ""}
                 placeholder={element.example && `e.g., ${element.example}`}
-                // onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
-                onChange={e => {
-                  // if (element.namespace.name === "number") {
-                  //   const _value = e.target.value;
-                  //   if (_value && !/^[0-9]+$/.test(_value)) {
-                  //     return;
-                  //   }
-                  // }
-                  props.handleChange(descriptorDetails, e, subGroupName, "");
-                }}
+                onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
                 required={element.mandatory ? true : false}
                 disabled={descriptorDetails.isHide || element.disabled}
-                // maxLength={element.namespace.name === "number" && 3}
               />
             ) : element.namespace.name === "selection" ? (
               <Form.Control
@@ -803,7 +937,6 @@ const Descriptors = props => {
               ""
             )}
             <Feedback message={`${element.name} is required`} />
-            {/* </Col> */}
 
             {element.units.length > 0 && (
               <Col className="pr-0 mr-0">
@@ -831,10 +964,10 @@ const Descriptors = props => {
             )}
           </Row>
         </Col>
+
         <Col xs={12} lg={3} className="mt-2 pt-2">
           {(element.allowNotApplicable || element.allowNotRecorded) && !simpleDescAndMandateGroup && (
             <>
-              {/* <Col style={{ marginTop: "-11px" }} md={2}>  */}
               {element.allowNotApplicable && (
                 <FormControlLabel
                   style={{ marginBottom: "-15px" }}
@@ -856,7 +989,7 @@ const Descriptors = props => {
                   }
                 />
               )}
-              {/* <br /> */}
+
               {element.allowNotRecorded && (
                 <div>
                   <FormControlLabel
@@ -880,18 +1013,15 @@ const Descriptors = props => {
                   />
                 </div>
               )}
-              {/* </Col>   */}
             </>
           )}
 
           {element && element.maxOccurrence > 1 && displayPlusIcon(element, descMetaData, true) && (
-            // <Col md={1}>
             <Button onClick={() => props.handleAddDescriptorGroups(descriptorDetails)}>
               <LineTooltip text="Add Descriptor">
                 <Image src={plusIcon} alt="plus button" />
               </LineTooltip>
             </Button>
-            // </Col>
           )}
         </Col>
       </Form.Group>

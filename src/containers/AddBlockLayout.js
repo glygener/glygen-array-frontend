@@ -768,7 +768,7 @@ const AddBlockLayout = (props) => {
 
   function getBlockLayoutSuccess(response) {
     response.json().then((parsedResponse) => {
-      debugger;
+      
       setBlockLayoutData(parsedResponse);
       console.log(parsedResponse);
     });
