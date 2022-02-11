@@ -31,7 +31,7 @@
   background-color: white !important;
 }
 
-table {
+/* table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
@@ -46,7 +46,7 @@ th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
-}
+} */
 
 .xorGroupHeader {
   font-size: larger;

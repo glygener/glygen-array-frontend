@@ -11,18 +11,7 @@ const SpotInformation = props => {
   return (
     <>
       <h4 className="accodion-header" style={{ borderRadius: "none" }}>
-        <Row>
-          <Col>
-            Spot: ({spotFeaturedCard.selectedRow}, {spotFeaturedCard.selectedCol})
-          </Col>
-
-          {spotFeaturedCard.selectedConcentration && spotFeaturedCard.selectedConcentration.concentration !== 0 && (
-            <Col style={{ textAlign: "left" }}>
-              Concentration: {spotFeaturedCard.selectedConcentration.concentration}
-              &nbsp;{spotFeaturedCard.selectedConcentration.unitlevel}
-            </Col>
-          )}
-        </Row>
+        Spot: ({spotFeaturedCard.selectedRow}, {spotFeaturedCard.selectedCol})
       </h4>
 
       <div className="spot-information-accordions">
@@ -37,31 +26,47 @@ const SpotInformation = props => {
                   <Accordion.Collapse eventKey={index} className="accordion-collapse-custom">
                     <Card.Body>
                       <Container>
-                        <Row>
-                          <Col>Ratio</Col>
-                          {element.feature.ratio ? (
+                        {(element.featureConcentration.concentration || element.featureConcentration.notReported) && (
+                          <Row>
+                            <Col>Concentration</Col>
+                            {element.featureConcentration.notReported ? (
+                              <Col>
+                                {element.featureConcentration.concentration}
+                                &nbsp;{element.featureConcentration.unitlevel}
+                              </Col>
+                            ) : (
+                              <Col>{"Not reported"}</Col>
+                            )}
+                          </Row>
+                        )}
+
+                        {element.featureConcentration.ratio && (
+                          <Row>
+                            <Col>Ratio</Col>
+
                             <Col>
-                              {element.feature.ratio}
+                              {element.featureConcentration.ratio}
                               {"%"}
                             </Col>
-                          ) : (
-                            <Col>{""}</Col>
-                          )}
-                        </Row>
-                        <Row>
-                          <Col>Linker</Col>
-                          {element.feature.linker ? <Col>{element.feature.linker.name}</Col> : <Col>{""}</Col>}
-                        </Row>
-                        <Row
-                          style={{
-                            border: "1px solid brown"
-                          }}
-                        >
-                          <Col> Glycans</Col>
-                          <Col>
-                            {element.feature &&
-                              element.feature.glycans &&
-                              element.feature.glycans.map((element, index) =>
+                          </Row>
+                        )}
+
+                        {element.feature.linker && (
+                          <Row>
+                            <Col>Linker</Col>
+                            <Col>{element.feature.linker.name}</Col>
+                          </Row>
+                        )}
+
+                        {element.feature && element.feature.glycans && (
+                          <Row
+                            style={{
+                              border: "1px solid brown"
+                            }}
+                          >
+                            <Col> Glycans</Col>
+                            <Col>
+                              {element.feature.glycans.map((element, index) =>
                                 element.glycan && element.glycan.cartoon ? (
                                   <StructureImage
                                     key={index}
@@ -77,8 +82,10 @@ const SpotInformation = props => {
                                   </div>
                                 )
                               )}
-                          </Col>
-                        </Row>
+                            </Col>
+                          </Row>
+                        )}
+
                         {/* <FeatureCard feature={element.feature} showName={false}></FeatureCard> */}
                       </Container>
                     </Card.Body>
@@ -96,7 +103,7 @@ SpotInformation.propTypes = {
   spotFeaturedCard: PropTypes.object
 };
 
-const SelectedSpotsBlock = (props) => {
+const SelectedSpotsBlock = props => {
   const { currentSpotsSelected } = props;
   var spotsSelected = [];
   return (
@@ -108,7 +115,7 @@ const SelectedSpotsBlock = (props) => {
         <Popover.Content className="popover-body-custom5">
           {currentSpotsSelected.map((element, index) => {
             spotsSelected = currentSpotsSelected.filter(
-              (spot) => spot.selectedRow === element.selectedRow && spot.selectedCol === element.selectedCol
+              spot => spot.selectedRow === element.selectedRow && spot.selectedCol === element.selectedCol
             );
 
             if (element.selectedFeatures.length < 1) {
@@ -118,7 +125,7 @@ const SelectedSpotsBlock = (props) => {
                   style={{
                     backgroundColor: spotsSelected.length > 1 ? "darkgreen" : "white",
                     color: spotsSelected.length > 1 ? "white" : "black",
-                    fontSize: "medium",
+                    fontSize: "medium"
                   }}
                 >
                   ({element.selectedRow} , {element.selectedCol})
@@ -133,10 +140,10 @@ const SelectedSpotsBlock = (props) => {
   );
 };
 SelectedSpotsBlock.propTypes = {
-  currentSpotsSelected: PropTypes.array,
+  currentSpotsSelected: PropTypes.array
 };
 
-const SelectedSpotsSlide = (props) => {
+const SelectedSpotsSlide = props => {
   const { currentSpotsSelected } = props;
 
   const iterator_obj = currentSpotsSelected.entries();
@@ -160,7 +167,7 @@ const SelectedSpotsSlide = (props) => {
               style={{
                 backgroundColor: blockSelectedLength > 1 ? "darkgreen" : "white",
                 color: blockSelectedLength > 1 ? "white" : "black",
-                fontSize: "medium",
+                fontSize: "medium"
               }}
             >
               ({value.selectedRow} , {value.selectedCol})

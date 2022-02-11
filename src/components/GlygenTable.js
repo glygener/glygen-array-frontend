@@ -15,7 +15,6 @@ import CardLoader from "./CardLoader";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
-import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 
 const GlygenTable = props => {

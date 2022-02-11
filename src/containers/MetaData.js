@@ -1069,7 +1069,6 @@ const MetaData = props => {
   };
 
   function defaultSelectionChangeSuperGroup(latestDefaultSelection, notApplicableOrRecorded) {
-    
     var sampleModelDragandDrop;
     var itemByType;
     var itemByTypeIndex;
@@ -1214,7 +1213,6 @@ const MetaData = props => {
   }
 
   function defaultSelectionChangeSubGroup(latestDefaultSelection, notApplicableOrRecorded, sg) {
-    
     var sampleModelDragandDrop;
     var itemByType;
     var itemByTypeIndex;

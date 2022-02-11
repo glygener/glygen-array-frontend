@@ -2,7 +2,6 @@ import React, { useReducer, useState, useEffect } from "react";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { Title } from "../components/FormControls";
 import "../containers/AddGlycan.css";
 import { GlygenGrid } from "../components/GlygenGrid";
 import { AddFeatureToBlock } from "../components/AddFeatureToBlock";
@@ -22,9 +21,8 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 
-const AddBlockLayout = (props) => {
+const AddBlockLayout = props => {
   let { blockLayoutId } = useParams();
-  // useEffect(props.authCheckAgent, []);
   // var count = 0;
 
   useEffect(() => {
@@ -65,8 +63,8 @@ const AddBlockLayout = (props) => {
       { offset: 0 },
       true,
       null,
-      (response) =>
-        response.json().then((responseJson) => {
+      response =>
+        response.json().then(responseJson => {
           setListSpots(responseJson.rows);
         }),
       getBlockLayoutFailure
@@ -82,14 +80,14 @@ const AddBlockLayout = (props) => {
     cols: "",
     rows: "",
     name: "",
-    description: " ",
+    description: " "
   };
 
   const gridSizeUpdated = {
     cols: "",
     rows: "",
     name: "",
-    description: " ",
+    description: " "
   };
 
   const [gridParams, setGridParams] = useReducer((state, newState) => ({ ...state, ...newState }), gridSize);
@@ -126,7 +124,7 @@ const AddBlockLayout = (props) => {
 
   const history = useHistory();
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -175,7 +173,7 @@ const AddBlockLayout = (props) => {
     var spotsSelected = [...arraySelected];
     var changedGridSpots = [...arraySelected];
 
-    spotsSelected.map((spot) => {
+    spotsSelected.map(spot => {
       if (spot.selectedRow > gridParams.rows || spot.selectedCol > gridParams.cols) {
         changedGridSpots.splice(changedGridSpots.indexOf(spot), 1);
       }
@@ -189,7 +187,7 @@ const AddBlockLayout = (props) => {
   const updateSelectedArray = (row, col) => {
     var spots = [...arraySelected];
 
-    var selectedSpot = spots.find((i) => i.selectedRow === row && i.selectedCol === col);
+    var selectedSpot = spots.find(i => i.selectedRow === row && i.selectedCol === col);
     var selectedSpotIndex;
 
     if (isUpdateBlock && selectedSpot) {
@@ -208,7 +206,7 @@ const AddBlockLayout = (props) => {
         } else {
           var selectedSpotLastIndex;
 
-          spots.forEach((element) => {
+          spots.forEach(element => {
             if (
               selectedSpot.selectedRow === element.selectedRow &&
               selectedSpot.selectedCol === element.selectedCol &&
@@ -225,14 +223,14 @@ const AddBlockLayout = (props) => {
 
             spots.splice(selectedSpotLastIndex, 1);
 
-            spots.map((element) => {
+            spots.map(element => {
               if (
                 element.selectedRow === selectedSpot.selectedRow &&
                 element.selectedCol === selectedSpot.selectedCol &&
                 element.selectedFeatures.length > 0
               ) {
                 element.color = "";
-                spots.map((spotObject) => {
+                spots.map(spotObject => {
                   if (spotObject.groupAssigned === element.groupAssigned) {
                     spotObject.color = "";
                   }
@@ -244,7 +242,7 @@ const AddBlockLayout = (props) => {
                 element.selectedFeatures.length > 0 &&
                 element.color === "orange"
               ) {
-                spots.map((spotObject) => {
+                spots.map(spotObject => {
                   if (spotObject.groupAssigned === element.groupAssigned) {
                     spotObject.color = "";
                   }
@@ -283,13 +281,13 @@ const AddBlockLayout = (props) => {
       selectedFeatures: [],
       selectedConcentration: {},
       groupAssigned: 0,
-      color: "", //background color of a spot is updated using this property
+      color: "" //background color of a spot is updated using this property
     });
     return spots;
   };
 
   const updateGroupColor = (selectedSpot, spots) => {
-    spots.forEach((element) => {
+    spots.forEach(element => {
       element.color =
         selectedSpot &&
         selectedSpot.groupAssigned > 0 &&
@@ -305,7 +303,7 @@ const AddBlockLayout = (props) => {
   const setBackGroundColor = (row, col) => {
     var spots = [...arraySelected];
 
-    var selectedSpot = spots.find((i) => i.selectedRow === row && i.selectedCol === col);
+    var selectedSpot = spots.find(i => i.selectedRow === row && i.selectedCol === col);
 
     if (selectedSpot) {
       if (selectedSpot.selectedFeatures.length > 0) {
@@ -326,22 +324,25 @@ const AddBlockLayout = (props) => {
       var xMarkColor = selectedColorForUpdateBlock(row, col);
       return xMarkColor;
     }
+    // var markXColor = "#f5f5f5"; // before using the card for blocklayout grid we changed the bg color of the body for the app so we swtiched from white to this color to hide x
 
-    // var markXColor = "white";
-    var markXColor = "#f5f5f5"; // as we changed the bg color of the body for the app so we swtiched from white to this color to hide x
+    var markXColor = "white"; // using default page color to hide x
     var spots = [...arraySelected];
-    const selectedSpot = spots.filter((spot) => spot.selectedRow === row && spot.selectedCol === col);
+
+    const selectedSpot = spots.filter(spot => spot.selectedRow === row && spot.selectedCol === col);
 
     if (selectedSpot.length > 0) {
       if (selectedSpot.length > 1) {
-        markXColor = "#f5f5f5";
+        // markXColor = "#f5f5f5";
+        markXColor = "white";
       } else if (selectedSpot[0].color === "orange") {
         markXColor = "orange";
       } else if (selectedSpot[0].selectedFeatures.length > 0 && !selectedSpot[0].color) {
         markXColor = "darkgreen";
       } else if (!selectedSpot.featureSelected) {
         if (selectedSpot[0].color) {
-          markXColor = "#f5f5f5";
+          // markXColor = "#f5f5f5";
+          markXColor = "white";
         }
       }
     }
@@ -349,28 +350,30 @@ const AddBlockLayout = (props) => {
   };
 
   const selectedColorForUpdateBlock = (row, col) => {
-    var xMarkColor = "#f5f5f5";
-    var spots = [...arraySelected];
-    var selectedSpot = spots.find((i) => i.selectedRow === row && i.selectedCol === col);
+    let markXColor = "white";
+    // xMarkColor = "#f5f5f5";
+    let spots = [...arraySelected];
+    let selectedSpot = spots.find(i => i.selectedRow === row && i.selectedCol === col);
 
     if (selectedSpot) {
       if (spotFeatureCard && spotFeatureCard.selectedRow === row && spotFeatureCard.selectedCol === col) {
         if (selectedSpot.color && selectedSpot.color === "orange") {
-          xMarkColor = "#f5f5f5";
+          // xMarkColor = "#f5f5f5";
+          markXColor = "white";
         }
       } else {
         if (!selectedSpot.color) {
-          xMarkColor = "darkgreen";
+          markXColor = "darkgreen";
         } else {
-          xMarkColor = "orange";
+          markXColor = "orange";
         }
       }
     }
-    return xMarkColor;
+    return markXColor;
   };
 
   const setBackGroundColorForUpdateBlock = () => {
-    arraySelected.forEach((spot) => {
+    arraySelected.forEach(spot => {
       setBackGroundColor(spot.selectedRow, spot.selectedCol);
       updateSelectedArray(spot.selectedRow, spot.selectedCol);
     });
@@ -382,7 +385,7 @@ const AddBlockLayout = (props) => {
       spotFeatureCard.selectedRow === selectedSpot.selectedRow &&
       spotFeatureCard.selectedCol === selectedSpot.selectedCol
     ) {
-      spots.map((element) => {
+      spots.map(element => {
         if (element.color) {
           element.color = "";
         }
@@ -402,9 +405,9 @@ const AddBlockLayout = (props) => {
     var spots = [...spotsSelected];
     var countForConfirm = 0;
 
-    spots.forEach((element) => {
+    spots.forEach(element => {
       if (element.selectedFeatures.length < 1) {
-        spots.forEach((spot) => {
+        spots.forEach(spot => {
           if (
             spot.selectedRow === element.selectedRow &&
             spot.selectedCol === element.selectedCol &&
@@ -431,9 +434,9 @@ const AddBlockLayout = (props) => {
     var emptySpotCount = 0;
     var updatedSpots = [...spotsSelected];
 
-    spotsSelected.forEach((element) => {
+    spotsSelected.forEach(element => {
       if (element.selectedFeatures.length < 1) {
-        spotsSelected.forEach((value) => {
+        spotsSelected.forEach(value => {
           if (
             value.selectedRow === element.selectedRow &&
             value.selectedCol === element.selectedCol &&
@@ -446,7 +449,7 @@ const AddBlockLayout = (props) => {
       }
     });
 
-    updatedSpots.forEach((element) => {
+    updatedSpots.forEach(element => {
       element.color = "";
     });
 
@@ -497,7 +500,7 @@ const AddBlockLayout = (props) => {
     );
   };
 
-  const handleSpotSelectionChange = (e) => {
+  const handleSpotSelectionChange = e => {
     const id = e.target.value !== "" ? e.target.options[e.target.value].id : "";
     const name = e.target.name;
     const value = e.target.value;
@@ -531,7 +534,7 @@ const AddBlockLayout = (props) => {
           <Card>
             <Card.Body>
               {!addFeatures && (
-                <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
                   <GridForm
                     gridParams={gridParams}
                     updatedGridParams={updatedGridParams}
@@ -555,27 +558,18 @@ const AddBlockLayout = (props) => {
                   {/*loading addfeature and submit button */}
                   {loadGrid && (
                     <>
-                      <Row
-                        className="gg-align-center text-center"
-                        // </>style={{ width: "1200px" }}
-                      >
+                      <Row className="gg-align-center text-center">
                         <Col xs={12} md={12} lg={8} className="pb-3 pt-3" style={{ width: "800px" }}>
                           <div
                             className="grid-table"
                             style={{
-                              height: gridParams.rows > 30 ? "600px" : "fit-content",
+                              height: gridParams.rows > 30 ? "600px" : "fit-content"
                             }}
                           >
                             {createGrid()}
                           </div>
-                          {/* <div
-                            style={{
-                              paddingBottom: "30px",
-                            }}
-                          ></div> */}
                         </Col>
 
-                        {/* <Col md={4} style={{ paddingBottom: "10%" }}> */}
                         <Col xs={12} md={12} lg={3} className="ml-3 pl-3 pb-3 pt-3">
                           <ColorNotation pageLabels={"blocklayout"} isUpdate={isUpdateBlock} />
 
@@ -595,7 +589,7 @@ const AddBlockLayout = (props) => {
                               <div
                                 style={{
                                   border: "1px solid rgba(0, 0, 0, 0.1)",
-                                  borderRadius: "8px",
+                                  borderRadius: "8px"
                                 }}
                               >
                                 <div className={"summary-border"}>
@@ -616,8 +610,8 @@ const AddBlockLayout = (props) => {
                   )}
                 </Form>
               )}
+
               {addFeatures && (
-                // <div className="add-feature-div">
                 <AddFeatureToBlock
                   setSpotsSelected={setSpotsSelected}
                   spotsSelected={spotsSelected}
@@ -628,8 +622,8 @@ const AddBlockLayout = (props) => {
                   spotMetadata={selectedSpotMetadata}
                   spotMetadataList={listSpots}
                 />
-                // </div>
               )}
+
               <Loading show={showLoading} />
               <ConfirmationModal
                 showModal={showAddFeatureModal}
@@ -660,7 +654,7 @@ const AddBlockLayout = (props) => {
         {
           id: blockLayoutId,
           name: gridParams.name,
-          description: gridParams.description,
+          description: gridParams.description
         },
         updateBlockLayoutSuccess,
         updateBlockLayoutFailure
@@ -679,7 +673,7 @@ const AddBlockLayout = (props) => {
             description: gridParams.description,
             width: updatedGridParams.cols,
             height: updatedGridParams.rows,
-            spots: spotsData,
+            spots: spotsData
           },
           addBlockLayoutSuccess,
           addBlockLayoutFailure
@@ -696,16 +690,16 @@ const AddBlockLayout = (props) => {
 
   function getSpotsData() {
     var spots = [];
-    arraySelected.forEach((element) => {
+    arraySelected.forEach(element => {
       if (element.selectedFeatures.length > 0) {
         spots.push({
           row: element.selectedRow,
           column: element.selectedCol,
-          features: element.selectedFeatures.map((e) => e.feature),
+          features: element.selectedFeatures.map(e => e.feature),
           group: element.groupAssigned,
-          concentration: element.selectedConcentration,
-          ratioMap: getFeaturetoRatioMap(element.selectedFeatures),
-          metadata: element.metadata,
+          // concentration: element.selectedConcentration,
+          ratioConcentrationMap: getFeatureToRatioConcentrationMap(element.selectedFeatures),
+          metadata: element.metadata
         });
       }
     });
@@ -713,13 +707,24 @@ const AddBlockLayout = (props) => {
     return spots;
   }
 
-  function getFeaturetoRatioMap(features) {
-    var featureToRatio = {};
+  function getFeatureToRatioConcentrationMap(features) {
+    let featureToRatioConcentrationMap = {};
 
-    features.forEach((element) => {
-      element.ratio && Object.assign(featureToRatio, { [element.feature.id]: element.ratio });
+    features.forEach(element => {
+      let ratioConcentration = element.featureConcentration;
+
+      ratioConcentration &&
+        Object.assign(featureToRatioConcentrationMap, {
+          [element.feature.id]: {
+            ratio: ratioConcentration.ratio,
+            concentration: {
+              m_concentration: ratioConcentration.concentration,
+              m_levelUnit: ratioConcentration.unitlevel
+            }
+          }
+        });
     });
-    return featureToRatio;
+    return featureToRatioConcentrationMap;
   }
 
   function addBlockLayoutSuccess(response) {
@@ -730,7 +735,7 @@ const AddBlockLayout = (props) => {
   }
 
   function addBlockLayoutFailure(response) {
-    response.json().then((response) => {
+    response.json().then(response => {
       setPageErrorsJson(response);
       setShowErrorSummary(true);
     });
@@ -748,8 +753,8 @@ const AddBlockLayout = (props) => {
 
     var formError = false;
 
-    response.json().then((parsedJson) => {
-      parsedJson.errors.forEach((element) => {
+    response.json().then(parsedJson => {
+      parsedJson.errors.forEach(element => {
         if (element.objectName === "name") {
           setValidated(false);
           setDuplicateName(true);
@@ -767,8 +772,7 @@ const AddBlockLayout = (props) => {
   }
 
   function getBlockLayoutSuccess(response) {
-    response.json().then((parsedResponse) => {
-      
+    response.json().then(parsedResponse => {
       setBlockLayoutData(parsedResponse);
       console.log(parsedResponse);
     });
@@ -784,7 +788,7 @@ const AddBlockLayout = (props) => {
     setGridParams(updateBlockGridParams(blocklayout));
     setUpdatedGridParams(updateBlockGridParams(blocklayout));
 
-    blocklayout.spots.forEach((spotElement) => {
+    blocklayout.spots.forEach(spotElement => {
       var spot = [];
       spot.selectedRow = spotElement.row;
       spot.selectedCol = spotElement.column;
@@ -794,10 +798,10 @@ const AddBlockLayout = (props) => {
       spot.metadata = spotElement.metadata;
       // spot.color = "";
 
-      spotElement.features.forEach((feature) => {
+      spotElement.features.forEach(feature => {
         var featureSelected = {
           feature: feature,
-          ratio: spot.ratio,
+          ratio: spot.ratio
         };
         spot.selectedFeatures.push(featureSelected);
       });
