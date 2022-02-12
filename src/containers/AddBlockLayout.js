@@ -42,8 +42,8 @@ const AddBlockLayout = props => {
         getBlockLayoutSuccess,
         getBlockLayoutFailure
       );
-      setTitle("Update Block Layout");
-      setSubTitle("You can update the block layout information.");
+      setTitle("Edit Block Layout");
+      setSubTitle("Update block layout information. Name must be unique in your block layout repository and cannot be used for more than one block layout.");
     } else if (props.publicView) {
       setShowLoading(true);
       wsCall(
