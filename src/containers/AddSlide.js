@@ -6,7 +6,11 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { useHistory, Prompt, useParams } from "react-router-dom";
 import React, { useReducer, useState, useEffect } from "react";
-import { FormLabel, Feedback, Title } from "../components/FormControls";
+import { FormLabel, Feedback } from "../components/FormControls";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { Link } from "react-router-dom";
 
 const AddSlide = props => {
   let { slideId } = useParams();
@@ -18,11 +22,18 @@ const AddSlide = props => {
 
     if (slideId) {
       wsCall("getslide", "GET", [slideId], true, null, getSlideSuccess, wsCallFail);
+      setTitle("Edit Slide");
+      setSubTitle(
+        "Update slide information. Name must be unique in your slide repository and cannot be used for more than one slide."
+      );
     }
     fetchList("slidelayoutlist");
     fetchList("listprinters");
     fetchList("listslidemeta");
   }, []);
+
+  const [title, setTitle] = useState("Add Slide to Repository");
+  const [subTitle, setSubTitle] = useState("Please provide the information and create the grid for the new slide.");
 
   const history = useHistory();
   const [validated, setValidated] = useState(false);
@@ -41,7 +52,7 @@ const AddSlide = props => {
     description: "",
     layout: "",
     printer: "",
-    metadata: ""
+    metadata: "",
   };
 
   const [slide, setSlide] = useReducer((state, newState) => ({ ...state, ...newState }), slideFormState);
@@ -52,22 +63,22 @@ const AddSlide = props => {
       name: "layout",
       value: slide.layout,
       list: listSlideLayouts,
-      message: "Slide Layout"
+      message: "Slide Layout",
     },
     {
       label: "Printer Meta",
       name: "printer",
       value: slide.printer,
       list: listPrinters,
-      message: "Printer Metadata"
+      message: "Printer Metadata",
     },
     {
       label: "Slide Meta",
       name: "metadata",
       value: slide.metadata,
       list: listSlideMetas,
-      message: "Slide Metadata"
-    }
+      message: "Slide Metadata",
+    },
   ];
 
   const handleChange = e => {
@@ -118,7 +129,7 @@ const AddSlide = props => {
         description: responseJson.description,
         layout: responseJson.layout.name,
         printer: responseJson.printer.name,
-        metadata: responseJson.metadata.name
+        metadata: responseJson.metadata.name,
       });
     });
   }
@@ -145,7 +156,7 @@ const AddSlide = props => {
           description: slide.description,
           layout: { name: slide.layout },
           printer: { name: slide.printer },
-          metadata: { name: slide.metadata }
+          metadata: { name: slide.metadata },
         },
         addSlideSuccess,
         addSlideFailure
@@ -194,97 +205,111 @@ const AddSlide = props => {
           {getMeta(head.addSlideMeta)}
         </Helmet>
 
-        <div className="page-container">
-          <Title title="Create Slide" />
+        <Container maxWidth="xl">
+          <div className="page-container">
+            <PageHeading title={title} subTitle={subTitle} />
+            <Card>
+              <Card.Body>
+                {showErrorSummary === true && (
+                  <ErrorSummary
+                    show={showErrorSummary}
+                    form="slides"
+                    errorJson={pageErrorsJson}
+                    errorMessage={pageErrorMessage}
+                  ></ErrorSummary>
+                )}
 
-          {showErrorSummary === true && (
-            <ErrorSummary
-              show={showErrorSummary}
-              form="slides"
-              errorJson={pageErrorsJson}
-              errorMessage={pageErrorMessage}
-            ></ErrorSummary>
-          )}
+                {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
 
-          {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
-
-          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-            <Form.Group as={Row} controlId="name">
-              <FormLabel label="Name" className="required-asterik" />
-              <Col md={5}>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  placeholder="name"
-                  value={slide.name}
-                  onChange={handleChange}
-                  required
-                  isInvalid={duplicateName}
-                />
-                <Feedback
-                  message={
-                    duplicateName
-                      ? "Another slide  has the same Name. Please use a different Name."
-                      : "Name is required"
-                  }
-                />
-              </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} controlId="description">
-              <FormLabel label="Description" />
-              <Col md={5}>
-                <Form.Control
-                  as="textarea"
-                  rows={4}
-                  name="description"
-                  placeholder="description"
-                  value={slide.description}
-                  onChange={handleChange}
-                  maxLength={2000}
-                />
-               <div className="text-right text-muted">
-                  {slide.description && slide.description.length > 0 ? slide.description.length : "0"}
-                  /2000
-                </div>
-              </Col>
-            </Form.Group>
-
-            {FormData.map((element, index) => {
-              return (
-                <div key={index}>
-                  <Form.Group as={Row} controlId={index}>
-                    <FormLabel label={element.label} className="required-asterik" />
-                    <Col md={5}>
+                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                  <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Name" className="required-asterik" />
                       <Form.Control
-                        as="select"
-                        name={element.name}
-                        value={element.value}
-                        onChange={handleSelect}
-                        required={true}
-                      >
-                        <option value="">select</option>
-                        {element.list.rows &&
-                          element.list.rows.map((element, index) => {
-                            return (
-                              <option key={index} value={element.name}>
-                                {element.name}
-                              </option>
-                            );
-                          })}
-                      </Form.Control>
-                      <Feedback message={`${element.message} is required`}></Feedback>
+                        type="text"
+                        name="name"
+                        placeholder="Enter Name"
+                        value={slide.name}
+                        onChange={handleChange}
+                        required
+                        isInvalid={duplicateName}
+                      />
+                      <Feedback
+                        message={
+                          duplicateName
+                            ? "Another slide  has the same Name. Please use a different Name."
+                            : "Name is required"
+                        }
+                      />
                     </Col>
                   </Form.Group>
-                </div>
-              );
-            })}
 
-            <Button type="submit" disabled={duplicateName}>
-              {slideId ? "Update" : "Submit"}
-            </Button>
-          </Form>
-        </div>
+                  <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Description" />
+                      <Form.Control
+                        as="textarea"
+                        rows={4}
+                        name="description"
+                        placeholder="description"
+                        value={slide.description}
+                        onChange={handleChange}
+                        maxLength={2000}
+                      />
+                      <div className="text-right text-muted">
+                        {slide.description && slide.description.length > 0 ? slide.description.length : "0"}
+                        /2000
+                      </div>
+                    </Col>
+                  </Form.Group>
+
+                  {FormData.map((element, index) => {
+                    return (
+                      <div key={index}>
+                        <Form.Group as={Row} controlId={index} className="gg-align-center mb-3">
+                          <Col xs={12} lg={9}>
+                            <FormLabel label={element.label} className="required-asterik" />
+                            <Form.Control
+                              as="select"
+                              name={element.name}
+                              value={element.value}
+                              onChange={handleSelect}
+                              required={true}
+                            >
+                              <option value="">Select {element.label}</option>
+                              {element.list.rows &&
+                                element.list.rows.map((element, index) => {
+                                  return (
+                                    <option key={index} value={element.name}>
+                                      {element.name}
+                                    </option>
+                                  );
+                                })}
+                            </Form.Control>
+                            <Feedback message={`${element.message} is required`}></Feedback>
+                          </Col>
+                        </Form.Group>
+                      </div>
+                    );
+                  })}
+                  <div className="text-center mb-2">
+                    <Link to="/slides">
+                      <Button
+                        // className="gg-btn-outline mt-2 gg-mr-20"
+                        className={`${slideId ? "gg-btn-blue mt-2 gg-mr-20" : "gg-btn-outline mt-2 gg-mr-20"}`}
+                      >
+                        {slideId ? "Cancel" : "Back to Slides"}
+                      </Button>
+                    </Link>
+                    <Button type="submit" disabled={duplicateName} className="gg-btn-blue mt-2 gg-ml-20">
+                      Submit{/* {slideId ? "Update" : "Submit"} */}
+                    </Button>
+                  </div>
+                </Form>
+              </Card.Body>
+            </Card>
+          </div>
+        </Container>
       </>
     );
   };
