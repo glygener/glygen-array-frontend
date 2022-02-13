@@ -36,7 +36,7 @@ import ExampleSequenceControl from "../components/ExampleSequenceControl";
 //   },
 // }));
 
-const AddGlycan = (props) => {
+const AddGlycan = props => {
   useEffect(props.authCheckAgent, []);
 
   // const classes = useStyles();
@@ -60,7 +60,7 @@ const AddGlycan = (props) => {
     glytoucanId: "",
     sequence: "",
     glytoucanRegistration: true,
-    sequenceType: "GlycoCT",
+    sequenceType: "GlycoCT"
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -69,7 +69,7 @@ const AddGlycan = (props) => {
 
   const steps = getSteps();
 
-  const handleNext = (e) => {
+  const handleNext = e => {
     setValidate(false);
     setValidateName(false);
 
@@ -114,15 +114,15 @@ const AddGlycan = (props) => {
       return;
     }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
     setShowErrorSummary(false);
   };
 
-  const handleSelect = (e) => {
+  const handleSelect = e => {
     const newValue = e.target.value;
     // if (newValue !== "SequenceDefined") {
     //   setDefaultCheck(false);
@@ -132,7 +132,7 @@ const AddGlycan = (props) => {
     setUserSelection({ ...initialState, ...{ selectedGlycan: newValue } });
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setDisableReset(true);
 
     const name = e.target.name;
@@ -161,7 +161,7 @@ const AddGlycan = (props) => {
     }
   };
 
-  const handleClassSelect = (e) => {
+  const handleClassSelect = e => {
     const select = e.target.options[e.target.selectedIndex].value;
     setUserSelection({ sequenceType: select });
   };
@@ -243,7 +243,7 @@ const AddGlycan = (props) => {
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive5 text-center" activeStep={activeStep} alternativeLabel>
-                {steps.map((label) => (
+                {steps.map(label => (
                   <Step key={label}>
                     <StepLabel>{label}</StepLabel>
                   </Step>
@@ -312,38 +312,37 @@ const AddGlycan = (props) => {
             <Row className="gg-align-center">
               <Col sm="auto">
                 <RadioGroup name="glycan-type" onChange={handleSelect} value={userSelection.selectedGlycan}>
-                  {/* SEQUENCE_DEFINED */}
                   <FormControlLabel
                     value="SequenceDefined"
                     control={<BlueRadio />}
                     label={displayNames.glycan.SEQUENCE_DEFINED}
                   />
-                  {/* COMPOSITION_BASED */}
+
                   <FormControlLabel
                     value="CompositionBased"
                     disabled
                     control={<BlueRadio />}
                     label={displayNames.glycan.COMPOSITION_BASED}
                   />
-                  {/* MASS_ONLY */}
+
                   <FormControlLabel control={<BlueRadio />} value="MassDefined" label={displayNames.glycan.MASS_ONLY} />
-                  {/* CLASSIFICATION_BASED */}
+
                   <FormControlLabel
                     value="ClassificationBased"
                     disabled
                     control={<BlueRadio />}
                     label={displayNames.glycan.CLASSIFICATION_BASED}
                   />
-                  {/* FRAGMENT_ONLY */}
+
                   <FormControlLabel
                     value="FragmentOnly"
                     disabled
                     control={<BlueRadio />}
                     label={displayNames.glycan.FRAGMENT_ONLY}
                   />
-                  {/* UNKNOWN */}
+
                   <FormControlLabel value="Unknown" control={<BlueRadio />} label={displayNames.glycan.UNKNOWN} />
-                  {/* OTHER */}
+
                   <FormControlLabel value="Other" control={<BlueRadio />} label={displayNames.glycan.OTHER} />
                 </RadioGroup>
               </Col>
@@ -355,19 +354,6 @@ const AddGlycan = (props) => {
           return (
             <>
               <Form>
-                {/* Top Reset/ Clear Fields Button */}
-                {/* <div className="text-center">
-                  <Button
-                    variant="contained"
-                    disabled={!disableReset}
-                    onClick={clearGlytoucanSequence}
-                    className="gg-btn-blue mt-3"
-                  >
-                    Clear Fields
-                  </Button>
-                </div> */}
-
-                {/* GlyTouCan ID */}
                 <Form.Group
                   as={Row}
                   controlId="glytoucanId"
@@ -419,7 +405,7 @@ const AddGlycan = (props) => {
                       isInvalid={invalidMass}
                       isValid={validate}
                       required={true}
-                      onKeyDown={(e) => {
+                      onKeyDown={e => {
                         isValidNumber(e);
                       }}
                     />
@@ -530,7 +516,7 @@ const AddGlycan = (props) => {
                       <Col className="gg-align-left">
                         {userSelection.sequenceType && (
                           <ExampleSequenceControl
-                            setInputValue={(id) => {
+                            setInputValue={id => {
                               setUserSelection({ sequence: id });
                             }}
                             inputValue={moleculeExamples.glycan[userSelection.sequenceType].examples}
@@ -747,7 +733,7 @@ const AddGlycan = (props) => {
   }
 
   function checkGlytoucanSuccess(response) {
-    response.text().then((parsedJson) => {
+    response.text().then(parsedJson => {
       setUserSelection({ sequence: parsedJson });
       setRegistrationCheckFlag(false);
       getGlytoucanRegistration();
@@ -758,7 +744,7 @@ const AddGlycan = (props) => {
   }
 
   function checkGlytoucanFailure(response) {
-    response.json().then((parsedJson) => {
+    response.json().then(parsedJson => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
       setRegistrationCheckFlag(true);
@@ -796,7 +782,7 @@ const AddGlycan = (props) => {
         name: userSelection.name,
         description: userSelection.comment,
         type: glycanType,
-        mass: userSelection.mass,
+        mass: userSelection.mass
       },
       addGlycanSuccess,
       addGlycanFailure
@@ -811,7 +797,7 @@ const AddGlycan = (props) => {
   }
 
   function addGlycanFailure(response) {
-    response.json().then((parsedJson) => {
+    response.json().then(parsedJson => {
       setPageErrorsJson(parsedJson);
       setShowErrorSummary(true);
     });

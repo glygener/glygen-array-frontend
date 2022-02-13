@@ -96,7 +96,7 @@ const AddFeatureToBlock = props => {
           featuresSelected.featureSelected.forEach((element, index) => {
             spot.selectedFeatures.push({
               feature: element.feature,
-              ratio: element.concentrationInfo.ratio,
+              ratio: element.concentrationInfo && element.concentrationInfo.ratio,
               featureConcentration: element.concentrationInfo
             });
           });
@@ -133,12 +133,25 @@ const AddFeatureToBlock = props => {
   const handleChange = e => {
     const id = e.currentTarget.id;
     const value = e.currentTarget.value;
+    let concentrationInfo = {};
+
     if (value && !/^[0-9]+$/.test(value)) {
       return;
     }
-    var rowUpdated = [...featuresSelected.featureSelected];
 
-    rowUpdated[id].ratio = Number(value);
+    let rowUpdated = [...featuresSelected.featureSelected];
+
+    if (rowUpdated[id].concentrationInfo) {
+      concentrationInfo = { ...rowUpdated[id].concentrationInfo };
+    }
+
+    if (value === "") {
+      concentrationInfo.ratio = value;
+    } else {
+      concentrationInfo.ratio = Number(value);
+    }
+
+    rowUpdated[id].concentrationInfo = concentrationInfo;
 
     setFeaturesSelected(rowUpdated);
     setShowErrorSummary(false);
@@ -237,13 +250,9 @@ const AddFeatureToBlock = props => {
                   </Col>
                   <Col md={2} style={{ textAlign: "left" }}>
                     <FormControl
-                      // type="number"
                       name="featureRatio"
                       onChange={handleChange}
                       value={element.concentrationInfo && element.concentrationInfo.ratio}
-                      // onKeyDown={(e) => {
-                      //   isValidNumber(e);
-                      // }}
                     />
                   </Col>
                   <span className="percentage-symbol">%</span>
