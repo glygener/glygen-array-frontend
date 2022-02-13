@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Loading } from "../components/Loading";
 import { Helmet } from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title, Feedback, FormLabel } from "../components/FormControls";
+import { Feedback, FormLabel } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Form, Row, Col, Button, Table, Alert } from "react-bootstrap";
 import { useHistory, Link } from "react-router-dom";
@@ -13,6 +13,11 @@ import { getWsUrl, wsCall } from "../utils/wsUtils";
 import ReactTable from "react-table";
 import "../containers/AddMultiSlideLayout.css";
 import { isValidNumber } from "../utils/commonUtils";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { BlueRadio } from "../components/FormControls";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const AddMultiSlideLayout = props => {
   const fileMap = new Map();
@@ -59,7 +64,7 @@ const AddMultiSlideLayout = props => {
     name: "",
     description: "",
     height: 0,
-    width: 0
+    width: 0,
   };
 
   const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
@@ -85,7 +90,7 @@ const AddMultiSlideLayout = props => {
     var selectedrow = [];
     selectedrow.push({
       id: row.id,
-      name: row.name
+      name: row.name,
     });
 
     setRowSelected(selectedrow);
@@ -104,7 +109,7 @@ const AddMultiSlideLayout = props => {
     } else {
       updateSelectedRows.push({
         id: row.id,
-        name: value
+        name: value,
       });
     }
 
@@ -119,7 +124,7 @@ const AddMultiSlideLayout = props => {
   };
 
   const getMessages = (key, value) => {
-    const trows = (row) => {
+    const trows = row => {
       var trow = [];
       trow = row.map((element, index) => {
         return (
@@ -132,13 +137,13 @@ const AddMultiSlideLayout = props => {
       return trow;
     };
 
-    const trowsForErrors = (errors) => {
+    const trowsForErrors = errors => {
       const trow = [];
 
       errors.forEach((element, index) => {
         var description = "";
 
-        element.error.errors.forEach((error) => {
+        element.error.errors.forEach(error => {
           description += error.objectName + " - " + error.defaultMessage + "\n";
         });
 
@@ -167,12 +172,8 @@ const AddMultiSlideLayout = props => {
         <Table>
           <thead>
             <tr>
-              <th>
-                <div style={{ width: "50px", marginLeft: "150px" }}>SlideName</div>
-              </th>
-              <th>
-                <div style={{ width: "50px", marginRight: "100px" }}>Description</div>
-              </th>
+              <th>Slide Name</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>{tbody()}</tbody>
@@ -189,13 +190,13 @@ const AddMultiSlideLayout = props => {
     );
   };
 
-  const getSlidesFromLibrary = (tableData) => {
-    const editSlideName = (row) => (
+  const getSlidesFromLibrary = tableData => {
+    const editSlideName = row => (
       <input
         key={row.index}
         type="text"
         name={row.original.name}
-        onChange={(e) => handleSlideNameChange(row.original, e)}
+        onChange={e => handleSlideNameChange(row.original, e)}
         value={getUpdateSlideName(row.original)}
         style={{
           border: "none",
@@ -206,16 +207,17 @@ const AddMultiSlideLayout = props => {
     columnsToRender["nameColumn"] = {
       Header: "Name",
       // eslint-disable-next-line react/display-name
-      Cell: (row) => editSlideName(row),
+      Cell: row => editSlideName(row),
     };
 
     columnsToRender["selectionColumn"] = {
       Header: "Select",
       // eslint-disable-next-line react/display-name
-      Cell: (row) => (
-        <input
+      Cell: row => (
+        <FormControlLabel
+          control={<BlueRadio />}
+          name="selectionColumn"
           key={row.index}
-          type="radio"
           onChange={() => handleChecboxChange(row.original)}
           checked={checkSelection(row.original)}
         />
@@ -227,7 +229,7 @@ const AddMultiSlideLayout = props => {
         {Object.keys(tabs).length === 0 &&
           ((!showErrorSummary && uploadDetails.fileType === ".xml") ||
             (uploadDetails.fileType === ".gal" && galFileErrors.length > 0)) && (
-            <Form onSubmit={(e) => saveSelectedXMlSlidelayouts(e)}>
+            <Form onSubmit={e => saveSelectedXMlSlidelayouts(e)}>
               <ReactTable
                 columns={Object.values(columnsToRender)}
                 data={tableData}
@@ -237,23 +239,19 @@ const AddMultiSlideLayout = props => {
                 showPaginationTop
                 sortable={true}
               />
-              <Row className="line-break-1">
-                <Col md={{ span: 2, offset: 4 }}>
-                  <Button type="submit" disabled={rowSelected.length < 1}>
-                    Add Slidelayouts
-                  </Button>
-                </Col>
-                <Col md={{ span: 2 }}>
-                  <Link to="/slideLayouts" className="link-button">
-                    Back to Slidelayouts
-                  </Link>
-                </Col>
-              </Row>
+              <div className="text-center mb-2 mt-4">
+                <Link to="/slideLayouts">
+                  <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Slide Layouts</Button>
+                </Link>
+                <Button type="submit" disabled={rowSelected.length < 1} className="gg-btn-blue mt-2 gg-ml-20">
+                  Add Slide Layout
+                </Button>
+              </div>
             </Form>
           )}
 
         {Object.keys(tabs).length > 0 &&
-          Object.entries(tabs).map((element) => {
+          Object.entries(tabs).map(element => {
             var key = element[0];
             var value = element[1];
 
@@ -263,29 +261,29 @@ const AddMultiSlideLayout = props => {
                   <div
                     style={{
                       fontWeight: "bold",
+                      padding: "15px",
+                      marginBottom: "20px",
                       backgroundColor:
                         key === "addedLayouts" ? "darkseagreen" : key === "duplicates" ? "orange" : "indianred",
                     }}
                   >
                     {key === "addedLayouts"
-                      ? " Slides Added to library"
+                      ? " Slides Added to the Library"
                       : key === "duplicates"
-                      ? " Slides with Duplicate name"
+                      ? " Slides with Duplicate Name"
                       : "Errors"}
                   </div>
                   {getMessages(key, value)}
 
                   <div>
-                    <Row className="line-break-1">
-                      <Col md={{ span: 3, offset: 4 }}>
-                        <Button onClick={() => resetSelection()}>Back to Select Slides</Button>
-                      </Col>
-                      <Col md={{ span: 2 }}>
-                        <Link to="/slideLayouts" className="link-button">
-                          Back to Slidelayouts
-                        </Link>
-                      </Col>
-                    </Row>
+                    <div className="text-center mb-2">
+                      <Link to="/slideLayouts">
+                        <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Slide Layouts</Button>
+                      </Link>
+                      <Button onClick={() => resetSelection()} className="gg-btn-blue mt-2 gg-ml-20">
+                        Back to Select Slides
+                      </Button>
+                    </div>
                   </div>
                 </>
               );
@@ -301,7 +299,7 @@ const AddMultiSlideLayout = props => {
     setRowSelected([]);
   };
 
-  const saveSelectedXMlSlidelayouts = (e) => {
+  const saveSelectedXMlSlidelayouts = e => {
     setShowLoading(true);
 
     wsCall(
@@ -317,7 +315,7 @@ const AddMultiSlideLayout = props => {
     e.preventDefault();
   };
 
-  const saveGALSlidelayout = (fileId) => {
+  const saveGALSlidelayout = fileId => {
     if (uploadDetails.name === "") {
       setInvalidName(true);
     } else {
@@ -340,7 +338,7 @@ const AddMultiSlideLayout = props => {
   };
 
   function importSlideLayoutsFromLibrarySuccess(response) {
-    response.json().then((responseJson) => {
+    response.json().then(responseJson => {
       setTabs(responseJson);
       setShowLoading(false);
       console.log(tabs);
@@ -348,15 +346,15 @@ const AddMultiSlideLayout = props => {
   }
 
   function importSlideLayoutsFromLibraryError(response) {
-    response.json().then((responseJson) => {
+    response.json().then(responseJson => {
       if (responseJson.errors && uploadDetails.fileType === ".gal") {
-        const nameError = responseJson.errors.filter((i) => i.objectName === "name");
-        const dimensionError = responseJson.errors.filter((i) => i.objectName === "width" || i.objectName === "height");
+        const nameError = responseJson.errors.filter(i => i.objectName === "name");
+        const dimensionError = responseJson.errors.filter(i => i.objectName === "width" || i.objectName === "height");
 
         if (nameError.length > 0) {
           setInvalidName(true);
           setFileSubmitted(false);
-          setErrorName("Name Already Exists. please");
+          setErrorName("Name Already Exists. Please provide a different name.");
         } else if (dimensionError.length > 0) {
           setInvalidWidth(true);
           setInvalidHeight(true);
@@ -379,7 +377,7 @@ const AddMultiSlideLayout = props => {
   }
 
   const getGalErrorDisplay = () => {
-    let linkName = "Please Click Here see the errors!";
+    let linkName = "Please click here to see the errors!";
     let aggregatedSummary = [];
 
     if (galFileErrors.errors && galFileErrors.errors.length > 0) {
@@ -393,7 +391,7 @@ const AddMultiSlideLayout = props => {
             </li>
           );
         } else {
-          galFileErrors.errors.forEach((errorObj) => {
+          galFileErrors.errors.forEach(errorObj => {
             aggregatedSummary.push(
               <li key={errorObj.objectName}>
                 {errorObj.objectName.toUpperCase()} - {errorObj.defaultMessage}
@@ -408,8 +406,8 @@ const AddMultiSlideLayout = props => {
 
       return (
         <>
-          <h5 style={{ textAlign: "left" }}>File upload failed for following reasons:</h5>
-          <Alert variant="danger" className="alert-message line-break-1">
+          <h5>File upload failed for following reasons:</h5>
+          <Alert variant="danger">
             {galFileErrorMessage.length > 0 && <div className="list-error-message">{galFileErrorMessage}</div>}
             <h6
               className="read-more-link"
@@ -426,7 +424,7 @@ const AddMultiSlideLayout = props => {
     }
   };
 
-  const processFile = (fileId) => {
+  const processFile = fileId => {
     setFileName(fileId);
 
     // call getSlideLayoutFromLibrary with fileId to get slidelayout
@@ -441,7 +439,7 @@ const AddMultiSlideLayout = props => {
     );
 
     function getSlideLayoutsFromLibrarySuccess(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         console.log(responseJson);
         setShowErrorSummary(false);
         setTableData(responseJson);
@@ -450,7 +448,7 @@ const AddMultiSlideLayout = props => {
     }
 
     function getSlideLayoutsFromLibraryError(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         console.log(responseJson);
         setFileSubmitted(false);
         setPageErrorsJson(responseJson);
@@ -466,175 +464,167 @@ const AddMultiSlideLayout = props => {
         <title>{head.addMultiSlideLayout.title}</title>
         {getMeta(head.addMultiSlideLayout)}
       </Helmet>
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading
+            title="Add Multiple Slide Layouts to Repository"
+            subTitle="Please provide the information for the new slide layout and upload a GAL/XML file wih Slide Layouts."
+          />
+          <Card>
+            <Card.Body>
+              {getGalErrorDisplay()}
 
-      <div className="page-container">
-        <Title title="Add Multiple Slide Layouts" />
+              {showErrorSummary === true && (
+                <div>
+                  <h5>File upload failed for following reasons:</h5>
 
-        {getGalErrorDisplay()}
+                  <ErrorSummary
+                    show={showErrorSummary}
+                    form="importSlidelayouts"
+                    errorJson={pageErrorsJson}
+                    errorMessage={pageErrorMessage}
+                  ></ErrorSummary>
 
-        {showErrorSummary === true && (
-          <div
-            style={{
-              textAlign: "initial",
-            }}
-          >
-            <br />
-            <h5>File upload failed for following reasons:</h5>
+                  {fileSubmitted && (
+                    <div className="text-center mb-2">
+                      <Link to="/slideLayouts" className="link-button">
+                        <Button className="gg-btn-outline mt-2">Back to Slide Layouts</Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
 
-            <ErrorSummary
-              show={showErrorSummary}
-              form="importSlidelayouts"
-              errorJson={pageErrorsJson}
-              errorMessage={pageErrorMessage}
-            ></ErrorSummary>
+              {Object.keys(tabs).length === 0 && !fileSubmitted && (
+                <>
+                  <Form.Group as={Row} controlId="fileType" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Choose File Type for Upload" className="required-asterik" />
+                      <Form.Control
+                        as="select"
+                        name="fileType"
+                        placeholder="fileType"
+                        onChange={handleChange}
+                        required={true}
+                        value={uploadDetails.fileType}
+                      >
+                        <option value={defaultFileType}>Select File Type</option>
+                        <option value=".gal">GAL</option>
+                        <option value=".xml">XML</option>
+                      </Form.Control>
+                      <Feedback message="Please choose a file type for the file to be uploaded"></Feedback>
+                    </Col>
+                  </Form.Group>
 
-            {fileSubmitted && (
-              <Row className="line-break-1">
-                <Col
-                  md={{ span: 3 }}
-                  style={{
-                    marginLeft: "42%",
-                  }}
-                >
-                  <Link to="/slideLayouts" className="link-button">
-                    Back to Slidelayouts
-                  </Link>
-                </Col>
-              </Row>
-            )}
-          </div>
-        )}
+                  {uploadDetails.fileType && uploadDetails.fileType === ".gal" && (
+                    <>
+                      <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+                        <Col xs={12} lg={9}>
+                          <FormLabel label="Name" className="required-asterik" />
+                          <Form.Control
+                            type="text"
+                            name="name"
+                            placeholder="Enter Name"
+                            value={uploadDetails.name}
+                            onChange={handleChange}
+                            required
+                            isInvalid={invalidName}
+                          />
+                          <Feedback
+                            message={
+                              invalidName && errorName.length > 0
+                                ? "Another slide layout has the same Name. Please use a different Name."
+                                : "Name is required"
+                            }
+                          />
+                        </Col>
+                      </Form.Group>
+                      <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
+                        <Col xs={12} lg={9}>
+                          <FormLabel label="Description" />
+                          <Form.Control
+                            as="textarea"
+                            rows="4"
+                            name="description"
+                            placeholder="Enter Description"
+                            value={uploadDetails.description}
+                            onChange={handleChange}
+                            maxLength={2000}
+                          />
+                          <div className="text-right text-muted">
+                            {uploadDetails.description !== "" ? uploadDetails.description.length : "0"}
+                            /2000
+                          </div>
+                        </Col>
+                      </Form.Group>
+                      <Row className="gg-align-center mb-3">
+                        <Col xs={12} lg={9}>
+                          <Row>
+                            <Form.Group as={Col} xs={12} lg={6} controlId="height">
+                              <FormLabel label="Height" />
+                              <Form.Control
+                                type="number"
+                                name="height"
+                                placeholder="height"
+                                value={uploadDetails.height}
+                                onChange={handleChange}
+                                isInvalid={invalidWidth}
+                                onKeyDown={e => {
+                                  isValidNumber(e);
+                                }}
+                              />
+                              <Feedback message="Width is not valid. Please update" />
+                            </Form.Group>
+                            <Form.Group as={Col} xs={12} lg={6} controlId="width">
+                              <FormLabel label="Width" />
+                              <Form.Control
+                                type="number"
+                                name="width"
+                                placeholder="width"
+                                value={uploadDetails.width}
+                                onChange={handleChange}
+                                isInvalid={invalidHeight}
+                                onKeyDown={e => {
+                                  isValidNumber(e);
+                                }}
+                              />
+                              <Feedback message="Height is not valid. Please update" />
+                            </Form.Group>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </>
+                  )}
 
-        {Object.keys(tabs).length === 0 && !fileSubmitted && (
-          <>
-            <Form.Group as={Row} controlId="fileType">
-              <FormLabel label="Choose File type for upload" className="required-asterik" />
-              <Col md={4}>
-                <Form.Control
-                  as="select"
-                  name="fileType"
-                  placeholder="fileType"
-                  onChange={handleChange}
-                  required={true}
-                  value={uploadDetails.fileType}
-                >
-                  <option value={defaultFileType}>Select file type</option>
-                  <option value=".gal">GAL</option>
-                  <option value=".xml">XML</option>
-                </Form.Control>
-                <Feedback message="Please choose a file type for the file to be uploaded"></Feedback>
-              </Col>
-            </Form.Group>
+                  {uploadDetails.fileType !== defaultFileType && (
+                    <Form.Group as={Row} controlId="fileUploader" className="gg-align-center">
+                      <Col xs={12} lg={9}>
+                        <ResumableUploader
+                          history={history}
+                          headerObject={{
+                            Authorization: window.localStorage.getItem("token") || "",
+                            Accept: "*/*",
+                          }}
+                          fileType={fileDetails.fileType}
+                          uploadService={getWsUrl("upload")}
+                          maxFiles={1}
+                          onProcessFile={uploadDetails.fileType === ".gal" ? saveGALSlidelayout : processFile}
+                          enableSubmit
+                          filetypes={uploadDetails.fileType === ".gal" ? ["gal"] : ["xml"]}
+                        />
+                      </Col>
+                    </Form.Group>
+                  )}
+                </>
+              )}
 
-            {uploadDetails.fileType && uploadDetails.fileType === ".gal" && (
-              <>
-                <Form.Group as={Row} controlId="name">
-                  <FormLabel label="Name" className="required-asterik" />
-                  <Col md={4}>
-                    <Form.Control
-                      type="text"
-                      name="name"
-                      placeholder="name"
-                      value={uploadDetails.name}
-                      onChange={handleChange}
-                      required
-                      isInvalid={invalidName}
-                    />
-                    <Feedback
-                      message={
-                        invalidName && errorName.length > 0
-                          ? "Another slide layout has the same Name. Please use a different Name."
-                          : "Name is required"
-                      }
-                    />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="description">
-                  <FormLabel label="Description" />
-                  <Col md={4}>
-                    <Form.Control
-                      as="textarea"
-                      rows="4"
-                      name="description"
-                      placeholder="description"
-                      value={uploadDetails.description}
-                      onChange={handleChange}
-                      maxLength={2000}
-                    />
-                    <span
-                      style={{
-                        marginLeft: "80%",
-                        position: "inherit",
-                      }}
-                    >
-                      {uploadDetails.description !== "" ? uploadDetails.description.length : ""}
-                      /2000
-                    </span>
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="height">
-                  <FormLabel label="Height" />
-                  <Col md={4}>
-                    <Form.Control
-                      type="number"
-                      name="height"
-                      placeholder="height"
-                      value={uploadDetails.height}
-                      onChange={handleChange}
-                      isInvalid={invalidWidth}
-                      onKeyDown={(e) => {
-                        isValidNumber(e);
-                      }}
-                    />
-                    <Feedback message="Width is not valid. Please update" />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="width">
-                  <FormLabel label="Width" />
-                  <Col md={4}>
-                    <Form.Control
-                      type="number"
-                      name="width"
-                      placeholder="width"
-                      value={uploadDetails.width}
-                      onChange={handleChange}
-                      isInvalid={invalidHeight}
-                      onKeyDown={(e) => {
-                        isValidNumber(e);
-                      }}
-                    />
-                    <Feedback message="Height is not valid. Please update" />
-                  </Col>
-                </Form.Group>
-              </>
-            )}
+              {fileSubmitted && getSlidesFromLibrary(tableData)}
 
-            {uploadDetails.fileType !== defaultFileType && (
-              <Form.Group as={Row} controlId="fileUploader">
-                <Col md={{ offset: 2, span: 8 }}>
-                  <ResumableUploader
-                    history={history}
-                    headerObject={{
-                      Authorization: window.localStorage.getItem("token") || "",
-                      Accept: "*/*",
-                    }}
-                    fileType={fileDetails.fileType}
-                    uploadService={getWsUrl("upload")}
-                    maxFiles={1}
-                    onProcessFile={uploadDetails.fileType === ".gal" ? saveGALSlidelayout : processFile}
-                    enableSubmit
-                    filetypes={uploadDetails.fileType === ".gal" ? ["gal"] : ["xml"]}
-                  />
-                </Col>
-              </Form.Group>
-            )}
-          </>
-        )}
-
-        {fileSubmitted && getSlidesFromLibrary(tableData)}
-
-        <Loading show={showLoading}></Loading>
-      </div>
+              <Loading show={showLoading}></Loading>
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };

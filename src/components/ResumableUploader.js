@@ -71,12 +71,11 @@ const ResumableUploader = props => {
             disableDragAndDrop={false}
             onFileSuccess={(file, message) => {
               setFiles(file, message);
-              
             }}
             onFileRemoved={file => {
               // fetch()
               setFileStateReducer({
-                message: ""
+                message: "",
               });
               return file;
             }}
@@ -86,7 +85,7 @@ const ResumableUploader = props => {
         </div>
 
         {props.enableSubmit && (
-          <>
+          <div className="text-center mb-2 mt-4">
             <Button className="gg-btn-blue mt-2 gg-mr-20" onClick={handleClose}>
               Cancel
             </Button>
@@ -97,17 +96,13 @@ const ResumableUploader = props => {
             >
               Submit
             </Button>
-          </>
+          </div>
         )}
       </Form>
     );
   };
 
-  return props.enableSubmit ? (
-    <Paper style5={{ padding: "15px", marginTop: "10px" }}>{getUploadForm()}</Paper>
-  ) : (
-    getUploadForm()
-  );
+  return props.enableSubmit ? getUploadForm() : getUploadForm();
 };
 
 ResumableUploader.propTypes = {

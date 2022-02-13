@@ -99,7 +99,7 @@ const AddBlockLayout = props => {
   const [arraySelected, setArraySelected] = useState([]);
   const [spotsSelected, setSpotsSelected] = useState([]);
 
-  const [title, setTitle] = useState("Add Block Layout");
+  const [title, setTitle] = useState("Add Block Layout to Repository");
   const [subTitle, setSubTitle] = useState(
     "Please provide the information and create the grid for the new block layout."
   );
@@ -281,7 +281,7 @@ const AddBlockLayout = props => {
       selectedFeatures: [],
       selectedConcentration: {},
       groupAssigned: 0,
-      color: "" //background color of a spot is updated using this property
+      color: "", //background color of a spot is updated using this property
     });
     return spots;
   };
@@ -490,11 +490,11 @@ const AddBlockLayout = props => {
   const getUpdateButtons = () => {
     return (
       <div className="text-center mb-2">
-        <Button disabled={!enableUpdateButton} type="submit" className="gg-btn-blue mt-2 gg-mr-20">
-          Update Block
+        <Button onClick={() => history.push("/blockLayouts")} className="gg-btn-blue mt-2 gg-mr-20">
+          Cancel
         </Button>
-        <Button onClick={() => history.push("/blockLayouts")} className="gg-btn-blue mt-2 gg-ml-20">
-          Back
+        <Button disabled={!enableUpdateButton} type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+          Edit Block
         </Button>
       </div>
     );

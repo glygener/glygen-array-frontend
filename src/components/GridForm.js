@@ -108,7 +108,7 @@ const GridForm = (props) => {
                     onChange={props.handleChange}
                     readOnly={props.isUpdate || props.publicView}
                     required
-                    onKeyDown={(e) => {
+                    onKeyDown={e => {
                       isValidNumber(e);
                     }}
                   />
@@ -138,7 +138,7 @@ const GridForm = (props) => {
                     onChange={props.handleChange}
                     readOnly={props.isUpdate || props.publicView}
                     required
-                    onKeyDown={(e) => {
+                    onKeyDown={e => {
                       isValidNumber(e);
                     }}
                   />

@@ -5,7 +5,6 @@ import { ConfirmationModal } from "../components/ConfirmationModal";
 import { GridForm } from "../components/GridForm";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Title } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { useHistory, Prompt, useParams } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
@@ -15,6 +14,9 @@ import { ColorNotation } from "../components/ColorNotation";
 import { GlygenGrid } from "../components/GlygenGrid";
 import { AddBlocktoSlide } from "../components/AddBlocktoSlide";
 import "../containers/AddSlideLayout.css";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
 
 const AddSlideLayout = props => {
   let { slideLayoutId } = useParams();
@@ -35,7 +37,10 @@ const AddSlideLayout = props => {
         getSlideLayoutSuccess,
         getSlideLayoutFailure
       );
-      setTitle("Update Slide Layout");
+      setTitle("Edit Slide Layout");
+      setSubTitle(
+        "Update slide layout information. Name must be unique in your slide layout repository and cannot be used for more than one slide layout."
+      );
     }
 
     if (!arraySelected.length > 0) {
@@ -49,14 +54,14 @@ const AddSlideLayout = props => {
     name: "",
     description: "",
     cols: "",
-    rows: ""
+    rows: "",
   };
 
   const gridSizeUpdated = {
     name: "",
     description: "",
     cols: "",
-    rows: ""
+    rows: "",
   };
 
   const [gridParams, setGridParams] = useReducer((state, newState) => ({ ...state, ...newState }), gridSize);
@@ -81,7 +86,10 @@ const AddSlideLayout = props => {
   const [isUpdateSlide, setIsUpdateSlide] = useState(false);
   const [showAddBlockModal, setShowAddBlockModal] = useState(false);
   const [enableUpdateButton, setEnableUpdateButton] = useState(false);
-  const [title, setTitle] = useState("Add Slide Layout");
+  const [title, setTitle] = useState("Add Slide Layout to Repository");
+  const [subTitle, setSubTitle] = useState(
+    "Please provide the information and create the grid for the new slide layout."
+  );
   const [duplicateName, setDuplicateName] = useState(false);
   const history = useHistory();
   const [characterCounter, setCharacterCounter] = useState();
@@ -181,7 +189,7 @@ const AddSlideLayout = props => {
         selectedRow: row,
         selectedCol: col,
         blockSelected: {},
-        selectCount: 0
+        selectCount: 0,
         // color: ""
       });
     }
@@ -294,12 +302,19 @@ const AddSlideLayout = props => {
 
   const getButtons = () => {
     return (
-      <div className="line-break-1">
-        <Button onClick={() => removeDuplicateSpots()} disabled={spotsSelected.size < 1}>
+      <div className="text-center mb-2 mt-2">
+        <Button
+          onClick={() => removeDuplicateSpots()}
+          disabled={spotsSelected.size < 1}
+          className="gg-btn-blue mt-2 gg-mr-20"
+        >
           Add Blocks
         </Button>
-        &nbsp;
-        <Button type="submit" className={loadGrid ? "" : "hide-content"} disabled={spotsSelected.length < 1}>
+        <Button
+          type="submit"
+          className={loadGrid ? "gg-btn-blue mt-2 gg-ml-20" : "hide-content"}
+          disabled={spotsSelected.length < 1}
+        >
           Submit
         </Button>
       </div>
@@ -308,12 +323,13 @@ const AddSlideLayout = props => {
 
   const getUpdateButtons = () => {
     return (
-      <div className="line-break-1">
-        <Button disabled={!enableUpdateButton} type="submit">
-          Update Slide
+      <div className="text-center mb-2">
+        <Button onClick={() => history.push("/slideLayouts")} className="gg-btn-blue mt-2 gg-mr-20">
+          Cancel
         </Button>
-        &nbsp;
-        <Button onClick={() => history.push("/slideLayouts")}>Back</Button>
+        <Button disabled={!enableUpdateButton} type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+          Edit Slide
+        </Button>
       </div>
     );
   };
@@ -325,102 +341,100 @@ const AddSlideLayout = props => {
         {getMeta(head.addSlideLayout)}
       </Helmet>
 
-      <div className="page-container">
-        <Title title={title} />
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title={title} subTitle={subTitle} />
+          <Card>
+            <Card.Body>
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="slideLayouts"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                ></ErrorSummary>
+              )}
 
-        {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="slideLayouts"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
-          ></ErrorSummary>
-        )}
+              {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
 
-        {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
+              {!addBlocks && (
+                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                  <GridForm
+                    gridParams={gridParams}
+                    updatedGridParams={updatedGridParams}
+                    handleChange={handleChange}
+                    loadGrid={loadGrid}
+                    changeRowsandColumns={changeRowsandColumns}
+                    validateForm={validateForm}
+                    isUpdate={isUpdateSlide}
+                    duplicateName={duplicateName}
+                    layoutType={"slidelayout"}
+                    characterCounter={characterCounter}
+                  />
 
-        {!addBlocks && (
-          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
-            <GridForm
-              gridParams={gridParams}
-              updatedGridParams={updatedGridParams}
-              handleChange={handleChange}
-              loadGrid={loadGrid}
-              changeRowsandColumns={changeRowsandColumns}
-              validateForm={validateForm}
-              isUpdate={isUpdateSlide}
-              duplicateName={duplicateName}
-              layoutType={"slidelayout"}
-              characterCounter={characterCounter}
-            />
+                  {loadGrid && (isUpdateSlide ? getUpdateButtons() : getButtons())}
+                  {/*loading addfeature and submit button */}
 
-            {loadGrid && (isUpdateSlide ? getUpdateButtons() : getButtons())}
-            {/*loading addfeature and submit button */}
+                  {loadGrid && (
+                    <>
+                      <Row className="gg-align-center text-center">
+                        <Col xs={12} md={12} lg={8} className="pb-3 pt-3" style={{ width: "800px" }}>
+                          <div
+                            className="grid-table"
+                            style={{
+                              height: gridParams.rows > 30 ? "600px" : "fit-content",
+                            }}
+                          >
+                            {createGrid()}
+                          </div>
+                        </Col>
 
-            {loadGrid && (
-              <>
-                <Row style={{ width: "1200px" }}>
-                  <Col md={8}>
-                    <div
-                      className="grid-table"
-                      style={{
-                        height: gridParams.rows > 30 ? "800px" : "fit-content",
-                      }}
-                    >
-                      {createGrid()}
-                    </div>
-                    <div
-                      style={{
-                        paddingBottom: "30px",
-                        marginLeft: "343px",
-                      }}
-                    >
+                        <Col xs={12} md={12} lg={3} className="ml-3 pl-3 pb-3 pt-3">
+                          <ColorNotation pageLabels={"slidelayout"} isUpdate={isUpdateSlide} />
+
+                          {!isUpdateSlide && (
+                            <div className="spots-selected">
+                              {spotsSelected && spotsSelected.size > 0 ? (
+                                <SelectedSpotsSlide currentSpotsSelected={spotsSelected} />
+                              ) : null}
+                            </div>
+                          )}
+
+                          {blockCard && (
+                            <div className="selected-spot-info">
+                              <SpotInformationBlock blockCard={blockCard} />
+                            </div>
+                          )}
+                        </Col>
+                      </Row>
                       {isUpdateSlide ? getUpdateButtons() : getButtons()}
-                    </div>
-                  </Col>
+                    </>
+                  )}
+                </Form>
+              )}
 
-                  <Col md={4}>
-                    <ColorNotation pageLabels={"slidelayout"} isUpdate={isUpdateSlide} />
+              {addBlocks && (
+                <AddBlocktoSlide
+                  spotsSelected={spotsSelected}
+                  setSpotsSelected={setSpotsSelected}
+                  setAddBlocks={setAddBlocks}
+                  setBlockCard={setBlockCard}
+                />
+              )}
 
-                    {!isUpdateSlide && (
-                      <div className="spots-selected">
-                        {spotsSelected && spotsSelected.size > 0 ? (
-                          <SelectedSpotsSlide currentSpotsSelected={spotsSelected} />
-                        ) : null}
-                      </div>
-                    )}
+              <Loading show={showLoading}></Loading>
 
-                    {blockCard && (
-                      <div className="selected-spot-info">
-                        <SpotInformationBlock blockCard={blockCard} />
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-              </>
-            )}
-          </Form>
-        )}
-
-        {addBlocks && (
-          <AddBlocktoSlide
-            spotsSelected={spotsSelected}
-            setSpotsSelected={setSpotsSelected}
-            setAddBlocks={setAddBlocks}
-            setBlockCard={setBlockCard}
-          />
-        )}
-
-        <Loading show={showLoading}></Loading>
-
-        <ConfirmationModal
-          showModal={showAddBlockModal}
-          onCancel={cancelModal}
-          onConfirm={confirmModal}
-          title="Confirm"
-          body="You are going to replace blocks in some Spots. Are you sure you want to proceed?"
-        />
-      </div>
+              <ConfirmationModal
+                showModal={showAddBlockModal}
+                onCancel={cancelModal}
+                onConfirm={confirmModal}
+                title="Confirm"
+                body="You are going to replace blocks in some Spots. Are you sure you want to proceed?"
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 
@@ -501,7 +515,7 @@ const AddSlideLayout = props => {
     setShowLoading(false);
     setValidated(false);
     setDuplicateName(true);
-    response.json().then((response) => {
+    response.json().then(response => {
       console.log(response);
       setShowErrorSummary(true);
       setPageErrorsJson(response);
@@ -560,9 +574,9 @@ const AddSlideLayout = props => {
         selectedCol: spotElement.column,
         blockSelected: {
           name: spotElement.blockLayout.name,
-          id: spotElement.blockLayout.id
+          id: spotElement.blockLayout.id,
         },
-        selectCount: 0
+        selectCount: 0,
       });
     });
 

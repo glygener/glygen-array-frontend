@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import PropTypes from "prop-types";
-import { Button } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { SelectedSpotsSlide } from "./SpotInformation";
 import "../components/AddBlocktoSlide.css";
-import {ErrorSummary} from "./ErrorSummary";
+import { ErrorSummary } from "./ErrorSummary";
 
 const AddBlocktoSlide = props => {
   let { spotsSelected, setAddBlocks, setSpotsSelected, setBlockCard } = props;
@@ -20,7 +20,7 @@ const AddBlocktoSlide = props => {
       ) {
         value.blockSelected = {
           name: row.name,
-          id: row.id
+          id: row.id,
         };
       }
     });
@@ -59,10 +59,13 @@ const AddBlocktoSlide = props => {
 
   const getButtons = () => {
     return (
-      <div className="line-break-1">
-        <Button onClick={() => returnToGrid()}>Back</Button>
-        &nbsp;
-        <Button onClick={() => addBlocks()}>Finish</Button>
+      <div className="text-center mb-2 mt-2">
+        <Button onClick={() => returnToGrid()} className="gg-btn-blue mt-2 gg-mr-20">
+          Back
+        </Button>
+        <Button onClick={() => addBlocks()} className="gg-btn-blue mt-2 gg-ml-20">
+          Finish
+        </Button>
       </div>
     );
   };
@@ -74,32 +77,33 @@ const AddBlocktoSlide = props => {
       )}
 
       {getButtons()}
-      <div className="spots-selected-block-to-slide">
-        <SelectedSpotsSlide currentSpotsSelected={spotsSelected} />
-      </div>
-
-      <div className="glygen-table">
-        <GlygenTable
-          columns={[
-            {
-              Header: "Name",
-              accessor: "name"
-            }
-          ]}
-          defaultPageSize={10}
-          defaultSortColumn="id"
-          showCommentsButton={false}
-          showDeleteButton={false}
-          showEditButton={false}
-          commentsRefColumn="description"
-          fetchWS="blocklayoutlist"
-          keyColumn="id"
-          showRowsInfo
-          infoRowsText="Block Layouts"
-          showSelectRadio={true}
-          selectRadioHandler={selectRadioHandler}
-        />
-      </div>
+      <Row>
+        <Col xs={{ span: 12, order: 1 }} xl={{ span: 4, order: 2 }} className="mt-4">
+          <SelectedSpotsSlide currentSpotsSelected={spotsSelected} />
+        </Col>
+        <Col xs={{ span: 12, order: 2 }} xl={{ span: 8, order: 1 }}>
+          <GlygenTable
+            columns={[
+              {
+                Header: "Name",
+                accessor: "name",
+              },
+            ]}
+            defaultPageSize={10}
+            defaultSortColumn="id"
+            showCommentsButton={false}
+            showDeleteButton={false}
+            showEditButton={false}
+            commentsRefColumn="description"
+            fetchWS="blocklayoutlist"
+            keyColumn="id"
+            showRowsInfo
+            infoRowsText="Block Layouts"
+            showSelectRadio={true}
+            selectRadioHandler={selectRadioHandler}
+          />
+        </Col>
+      </Row>
       {getButtons()}
     </>
   );
