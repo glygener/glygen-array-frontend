@@ -35,7 +35,7 @@ const AddImageAnalysis = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Create Image Analysis"
+            title="Add Image Analysis to Repository"
             subTitle="Please provide the information for the new image analysis."
           />
           <Card>

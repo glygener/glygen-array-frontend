@@ -34,7 +34,7 @@ const AddSlideMeta = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Create Slide Metadata" subTitle="Please provide the information for the new printer." />
+          <PageHeading title="Add Slide Metadata to Repository" subTitle="Please provide the information for the new printer." />
           <Card>
             <Card.Body>
               <MetaData

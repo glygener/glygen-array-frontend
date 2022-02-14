@@ -34,7 +34,7 @@ const AddSpot = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Create Spot" subTitle="Please provide the information for the new spot." />
+          <PageHeading title="Add Spot to Repository" subTitle="Please provide the information for the new spot." />
           <Card>
             <Card.Body>
               <MetaData

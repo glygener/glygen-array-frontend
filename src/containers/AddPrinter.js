@@ -34,7 +34,7 @@ const AddPrinter = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Create Printer" subTitle="Please provide the information for the new printer." />
+          <PageHeading title="Add Printer to Repository" subTitle="Please provide the information for the new printer." />
           <Card>
             <Card.Body>
               <MetaData

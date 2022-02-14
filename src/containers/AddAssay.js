@@ -33,7 +33,7 @@ const AddAssay = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Create Assay" subTitle="Please provide the information for the new assay." />
+          <PageHeading title="Add Assay to Repository" subTitle="Please provide the information for the new assay." />
           <Card>
             <Card.Body>
               <MetaData

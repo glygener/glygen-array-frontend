@@ -34,7 +34,7 @@ const AddDataProcessing = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Create Data Processing" subTitle="Please provide the information for the new data processing." />
+          <PageHeading title="Add Data Processing to Repository" subTitle="Please provide the information for the new data processing." />
           <Card>
             <Card.Body>
               <MetaData

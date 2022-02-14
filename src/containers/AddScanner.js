@@ -34,7 +34,7 @@ const AddScanner = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Create Scanner" subTitle="Please provide the information for the new scanner." />
+          <PageHeading title="Add Scanner to Repository" subTitle="Please provide the information for the new scanner." />
           <Card>
             <Card.Body>
               <MetaData

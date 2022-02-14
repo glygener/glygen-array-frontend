@@ -34,7 +34,7 @@ const AddSample = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Create Sample" subTitle="Please provide the information for the new sample." />
+          <PageHeading title="Add Sample to Repository" subTitle="Please provide the information for the new sample." />
           <Card>
             <Card.Body>
               <MetaData
