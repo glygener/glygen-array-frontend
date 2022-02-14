@@ -2,7 +2,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useReducer } from "react";
-import { Feedback, FormLabel } from "../components/FormControls";
+import { Feedback, FormLabel, BlueCheckbox } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
@@ -12,6 +12,7 @@ import { useHistory, Prompt, Link } from "react-router-dom";
 import { Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Loading } from "../components/Loading";
+import { FormControlLabel, FormGroup } from "@material-ui/core";
 
 const MetaData = props => {
   // useEffect(props.authCheckAgent, []);
@@ -23,6 +24,8 @@ const MetaData = props => {
   const [validated, setValidated] = useState(false);
   const [errorName, setErrorName] = useState(false);
   const [errorType, setErrorType] = useState(false);
+  // const [assayStep1, setAssayStep1] = useState(false);
+  // const [assayStep2, setAssayStep2] = useState(false);
   const [sampleModel, setSampleModel] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
   const [enablePrompt, setEnablePrompt] = useState(false);
@@ -35,6 +38,7 @@ const MetaData = props => {
   const [loadDescriptors, setLoadDescriptors] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [addDescriptorSelection, setAddDescriptorSelection] = useState("select");
+  const [addAssayLabelSelection, setAddAssayLabelSelection] = useState("select");
   const [loadDataOnFirstNextInUpdate, setLoadDataOnFirstNextInUpdate] = useState(false);
   const [mandateGroupLimitDeceed, setMandateGroupLimitDeceed] = useState(new Map());
   const [mandateGroupLimitExceed, setMandateGroupLimitExceed] = useState(new Map());
@@ -68,7 +72,7 @@ const MetaData = props => {
   }, [props.metaID]);
 
   const metaDetails = {
-    name: "",
+    name: "wefwe",
     selectedtemplate: "",
     description: "",
     sample: {}
@@ -341,48 +345,7 @@ const MetaData = props => {
     return dateField;
   }
 
-  // const getAddons = () => {
-  //   const popover = (
-  //     <Popover
-  //       id="popover-basic"
-  //       style={{
-  //         width: "30%",
-  //         paddingTop: 0,
-  //         border: "none",
-  //       }}
-  //     >
-  //       <Popover.Content>{addDescriptorsandDescriptorGroups()}</Popover.Content>
-  //     </Popover>
-  //   );
-
-  //   return (
-  //     <LineTooltip text="Add Descriptors">
-  //       {props.metadataType === "Feature" ? (
-  //         <Link>{getLinkForCog(popover)}</Link>
-  //       ) : (
-  //         <Link to={"cog"}>{getLinkForCog(popover)}</Link>
-  //       )}
-  //     </LineTooltip>
-  //   );
-  // };
-
-  // function getLinkForCog(popover) {
-  //   return (
-  //     <>
-  //       <OverlayTrigger rootClose trigger={"click"} placement="right" overlay={popover}>
-  //         <FontAwesomeIcon
-  //           className={"add-subGroup-button"}
-  //           icon={["fas", "cog"]}
-  //           size="xs"
-  //           title={"Add Descriptors"}
-  //         />
-  //       </OverlayTrigger>
-  //     </>
-  //   );
-  // }
-
   const getAddons = () => {
-    // const addDescriptorsandDescriptorGroups = () => {
     let sampleModelUpdate;
     let selectedSample;
     let name;
@@ -420,20 +383,93 @@ const MetaData = props => {
     );
   };
 
+  const listAssayDisplayLabels = () => {
+    let sampleModelUpdate;
+    let selectedSample;
+    let name;
+    let options = [];
+
+    options.push(
+      <option key={0} value={"Select"}>
+        Select Display Label
+      </option>
+    );
+
+    sampleModel[0].descriptors.forEach((ele, index) => {
+      if (ele.displayLabel && !ele.displayLabelSelected) {
+        options.push(
+          <>
+            <option key={index} value={ele.name}>
+              {ele.displayLabel}
+            </option>
+          </>
+        );
+      }
+    });
+
+    return (
+      <>
+        <Form.Group as={Row} controlId={""} className="gg-align-center">
+          <Col xs={12} lg={4}>
+            <FormLabel label="Add another step" />
+            <Form.Control
+              as="select"
+              value={addAssayLabelSelection}
+              onChange={e => {
+                debugger;
+                setAddAssayLabelSelection(e.target.value);
+                name = e.target.value;
+
+                if (e.target.value !== "Select" && e.target.value !== "select") {
+                  if (isUpdate || props.isCopy) {
+                    sampleModelUpdate = { ...sampleModel };
+                    selectedSample = sampleModelUpdate;
+                  } else {
+                    sampleModelUpdate = [...sampleModel];
+                    selectedSample = sampleModelUpdate[0];
+                  }
+                  let itemDescriptors = selectedSample.descriptors;
+
+                  let existedElement = itemDescriptors.find(e => e.name === name && !e.isNewlyAdded);
+                  let selectedIndex = itemDescriptors.indexOf(existedElement);
+
+                  existedElement.displayLabelSelected = true;
+                  itemDescriptors[selectedIndex] = existedElement;
+
+                  setSampleModel(sampleModelUpdate);
+
+                  setAddAssayLabelSelection("");
+                }
+              }}
+            >
+              {options}
+            </Form.Control>
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
+
   const getDescriptorOptions = () => {
     const options = [];
-    var sortOptions = [];
-    var sampleType;
+    let sortOptions = [];
+    let sampleType;
+    let desc = [];
 
     if (isUpdate || props.isCopy) {
       sampleType = { ...sampleModel };
     } else if (props.importedInAPage) {
       sampleType = sampleModel[0];
-    } else {
+    } else if (props.metadataType !== "Assay") {
       sampleType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
     }
 
-    const descriptors = sampleType.descriptors;
+    if (props.metadataType === "Assay") {
+      sampleType = sampleModel[0];
+      desc = sampleType.descriptors.filter(e => !e.displayLabel);
+    } else {
+      desc = sampleType.descriptors;
+    }
 
     options.push(
       <option key={0} value={"Select"}>
@@ -441,20 +477,22 @@ const MetaData = props => {
       </option>
     );
 
-    descriptors.forEach(desc => {
-      const occurrances = sortOptions.filter(i => i === desc.name);
+    desc.forEach(d => {
+      if ((props.metadataType === "Assay" && !d.displayLabel) || props.metadataType !== "Assay") {
+        const occurrances = sortOptions.filter(i => i === d.name);
 
-      if (!desc.mandateGroup) {
-        if (desc.maxOccurrence === 1 && !desc.mandatory) {
-          if (desc.group) {
-            if (desc.isDeleted) {
-              occurrances.length < 1 && sortOptions.push(desc.name);
+        if (!d.mandateGroup) {
+          if (d.maxOccurrence === 1 && !d.mandatory) {
+            if (d.group) {
+              if (d.isDeleted) {
+                occurrances.length < 1 && sortOptions.push(d.name);
+              }
             }
-          }
-        } else if (desc.maxOccurrence > 1) {
-          let currentDisplayCount = descriptors.filter(e => e.name === desc.name);
-          if (currentDisplayCount.length < desc.maxOccurrence) {
-            occurrances.length < 1 && sortOptions.push(desc.name);
+          } else if (d.maxOccurrence > 1) {
+            let currentDisplayCount = desc.filter(e => e.name === d.name);
+            if (currentDisplayCount.length < d.maxOccurrence) {
+              occurrances.length < 1 && sortOptions.push(d.name);
+            }
           }
         }
       }
@@ -649,6 +687,7 @@ const MetaData = props => {
   };
 
   const handleDelete = id => {
+    debugger;
     var sampleModelDelete;
     var itemByType;
     var itemByTypeIndex;
@@ -680,6 +719,12 @@ const MetaData = props => {
         });
       } else {
         itemToBeDeleted.isDeleted = true;
+
+        if (props.metadataType === "Assay") {
+          if (itemToBeDeleted.displayLabel && itemToBeDeleted.displayLabelSelected) {
+            itemToBeDeleted.displayLabelSelected = false;
+          }
+        }
 
         let itemSubDescriptors = itemToBeDeleted.descriptors;
 
@@ -907,12 +952,12 @@ const MetaData = props => {
             ) : (
               ""
             )}
-            {/* <Row className="gg-align-center mb-3">
-              <Col xs={12} lg={9}> */}
-            {/* {getExpandCollapseIcon()} */}
+
+            {/* groups with max Occurrence hasn't met */}
             {getAddons()}
-            {/* </Col>
-            </Row> */}
+
+            {/* display assay display label options yet to be displayed */}
+            {listAssayDisplayLabels()}
           </>
         )}
 
@@ -936,7 +981,6 @@ const MetaData = props => {
                 />
                 <Feedback message="Name is required" />
               </Col>
-              {/* <Col xs={3}>{getAddons()}</Col> */}
             </Form.Group>
 
             <Form.Group as={Row} className="gg-align-center mb-3" controlId="featureId">
@@ -958,11 +1002,8 @@ const MetaData = props => {
                 <Feedback message="Feature ID is required" />
               </Col>
             </Form.Group>
-            {/* <Row className="gg-align-center mb-3">
-              <Col xs={12} lg={9}> */}
+
             {getAddons()}
-            {/* </Col>
-            </Row> */}
           </>
         )}
 
@@ -992,13 +1033,18 @@ const MetaData = props => {
           handleCancelModal={handleCancelModal}
           isUpdate={isUpdate}
           isCopySample={props.isCopy}
-          setLoadDataOnFirstNextInUpdate={setLoadDataOnFirstNextInUpdate}
           handleUnitSelectionChange={handleChangeMetaForm}
           handleAddDescriptorGroups={handleAddDescriptorGroups}
           handleAddDescriptorSubGroups={handleAddDescriptorSubGroups}
           defaultSelectionChangeSuperGroup={defaultSelectionChangeSuperGroup}
           defaultSelectionChangeSubGroup={defaultSelectionChangeSubGroup}
           nonXorGroupApporRec={nonXorGroupApporRec}
+          // setAssayStep1={setAssayStep1}
+          // setAssayStep2={setAssayStep2}
+          // assayStep2={assayStep2}
+          // assayStep1={assayStep1}
+          setLoadDataOnFirstNextInUpdate={setLoadDataOnFirstNextInUpdate}
+          loadDataOnFirstNextInUpdate={loadDataOnFirstNextInUpdate}
         />
         <div className="mb-3">
           <div>
@@ -1461,6 +1507,7 @@ const MetaData = props => {
             />
           </Col>
         </Form.Group>
+
         <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label="Description" />
@@ -1507,8 +1554,63 @@ const MetaData = props => {
         )}
 
         {(isUpdate || props.isCopy) && getListTemplate()}
+
+        {props.metadataType === "Assay" && sampleModel.length > 0 && (
+          <>
+            <Form.Group as={Row} className="gg-align-center mb-3" controlId={"displayLabel"}>
+              <Col xs={12} lg={9}>
+                <FormLabel
+                  label={`Did your assay contain the following steps? Please note that these steps
+                        can also be added manually later on by selecting Next step`}
+                />
+
+                {listAssayDisplayLabelCheckBox()}
+              </Col>
+            </Form.Group>
+          </>
+        )}
       </>
     );
+  };
+
+  const listAssayDisplayLabelCheckBox = () => {
+    return sampleModel[0].descriptors.map(ele => {
+      if (ele.displayLabel) {
+        return (
+          <>
+            <FormGroup controlId={ele.id}>
+              <Col xs={12} lg={9}>
+                <FormControlLabel
+                  control={
+                    <BlueCheckbox
+                      id={ele.id}
+                      name="assayDescCheckbox"
+                      onChange={handleAssayDisplayLabelChange}
+                      checked={ele.displayLabelSelected}
+                      size="large"
+                    />
+                  }
+                  label={ele.displayLabel}
+                />
+              </Col>
+            </FormGroup>
+          </>
+        );
+      }
+    });
+  };
+
+  const handleAssayDisplayLabelChange = e => {
+    const flag = e.target.checked;
+    const id = e.currentTarget.id;
+    debugger;
+
+    let sModel = [...sampleModel];
+
+    let selectedItem = sModel[0].descriptors.find(i => i.id === id);
+    selectedItem.displayLabelSelected = flag;
+
+    setSampleModel(sModel);
   };
 
   // const getExpandCollapseIcon = () => {
@@ -1712,6 +1814,7 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
+      debugger;
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
           if (desc.group) {
@@ -1732,6 +1835,7 @@ const MetaData = props => {
       if (responseJson.length === 1) {
         setMetaDataDetails({ selectedtemplate: responseJson[0].name });
       }
+
       setShowLoading(false);
     });
   }
@@ -1921,6 +2025,7 @@ const MetaData = props => {
   }
 
   function setAssayMetadataUpdate() {
+    debugger;
     let sampleModelUpdate = sampleModel;
 
     metaDataDetails.sample.descriptors.forEach(generalDsc => {
@@ -2073,17 +2178,6 @@ const MetaData = props => {
               Next
             </Button>
           </div>
-          // <div className={"button-div line-break-2 text-center"}>
-          //   <Button onClick={props.handleBack} className={"button-test"}>
-          //     <span className={"MuiButton-label"}>Back</span>
-          //     <span className={"MuiTouchRipple-root"}></span>
-          //   </Button>
-
-          //   <Button type="submit" className={"button-test"}>
-          //     <span className={"MuiButton-label"}>Next</span>
-          //     <span className={"MuiTouchRipple-root"}></span>
-          //   </Button>
-          // </div>
         )}
       </>
     );
@@ -2097,6 +2191,7 @@ const MetaData = props => {
     } else if (sampleModel.descriptors) {
       sample = sampleModel;
     }
+
     return (
       <>
         {getButtonsForImportedPage()}
@@ -2120,6 +2215,61 @@ const MetaData = props => {
       </>
     );
   };
+
+  // function validateStep2Data(e) {
+  //   debugger;
+  //   if (
+  //     e.currentTarget.checkValidity()
+  //     // && isGroupMandate()
+  //   ) {
+  //     setAssayStep1(true);
+  //   } else {
+  //     setAssayStep1(false);
+  //     setAssayStep2(true);
+  //   }
+  // }
+
+  // const assaySteps = () => {
+  //   debugger;
+  //   return !assayStep1 ? (
+  //     <>
+  //       <Row>
+  //         <Col>
+  //           <div>
+  //             {getMetaData()}
+  //             <div className="text-center mb-3">
+  //               <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
+  //                 Back
+  //               </Button>
+  //               <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+  //                 Submit
+  //               </Button>
+  //             </div>
+  //           </div>
+  //         </Col>
+  //       </Row>
+  //     </>
+  //   ) : (
+  //     <>
+  //       <Row>
+  //         <Col>
+  //           <div>
+  //             {getMetaData()}
+  //             <div className="text-center mb-3">
+  //               <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
+  //                 Back
+  //               </Button>
+  //               <Button type={"submit"} onClick={e => validateStep2Data(e)} className="gg-btn-blue mt-2 gg-ml-20">
+  //                 Next
+  //               </Button>
+  //             </div>
+  //           </div>
+  //         </Col>
+  //       </Row>
+  //     </>
+  //   );
+  // };
+
   return (
     <>
       {showErrorSummary === true && (
@@ -2148,6 +2298,7 @@ const MetaData = props => {
           }}
         />
       )}
+
       <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
         {!loadDescriptors && !props.importedInAPage && (
           <>
@@ -2169,7 +2320,7 @@ const MetaData = props => {
           </>
         )}
 
-        {loadDescriptors && !props.importedInAPage && (
+        {loadDescriptors && !props.importedInAPage && props.metadataType !== "Assay" && (
           <>
             <Row>
               <Col>
@@ -2189,6 +2340,29 @@ const MetaData = props => {
           </>
         )}
 
+        {loadDescriptors && !props.importedInAPage && props.metadataType === "Assay" && (
+          <>
+            <Row>
+              <Col>
+                <div>
+                  {getMetaData()}
+                  <div className="text-center mb-3">
+                    <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
+                      Back
+                    </Button>
+                    <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </>
+        )
+
+        // assaySteps()
+        }
+
         {props.importedInAPage ? <>{getPageLoaded()}</> : ""}
 
         {showLoading && <Loading show={showLoading} />}
@@ -2199,9 +2373,6 @@ const MetaData = props => {
 
 function getkey(descriptorGroup) {
   return { uri: descriptorGroup.uri, id: descriptorGroup.id };
-  // return descriptorGroup.id.startsWith("newly")
-  //   ? { uri: descriptorGroup.uri, id: descriptorGroup.id }
-  //   : { id: descriptorGroup.id };
 }
 
 function getDescriptors(selectedItemByType) {
@@ -2221,24 +2392,10 @@ function getDescriptors(selectedItemByType) {
           (e.mandateGroup.notRecorded || e.mandateGroup.notApplicable)
       );
 
-      // let oneDescSelectedFromSameGroup = simpleDescriptors.filter(
-      //   e =>
-      //     e.mandateGroup &&
-      //     e.mandateGroup.id === descriptor.mandateGroup.id &&
-      //     !e.mandateGroup.notRecorded &&
-      //     !e.mandateGroup.notApplicable &&
-      //     e.value &&
-      //     e.value.length > 0
-      // );
-
       if (notRecOrApp.length > 0) {
         notRecorded = notRecOrApp[0].mandateGroup.notRecorded;
         notApplicable = notRecOrApp[0].mandateGroup.notApplicable;
       }
-
-      // else if (oneDescSelectedFromSameGroup.length > 0 && !descriptor.value) {
-      //   notRecorded = true;
-      // }
     } else if (!descriptor.value) {
       notRecorded = descriptor.notRecorded;
       notApplicable = descriptor.notApplicable;
@@ -2265,7 +2422,6 @@ function getDescriptors(selectedItemByType) {
 
 function getDescriptorGroups(selectedItemByType) {
   const descrGroups = selectedItemByType.descriptors.filter(i => i.group === true);
-  // && (i.descriptors.filter(j => j.value).length > 0 || i.mandatory)
 
   var dArray = [];
   var dgArray = [];

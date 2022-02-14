@@ -28,6 +28,10 @@ const Descriptors = props => {
     isUpdate,
     isCopySample,
     setLoadDataOnFirstNextInUpdate,
+    loadDataOnFirstNextInUpdate,
+    // setAssayStep1,
+    // assayStep1,
+    // assayStep2,
     isAllExpanded
   } = props;
 
@@ -64,7 +68,9 @@ const Descriptors = props => {
 
     if (metaType !== "Feature") {
       if (accorSimpleDesc.length > 0) {
+        // if (!assayStep1 && loadDataOnFirstNextInUpdate) {
         descriptorForm.push(getSimpleDescriptorsAccord(accorSimpleDesc));
+        // }
       }
     }
 
@@ -82,16 +88,6 @@ const Descriptors = props => {
         metaType === "Assay"
           ? getAssayDroppableUpdateOrCopy(descMetaData, subGroupKeyIndex)
           : loadDescGroups(descMetaData, isUpdate, isCopySample);
-      // : descMetaData.map((descriptor, index) => {
-      //     if (
-      //       descriptor.group &&
-      //       (descriptor.descriptors.find(i => i.value) || descriptor.isNewlyAddedNonMandatory)
-      //     ) {
-      //       return <>{getDescriptorGroups(descriptor, index)}</>;
-      //     }
-
-      //     return <></>;
-      //   });
     } else {
       accorGroup =
         metaType === "Assay" ? getAssayDroppable(descMetaData, subGroupKeyIndex) : loadDescGroups(descMetaData);
@@ -105,6 +101,12 @@ const Descriptors = props => {
         descriptorForm.push(loadSimpleDescs(accorSimpleDesc));
       }
     }
+
+    // if (loadDataOnFirstNextInUpdate && metaType === "Assay" && !assayStep1 && !assayStep2) {
+    //   setAssayStep1(true);
+    // } else if (!loadDataOnFirstNextInUpdate && !assayStep2) {
+    //   setLoadDataOnFirstNextInUpdate(true);
+    // }
 
     setLoadDataOnFirstNextInUpdate && setLoadDataOnFirstNextInUpdate(true);
 
@@ -411,18 +413,23 @@ const Descriptors = props => {
   };
 
   const getAssayDroppable = (descMetaData, subGroupKeyIndex) => {
+    debugger;
     return (
       <>
         <Droppable droppableId={"descriptors"}>
           {provided => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {descMetaData.map((descriptor, index) => {
-                if (metaType === "Feature" && descriptor.group) {
-                  return <>{getDescriptorGroups(descriptor, index)}</>;
-                } else if (descriptor.group) {
-                  return <>{getDescriptorGroups(descriptor, index)}</>;
-                }
+                // if (!assayStep1 && loadDataOnFirstNextInUpdate && descriptor.name === "Reference") {
+                //   return <>{getDescriptorGroups(descriptor, index)}</>;
+                // } else if (descriptor.name !== "Reference") {
 
+                if (descriptor.group && !descriptor.isDeleted) {
+                  if ((descriptor.displayLabel && descriptor.displayLabelSelected) || !descriptor.displayLabel) {
+                    return <>{getDescriptorGroups(descriptor, index)}</>;
+                  }
+                }
+                // }
                 return <></>;
               })}
               {provided.placeholder}
