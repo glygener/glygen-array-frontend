@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import React, { useState, useReducer } from "react";
 import "../containers/AddGlycan.css";
 import PropTypes from "prop-types";
@@ -76,13 +77,13 @@ const AddFeatureToBlock = props => {
     }
 
     if (activeStep === 1 && featuresSelected.featureSelected.length !== 1) {
-      if (!validFeatureRatios()) {
-        setPageErrorMessage("Total Ratios Should be 100%");
-        setShowErrorSummary(true);
-        return;
-      } else {
-        setShowErrorSummary(false);
-      }
+      // if (!validFeatureRatios()) {
+      //   setPageErrorMessage("Total Ratios Should be 100%");
+      //   setShowErrorSummary(true);
+      //   return;
+      // } else {
+      setShowErrorSummary(false);
+      // }
     } else if (activeStep === 0 && featuresSelected.featureSelected.length === 1) {
       stepIncrement += 1;
     }
@@ -135,9 +136,9 @@ const AddFeatureToBlock = props => {
     const value = e.currentTarget.value;
     let concentrationInfo = {};
 
-    if (value && !/^[0-9]+$/.test(value)) {
-      return;
-    }
+    // if (value && !/^[0-9]+$/.test(value)) {
+    //   return;
+    // }
 
     let rowUpdated = [...featuresSelected.featureSelected];
 
@@ -253,9 +254,10 @@ const AddFeatureToBlock = props => {
                       name="featureRatio"
                       onChange={handleChange}
                       value={element.concentrationInfo && element.concentrationInfo.ratio}
+                      // pattern={"^d*(.d{0,2})?$"}
+                      type="number"
                     />
                   </Col>
-                  <span className="percentage-symbol">%</span>
                 </Form.Group>
               </div>
             );

@@ -43,7 +43,9 @@ const AddBlockLayout = props => {
         getBlockLayoutFailure
       );
       setTitle("Edit Block Layout");
-      setSubTitle("Update block layout information. Name must be unique in your block layout repository and cannot be used for more than one block layout.");
+      setSubTitle(
+        "Update block layout information. Name must be unique in your block layout repository and cannot be used for more than one block layout."
+      );
     } else if (props.publicView) {
       setShowLoading(true);
       wsCall(
@@ -281,7 +283,7 @@ const AddBlockLayout = props => {
       selectedFeatures: [],
       selectedConcentration: {},
       groupAssigned: 0,
-      color: "", //background color of a spot is updated using this property
+      color: "" //background color of a spot is updated using this property
     });
     return spots;
   };
@@ -718,8 +720,9 @@ const AddBlockLayout = props => {
           [element.feature.id]: {
             ratio: ratioConcentration.ratio,
             concentration: {
-              m_concentration: ratioConcentration.concentration,
-              m_levelUnit: ratioConcentration.unitlevel
+              concentration: ratioConcentration.concentration,
+              levelUnit: "FMOL"
+              // ratioConcentration.unitlevel
             }
           }
         });
@@ -738,6 +741,7 @@ const AddBlockLayout = props => {
     response.json().then(response => {
       setPageErrorsJson(response);
       setShowErrorSummary(true);
+      setShowLoading(false);
     });
   }
 

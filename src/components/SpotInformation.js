@@ -26,21 +26,22 @@ const SpotInformation = props => {
                   <Accordion.Collapse eventKey={index} className="accordion-collapse-custom">
                     <Card.Body>
                       <Container>
-                        {(element.featureConcentration.concentration || element.featureConcentration.notReported) && (
-                          <Row>
-                            <Col>Concentration</Col>
-                            {element.featureConcentration.notReported ? (
-                              <Col>
-                                {element.featureConcentration.concentration}
-                                &nbsp;{element.featureConcentration.unitlevel}
-                              </Col>
-                            ) : (
-                              <Col>{"Not reported"}</Col>
-                            )}
-                          </Row>
-                        )}
+                        {element.featureConcentration &&
+                          (element.featureConcentration.concentration || element.featureConcentration.notReported) && (
+                            <Row>
+                              <Col>Concentration</Col>
+                              {element.featureConcentration.notReported ? (
+                                <Col>
+                                  {element.featureConcentration.concentration}
+                                  &nbsp;{element.featureConcentration.unitlevel}
+                                </Col>
+                              ) : (
+                                <Col>{"Not reported"}</Col>
+                              )}
+                            </Row>
+                          )}
 
-                        {element.featureConcentration.ratio && (
+                        {element.featureConcentration && element.featureConcentration.ratio && (
                           <Row>
                             <Col>Ratio</Col>
 
@@ -51,7 +52,7 @@ const SpotInformation = props => {
                           </Row>
                         )}
 
-                        {element.feature.linker && (
+                        {element.feature && element.feature.linker && (
                           <Row>
                             <Col>Linker</Col>
                             <Col>{element.feature.linker.name}</Col>

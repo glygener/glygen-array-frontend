@@ -63,8 +63,8 @@ const AddMultiSlideLayout = props => {
     fileType: defaultFileType,
     name: "",
     description: "",
-    height: 0,
-    width: 0,
+    height: "",
+    width: ""
   };
 
   const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
@@ -90,7 +90,7 @@ const AddMultiSlideLayout = props => {
     var selectedrow = [];
     selectedrow.push({
       id: row.id,
-      name: row.name,
+      name: row.name
     });
 
     setRowSelected(selectedrow);
@@ -109,7 +109,7 @@ const AddMultiSlideLayout = props => {
     } else {
       updateSelectedRows.push({
         id: row.id,
-        name: value,
+        name: value
       });
     }
 
@@ -199,7 +199,7 @@ const AddMultiSlideLayout = props => {
         onChange={e => handleSlideNameChange(row.original, e)}
         value={getUpdateSlideName(row.original)}
         style={{
-          border: "none",
+          border: "none"
         }}
       />
     );
@@ -207,7 +207,7 @@ const AddMultiSlideLayout = props => {
     columnsToRender["nameColumn"] = {
       Header: "Name",
       // eslint-disable-next-line react/display-name
-      Cell: row => editSlideName(row),
+      Cell: row => editSlideName(row)
     };
 
     columnsToRender["selectionColumn"] = {
@@ -221,7 +221,7 @@ const AddMultiSlideLayout = props => {
           onChange={() => handleChecboxChange(row.original)}
           checked={checkSelection(row.original)}
         />
-      ),
+      )
     };
 
     return (
@@ -264,7 +264,7 @@ const AddMultiSlideLayout = props => {
                       padding: "15px",
                       marginBottom: "20px",
                       backgroundColor:
-                        key === "addedLayouts" ? "darkseagreen" : key === "duplicates" ? "orange" : "indianred",
+                        key === "addedLayouts" ? "darkseagreen" : key === "duplicates" ? "orange" : "indianred"
                     }}
                   >
                     {key === "addedLayouts"
@@ -327,7 +327,7 @@ const AddMultiSlideLayout = props => {
           file: encodeURIComponent(fileId),
           name: uploadDetails.name,
           height: uploadDetails.height,
-          width: uploadDetails.width,
+          width: uploadDetails.width
         },
         true,
         null,
@@ -603,7 +603,7 @@ const AddMultiSlideLayout = props => {
                           history={history}
                           headerObject={{
                             Authorization: window.localStorage.getItem("token") || "",
-                            Accept: "*/*",
+                            Accept: "*/*"
                           }}
                           fileType={fileDetails.fileType}
                           uploadService={getWsUrl("upload")}
