@@ -35,8 +35,12 @@ const AddImageAnalysis = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Add Image Analysis to Repository"
-            subTitle="Please provide the information for the new image analysis."
+            title={imageAnalysisId ? "Edit Image Analysis" : "Add Image Analysis to Repository"}
+            subTitle={
+              imageAnalysisId
+                ? "Update image analysis information. Name must be unique in your image analysis repository and cannot be used for more than one image analysis."
+                : "Please provide the information for the new image analysis."
+            }
           />
           <Card>
             <Card.Body>

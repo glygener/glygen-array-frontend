@@ -34,7 +34,14 @@ const AddSample = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Add Sample to Repository" subTitle="Please provide the information for the new sample." />
+          <PageHeading
+            title={sampleId ? "Edit Sample" : "Add Sample to Repository"}
+            subTitle={
+              sampleId
+                ? "Update sample information. Name must be unique in your sample repository and cannot be used for more than one sample."
+                : "Please provide the information for the new sample."
+            }
+          />
           <Card>
             <Card.Body>
               <MetaData

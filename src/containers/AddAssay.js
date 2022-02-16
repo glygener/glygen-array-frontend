@@ -33,7 +33,14 @@ const AddAssay = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Add Assay to Repository" subTitle="Please provide the information for the new assay." />
+          <PageHeading
+            title={assayId ? "Edit Assay" : "Add Assay to Repository"}
+            subTitle={
+              assayId
+                ? "Update assay information. Name must be unique in your assay repository and cannot be used for more than one assay."
+                : "Please provide the information for the new assay."
+            }
+          />
           <Card>
             <Card.Body>
               <MetaData

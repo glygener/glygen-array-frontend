@@ -34,7 +34,15 @@ const AddSpot = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Add Spot to Repository" subTitle="Please provide the information for the new spot." />
+          <PageHeading
+            title={spotId ? "Edit Spot" : "Add Spot to Repository"}
+            subTitle={
+              spotId
+                ? "Update spot information. Name must be unique in your spot repository and cannot be used for more than one spot."
+                : "Please provide the information for the new spot."
+            }
+          />
+
           <Card>
             <Card.Body>
               <MetaData

@@ -34,7 +34,14 @@ const AddSlideMeta = props => {
 
       <Container maxWidth="xl">
         <div className="page-container">
-          <PageHeading title="Add Slide Metadata to Repository" subTitle="Please provide the information for the new printer." />
+          <PageHeading
+            title={slideMetaId ? "Edit Slide Metadata" : "Add Slide Metadata to Repository"}
+            subTitle={
+              slideMetaId
+                ? "Update slide metadata information. Name must be unique in your slide metadata repository and cannot be used for more than one slide metadata."
+                : "Please provide the information for the new slide metadata."
+            }
+          />
           <Card>
             <Card.Body>
               <MetaData
