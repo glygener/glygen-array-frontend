@@ -29,9 +29,8 @@ const Descriptors = props => {
     isCopySample,
     setLoadDataOnFirstNextInUpdate,
     loadDataOnFirstNextInUpdate,
-    // setAssayStep1,
-    // assayStep1,
-    // assayStep2,
+    assayCurrentStep,
+    setAssayCurrentStep,
     isAllExpanded
   } = props;
 
@@ -68,9 +67,9 @@ const Descriptors = props => {
 
     if (metaType !== "Feature") {
       if (accorSimpleDesc.length > 0) {
-        // if (!assayStep1 && loadDataOnFirstNextInUpdate) {
-        descriptorForm.push(getSimpleDescriptorsAccord(accorSimpleDesc));
-        // }
+        if ((metaType === "Assay" && assayCurrentStep === 2) || metaType !== "Assay") {
+          descriptorForm.push(getSimpleDescriptorsAccord(accorSimpleDesc));
+        }
       }
     }
 
@@ -102,13 +101,11 @@ const Descriptors = props => {
       }
     }
 
-    // if (loadDataOnFirstNextInUpdate && metaType === "Assay" && !assayStep1 && !assayStep2) {
-    //   setAssayStep1(true);
-    // } else if (!loadDataOnFirstNextInUpdate && !assayStep2) {
-    //   setLoadDataOnFirstNextInUpdate(true);
-    // }
+    if (loadDataOnFirstNextInUpdate && metaType === "Assay" && assayCurrentStep < 1) {
+      setAssayCurrentStep(1);
+    }
 
-    setLoadDataOnFirstNextInUpdate && setLoadDataOnFirstNextInUpdate(true);
+    !loadDataOnFirstNextInUpdate && setLoadDataOnFirstNextInUpdate(true);
 
     return descriptorForm;
   };
@@ -413,23 +410,21 @@ const Descriptors = props => {
   };
 
   const getAssayDroppable = (descMetaData, subGroupKeyIndex) => {
-    debugger;
     return (
       <>
         <Droppable droppableId={"descriptors"}>
           {provided => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {descMetaData.map((descriptor, index) => {
-                // if (!assayStep1 && loadDataOnFirstNextInUpdate && descriptor.name === "Reference") {
-                //   return <>{getDescriptorGroups(descriptor, index)}</>;
-                // } else if (descriptor.name !== "Reference") {
-
-                if (descriptor.group && !descriptor.isDeleted) {
-                  if ((descriptor.displayLabel && descriptor.displayLabelSelected) || !descriptor.displayLabel) {
-                    return <>{getDescriptorGroups(descriptor, index)}</>;
+                if (assayCurrentStep === 2 && descriptor.name === "Reference" && !descriptor.isDeleted) {
+                  return <>{getDescriptorGroups(descriptor, index)}</>;
+                } else if (assayCurrentStep === 1 && descriptor.name !== "Reference") {
+                  if (descriptor.group && !descriptor.isDeleted) {
+                    if ((descriptor.displayLabel && descriptor.displayLabelSelected) || !descriptor.displayLabel) {
+                      return <>{getDescriptorGroups(descriptor, index)}</>;
+                    }
                   }
                 }
-                // }
                 return <></>;
               })}
               {provided.placeholder}
@@ -982,7 +977,7 @@ const Descriptors = props => {
                       checked={element.notApplicable}
                       onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                       size="large"
-                      defaultChecked={element.notApplicable}
+                      // defaultChecked={element.notApplicable}
                     />
                   }
                   label={
@@ -1005,7 +1000,7 @@ const Descriptors = props => {
                         checked={element.notRecorded}
                         onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                         size="large"
-                        defaultChecked={element.notRecorded}
+                        // defaultChecked={element.notRecorded}
                       />
                     }
                     label={

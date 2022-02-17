@@ -71,6 +71,8 @@ import GlycanList from "./public/GlycanList";
 import GlycanDetail from "./public/GlycanDetail";
 import { FeatureView } from "./containers/FeatureView";
 import { AddMultipleGlycanDetails } from "./containers/AddMultipleGlycanDetails";
+import { AddPrintRun } from "./containers/AddPrintRun";
+import { PrintRun } from "./containers/PrintRun";
 
 const Routes = props => {
   const routes = [
@@ -586,6 +588,29 @@ const Routes = props => {
       sidebar: () => getSidemenu("meta")
     },
 
+    /* Printer Run */
+
+    {
+      path: "/printRun/editPrintRun/:printRunId?",
+      main: () => <AddPrintRun {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta")
+    },
+    {
+      path: "/printRun/copyPrintRun/:printRunId?",
+      main: () => <AddPrintRun {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta")
+    },
+    {
+      path: "/printRun/addPrintRun",
+      main: () => <AddPrintRun authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta")
+    },
+    {
+      path: "/printRun",
+      exact: true,
+      main: () => <PrintRun authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta")
+    },
     /* experiment */
     {
       path: "/experiments/addExperiment/addGrant/:experimentId?",

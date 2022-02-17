@@ -10,18 +10,18 @@ import "./SideMenu.css";
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   nested: {
-    paddingLeft: theme.spacing(4),
-  },
+    paddingLeft: theme.spacing(4)
+  }
 }));
 
-const SideMenu = (props) => {
+const SideMenu = props => {
   if (props.match) {
   }
 
@@ -45,6 +45,7 @@ const SideMenu = (props) => {
     "/listSlideMeta/?",
     "/assays/?",
     "/spots/?",
+    "/printRun/?"
   ];
   const metaDataSubMenuLabels = [
     "Sample",
@@ -55,33 +56,34 @@ const SideMenu = (props) => {
     "Slide ",
     "Assay ",
     "Spot",
+    "Printrun"
   ];
 
   var menu = new Map();
 
   menu.set("Molecules", {
     labels: chemicalEntityLabels,
-    pages: chemicalEntity,
+    pages: chemicalEntity
   });
 
   menu.set("Slide", {
     labels: slideSubMenuLabels,
-    pages: slidePages,
+    pages: slidePages
   });
 
   menu.set("Metadata", {
     labels: metaDataSubMenuLabels,
-    pages: metadataPages,
+    pages: metadataPages
   });
 
   menu.set("Experiment", {
     labels: experimentSubMenuLabels,
-    pages: experimentPages,
+    pages: experimentPages
   });
 
   const [open, setOpen] = useState("");
 
-  const handleClick = (e) => {
+  const handleClick = e => {
     setOpen(e);
   };
 
@@ -91,7 +93,7 @@ const SideMenu = (props) => {
         <List
           component={NavLink}
           disablePadding
-          onClick={(e) => handleClick(e)}
+          onClick={e => handleClick(e)}
           key={index}
           activeClassName="active-sidebar"
           to={submenuLabels[index]}
@@ -120,9 +122,7 @@ const SideMenu = (props) => {
         {props.openMenu === "molecules" ? <ExpandMore /> : <ExpandLess />}
       </ListItem>
       <Collapse
-        in={
-          open === "molecules" || (props.openMenu && props.openMenu === "molecules") ? true : false
-        }
+        in={open === "molecules" || (props.openMenu && props.openMenu === "molecules") ? true : false}
         timeout="auto"
         unmountOnExit
       >
@@ -158,11 +158,7 @@ const SideMenu = (props) => {
         {props.openMenu === "experiment" ? <ExpandMore /> : <ExpandLess />}
       </ListItem>
       <Collapse
-        in={
-          open === "experiment" || (props.openMenu && props.openMenu === "experiment")
-            ? true
-            : false
-        }
+        in={open === "experiment" || (props.openMenu && props.openMenu === "experiment") ? true : false}
         timeout="auto"
         unmountOnExit
       >
@@ -175,6 +171,6 @@ const SideMenu = (props) => {
 SideMenu.propTypes = {
   open: PropTypes.string,
   match: PropTypes.object,
-  openMenu: PropTypes.string,
+  openMenu: PropTypes.string
 };
 export { SideMenu };

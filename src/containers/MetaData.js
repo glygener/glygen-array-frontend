@@ -24,8 +24,7 @@ const MetaData = props => {
   const [validated, setValidated] = useState(false);
   const [errorName, setErrorName] = useState(false);
   const [errorType, setErrorType] = useState(false);
-  // const [assayStep1, setAssayStep1] = useState(false);
-  // const [assayStep2, setAssayStep2] = useState(false);
+  const [assayCurrentStep, setAssayCurrentStep] = useState(0);
   const [sampleModel, setSampleModel] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
   const [enablePrompt, setEnablePrompt] = useState(false);
@@ -38,7 +37,6 @@ const MetaData = props => {
   const [loadDescriptors, setLoadDescriptors] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [addDescriptorSelection, setAddDescriptorSelection] = useState("select");
-  const [addAssayLabelSelection, setAddAssayLabelSelection] = useState("select");
   const [loadDataOnFirstNextInUpdate, setLoadDataOnFirstNextInUpdate] = useState(false);
   const [mandateGroupLimitDeceed, setMandateGroupLimitDeceed] = useState(new Map());
   const [mandateGroupLimitExceed, setMandateGroupLimitExceed] = useState(new Map());
@@ -72,7 +70,7 @@ const MetaData = props => {
   }, [props.metaID]);
 
   const metaDetails = {
-    name: "wefwe",
+    name: "",
     selectedtemplate: "",
     description: "",
     sample: {}
@@ -383,73 +381,6 @@ const MetaData = props => {
     );
   };
 
-  const listAssayDisplayLabels = () => {
-    let sampleModelUpdate;
-    let selectedSample;
-    let name;
-    let options = [];
-
-    options.push(
-      <option key={0} value={"Select"}>
-        Select Display Label
-      </option>
-    );
-
-    sampleModel[0].descriptors.forEach((ele, index) => {
-      if (ele.displayLabel && !ele.displayLabelSelected) {
-        options.push(
-          <>
-            <option key={index} value={ele.name}>
-              {ele.displayLabel}
-            </option>
-          </>
-        );
-      }
-    });
-
-    return (
-      <>
-        <Form.Group as={Row} controlId={""} className="gg-align-center">
-          <Col xs={12} lg={4}>
-            <FormLabel label="Add another step" />
-            <Form.Control
-              as="select"
-              value={addAssayLabelSelection}
-              onChange={e => {
-                debugger;
-                setAddAssayLabelSelection(e.target.value);
-                name = e.target.value;
-
-                if (e.target.value !== "Select" && e.target.value !== "select") {
-                  if (isUpdate || props.isCopy) {
-                    sampleModelUpdate = { ...sampleModel };
-                    selectedSample = sampleModelUpdate;
-                  } else {
-                    sampleModelUpdate = [...sampleModel];
-                    selectedSample = sampleModelUpdate[0];
-                  }
-                  let itemDescriptors = selectedSample.descriptors;
-
-                  let existedElement = itemDescriptors.find(e => e.name === name && !e.isNewlyAdded);
-                  let selectedIndex = itemDescriptors.indexOf(existedElement);
-
-                  existedElement.displayLabelSelected = true;
-                  itemDescriptors[selectedIndex] = existedElement;
-
-                  setSampleModel(sampleModelUpdate);
-
-                  setAddAssayLabelSelection("");
-                }
-              }}
-            >
-              {options}
-            </Form.Control>
-          </Col>
-        </Form.Group>
-      </>
-    );
-  };
-
   const getDescriptorOptions = () => {
     const options = [];
     let sortOptions = [];
@@ -466,10 +397,9 @@ const MetaData = props => {
 
     if (props.metadataType === "Assay") {
       sampleType = sampleModel[0];
-      desc = sampleType.descriptors.filter(e => !e.displayLabel);
-    } else {
-      desc = sampleType.descriptors;
     }
+
+    desc = sampleType.descriptors;
 
     options.push(
       <option key={0} value={"Select"}>
@@ -477,26 +407,39 @@ const MetaData = props => {
       </option>
     );
 
-    desc.forEach(d => {
-      if ((props.metadataType === "Assay" && !d.displayLabel) || props.metadataType !== "Assay") {
-        const occurrances = sortOptions.filter(i => i === d.name);
+    if (assayCurrentStep === 2 && props.metadataType === "Assay") {
+      let refCount = desc.filter(i => i.name === "Reference");
+      const occurrences = sortOptions.filter(i => i === "Reference");
 
-        if (!d.mandateGroup) {
-          if (d.maxOccurrence === 1 && !d.mandatory) {
-            if (d.group) {
-              if (d.isDeleted) {
-                occurrances.length < 1 && sortOptions.push(d.name);
+      if (refCount[0].maxOccurrence > refCount.length) {
+        occurrences.length < 1 && sortOptions.push(refCount[0].name);
+      }
+    } else {
+      desc.forEach(d => {
+        const occurrences = sortOptions.filter(i => i === d.name);
+
+        if ((d.name !== "Reference" && props.metadataType === "Assay") || props.metadataType !== "Assay") {
+          if (!d.mandateGroup) {
+            if (d.maxOccurrence === 1 && !d.mandatory) {
+              if (d.group) {
+                if (d.isDeleted) {
+                  occurrences.length < 1 && sortOptions.push(d.name);
+                }
               }
-            }
-          } else if (d.maxOccurrence > 1) {
-            let currentDisplayCount = desc.filter(e => e.name === d.name);
-            if (currentDisplayCount.length < d.maxOccurrence) {
-              occurrances.length < 1 && sortOptions.push(d.name);
+            } else if (d.maxOccurrence > 1) {
+              let currentDisplayCount = desc.filter(e => e.name === d.name);
+              if (currentDisplayCount.length < d.maxOccurrence) {
+                occurrences.length < 1 && sortOptions.push(d.name);
+              }
             }
           }
         }
-      }
-    });
+
+        // if (props.metadataType === "Assay" && d.displayLabel && !d.displayLabelSelected) {
+        //   sortOptions.push(d.name);
+        // }
+      });
+    }
 
     sortOptions.sort().forEach((element, index) => {
       options.push(
@@ -531,7 +474,10 @@ const MetaData = props => {
 
     maxCurrentOrder = selectedSample.descriptors[selectedSample.descriptors.length - 1].order;
 
-    if (existedElement.isDeleted) {
+    if (
+      existedElement.isDeleted ||
+      (props.metadataType === "Assay" && existedElement.displayLabel && !existedElement.displayLabelSelected)
+    ) {
       if (existedElement.mandateGroup) {
         let sameGroupItemDeletedTobe = selectedSample.descriptors.filter(
           e => e.mandateGroup && e.mandateGroup.id === existedElement.mandateGroup.id
@@ -541,6 +487,10 @@ const MetaData = props => {
           descGroup.isDeleted = false;
         });
       } else {
+        if (props.metadataType === "Assay" && existedElement.displayLabel && !existedElement.displayLabelSelected) {
+          existedElement.displayLabelSelected = true;
+        }
+
         existedElement.isDeleted = false;
       }
     } else if (existedElement) {
@@ -687,7 +637,6 @@ const MetaData = props => {
   };
 
   const handleDelete = id => {
-    debugger;
     var sampleModelDelete;
     var itemByType;
     var itemByTypeIndex;
@@ -720,10 +669,8 @@ const MetaData = props => {
       } else {
         itemToBeDeleted.isDeleted = true;
 
-        if (props.metadataType === "Assay") {
-          if (itemToBeDeleted.displayLabel && itemToBeDeleted.displayLabelSelected) {
-            itemToBeDeleted.displayLabelSelected = false;
-          }
+        if (props.metadataType === "Assay" && itemToBeDeleted.displayLabel && itemToBeDeleted.displayLabelSelected) {
+          itemToBeDeleted.displayLabelSelected = false;
         }
 
         let itemSubDescriptors = itemToBeDeleted.descriptors;
@@ -955,9 +902,6 @@ const MetaData = props => {
 
             {/* groups with max Occurrence hasn't met */}
             {getAddons()}
-
-            {/* display assay display label options yet to be displayed */}
-            {listAssayDisplayLabels()}
           </>
         )}
 
@@ -1039,13 +983,12 @@ const MetaData = props => {
           defaultSelectionChangeSuperGroup={defaultSelectionChangeSuperGroup}
           defaultSelectionChangeSubGroup={defaultSelectionChangeSubGroup}
           nonXorGroupApporRec={nonXorGroupApporRec}
-          // setAssayStep1={setAssayStep1}
-          // setAssayStep2={setAssayStep2}
-          // assayStep2={assayStep2}
-          // assayStep1={assayStep1}
+          setAssayCurrentStep={setAssayCurrentStep}
+          assayCurrentStep={assayCurrentStep}
           setLoadDataOnFirstNextInUpdate={setLoadDataOnFirstNextInUpdate}
           loadDataOnFirstNextInUpdate={loadDataOnFirstNextInUpdate}
         />
+
         <div className="mb-3">
           <div>
             <sup>1</sup>
@@ -1578,7 +1521,7 @@ const MetaData = props => {
       if (ele.displayLabel) {
         return (
           <>
-            <FormGroup controlId={ele.id}>
+            <FormGroup controlid={ele.id}>
               <Col xs={12} lg={9}>
                 <FormControlLabel
                   control={
@@ -1587,7 +1530,7 @@ const MetaData = props => {
                       name="assayDescCheckbox"
                       onChange={handleAssayDisplayLabelChange}
                       checked={ele.displayLabelSelected}
-                      size="large"
+                      size="medium"
                     />
                   }
                   label={ele.displayLabel}
@@ -1603,12 +1546,15 @@ const MetaData = props => {
   const handleAssayDisplayLabelChange = e => {
     const flag = e.target.checked;
     const id = e.currentTarget.id;
-    debugger;
 
     let sModel = [...sampleModel];
 
     let selectedItem = sModel[0].descriptors.find(i => i.id === id);
     selectedItem.displayLabelSelected = flag;
+
+    if (flag) {
+      selectedItem.isDeleted = false;
+    }
 
     setSampleModel(sModel);
   };
@@ -1628,22 +1574,26 @@ const MetaData = props => {
   // };
 
   function handleSubmit(e) {
-    setValidated(true);
+    if ((assayCurrentStep === 2 && props.metadataType === "Assay") || props.metadataType !== "Assay") {
+      setValidated(true);
 
-    if (e.currentTarget.checkValidity() && !isGroupMandate()) {
-      setShowLoading(true);
+      if (e.currentTarget.checkValidity() && !isGroupMandate()) {
+        setShowLoading(true);
 
-      if (props.importedPageData) {
-        props.handleNext(e);
-        props.setImportedPageDataToSubmit(metadataToSubmit());
-        setShowLoading(false);
-      } else {
-        if (isUpdate) {
-          wsCall(props.updateMeta, "POST", null, true, metadataToSubmit(), addMetaSuccess, addMetaFailure);
+        if (props.importedPageData) {
+          props.handleNext(e);
+          props.setImportedPageDataToSubmit(metadataToSubmit());
+          setShowLoading(false);
         } else {
-          wsCall(props.addMeta, "POST", null, true, metadataToSubmit(), addMetaSuccess, addMetaFailure);
+          if (isUpdate) {
+            wsCall(props.updateMeta, "POST", null, true, metadataToSubmit(), addMetaSuccess, addMetaFailure);
+          } else {
+            wsCall(props.addMeta, "POST", null, true, metadataToSubmit(), addMetaSuccess, addMetaFailure);
+          }
         }
       }
+    } else {
+      validateAssayStep2Data(e);
     }
 
     e.preventDefault();
@@ -1814,7 +1764,6 @@ const MetaData = props => {
 
   function getListTemplatesSuccess(response) {
     response.json().then(responseJson => {
-      debugger;
       responseJson.forEach(template => {
         template.descriptors.forEach(desc => {
           if (desc.group) {
@@ -2025,7 +1974,6 @@ const MetaData = props => {
   }
 
   function setAssayMetadataUpdate() {
-    debugger;
     let sampleModelUpdate = sampleModel;
 
     metaDataDetails.sample.descriptors.forEach(generalDsc => {
@@ -2216,59 +2164,15 @@ const MetaData = props => {
     );
   };
 
-  // function validateStep2Data(e) {
-  //   debugger;
-  //   if (
-  //     e.currentTarget.checkValidity()
-  //     // && isGroupMandate()
-  //   ) {
-  //     setAssayStep1(true);
-  //   } else {
-  //     setAssayStep1(false);
-  //     setAssayStep2(true);
-  //   }
-  // }
+  function validateAssayStep2Data(e) {
+    setValidated(true);
 
-  // const assaySteps = () => {
-  //   debugger;
-  //   return !assayStep1 ? (
-  //     <>
-  //       <Row>
-  //         <Col>
-  //           <div>
-  //             {getMetaData()}
-  //             <div className="text-center mb-3">
-  //               <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
-  //                 Back
-  //               </Button>
-  //               <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-  //                 Submit
-  //               </Button>
-  //             </div>
-  //           </div>
-  //         </Col>
-  //       </Row>
-  //     </>
-  //   ) : (
-  //     <>
-  //       <Row>
-  //         <Col>
-  //           <div>
-  //             {getMetaData()}
-  //             <div className="text-center mb-3">
-  //               <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
-  //                 Back
-  //               </Button>
-  //               <Button type={"submit"} onClick={e => validateStep2Data(e)} className="gg-btn-blue mt-2 gg-ml-20">
-  //                 Next
-  //               </Button>
-  //             </div>
-  //           </div>
-  //         </Col>
-  //       </Row>
-  //     </>
-  //   );
-  // };
+    if (!e.currentTarget.checkValidity()) {
+      e.preventDefault();
+    } else {
+      setAssayCurrentStep(2);
+    }
+  }
 
   return (
     <>
@@ -2320,7 +2224,7 @@ const MetaData = props => {
           </>
         )}
 
-        {loadDescriptors && !props.importedInAPage && props.metadataType !== "Assay" && (
+        {loadDescriptors && !props.importedInAPage && (
           <>
             <Row>
               <Col>
@@ -2331,7 +2235,7 @@ const MetaData = props => {
                       Back
                     </Button>
                     <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-                      Submit
+                      {props.metadataType === "Assay" && assayCurrentStep === 1 ? "Next" : "Submit"}
                     </Button>
                   </div>
                 </div>
@@ -2339,29 +2243,6 @@ const MetaData = props => {
             </Row>
           </>
         )}
-
-        {loadDescriptors && !props.importedInAPage && props.metadataType === "Assay" && (
-          <>
-            <Row>
-              <Col>
-                <div>
-                  {getMetaData()}
-                  <div className="text-center mb-3">
-                    <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
-                      Back
-                    </Button>
-                    <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-                      Submit
-                    </Button>
-                  </div>
-                </div>
-              </Col>
-            </Row>
-          </>
-        )
-
-        // assaySteps()
-        }
 
         {props.importedInAPage ? <>{getPageLoaded()}</> : ""}
 
