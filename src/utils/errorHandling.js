@@ -80,7 +80,8 @@ const FORM_ERROR_MESSAGES = {
   slideLayouts: {
     Duplicate_name: "The name of another slide layout is the same. Please choose a new name.",
     Positiveonly_height: "The number of rows must be a positive integer.",
-    Positiveonly_width: "The number of columns must be a positive integer."
+    Positiveonly_width: "The number of columns must be a positive integer.",
+    InUse_printedSlide: "Cannot delete selected printed slide. It is used in an experiment."
   },
   glygenTable: {
     Not_Found: "An unidentified error has occurred. Please be patient while we investigate this."
