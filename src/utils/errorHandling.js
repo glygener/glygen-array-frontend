@@ -81,6 +81,7 @@ const FORM_ERROR_MESSAGES = {
     Duplicate_name: "The name of another slide layout is the same. Please choose a new name.",
     Positiveonly_height: "The number of rows must be a positive integer.",
     Positiveonly_width: "The number of columns must be a positive integer.",
+    InUse_slideLayout: "Cannot delete selected slidelayout. It is used in an experiment.",
     InUse_printedSlide: "Cannot delete selected printed slide. It is used in an experiment."
   },
   glygenTable: {
