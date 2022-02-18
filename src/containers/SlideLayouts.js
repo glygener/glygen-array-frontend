@@ -45,8 +45,8 @@ const SlideLayouts = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
-                  },
+                    accessor: "name"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -59,6 +59,7 @@ const SlideLayouts = props => {
                 deleteWS="slidelayoutdelete"
                 editUrl="slideLayouts/editSlide"
                 keyColumn="id"
+                form={"slideLayouts"}
                 showRowsInfo
                 infoRowsText="Slide Layouts"
               />
