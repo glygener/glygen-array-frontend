@@ -210,6 +210,16 @@ export function getWsUrl(ws) {
       return ws_base_array + "/getSpotMetadata";
     case "updatespotmetadata":
       return ws_base_array + "/updateSpotMetadata";
+    case "listprintrun":
+      return ws_base_array + "/listPrintruns";
+    case "addprintrun":
+      return ws_base_array + "/addPrintrun";
+    case "printrundelete":
+      return ws_base_array + "/deleteprintrunmetadata";
+    case "getprintrun":
+      return ws_base_array + "/getPrintRun";
+    case "updateprintrun":
+      return ws_base_array + "/updatePrintrun";
     case "ismiragecompliant":
       return ws_base_array + "/isMirageCompliant";
     case "addprintedslide":

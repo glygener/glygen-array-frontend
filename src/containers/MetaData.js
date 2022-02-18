@@ -2322,7 +2322,19 @@ function getDescriptorGroups(selectedItemByType) {
       );
     }
 
-    if (d.mandateGroup && notAppRecGroup.length > 0) {
+    if ((d.allowNotApplicable || d.allowNotRecorded) && (d.notApplicable || d.notRecorded)) {
+      dArray.push({
+        descriptors: null,
+        order: d.order ? d.order : -1,
+        key: {
+          "@type": "descriptortemplate",
+          ...getkey(d)
+        },
+        notApplicable: d.notApplicable,
+        notRecorded: d.notRecorded,
+        "@type": "descriptorgroup"
+      });
+    } else if (d.mandateGroup && notAppRecGroup.length > 0) {
       if (notAppRecGroup.length > 0) {
         if (notAppRecGroup[0].mandateGroup.notRecorded) {
           notRecorded = true;

@@ -976,7 +976,7 @@ const Descriptors = props => {
                       name="notApplicable"
                       checked={element.notApplicable}
                       onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
-                      size="large"
+                      size="medium"
                       // defaultChecked={element.notApplicable}
                     />
                   }
