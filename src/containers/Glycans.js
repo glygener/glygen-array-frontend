@@ -13,7 +13,7 @@ import { getToolTip } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 
-const Glycans = (props) => {
+const Glycans = props => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -48,43 +48,43 @@ const Glycans = (props) => {
                   {
                     Header: "Id",
                     accessor: "id",
-                    Cell: (row) => getToolTip(row.original.id),
+                    Cell: row => getToolTip(row.original.id),
                     style: {
-                      textAlign: "left",
-                    },
+                      textAlign: "left"
+                    }
                   },
                   {
                     Header: "Internal Id",
                     accessor: "internalId",
-                    Cell: (row) => getToolTip(row.original.internalId),
+                    Cell: row => getToolTip(row.original.internalId),
                     style: {
-                      textAlign: "left",
-                    },
+                      textAlign: "left"
+                    }
                   },
                   {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
-                    Cell: (row) => getToolTip(row.original.glytoucanId),
+                    Cell: row => getToolTip(row.original.glytoucanId)
                   },
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: (row) => getToolTip(row.original.name),
+                    Cell: row => getToolTip(row.original.name)
                   },
                   {
                     Header: "Structure Image",
                     accessor: "cartoon",
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
-                    Cell: (row) => <StructureImage base64={row.value}></StructureImage>,
-                    minWidth: 300,
+                    Cell: row => <StructureImage base64={row.value}></StructureImage>,
+                    minWidth: 300
                   },
                   {
                     Header: "Mass",
                     accessor: "mass",
                     // eslint-disable-next-line react/prop-types
-                    Cell: (row) => (row.value ? parseFloat(row.value).toFixed(2) : ""),
-                  },
+                    Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -99,6 +99,7 @@ const Glycans = (props) => {
                 editUrl="glycans/editGlycan"
                 keyColumn="id"
                 showRowsInfo
+                form={"glycans"}
                 infoRowsText="Glycans"
               />
             </Card.Body>

@@ -51,7 +51,8 @@ const AddFeatureToBlock = props => {
         feature: "",
         concentrationInfo: {
           concentration: "",
-          unitlevel: "fmol/spot",
+          unitlevel: "FMOL",
+          // "fmol/spot",
           notReported: false,
           ratio: ""
         }
@@ -77,13 +78,7 @@ const AddFeatureToBlock = props => {
     }
 
     if (activeStep === 1 && featuresSelected.featureSelected.length !== 1) {
-      // if (!validFeatureRatios()) {
-      //   setPageErrorMessage("Total Ratios Should be 100%");
-      //   setShowErrorSummary(true);
-      //   return;
-      // } else {
       setShowErrorSummary(false);
-      // }
     } else if (activeStep === 0 && featuresSelected.featureSelected.length === 1) {
       stepIncrement += 1;
     }
@@ -98,7 +93,7 @@ const AddFeatureToBlock = props => {
             spot.selectedFeatures.push({
               feature: element.feature,
               ratio: element.concentrationInfo && element.concentrationInfo.ratio,
-              featureConcentration: element.concentrationInfo
+              concentrationInfo: element.concentrationInfo
             });
           });
           // spot.selectedConcentration = feature.concentrationInfo;
@@ -175,7 +170,8 @@ const AddFeatureToBlock = props => {
 
       if (flag) {
         concentrationInfo.concentration = "";
-        concentrationInfo.unitlevel = "fmol/spot";
+        concentrationInfo.unitlevel = "FMOL";
+        // "fmol/spot";
       }
       concentrationInfo.notReported = flag;
     } else if (name === "unitlevel") {
@@ -318,7 +314,7 @@ const AddFeatureToBlock = props => {
                       <FormControl
                         type="number"
                         name="concentration"
-                        value={element.concentrationInfo && element.concentrationInfo.concentration}
+                        value={element.concentrationInfo ? element.concentrationInfo.concentration : ""}
                         onChange={handleConcentration}
                         onKeyDown={e => {
                           isValidNumber(e);
@@ -332,7 +328,7 @@ const AddFeatureToBlock = props => {
                       <Form.Control
                         as="select"
                         name="unitlevel"
-                        value={element.concentrationInfo && element.concentrationInfo.unitlevel}
+                        value={element.concentrationInfo ? element.concentrationInfo.unitlevel : ""}
                         onChange={handleConcentration}
                         disabled={element.concentrationInfo && element.concentrationInfo.notReported}
                       >
@@ -344,12 +340,13 @@ const AddFeatureToBlock = props => {
                     <FormControlLabel
                       control={
                         <BlueCheckbox
-                          id={index}
+                          id={index.toString()}
+                          // id={index}
                           name="notReported"
-                          checked={element.concentrationInfo && element.concentrationInfo.notReported}
+                          checked={element.concentrationInfo ? element.concentrationInfo.notReported : false}
                           onChange={handleConcentration}
-                          size="large"
-                          defaultChecked={element.concentrationInfo && element.concentrationInfo.notReported}
+                          size="medium"
+                          // defaultChecked={element.concentrationInfo && element.concentrationInfo.notReported}
                         />
                       }
                       label={"Not reported"}
@@ -370,10 +367,10 @@ const AddFeatureToBlock = props => {
     return (
       <>
         {unitLevels &&
-          unitLevels.map((element, index) => {
+          unitLevels.map((unit, index) => {
             return (
-              <option key={index} value={element}>
-                {element}
+              <option key={index} value={unit.name}>
+                {unit.label}
               </option>
             );
           })}
@@ -651,8 +648,8 @@ const AddFeatureToBlock = props => {
   }
 
   function unitLevelsSuccess(response) {
-    response.json().then(response => {
-      setUnitLevels(response);
+    response.json().then(respJson => {
+      setUnitLevels(respJson);
     });
   }
 

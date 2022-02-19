@@ -53,7 +53,7 @@ const FORM_ERROR_MESSAGES = {
     Duplicate_sequence: "The sequence is repeated in another item in your collection. Please use a different sequence.",
     LengthExceeded_name: "The length of the name has been exceeded. Please choose a different name."
   },
-  feature: {
+  features: {
     Duplicate_name:
       "The name of another feature in your collection is the same as this one. Please use a different name.",
     Duplicate_internalId:
@@ -83,6 +83,9 @@ const FORM_ERROR_MESSAGES = {
     Positiveonly_width: "The number of columns must be a positive integer.",
     InUse_slideLayout: "Cannot delete selected slidelayout. It is used in an experiment.",
     InUse_printedSlide: "Cannot delete selected printed slide. It is used in an experiment."
+  },
+  metadata: {
+    InUse_metadata: "Cannot delete selected metadata. It is used in an experiment."
   },
   glygenTable: {
     Not_Found: "An unidentified error has occurred. Please be patient while we investigate this."

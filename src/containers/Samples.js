@@ -37,12 +37,12 @@ const Samples = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
+                    accessor: "name"
                   },
                   {
                     Header: "Template",
-                    accessor: "template",
-                  },
+                    accessor: "template"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -58,6 +58,7 @@ const Samples = props => {
                 copyUrl="samples/copySample"
                 copyPage="copySample"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Samples"
               />

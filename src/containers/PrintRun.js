@@ -58,6 +58,7 @@ const PrintRun = props => {
                 copyUrl="printers/copyPrintRun"
                 copyPage="copyPrintRun"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Printrun"
               />

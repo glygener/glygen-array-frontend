@@ -37,12 +37,12 @@ const SlideMeta = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
+                    accessor: "name"
                   },
                   {
                     Header: "Template",
-                    accessor: "template",
-                  },
+                    accessor: "template"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -58,6 +58,7 @@ const SlideMeta = props => {
                 copyUrl="listSlideMeta/copySlideMeta"
                 copyPage="copySlideMeta"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Slide Meta"
               />

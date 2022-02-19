@@ -26,29 +26,25 @@ const SpotInformation = props => {
                   <Accordion.Collapse eventKey={index} className="accordion-collapse-custom">
                     <Card.Body>
                       <Container>
-                        {element.featureConcentration &&
-                          (element.featureConcentration.concentration || element.featureConcentration.notReported) && (
+                        {element.concentrationInfo &&
+                          (element.concentrationInfo.concentration || element.concentrationInfo.notReported) && (
                             <Row>
                               <Col>Concentration</Col>
-                              {element.featureConcentration.notReported ? (
-                                <Col>
-                                  {element.featureConcentration.concentration}
-                                  &nbsp;{element.featureConcentration.unitlevel}
-                                </Col>
-                              ) : (
+                              {element.concentrationInfo.notReported ? (
                                 <Col>{"Not reported"}</Col>
+                              ) : (
+                                <Col>
+                                  {element.concentrationInfo.concentration}
+                                  &nbsp;{element.concentrationInfo.unitlevel}
+                                </Col>
                               )}
                             </Row>
                           )}
 
-                        {element.featureConcentration && element.featureConcentration.ratio && (
+                        {element.concentrationInfo && element.concentrationInfo.ratio && (
                           <Row>
                             <Col>Ratio</Col>
-
-                            <Col>
-                              {element.featureConcentration.ratio}
-                              {"%"}
-                            </Col>
+                            <Col>{element.concentrationInfo.ratio}</Col>
                           </Row>
                         )}
 

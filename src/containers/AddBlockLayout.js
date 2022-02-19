@@ -713,16 +713,16 @@ const AddBlockLayout = props => {
     let featureToRatioConcentrationMap = {};
 
     features.forEach(element => {
-      let ratioConcentration = element.featureConcentration;
+      let ratioConcentration = element.concentrationInfo;
 
       ratioConcentration &&
+        !ratioConcentration.notReported &&
         Object.assign(featureToRatioConcentrationMap, {
           [element.feature.id]: {
             ratio: ratioConcentration.ratio,
             concentration: {
               concentration: ratioConcentration.concentration,
-              levelUnit: "FMOL"
-              // ratioConcentration.unitlevel
+              levelUnit: ratioConcentration.unitlevel
             }
           }
         });
@@ -785,7 +785,6 @@ const AddBlockLayout = props => {
 
   function getBlockLayoutFailure(response) {
     setShowLoading(false);
-    console.log(response);
   }
 
   function setBlockLayoutData(blocklayout) {
@@ -796,16 +795,21 @@ const AddBlockLayout = props => {
       var spot = [];
       spot.selectedRow = spotElement.row;
       spot.selectedCol = spotElement.column;
-      spot.selectedConcentration = spotElement.concentration;
       spot.groupAssigned = spotElement.group;
       spot.selectedFeatures = [];
       spot.metadata = spotElement.metadata;
       // spot.color = "";
 
       spotElement.features.forEach(feature => {
+        let concen = spotElement.ratioConcentrationMap[feature.id];
+
         var featureSelected = {
           feature: feature,
-          ratio: spot.ratio
+          concentrationInfo: {
+            concentration: concen && concen.concentration.concentration,
+            unitlevel: concen && concen.concentration.levelUnit,
+            ratio: concen && concen.ratio
+          }
         };
         spot.selectedFeatures.push(featureSelected);
       });

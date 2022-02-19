@@ -13,7 +13,7 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 
-const Features = (props) => {
+const Features = props => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -44,17 +44,17 @@ const Features = (props) => {
                     Header: "Name",
                     accessor: "name",
                     // eslint-disable-next-line react/display-name
-                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.name ? row.name : row.id)}</div>,
+                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.name ? row.name : row.id)}</div>
                   },
                   {
                     Header: "Feature ID",
                     accessor: "internalId",
-                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.internalId)}</div>,
+                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.internalId)}</div>
                   },
                   {
                     Header: "Type",
                     accessor: "type",
-                    Cell: (row) => getToolTip(displayNames.feature[row.value]),
+                    Cell: row => getToolTip(displayNames.feature[row.value])
                   },
                   {
                     Header: "Linker",
@@ -67,7 +67,7 @@ const Features = (props) => {
                         </Link>
                       ) : (
                         ""
-                      ),
+                      )
                   },
                   {
                     Header: "Linker Type",
@@ -84,7 +84,7 @@ const Features = (props) => {
                       ) : (
                         ""
                       );
-                    },
+                    }
                   },
                   {
                     Header: "Glycans",
@@ -105,8 +105,8 @@ const Features = (props) => {
                             )
                           : ""}
                       </div>
-                    ),
-                  },
+                    )
+                  }
                 ]}
                 defaultPageSize={10}
                 showDeleteButton
@@ -119,6 +119,7 @@ const Features = (props) => {
                 deleteWS="featuredelete"
                 editUrl="features/editFeature/:editFeature"
                 keyColumn="id"
+                form={"features"}
                 showRowsInfo
                 infoRowsText="Features"
               />

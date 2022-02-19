@@ -11,7 +11,7 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 
-const BlockLayouts = (props) => {
+const BlockLayouts = props => {
   useEffect(props.authCheckAgent, []);
 
   return (
@@ -38,16 +38,16 @@ const BlockLayouts = (props) => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
+                    accessor: "name"
                   },
                   {
                     Header: "Rows",
-                    accessor: "height",
+                    accessor: "height"
                   },
                   {
                     Header: "Columns",
-                    accessor: "width",
-                  },
+                    accessor: "width"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="name"
@@ -61,6 +61,7 @@ const BlockLayouts = (props) => {
                 deleteWS="blocklayoutdelete"
                 editUrl="blockLayouts/editBlock"
                 keyColumn="id"
+                form={"blockLayouts"}
                 showRowsInfo
                 infoRowsText="Block Layouts"
               />

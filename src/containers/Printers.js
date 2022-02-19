@@ -37,12 +37,12 @@ const Printers = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
+                    accessor: "name"
                   },
                   {
                     Header: "Template",
-                    accessor: "template",
-                  },
+                    accessor: "template"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -58,6 +58,7 @@ const Printers = props => {
                 copyUrl="printers/copyPrinter"
                 copyPage="copyPrinter"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Printers"
               />

@@ -2744,7 +2744,7 @@ const AddFeature = props => {
 
               <ErrorSummary
                 show={showErrorSummary}
-                form="feature"
+                form="features"
                 errorJson={pageErrorsJson}
                 errorMessage={errorMessage}
               />
@@ -2782,7 +2782,7 @@ const AddFeature = props => {
           </Card>
         </div>
       </Container>
-      <Loading show={showLoading}></Loading>
+      <Loading show={showLoading} />
     </>
   );
 };

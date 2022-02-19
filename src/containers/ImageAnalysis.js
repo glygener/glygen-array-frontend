@@ -36,12 +36,12 @@ const ImageAnalysis = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
+                    accessor: "name"
                   },
                   {
                     Header: "Template",
-                    accessor: "template",
-                  },
+                    accessor: "template"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -57,6 +57,7 @@ const ImageAnalysis = props => {
                 copyUrl="imageAnalysis/copyImageAnalysisMetadata"
                 copyPage="copyImageAnalysis"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Image Analysis"
               />

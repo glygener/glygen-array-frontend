@@ -37,12 +37,12 @@ const Scanners = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
+                    accessor: "name"
                   },
                   {
                     Header: "Template",
-                    accessor: "template",
-                  },
+                    accessor: "template"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -58,6 +58,7 @@ const Scanners = props => {
                 copyUrl="scanners/copyScanner"
                 copyPage="copyScanner"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Scanners"
               />

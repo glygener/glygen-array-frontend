@@ -36,8 +36,8 @@ const Assay = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
-                  },
+                    accessor: "name"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -53,6 +53,7 @@ const Assay = props => {
                 copyUrl="assays/copyAssay"
                 copyPage="copyAssay"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Assays"
               />

@@ -106,9 +106,6 @@ const GlygenTable = props => {
               </Popover>
             }
           >
-            {/* <LineTooltip text="View Comments">
-              <Link> */}
-
             <FontAwesomeIcon
               key={"comments" + index}
               icon={["fas", "comments"]}
@@ -116,10 +113,7 @@ const GlygenTable = props => {
               title="Click to see comments"
               className="gg-blue tbl-icon-btn"
               style={{ cursor: "pointer" }}
-              // onClick={() => deletePrompt(row.original[props.keyColumn], props.queryParamDelete)}
             />
-            {/* </Link>
-            </LineTooltip> */}
           </OverlayTrigger>
         ) : (
           <div key={index}></div>
@@ -163,16 +157,14 @@ const GlygenTable = props => {
           {props.showEditButton && (
             <>
               <LineTooltip text="Edit">
-                <Link>
-                  <FontAwesomeIcon
-                    key={"edit" + index}
-                    icon={["far", "edit"]}
-                    alt="Edit icon"
-                    size="lg"
-                    className="gg-blue tbl-icon-btn"
-                    onClick={() => history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])}
-                  />
-                </Link>
+                <FontAwesomeIcon
+                  key={"edit" + index}
+                  icon={["far", "edit"]}
+                  alt="Edit icon"
+                  size="lg"
+                  className="gg-blue tbl-icon-btn"
+                  onClick={() => history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])}
+                />
               </LineTooltip>
             </>
           )}
@@ -278,12 +270,6 @@ const GlygenTable = props => {
         >
           {props.selectButtonHeader || "Select"}
         </Button>
-        // <input
-        //   key={index}
-        //   type="button"
-        //   onClick={() => props.selectButtonHandler(row.original, props.isModal)}
-        //   value={props.selectButtonHeader || "Select"}
-        // />
       )
     };
   }

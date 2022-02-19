@@ -37,12 +37,12 @@ const DataProcessing = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
+                    accessor: "name"
                   },
                   {
                     Header: "Template",
-                    accessor: "template",
-                  },
+                    accessor: "template"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -58,6 +58,7 @@ const DataProcessing = props => {
                 copyUrl="dataProcessing/copyDataProcessing"
                 copyPage="copyDataProcessing"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Data Processing"
               />

@@ -36,8 +36,8 @@ const Spots = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
-                  },
+                    accessor: "name"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -53,6 +53,7 @@ const Spots = props => {
                 copyUrl="spots/copySpot"
                 copyPage="copySpot"
                 keyColumn="id"
+                form={"metadata"}
                 showRowsInfo
                 infoRowsText="Spots"
               />
