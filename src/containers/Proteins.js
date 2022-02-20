@@ -63,6 +63,7 @@ const Proteins = props => {
                 deleteWS="linkerdelete"
                 editUrl="proteins/editProtein"
                 keyColumn="id"
+                form={"linkers"}
                 showRowsInfo
                 infoRowsText="Proteins"
                 showDeleteButton={props.isImported ? false : true}

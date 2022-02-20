@@ -58,6 +58,7 @@ const OtherMolecules = props => {
                 deleteWS="linkerdelete"
                 editUrl="otherMolecules/editOtherMolecule"
                 keyColumn="id"
+                form={"linkers"}
                 showRowsInfo
                 infoRowsText="Peptides"
               />

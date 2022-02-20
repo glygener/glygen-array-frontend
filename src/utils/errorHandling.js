@@ -39,7 +39,8 @@ const FORM_ERROR_MESSAGES = {
       "The sequence string appears to be unrecognizable or incompatible with the format specified. Please double-check for accuracy.",
     NotValid_glytoucanId: "GlyTouCan does not recognize that GlyTouCan ID. Please try once more.",
     Invalid_structure: "Provided Glycan does not specify the GlyTouCan ID.",
-    NotValid_file: "The file is invalid. Please verify the file and format selection before re-uploading."
+    NotValid_file: "The file is invalid. Please verify the file and format selection before re-uploading.",
+    InUse_glycan: "Cannot delete selected glycan. It is used in an experiment."
   },
   linkers: {
     NotValid_pubmedid: "The PubMed ID you entered is invalid. Please try once more.",
@@ -51,13 +52,15 @@ const FORM_ERROR_MESSAGES = {
     Duplicate_smiles: "There is already a linker in your collection with that InChiKey or Smiles.",
     Duplicate_name: "The name of another molecule in your collection is the same. Please use a different name.",
     Duplicate_sequence: "The sequence is repeated in another item in your collection. Please use a different sequence.",
-    LengthExceeded_name: "The length of the name has been exceeded. Please choose a different name."
+    LengthExceeded_name: "The length of the name has been exceeded. Please choose a different name.",
+    InUse_linker: "Cannot delete selected linker. It is used in an experiment."
   },
   features: {
     Duplicate_name:
       "The name of another feature in your collection is the same as this one. Please use a different name.",
     Duplicate_internalId:
-      "The internalId of another feature in your collection is the same as this one. Please use a different internalId."
+      "The internalId of another feature in your collection is the same as this one. Please use a different internalId.",
+    InUse_feature: "Cannot delete selected feature. It is used in an experiment."
   },
   bulkGlycans: {
     Toolarge_file: "Please keep the file size to a maximum of 1MB.",
@@ -75,7 +78,8 @@ const FORM_ERROR_MESSAGES = {
   blockLayouts: {
     Duplicate_name: "The same name appears in another block layout in your collection. Please use a different name.",
     Positiveonly_height: "The number of rows must be a positive integer.",
-    Positiveonly_width: "The number of columns must be a positive integer."
+    Positiveonly_width: "The number of columns must be a positive integer.",
+    InUse_blockLayout: "Cannot delete selected blocklayout. It is used in an experiment."
   },
   slideLayouts: {
     Duplicate_name: "The name of another slide layout is the same. Please choose a new name.",
