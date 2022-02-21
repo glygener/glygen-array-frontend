@@ -467,7 +467,7 @@ const AddMultiSlideLayout = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Add Multiple Slide Layouts to Repository"
+            title="Add Slide Layouts From File to Repository"
             subTitle="Please provide the information for the new slide layout and upload a GAL/XML file wih Slide Layouts."
           />
           <Card>

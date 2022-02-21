@@ -66,14 +66,14 @@ const AddSlide = props => {
       message: "Slide Layout",
     },
     {
-      label: "Printer Meta",
+      label: "Printer Metadata",
       name: "printer",
       value: slide.printer,
       list: listPrinters,
       message: "Printer Metadata",
     },
     {
-      label: "Slide Meta",
+      label: "Slide Metadata",
       name: "metadata",
       value: slide.metadata,
       list: listSlideMetas,
@@ -251,7 +251,7 @@ const AddSlide = props => {
                         as="textarea"
                         rows={4}
                         name="description"
-                        placeholder="description"
+                        placeholder="Enter Description"
                         value={slide.description}
                         onChange={handleChange}
                         maxLength={2000}

@@ -333,7 +333,7 @@ const AddExperiment = props => {
                 <Form.Control
                   type="text"
                   name="name"
-                  placeholder="name"
+                  placeholder="Enter Name"
                   value={experiment.name}
                   onChange={handleChange}
                   required

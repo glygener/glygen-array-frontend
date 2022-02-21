@@ -49,7 +49,7 @@ const GridForm = props => {
           <Form.Control
             type="text"
             name="name"
-            placeholder="name"
+            placeholder="Enter Name"
             value={props.gridParams.name}
             onChange={props.handleChange}
             required
@@ -75,7 +75,7 @@ const GridForm = props => {
             as="textarea"
             rows={4}
             name="description"
-            placeholder="description"
+            placeholder="Enter Description"
             value={props.gridParams.description ? props.gridParams.description : ""}
             onChange={props.handleChange}
             maxLength={2000}

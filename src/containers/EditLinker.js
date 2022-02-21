@@ -190,7 +190,7 @@ const EditLinker = props => {
                     <FormLabel label="Name" className="required-asterik" />
                     <Form.Control
                       type="text"
-                      placeholder="name"
+                      placeholder="Enter Name"
                       name="name"
                       value={linkerDetails.name}
                       onChange={handleChange}

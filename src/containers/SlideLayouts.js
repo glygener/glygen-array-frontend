@@ -45,8 +45,8 @@ const SlideLayouts = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name"
-                  }
+                    accessor: "name",
+                  },
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"

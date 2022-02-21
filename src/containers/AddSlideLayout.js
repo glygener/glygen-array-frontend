@@ -328,7 +328,7 @@ const AddSlideLayout = props => {
           Cancel
         </Button>
         <Button disabled={!enableUpdateButton} type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-          Edit Slide
+        Submit
         </Button>
       </div>
     );
