@@ -16,7 +16,7 @@ const ArraydatasetTables = props => {
     return (
       <div
         style={{
-          textIndent: "12px"
+          textIndent: "12px",
         }}
       >
         <ReactTable
@@ -26,7 +26,7 @@ const ArraydatasetTables = props => {
               accessor: subTable ? d => d.id : "id",
               id: subTable ? "id" : "",
               Cell: () => "Image",
-              minWidth: 80
+              minWidth: 80,
             },
             {
               accessor: "file.originalName",
@@ -38,11 +38,11 @@ const ArraydatasetTables = props => {
                 ) : (
                   <div key={index} />
                 ),
-              minWidth: 100
+              minWidth: 100,
             },
             {
               accessor: "status",
-              minWidth: 60
+              minWidth: 60,
             },
             {
               accessor: "file.originalName",
@@ -55,7 +55,7 @@ const ArraydatasetTables = props => {
                   <div key={index} />
                 ),
               style: { textIndent: "27px" },
-              minWidth: 60
+              minWidth: 60,
             },
             {
               Cell: (row, index) =>
@@ -81,8 +81,8 @@ const ArraydatasetTables = props => {
                   <div key={index} />
                 ),
 
-              minWidth: 60
-            }
+              minWidth: 60,
+            },
           ]}
           showPagination={false}
           defaultPageSize={row.images.length}
@@ -90,9 +90,9 @@ const ArraydatasetTables = props => {
           SubComponent={row => {
             return (
               <div
-                style={{
-                  textIndent: "25px"
-                }}
+              // style={{
+              //   textIndent: "25px"
+              // }}
               >
                 <ReactTable
                   data={[row.original.rawData]}
@@ -100,7 +100,7 @@ const ArraydatasetTables = props => {
                     {
                       accessor: "id",
                       Cell: () => "Raw Data",
-                      minWidth: 80
+                      minWidth: 80,
                     },
                     {
                       accessor: "file.originalName",
@@ -113,11 +113,11 @@ const ArraydatasetTables = props => {
                           <div key={index} />
                         ),
 
-                      minWidth: 100
+                      minWidth: 100,
                     },
                     {
                       accessor: "status",
-                      minWidth: 60
+                      minWidth: 60,
                     },
 
                     {
@@ -130,12 +130,15 @@ const ArraydatasetTables = props => {
                         ) : (
                           <div key={index} />
                         ),
-                      minWidth: 60
+                      minWidth: 60,
                     },
                     {
                       Cell: (row, index) =>
                         row.original.file ? (
-                          <div style={{ textAlign: "center", paddingRight: "12%" }}>
+                          <div
+                            className="text-center"
+                            // style={{ textAlign: "center", paddingRight: "12%" }}
+                          >
                             <FontAwesomeIcon
                               className="table-btn download-btn"
                               icon={["fas", "download"]}
@@ -155,8 +158,8 @@ const ArraydatasetTables = props => {
                         ) : (
                           <div key={index} />
                         ),
-                      minWidth: 60
-                    }
+                      minWidth: 60,
+                    },
                   ]}
                   showPagination={false}
                   defaultPageSize={[row.original.rawData].length}
@@ -181,7 +184,7 @@ const ArraydatasetTables = props => {
             Header: () => <div style={{ height: "0", margin: "0" }}>&nbsp;</div>,
             Cell: () => "Processed Data",
             width: 315,
-            style: { textIndent: "110px", maxWidth: "310px" }
+            style: { textIndent: "110px", maxWidth: "310px" },
           },
           {
             accessor: "file.originalName",
@@ -195,8 +198,8 @@ const ArraydatasetTables = props => {
                 <div key={index} />
               ),
             style: {
-              textIndent: "40px"
-            }
+              textIndent: "40px",
+            },
           },
           {
             accessor: "status",
@@ -216,7 +219,7 @@ const ArraydatasetTables = props => {
                       title="Errors in file"
                       className={"caution-color table-btn"}
                       style={{
-                        paddingTop: "9px"
+                        paddingTop: "9px",
                       }}
                       onClick={() => {
                         history.push({
@@ -234,7 +237,7 @@ const ArraydatasetTables = props => {
                 )}
               </>
             ),
-            minWidth: 60
+            minWidth: 60,
           },
           {
             accessor: "file.originalName",
@@ -246,7 +249,7 @@ const ArraydatasetTables = props => {
               ) : (
                 <div key={index} />
               ),
-            minWidth: 60
+            minWidth: 60,
           },
           {
             // Cell: () => <span>&nbsp;</span>,
@@ -273,8 +276,8 @@ const ArraydatasetTables = props => {
                 <div key={index} />
               ),
 
-            minWidth: 60
-          }
+            minWidth: 60,
+          },
         ]}
         defaultPageSize={data.length}
         showPagination={false}
@@ -311,26 +314,21 @@ const ArraydatasetTables = props => {
 
   return (
     <>
-      <div
-        style={{
-          textAlign: "left",
-          backgroundColor: "white"
-        }}
-      >
+      <div>
         {/* {showLoading ? <CardLoader pageLoading={showLoading} /> : ""} */}
 
         <ReactTable
           data={props.dataset.slides}
           columns={[
             {
-              Header: () => <p className={"table-header"}>{"Type"}</p>,
+              Header: "Type",
               accessor: d => d.id,
               id: "id",
               Cell: () => "Slide",
-              minWidth: 80
+              minWidth: 80,
             },
             {
-              Header: () => <p className={"table-header"}>{"Name / FileName"}</p>,
+              Header: "Name / FileName",
               accessor: "metadata.file.originalName",
               minWidth: 100,
               Cell: row =>
@@ -338,37 +336,37 @@ const ArraydatasetTables = props => {
                   <span title={row.original.printedSlide.name}>{row.original.printedSlide.name}</span>
                 ) : (
                   ""
-                )
+                ),
             },
             {
-              Header: () => <p className={"table-header"}>{"Status"}</p>,
+              Header: "Status",
               accessor: "status",
-              minWidth: 60
+              minWidth: 60,
             },
             {
-              Header: () => <p className={"table-header"}>{"Comment"}</p>,
+              Header: "Comment",
               accessor: "comment",
               Cell: (row, index) => {
                 getComments(row.original.printedSlide.name, row.original.printedSlide.id, index);
               },
-              minWidth: 60
+              minWidth: 60,
             },
             {
-              Header: () => <p className={"table-header"}>{"Actions"}</p>,
+              Header: "Actions",
               Cell: (row, index) => (
                 <div style={{ textAlign: "center" }}>
                   <FontAwesomeIcon
                     key={"delete" + index}
                     icon={["far", "trash-alt"]}
-                    size="xs"
+                    size="lg"
                     title="Delete"
                     className="caution-color table-btn"
                     onClick={() => props.deleteSlide(row.original.id, "deleteslide")}
                   />
                 </div>
               ),
-              minWidth: 60
-            }
+              minWidth: 60,
+            },
           ]}
           className={"-striped -highlight"}
           // pivotBy={["id"]}
@@ -377,6 +375,14 @@ const ArraydatasetTables = props => {
           }}
           defaultPageSize={props.dataset.slides.length}
           showPagination={false}
+          minRows={0}
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available </strong>
+              </p>
+            ) : null
+          }
         />
       </div>
     </>

@@ -96,6 +96,21 @@ hr {
 .gg-ml-40 {
   margin-left: 40px !important;
 }
+.gg-mt-20 {
+  margin-top: 20px !important
+}
+.gg-mt-40 {
+  margin-top: 40px !important
+}
+.gg-mt-60 {
+  margin-top: 60px !important
+}
+.gg-mb-20 {
+  margin-bottom: 20px !important
+}
+.gg-mb-40 {
+  margin-bottom: 40px !important
+}
 /* =========================================
         Content Align
 ============================================ */

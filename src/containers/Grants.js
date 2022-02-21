@@ -2,22 +2,19 @@ import React from "react";
 import "../components/PublicationCard.css";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Row, Col, Table, ButtonToolbar } from "react-bootstrap";
+import { Row, Col, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { Button } from "@material-ui/core";
 
 const Grants = props => {
   const getGrantTable = () => {
     return (
       <>
-        <ButtonToolbar>
-          <Link
-            to={`/experiments/addExperiment/addGrant/${props.experimentId}`}
-            className="link-button"
-            style={{ width: "10%", marginBottom: "10px" }}
-          >
-            Add Grant
+        <div className="text-center mt-2 mb-4">
+          <Link to={`/experiments/addExperiment/addGrant/${props.experimentId}`}>
+            <Button className="gg-btn-blue btn-to-lower"> Add Grant</Button>
           </Link>
-        </ButtonToolbar>
+        </div>
 
         <Table hover>
           <tbody className="table-body">
@@ -46,40 +43,26 @@ const Grants = props => {
   const getPublicationDisplayTable = (grant, grantIndex) => {
     return (
       <>
-        <td key={grantIndex} style={{ paddingLeft: "35px" }}>
-          <div
-            style={{
-              paddingTop: "10px",
-              paddingBottom: "4px"
-            }}
-          >
-            <h5 style={{ marginBottom: "3px", fontSize: "1.20rem", textAlign: "left", color: "#4a4a4a" }}>
+        <td key={grantIndex}>
+          <div>
+            <h5>
               <a href={grant.url} target={"_blank"}>
                 <strong>{grant.title}</strong>
               </a>
             </h5>
           </div>
 
-          <div
-            style={{
-              textAlign: "left",
-              position: "relative",
-              color: "#3f3f3f",
-              verticalAlign: "top"
-            }}
-          >
+          <div>
             <Row>
-              <Col md={3} style={{ width: "fit-content" }}>
-                {grant.fundingOrganization}
-              </Col>
-              <Col style={{ textAlign: "left" }}>{grant.identifier}</Col>
+              <Col md={3}>{grant.fundingOrganization}</Col>
+              <Col>{grant.identifier}</Col>
             </Row>
           </div>
         </td>
-        <td>
+        <td className="text-right">
           <FontAwesomeIcon
             icon={["far", "trash-alt"]}
-            size="xs"
+            size="lg"
             title="Delete"
             className="caution-color table-btn"
             onClick={() => props.delete(grant.id, props.deleteWsCall)}

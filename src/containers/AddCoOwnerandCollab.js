@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { wsCall } from "../utils/wsUtils";
 import { Button, Row, Col } from "react-bootstrap";
@@ -72,36 +72,34 @@ const AddCoOwnerandCollab = props => {
 
   return (
     <>
-      <Col md={4} style={{ paddingBottom: "15px", marginLeft: "0px", paddingLeft: "0px" }}>
-        <Row>
-          <Col md={9}>
-            <AsyncTypeahead
-              filterBy={filterBy}
-              id="async-example"
-              isLoading={isLoading}
-              minLength={1}
-              onSearch={query => {
-                handleSearch(query);
-              }}
-              options={users}
-              placeholder="Search for a User..."
-              selected={userSelected}
-              onChange={handleChange}
-              // renderMenuItemChildren={option => (
-              //   <Fragment>
-              //     <span>{option}</span>
-              //   </Fragment>
-              // )}
-              useCache={false}
-              // labelKey={"option"}
-            />
-          </Col>
+      <Row className="mb-2">
+        <Col md={4}>
+          <AsyncTypeahead
+            filterBy={filterBy}
+            id="async-example"
+            isLoading={isLoading}
+            minLength={1}
+            onSearch={query => {
+              handleSearch(query);
+            }}
+            options={users}
+            placeholder="Search for a User..."
+            selected={userSelected}
+            onChange={handleChange}
+            // renderMenuItemChildren={option => (
+            //   <Fragment>
+            //     <span>{option}</span>
+            //   </Fragment>
+            // )}
+            useCache={false}
+            // labelKey={"option"}
+          />
+        </Col>
 
-          <Button disabled={!userSelected || userSelected.length < 1} onClick={addCoOwner}>
-            Add
-          </Button>
-        </Row>
-      </Col>
+        <Button className="gg-btn-blue-reg" disabled={!userSelected || userSelected.length < 1} onClick={addCoOwner}>
+          Add
+        </Button>
+      </Row>
     </>
   );
 };
@@ -110,7 +108,7 @@ AddCoOwnerandCollab.propTypes = {
   experimentId: PropTypes.string,
   addWsCall: PropTypes.string,
   setRefreshListCoOwners: PropTypes.func,
-  getExperiment: PropTypes.func
+  getExperiment: PropTypes.func,
 };
 
 export { AddCoOwnerandCollab };

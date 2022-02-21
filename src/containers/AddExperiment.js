@@ -341,7 +341,7 @@ const AddExperiment = props => {
             )}
             <Card>
               <Card.Body>
-                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)} style={{ marginBottom: "15%" }}>
+                <Form className="mb-4" noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
                   {experimentId ? (
                     <Form.Group as={Row} controlId="experimentId" className="gg-align-center mb-3">
                       <Col xs={12} lg={9}>
@@ -475,36 +475,33 @@ const AddExperiment = props => {
 
                   {experimentId && (
                     <>
-                      <h4 style={{ textAlign: "left", marginTop: "3%" }}>Slide</h4>
-                      <ButtonToolbar>
-                        <Link
-                          to={`/experiments/addRawdata/${experimentId}`}
-                          className="link-button"
-                          style={{ width: "12%", marginBottom: "10px" }}
-                        >
-                          Add Slide Data
+                      <h4 className="gg-mt-60">Slide</h4>
+                      <div className="text-center mb-2">
+                        <Link to={`/experiments/addRawdata/${experimentId}`}>
+                          <Button className="gg-btn-blue mt-2 mb-3"> Add Slide</Button>
                         </Link>
-                      </ButtonToolbar>
+                      </div>
                       {experiment.name.length > 0 ? (
                         <ArraydatasetTables dataset={experiment} deleteSlide={deleteRow} experimentId={experimentId} />
                       ) : null}
 
-                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Publications </h4>
-                      <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
-                        <Col md={4}>
-                          <Row>
-                            <Col md={9}>{getPublicationFormControl()}</Col>
-
-                            <Button
-                              title="Add Publication"
-                              onClick={() => {
-                                getPublication();
-                              }}
-                              disabled={newPubMedId && newPubMedId.length > 0 ? false : true}
-                            >
-                              Add
-                            </Button>
-                          </Row>
+                      <h4 className="gg-mt-60"> Publications</h4>
+                      <Form.Group as={Row} controlId="publications" className="mt-2 mb-3">
+                        <Col md={6}>{getPublicationFormControl()}</Col>
+                        <Col md={1}>
+                          <Button
+                            className="gg-btn-outline-reg"
+                            onClick={() => {
+                              getPublication();
+                            }}
+                            disabled={newPubMedId && newPubMedId.length > 0 ? false : true}
+                          >
+                            <LineTooltip text="Add Publication">
+                              <Link>
+                                <Image src={plusIcon} alt="plus button" />
+                              </Link>
+                            </LineTooltip>
+                          </Button>
                         </Col>
                       </Form.Group>
                       <Table hover>
@@ -525,7 +522,7 @@ const AddExperiment = props => {
                         </tbody>
                       </Table>
 
-                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Grants </h4>
+                      <h4 className="gg-mt-60 mb-2"> Grants </h4>
                       <Grants
                         experimentId={experimentId}
                         delete={deleteRow}
@@ -533,7 +530,7 @@ const AddExperiment = props => {
                         deleteWsCall={"deletegrant"}
                       />
 
-                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Collaborators </h4>
+                      <h4 className="gg-mt-60 mb-2"> Collaborator </h4>
                       <AddCoOwnerandCollab
                         addWsCall={"addcollaborator"}
                         experimentId={experimentId}
@@ -546,7 +543,7 @@ const AddExperiment = props => {
                         deleteWsCall={"deletecollaborator"}
                       />
 
-                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Co-Owners </h4>
+                      <h4 className="gg-mt-60 mb-2"> Co-Owners </h4>
                       <AddCoOwnerandCollab
                         addWsCall={"addcoowner"}
                         experimentId={experimentId}

@@ -61,7 +61,7 @@ const CoOwnersandCollabs = props => {
                 <FontAwesomeIcon
                   key={"delete" + index}
                   icon={["far", "trash-alt"]}
-                  size="xs"
+                  size="lg"
                   title="Delete"
                   className="caution-color table-btn"
                   onClick={() => props.delete(row.original.name, props.deleteWsCall)}
