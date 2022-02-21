@@ -1,5 +1,12 @@
-#test {
-  text-decoration: none;
+.breadcrumb-item.experimentId a,
+.breadcrumb-item.experimentId:hover a {
+  text-decoration: none !important;
   background-color: none !important;
-  color: #6c757d !important;
+  color: #64788A !important;
+  font-weight: bold;
+  cursor: default;
+}
+
+.gg-breadcrumb-bg .breadcrumb {
+  background-color: transparent !important;
 }

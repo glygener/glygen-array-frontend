@@ -17,6 +17,12 @@ import { ArraydatasetTables } from "../containers/ArraydatasetTables";
 import { Collaborators } from "./Collaborators";
 import { CoOwners } from "./CoOwners";
 import { isValidNumber } from "../utils/commonUtils";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { Image } from "react-bootstrap";
+import plusIcon from "../images/icons/plus.svg";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -64,7 +70,7 @@ const AddExperiment = props => {
             grants: responseJson.grants,
             slides: responseJson.slides,
             images: responseJson.images,
-            isPublic: responseJson.isPublic
+            isPublic: responseJson.isPublic,
           });
 
           // setRefreshPage(false);
@@ -93,7 +99,7 @@ const AddExperiment = props => {
     rawDataList: [],
     processedData: [],
     publications: [],
-    pubChemId: ""
+    pubChemId: "",
   };
 
   const [experiment, setExperiment] = useReducer((state, newState) => ({ ...state, ...newState }), experimentState);
@@ -129,7 +135,7 @@ const AddExperiment = props => {
       response.json().then(responseJson => {
         if (!experimentId) {
           setExperiment({
-            publications: experiment.publications.concat([responseJson])
+            publications: experiment.publications.concat([responseJson]),
           });
         } else {
           addPublication(responseJson);
@@ -156,7 +162,7 @@ const AddExperiment = props => {
         endPage: publication.endPage,
         volume: publication.volume,
         year: publication.year,
-        number: publication.number
+        number: publication.number,
       },
       response => {
         console.log(response);
@@ -184,7 +190,7 @@ const AddExperiment = props => {
           name: experiment.name,
           description: experiment.description,
           sample: { name: experiment.sample },
-          publications: experiment.publications
+          publications: experiment.publications,
         },
         addExperimentSuccess,
         addExperimentFailure
@@ -225,19 +231,33 @@ const AddExperiment = props => {
     return (
       <>
         <Form.Control
-          type="number"
+          // type="number"
+          as="input"
           name="publication"
-          placeholder="Enter a Pubmed ID "
+          placeholder="Enter the Pubmed ID and click +"
           value={newPubMedId}
           onChange={e => {
-            setNewPubMedId(e.target.value);
+            const _value = e.target.value;
+            if (_value && !/^[0-9]+$/.test(_value)) {
+              return;
+            }
+            setNewPubMedId(_value);
             if (showErrorSummary) {
               setShowErrorSummary(false);
             }
+            // numberLengthCheck(e);
+            // clearFieldsReset();
           }}
-          onKeyDown={e => {
-            isValidNumber(e);
-          }}
+          maxLength={100}
+          // onChange={e => {
+          //   setNewPubMedId(e.target.value);
+          //   if (showErrorSummary) {
+          //     setShowErrorSummary(false);
+          //   }
+          // }}
+          // onKeyDown={e => {
+          //   isValidNumber(e);
+          // }}
         />
       </>
     );
@@ -285,253 +305,275 @@ const AddExperiment = props => {
         <div className="page-container">
           <Row>
             <Col
-              md={6}
+              xl={5}
               style={{
-                maxWidth: "35%",
-                marginLeft: "-95px"
+                // maxWidth: "35%",
+                marginLeft: "-95px",
               }}
             >
               {experimentId ? (
-                <Breadcrumb>
+                <Breadcrumb className="gg-breadcrumb-bg ">
                   <Breadcrumb.Item href="/ggarray/contribute">Contribute</Breadcrumb.Item>
                   <Breadcrumb.Item href="/ggarray/experiments">Experiments </Breadcrumb.Item>
-                  <Breadcrumb.Item id="test">{experimentId}</Breadcrumb.Item>
+                  <Breadcrumb.Item className="experimentId">{experimentId}</Breadcrumb.Item>
                 </Breadcrumb>
               ) : (
                 ""
               )}
             </Col>
-            <Col style={{ marginLeft: "-250px" }}>
-              <Title title={experimentId ? "Update Experiment" : "Create Experiment"} />
-            </Col>
           </Row>
-
-          {showErrorSummary === true && (
-            <ErrorSummary
-              show={showErrorSummary}
-              form="experiments"
-              errorJson={pageErrorsJson}
-              errorMessage={pageErrorMessage}
+          <Container maxWidth="xl">
+            <PageHeading
+              title={experimentId ? "Edit Experiment" : "Add Experiment to Repository"}
+              subTitle={
+                experimentId
+                  ? "Update experiment information. Name must be unique in your experiment repository and cannot be used for more than one experiment."
+                  : "Please provide the information for the new experiment."
+              }
             />
-          )}
-
-          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)} style={{ marginBottom: "15%" }}>
-            {experimentId ? (
-              <Form.Group as={Row} controlId="experimentId">
-                <FormLabel label="Experiment ID" />
-                <Col md={5}>
-                  <Form.Control plaintext value={experimentId} disabled />
-                </Col>
-              </Form.Group>
-            ) : (
-              ""
-            )}
-
-            <Form.Group as={Row} controlId="name">
-              <FormLabel label="Name" className="required-asterik" />
-              <Col md={5}>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  placeholder="Enter Name"
-                  value={experiment.name}
-                  onChange={handleChange}
-                  required
-                  isInvalid={duplicateName}
-                />
-                <Feedback
-                  message={
-                    duplicateName
-                      ? "Another experiment  has the same Name. Please use a different Name."
-                      : "Name is required"
-                  }
-                />
-              </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} controlId="description">
-              <FormLabel label="Description" />
-              <Col md={5}>
-                <Form.Control
-                  as="textarea"
-                  rows={4}
-                  name="description"
-                  placeholder="description"
-                  value={experiment.description}
-                  onChange={handleChange}
-                  maxLength={2000}
-                />
-                <div className="text-right text-muted">
-                  {experiment.description && experiment.description.length > 0 ? experiment.description.length : "0"}
-                  /2000
-                </div>
-              </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} controlId="samples">
-              <FormLabel label="Samples" className="required-asterik" />
-              <Col md={5}>
-                <Form.Control
-                  as="select"
-                  name="sample"
-                  value={experiment.sample}
-                  onChange={handleSelect}
-                  required={true}
-                  disabled={experiment.isPublic}
-                >
-                  <option value="">select</option>
-                  {sampleList.rows &&
-                    sampleList.rows.map((element, index) => {
-                      return (
-                        <option key={index} value={element.name}>
-                          {element.name}
-                        </option>
-                      );
-                    })}
-                </Form.Control>
-                <Feedback message="Sample is required"></Feedback>
-              </Col>
-            </Form.Group>
-
-            {!experimentId && (
-              <>
-                <Form.Group as={Row} controlId="publications">
-                  <FormLabel label="Publications" />
-                  <Col md={4}>
-                    {experiment.publications.map(pub => {
-                      return <PublicationCard key={pub.pubmedId} enableDelete {...pub} />;
-                    })}
-                    <Row>
-                      <Col md={9}>{getPublicationFormControl()}</Col>
-                      {!experimentId && (
-                        <Col md={1}>
-                          <FontAwesomeIcon
-                            style={{
-                              color: "var(--legacy-blue)",
-                              marginTop: "8px",
-                              marginLeft: "-18px"
-                              // backgroundColor: "rgb(230, 230, 230)"
-                            }}
-                            icon={["fas", "plus"]}
-                            size="lg"
-                            title="Get Publication"
-                            onClick={() => getPublication()}
-                          />
-                        </Col>
-                      )}
-                    </Row>
-                  </Col>
-                </Form.Group>
-              </>
-            )}
-
-            <Row style={{ marginTop: "3%" }}>
-              <FormButton
-                className="line-break-2"
-                type="submit"
-                label={!experimentId ? "Save" : "Update"}
-                disabled={showErrorSummary}
+            {showErrorSummary === true && (
+              <ErrorSummary
+                show={showErrorSummary}
+                form="experiments"
+                errorJson={pageErrorsJson}
+                errorMessage={pageErrorMessage}
               />
-            </Row>
-
-            {/* {refreshPage && getExperiment()} */}
-
-            {experimentId && (
-              <>
-                <h4 style={{ textAlign: "left", marginTop: "3%" }}>Slide</h4>
-                <ButtonToolbar>
-                  <Link
-                    to={`/experiments/addRawdata/${experimentId}`}
-                    className="link-button"
-                    style={{ width: "12%", marginBottom: "10px" }}
-                  >
-                    Add Slide Data
-                  </Link>
-                </ButtonToolbar>
-                {experiment.name.length > 0 ? (
-                  <ArraydatasetTables dataset={experiment} deleteSlide={deleteRow} experimentId={experimentId} />
-                ) : null}
-
-                <h4 style={{ textAlign: "left", marginTop: "5%" }}> Publications </h4>
-                <Form.Group as={Row} controlId="publications">
-                  <Col md={4}>
-                    <Row>
-                      <Col md={9}>{getPublicationFormControl()}</Col>
-
-                      <Button
-                        title="Add Publication"
-                        onClick={() => {
-                          getPublication();
-                        }}
-                        disabled={newPubMedId && newPubMedId.length > 0 ? false : true}
-                      >
-                        Add
-                      </Button>
-                    </Row>
-                  </Col>
-                </Form.Group>
-                <Table hover>
-                  <tbody className="table-body">
-                    {experiment.publications.length < 1 ? (
-                      <tr className="table-row">
-                        <td>
-                          <p className="no-data-msg-publication">No data available.</p>
-                        </td>
-                      </tr>
-                    ) : (
-                      experiment.publications.map((pub, pubIndex) => {
-                        return <PublicationCard key={pubIndex} {...pub} enableDelete deletePublication={deleteRow} />;
-                      })
-                    )}
-                  </tbody>
-                </Table>
-
-                <h4 style={{ textAlign: "left", marginTop: "5%" }}> Grants </h4>
-                <Grants
-                  experimentId={experimentId}
-                  delete={deleteRow}
-                  grants={experiment.grants}
-                  deleteWsCall={"deletegrant"}
-                />
-
-                <h4 style={{ textAlign: "left", marginTop: "5%" }}> Collaborators </h4>
-                <AddCoOwnerandCollab
-                  addWsCall={"addcollaborator"}
-                  experimentId={experimentId}
-                  getExperiment={getExperiment}
-                />
-
-                <Collaborators
-                  delete={deleteRow}
-                  collaborators={experiment.collaborators}
-                  deleteWsCall={"deletecollaborator"}
-                />
-
-                <h4 style={{ textAlign: "left", marginTop: "5%" }}> Co-Owners </h4>
-                <AddCoOwnerandCollab
-                  addWsCall={"addcoowner"}
-                  experimentId={experimentId}
-                  setRefreshListCoOwners={setRefreshListCoOwners}
-                />
-
-                <CoOwners
-                  experimentId={experimentId}
-                  delete={deleteRow}
-                  deleteWsCall={"deletecoowner"}
-                  refreshListCoOwners={refreshListCoOwners}
-                  setRefreshListCoOwners={setRefreshListCoOwners}
-                />
-
-                <ConfirmationModal
-                  showModal={showDeleteModal}
-                  onCancel={cancelDelete}
-                  onConfirm={confirmDelete}
-                  title="Confirm Delete"
-                  body="Are you sure you want to delete?"
-                />
-              </>
             )}
-          </Form>
+            <Card>
+              <Card.Body>
+                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)} style={{ marginBottom: "15%" }}>
+                  {experimentId ? (
+                    <Form.Group as={Row} controlId="experimentId" className="gg-align-center mb-3">
+                      <Col xs={12} lg={9}>
+                        <FormLabel label="Experiment ID" />
+                        <Form.Control readOnly value={experimentId} disabled />
+                      </Col>
+                    </Form.Group>
+                  ) : (
+                    ""
+                  )}
+
+                  <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Name" className="required-asterik" />
+                      <Form.Control
+                        type="text"
+                        name="name"
+                        placeholder="Enter Name"
+                        value={experiment.name}
+                        onChange={handleChange}
+                        required
+                        isInvalid={duplicateName}
+                      />
+                      <Feedback
+                        message={
+                          duplicateName
+                            ? "Another experiment  has the same Name. Please use a different Name."
+                            : "Name is required"
+                        }
+                      />
+                    </Col>
+                  </Form.Group>
+
+                  <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Description" />
+                      <Form.Control
+                        as="textarea"
+                        rows={4}
+                        name="description"
+                        placeholder="Enter Description"
+                        value={experiment.description}
+                        onChange={handleChange}
+                        maxLength={2000}
+                      />
+                      <div className="text-right text-muted">
+                        {experiment.description && experiment.description.length > 0
+                          ? experiment.description.length
+                          : "0"}
+                        /2000
+                      </div>
+                    </Col>
+                  </Form.Group>
+
+                  <Form.Group as={Row} controlId="samples" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label="Samples" className="required-asterik" />
+                      <Form.Control
+                        as="select"
+                        name="sample"
+                        value={experiment.sample}
+                        onChange={handleSelect}
+                        required={true}
+                        disabled={experiment.isPublic}
+                      >
+                        <option value="">Select Sample</option>
+                        {sampleList.rows &&
+                          sampleList.rows.map((element, index) => {
+                            return (
+                              <option key={index} value={element.name}>
+                                {element.name}
+                              </option>
+                            );
+                          })}
+                      </Form.Control>
+                      <Feedback message="Sample is required"></Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  {!experimentId && (
+                    <>
+                      <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
+                        <Col xs={12} lg={9}>
+                          <FormLabel label="Publications" />
+                          {experiment.publications.map(pub => {
+                            return <PublicationCard key={pub.pubmedId} enableDelete {...pub} />;
+                          })}
+                          <Row>
+                            <Col md={10}>{getPublicationFormControl()}</Col>
+                            {!experimentId && (
+                              <Col md={1}>
+                                <Button onClick={() => getPublication()} className="gg-btn-outline-reg">
+                                  <LineTooltip text="Add Publication">
+                                    <Link>
+                                      <Image src={plusIcon} alt="plus button" />
+                                    </Link>
+                                  </LineTooltip>
+                                </Button>
+                              </Col>
+                              // <Col md={1}>
+                              //   <FontAwesomeIcon
+                              //     style={{
+                              //       color: "var(--legacy-blue)",
+                              //       marginTop: "8px",
+                              //       marginLeft: "-18px",
+                              //       // backgroundColor: "rgb(230, 230, 230)"
+                              //     }}
+                              //     icon={["fas", "plus"]}
+                              //     size="lg"
+                              //     title="Get Publication"
+                              //     onClick={() => getPublication()}
+                              //   />
+                              // </Col>
+                            )}
+                          </Row>
+                        </Col>
+                      </Form.Group>
+                    </>
+                  )}
+
+                  <div className="text-center mb-4 mt-4">
+                    <Link to="/experiments">
+                      <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                    </Link>
+                    <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit" disabled={showErrorSummary}>
+                      {!experimentId ? "Submit" : "Submit"}
+                    </Button>
+                  </div>
+
+                  {/* {refreshPage && getExperiment()} */}
+
+                  {experimentId && (
+                    <>
+                      <h4 style={{ textAlign: "left", marginTop: "3%" }}>Slide</h4>
+                      <ButtonToolbar>
+                        <Link
+                          to={`/experiments/addRawdata/${experimentId}`}
+                          className="link-button"
+                          style={{ width: "12%", marginBottom: "10px" }}
+                        >
+                          Add Slide Data
+                        </Link>
+                      </ButtonToolbar>
+                      {experiment.name.length > 0 ? (
+                        <ArraydatasetTables dataset={experiment} deleteSlide={deleteRow} experimentId={experimentId} />
+                      ) : null}
+
+                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Publications </h4>
+                      <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
+                        <Col md={4}>
+                          <Row>
+                            <Col md={9}>{getPublicationFormControl()}</Col>
+
+                            <Button
+                              title="Add Publication"
+                              onClick={() => {
+                                getPublication();
+                              }}
+                              disabled={newPubMedId && newPubMedId.length > 0 ? false : true}
+                            >
+                              Add
+                            </Button>
+                          </Row>
+                        </Col>
+                      </Form.Group>
+                      <Table hover>
+                        <tbody className="table-body">
+                          {experiment.publications.length < 1 ? (
+                            <tr className="table-row">
+                              <td>
+                                <p className="no-data-msg-publication">No data available.</p>
+                              </td>
+                            </tr>
+                          ) : (
+                            experiment.publications.map((pub, pubIndex) => {
+                              return (
+                                <PublicationCard key={pubIndex} {...pub} enableDelete deletePublication={deleteRow} />
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </Table>
+
+                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Grants </h4>
+                      <Grants
+                        experimentId={experimentId}
+                        delete={deleteRow}
+                        grants={experiment.grants}
+                        deleteWsCall={"deletegrant"}
+                      />
+
+                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Collaborators </h4>
+                      <AddCoOwnerandCollab
+                        addWsCall={"addcollaborator"}
+                        experimentId={experimentId}
+                        getExperiment={getExperiment}
+                      />
+
+                      <Collaborators
+                        delete={deleteRow}
+                        collaborators={experiment.collaborators}
+                        deleteWsCall={"deletecollaborator"}
+                      />
+
+                      <h4 style={{ textAlign: "left", marginTop: "5%" }}> Co-Owners </h4>
+                      <AddCoOwnerandCollab
+                        addWsCall={"addcoowner"}
+                        experimentId={experimentId}
+                        setRefreshListCoOwners={setRefreshListCoOwners}
+                      />
+
+                      <CoOwners
+                        experimentId={experimentId}
+                        delete={deleteRow}
+                        deleteWsCall={"deletecoowner"}
+                        refreshListCoOwners={refreshListCoOwners}
+                        setRefreshListCoOwners={setRefreshListCoOwners}
+                      />
+
+                      <ConfirmationModal
+                        showModal={showDeleteModal}
+                        onCancel={cancelDelete}
+                        onConfirm={confirmDelete}
+                        title="Confirm Delete"
+                        body="Are you sure you want to delete?"
+                      />
+                    </>
+                  )}
+                </Form>
+              </Card.Body>
+            </Card>
+          </Container>
         </div>
       </>
     );
