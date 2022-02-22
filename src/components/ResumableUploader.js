@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useReducer } from "react";
 import PropTypes from "prop-types";
-import Paper from "@material-ui/core/Paper";
 import { ReactResumableJs } from "./ReactResumableJS";
 import { Button, Form } from "react-bootstrap";
 
@@ -75,7 +74,7 @@ const ResumableUploader = props => {
             onFileRemoved={file => {
               // fetch()
               setFileStateReducer({
-                message: "",
+                message: ""
               });
               return file;
             }}

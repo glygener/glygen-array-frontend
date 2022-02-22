@@ -1002,6 +1002,7 @@ const MetaData = props => {
       </>
     );
   };
+
   const dragEnd = result => {
     const { source, destination } = result;
     var sampleModelDragandDrop;
@@ -2146,17 +2147,19 @@ const MetaData = props => {
         <Row>
           <Col>
             {props.metadataType !== "Assay" &&
-              !loadDataOnFirstNextInUpdate &&
+              (!loadDataOnFirstNextInUpdate || props.importSpotchange) &&
               !props.importedPageData.id &&
               sample &&
               setSampleUpdateData()}
 
             {props.metadataType === "Assay" &&
-              !loadDataOnFirstNextInUpdate &&
+              (!loadDataOnFirstNextInUpdate || props.importSpotchange) &&
               !props.importedPageData.id &&
               setAssayMetadataUpdate()}
 
-            {(props.importedPageData.id || props.metadataType === "Feature") && sample && getMetaData()}
+            {((props.importedPageData && props.importedPageData.id) || props.metadataType === "Feature") &&
+              sample &&
+              getMetaData()}
           </Col>
         </Row>
         {getButtonsForImportedPage()}
@@ -2549,8 +2552,7 @@ MetaData.propTypes = {
   importedPageData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   setImportedPageDataToSubmit: PropTypes.func,
   handleBack: PropTypes.func,
-  handleNext: PropTypes.func,
-  idChange: PropTypes.bool
+  handleNext: PropTypes.func
 };
 
 export { MetaData, getDescriptorGroups, getDescriptors };

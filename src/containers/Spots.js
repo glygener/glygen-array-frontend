@@ -45,6 +45,7 @@ const Spots = props => {
                 showDeleteButton
                 showEditButton
                 showCopyButton
+                showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
                 fetchWS="listspotmetadata"

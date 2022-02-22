@@ -50,6 +50,7 @@ const Printers = props => {
                 showDeleteButton
                 showEditButton
                 showCopyButton
+                showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
                 fetchWS="listprinters"

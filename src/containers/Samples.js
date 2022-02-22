@@ -50,6 +50,7 @@ const Samples = props => {
                 showDeleteButton
                 showEditButton
                 showCopyButton
+                showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
                 fetchWS="listsamples"

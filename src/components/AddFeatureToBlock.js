@@ -43,7 +43,7 @@ const AddFeatureToBlock = props => {
   const [spotMetaDataToSubmit, setSpotMetaDataToSubmit] = useState();
   const [spotmetadataUpdated, setSpotmetadataUpdated] = useState(props.spotMetadata);
   const [metadataId, setMetadataId] = useState(props.spotMetadata.id);
-  const [idChange, setIdChange] = useState(false);
+  const [importSpotchange, setImportSpotchange] = useState(false);
 
   const featuresToBlock = {
     featureSelected: [
@@ -52,7 +52,6 @@ const AddFeatureToBlock = props => {
         concentrationInfo: {
           concentration: "",
           unitlevel: "FMOL",
-          // "fmol/spot",
           notReported: false,
           ratio: ""
         }
@@ -78,9 +77,41 @@ const AddFeatureToBlock = props => {
     }
 
     if (activeStep === 1 && featuresSelected.featureSelected.length !== 1) {
+      let ratiosNonEmpty = featuresSelected.featureSelected.filter(
+        e => e.concentrationInfo && e.concentrationInfo.ratio !== ""
+      );
+
+      let ratiosEmpty = featuresSelected.featureSelected.filter(
+        e => (e.concentrationInfo && e.concentrationInfo.ratio === "") || !e.concentrationInfo
+      );
+
+      if (
+        (ratiosNonEmpty.length > 0 && featuresSelected.featureSelected.length !== ratiosNonEmpty.length) ||
+        (ratiosEmpty.length > 0 && ratiosEmpty.length !== featuresSelected.featureSelected.length)
+      ) {
+        setShowErrorSummary(true);
+        setPageErrorMessage("Enter ratios Either for all features or none.");
+        return;
+      }
+
       setShowErrorSummary(false);
     } else if (activeStep === 0 && featuresSelected.featureSelected.length === 1) {
       stepIncrement += 1;
+    }
+
+    if (activeStep === 2) {
+      let con = featuresSelected.featureSelected.filter(
+        e =>
+          // (
+          e.concentrationInfo && (e.concentrationInfo.concentration !== "" || e.concentrationInfo.notReported)
+        //) || !e.concentrationInfo.concentration
+      );
+
+      if (con.length !== featuresSelected.featureSelected.length) {
+        setPageErrorMessage("Enter Concentration values for all features.");
+        setShowErrorSummary(true);
+        return;
+      }
     }
 
     if (e.currentTarget.innerText === "SUBMIT") {
@@ -129,11 +160,12 @@ const AddFeatureToBlock = props => {
   const handleChange = e => {
     const id = e.currentTarget.id;
     const value = e.currentTarget.value;
-    let concentrationInfo = {};
-
-    // if (value && !/^[0-9]+$/.test(value)) {
-    //   return;
-    // }
+    let concentrationInfo = {
+      concentration: "",
+      unitlevel: "FMOL",
+      notReported: false,
+      ratio: ""
+    };
 
     let rowUpdated = [...featuresSelected.featureSelected];
 
@@ -307,7 +339,7 @@ const AddFeatureToBlock = props => {
               return (
                 <tr className="table-row" key={index}>
                   <td>
-                    <FormLabel label={element.feature.name} />
+                    <FormLabel label={element.feature.name} className={"required-asterik"} />
                   </td>
                   <td>
                     <Form.Group controlId={index}>
@@ -378,21 +410,10 @@ const AddFeatureToBlock = props => {
     );
   };
 
-  const handleSpotSelectionChange = e => {
-    const id = e.target.value !== "" ? e.target.options[e.target.value].id : "";
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setSpotMetadataforAddBlockLayout();
-    setMetadataId(id);
-    setIdChange(true);
-    setSpotmetadataUpdated({ id: id, name: name, value: value });
-  };
-
   const getSpotMetadata = () => {
     return (
       <>
-        {/* <Form.Group as={Row} controlId={"spotmetadataid"}>
+        <Form.Group as={Row} controlId={"spotmetadataid"}>
           <FormLabel label={`Spot Metadata`} className="required-asterik" />
           <Col md={5}>
             <Form.Control
@@ -411,11 +432,22 @@ const AddFeatureToBlock = props => {
               })}
             </Form.Control>
           </Col>
-        </Form.Group> */}
+        </Form.Group>
 
         {getMetadata()}
       </>
     );
+  };
+
+  const handleSpotSelectionChange = e => {
+    const id = e.target.value !== "" ? e.target.options[e.target.value].id : "";
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setSpotMetadataforAddBlockLayout([]);
+    setMetadataId(id);
+    setImportSpotchange(true);
+    setSpotmetadataUpdated({ id: id, name: name, value: value });
   };
 
   const getMetadata = () => {
@@ -435,7 +467,7 @@ const AddFeatureToBlock = props => {
         setImportedPageDataToSubmit={setSpotMetaDataToSubmit}
         handleBack={handleBack}
         handleNext={handleNext}
-        idChange={idChange}
+        importSpotchange={importSpotchange}
       />
     );
   };

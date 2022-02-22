@@ -45,6 +45,7 @@ const Assay = props => {
                 showDeleteButton
                 showEditButton
                 showCopyButton
+                showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
                 fetchWS="listassaymetadata"
