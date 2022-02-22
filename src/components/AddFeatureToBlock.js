@@ -413,9 +413,10 @@ const AddFeatureToBlock = props => {
   const getSpotMetadata = () => {
     return (
       <>
-        <Form.Group as={Row} controlId={"spotmetadataid"}>
-          <FormLabel label={`Spot Metadata`} className="required-asterik" />
-          <Col md={5}>
+        <Form.Group as={Row} controlId="spotmetadataid" className="gg-align-center mt-2 mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={`Spot Metadata`} className="required-asterik" />
+
             <Form.Control
               as="select"
               name="spotMetadataSelected"
