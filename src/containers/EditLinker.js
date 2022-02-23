@@ -75,11 +75,11 @@ const EditLinker = props => {
 
   function handleSource(resp) {
     let sourceObj = {};
-    if (resp.source.type === "COMMERCIAL") {
+    if (resp.source && resp.source.type === "COMMERCIAL") {
       sourceObj.vendor = resp.source.vendor;
       sourceObj.catalogueNumber = resp.source.catalogueNumber;
       sourceObj.batchId = resp.source.batchId;
-    } else if (resp.source.type === "NONCOMMERCIAL") {
+    } else if (resp.source && resp.source.type === "NONCOMMERCIAL") {
       sourceObj.providerLab = resp.source.providerLab;
       sourceObj.method = resp.source.method;
       sourceObj.batchId = resp.source.batchId;
@@ -98,11 +98,12 @@ const EditLinker = props => {
 
       setLinkerDetails(parsedJson);
 
-      setSource({
-        type: resp.source.type,
-        commercial: resp.source.type === "COMMERCIAL" ? sourceObj : {},
-        nonCommercial: resp.source.type === "NONCOMMERCIAL" ? sourceObj : {}
-      });
+      resp.source &&
+        setSource({
+          type: resp.source.type,
+          commercial: resp.source.type === "COMMERCIAL" ? sourceObj : {},
+          nonCommercial: resp.source.type === "NONCOMMERCIAL" ? sourceObj : {}
+        });
     });
   }
 
@@ -503,7 +504,6 @@ const EditLinker = props => {
 
   function updateLinkerFailure(response) {
     response.json().then(parsedJson => {
-      
       if (parsedJson.errors.find(i => i.objectName === "name")) {
         setDuplicateName(true);
       }
