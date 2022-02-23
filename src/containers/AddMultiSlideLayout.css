@@ -5,7 +5,7 @@
 }
 
 .list-error-message {
-  text-align: left;
+  /* text-align: left; */
   list-style: square;
   /* display: list-item; */
 }

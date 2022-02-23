@@ -6,12 +6,17 @@ import { useHistory, Prompt, useParams, Link } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import React, { useEffect, useState, useReducer } from "react";
 import { ResumableUploader } from "../components/ResumableUploader";
-import { Form, Row, Col, Button, Modal, Popover } from "react-bootstrap";
-import { FormLabel, Feedback, Title, FormButton } from "../components/FormControls";
+import { Form, Row, Col, Modal, Popover } from "react-bootstrap";
+import { FormLabel, Feedback } from "../components/FormControls";
 import RangeSlider from "react-bootstrap-range-slider";
 import { GlygenTable } from "../components/GlygenTable";
 import "../components/SpotInformation.css";
 import "./AddRawData.css";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
+import { PageHeading } from "../components/FormControls";
+import { Button } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 
 const AddRawData = props => {
   let { experimentId } = useParams();
@@ -55,8 +60,8 @@ const AddRawData = props => {
       dataProcessing: "",
       statisticalMethod: "",
       supportedProcessedFF: "",
-      fileType: defaultFileType
-    }
+      fileType: defaultFileType,
+    },
   };
 
   const [rawData, setRawData] = useReducer((state, newState) => ({ ...state, ...newState }), rawDataState);
@@ -165,22 +170,22 @@ const AddRawData = props => {
       label: "Image",
       fileType: rawData.fileType,
       setUploadedFile: setImageUploaded,
-      required: true
+      required: true,
     },
     {
       controlId: "fileUploader2",
       label: "RawData File",
       fileType: rawData.fileType,
       setUploadedFile: setUploadedRawDF,
-      required: false
+      required: false,
     },
     {
       controlId: "fileUploader3",
       label: "Process Data File",
       fileType: rawData.processData.fileType,
       setUploadedFile: setUploadedDF,
-      required: false
-    }
+      required: false,
+    },
   ];
 
   const FormData = [
@@ -190,7 +195,7 @@ const AddRawData = props => {
       value: rawData.slide,
       list: listSlide,
       message: "Slide",
-      onchange: handleSelect
+      onchange: handleSelect,
     },
     {
       label: "Scanner Meta",
@@ -198,7 +203,7 @@ const AddRawData = props => {
       value: rawData.scanner,
       list: listScannerMetas,
       message: "Scanner Metadata",
-      onchange: handleSelect
+      onchange: handleSelect,
     },
     {
       label: "Image Analysis",
@@ -206,7 +211,7 @@ const AddRawData = props => {
       value: rawData.imageAnalysis,
       list: listImageAnalysis,
       message: "Image Analysis",
-      onchange: handleSelect
+      onchange: handleSelect,
     },
     {
       label: "Assay Metadata",
@@ -214,7 +219,7 @@ const AddRawData = props => {
       value: rawData.assayMetadata,
       list: listAssayMetas,
       message: "Assay Metadata",
-      onchange: handleSelect
+      onchange: handleSelect,
     },
     {
       label: "Data Processing",
@@ -222,7 +227,7 @@ const AddRawData = props => {
       value: rawData.processData.dataProcessing,
       list: listDataProcessing,
       message: "Data Processing",
-      onchange: handleSelectProcessData
+      onchange: handleSelectProcessData,
     },
     {
       label: "Raw Data File Format",
@@ -230,7 +235,7 @@ const AddRawData = props => {
       value: rawData.rawDataFF,
       list: listSupportedRawFileFormat,
       message: "Raw Data File Format",
-      onchange: handleSelect
+      onchange: handleSelect,
     },
     {
       label: "Statistical Method",
@@ -238,7 +243,7 @@ const AddRawData = props => {
       value: rawData.processData.statisticalMethod,
       list: statisticalMethods,
       message: "Statistical Method",
-      onchange: handleSelectProcessData
+      onchange: handleSelectProcessData,
     },
     {
       label: "Supported Processed File Format",
@@ -246,8 +251,8 @@ const AddRawData = props => {
       value: rawData.processData.supportedProcessedFF,
       list: supportedProcessedFF,
       message: "Supported Processed File Format",
-      onchange: handleSelectProcessData
-    }
+      onchange: handleSelectProcessData,
+    },
   ];
 
   const processFile = fileId => {
@@ -278,13 +283,13 @@ const AddRawData = props => {
           true,
           {
             printedSlide: {
-              name: rawData.slide
+              name: rawData.slide,
             },
             metadata: {
-              name: rawData.assayMetadata
+              name: rawData.assayMetadata,
             },
             blocksUsed: blocksSelected,
-            images: getImageData()
+            images: getImageData(),
           },
           // eslint-disable-next-line no-unused-vars
           response => {
@@ -296,7 +301,7 @@ const AddRawData = props => {
         );
       } else {
         setValidated(false);
-        setPageErrorMessage("File is required, Please choose.");
+        setPageErrorMessage("File is required. Please choose a file.");
         setShowErrorSummary(true);
       }
     }
@@ -312,11 +317,11 @@ const AddRawData = props => {
     image.scanner = { name: rawData.scanner };
     image.rawData = {
       metadata: {
-        name: rawData.imageAnalysis
+        name: rawData.imageAnalysis,
       },
       file: uploadedRawDF,
       powerLevel: rawData.powerLevel,
-      processedDataList: getProcessedDataList()
+      processedDataList: getProcessedDataList(),
     };
 
     imageList.push(image);
@@ -329,7 +334,7 @@ const AddRawData = props => {
     uploadedDF.fileFormat = rawData.processData.supportedProcessedFF;
 
     processedData.metadata = {
-      name: rawData.processData.dataProcessing
+      name: rawData.processData.dataProcessing,
     };
     processedData.method = { name: rawData.processData.statisticalMethod };
     processedData.file = uploadedDF;
@@ -404,20 +409,20 @@ const AddRawData = props => {
           columns={[
             {
               Header: "Id",
-              accessor: "id"
+              accessor: "id",
             },
             {
               Header: "Row",
-              accessor: "row"
+              accessor: "row",
             },
             {
               Header: "Column",
-              accessor: "column"
+              accessor: "column",
             },
             {
               Header: "BlockLayout Name",
-              accessor: "blockLayout.name"
-            }
+              accessor: "blockLayout.name",
+            },
           ]}
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
@@ -436,24 +441,24 @@ const AddRawData = props => {
 
   const getBlocksSelectedPanel = () => {
     return (
-      <Popover id="popover-basic" className="popover-custom" style={{ maxWidth: "100%", width: "100%" }}>
+      <Popover id="popover-basic" className="popover-custom mt-3" style={{ maxWidth: "100%", width: "100%" }}>
         <Popover.Title
-          as="h4"
           style={{
-            // color: "aliceblue",
             backgroundColor: "#e6e6e6",
-            fontSize: "1.1rem"
           }}
         >
-          Blocks Selected
-          <Button
-            style={{
-              marginLeft: "190px"
-            }}
-            onClick={() => setShowModal(true)}
-          >
-            Change
-          </Button>
+          <Row>
+            <Col>
+              <h5>Blocks Selected</h5>
+            </Col>
+            <Col>
+              <Link onClick={() => setShowModal(true)}>
+                <h5>
+                  <EditIcon /> Edit{" "}
+                </h5>
+              </Link>
+            </Col>
+          </Row>
         </Popover.Title>
         <Popover.Content className="popover-body-custom">
           {blocksSelected.map((block, index) => {
@@ -464,12 +469,12 @@ const AddRawData = props => {
                   style={{
                     backgroundColor: "cadetblue",
                     color: "floralwhite",
-                    fontSize: "1.1rem"
+                    fontSize: "1.1rem",
+                    marginBottom: "10px",
                   }}
                 >
                   {block.id}
                 </div>
-                <div>&nbsp;</div>
               </>
             );
           })}
@@ -485,119 +490,137 @@ const AddRawData = props => {
           <title>{head.addRawData.title}</title>
           {getMeta(head.addRawData)}
         </Helmet>
-
-        <div className="page-container">
-          <Title title="Create Raw Data" />
-
-          {showErrorSummary === true && (
-            <ErrorSummary
-              show={showErrorSummary}
-              form="rawdata"
-              errorJson={pageErrorsJson}
-              errorMessage={pageErrorMessage}
+        <Container maxWidth="xl">
+          <div className="page-container">
+            <PageHeading
+              title="Add Raw Data to Repository"
+              subTitle="Please provide the information for the new raw data."
             />
-          )}
-          {showErrorSummary === true && window.scrollTo({ top: 0, behavior: "smooth" })}
-
-          {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
-
-          {fileData.map((data, index) => {
-            return (
-              <Form.Group as={Row} controlId={data.controlId} key={index + data.controlId}>
-                <FormLabel label={data.label} className="required-asterik" />
-                <Col md={{ offset: 5, span: 8 }}>
-                  <ResumableUploader
-                    history={history}
-                    headerObject={{
-                      Authorization: window.localStorage.getItem("token") || "",
-                      Accept: "*/*"
-                    }}
-                    fileType={data.fileType}
-                    uploadService={getWsUrl("upload")}
-                    maxFiles={1}
-                    setUploadedFile={data.setUploadedFile}
-                    onProcessFile={processFile}
-                    required={data.required}
-                    // filetypes={["jpg", "jpeg", "png", "tiff"]}
+            <Card>
+              <Card.Body>
+                {showErrorSummary === true && (
+                  <ErrorSummary
+                    show={showErrorSummary}
+                    form="rawdata"
+                    errorJson={pageErrorsJson}
+                    errorMessage={pageErrorMessage}
                   />
-                </Col>
-              </Form.Group>
-            );
-          })}
-          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-            {FormData.map((element, index) => {
-              return (
-                <div key={index}>
-                  <Form.Group as={Row} controlId={index}>
-                    <FormLabel label={element.label} className="required-asterik" />
-                    <Col md={5}>
-                      <Form.Control
-                        as="select"
-                        name={element.name}
-                        value={element.value}
-                        onChange={element.onchange}
-                        required={true}
-                      >
-                        <option value="">select</option>
-                        {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
-                          getSelectionList(element)}
-                      </Form.Control>
-                      <Feedback message={`${element.message} is required`} />
-                      &nbsp;
-                      {element.name === "slide" && blocks.length > 0 && !showModal && (
-                        <>
-                          <Row style={{ position: "sticky" }}>
-                            <Col md={12}>{getBlocksSelectedPanel()}</Col>
-                          </Row>
-                        </>
-                      )}
+                )}
+                {showErrorSummary === true && window.scrollTo({ top: 0, behavior: "smooth" })}
+
+                {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
+
+                {fileData.map((data, index) => {
+                  return (
+                    <Form.Group
+                      as={Row}
+                      controlId={data.controlId}
+                      key={index + data.controlId}
+                      className="gg-align-center mt-0 pt-0"
+                    >
+                      <Col xs={12} lg={9}>
+                        <FormLabel label={data.label} className="required-asterik pb-0 mb-0" />
+                        <ResumableUploader
+                          className="mt-0 pt-0"
+                          history={history}
+                          headerObject={{
+                            Authorization: window.localStorage.getItem("token") || "",
+                            Accept: "*/*",
+                          }}
+                          fileType={data.fileType}
+                          uploadService={getWsUrl("upload")}
+                          maxFiles={1}
+                          setUploadedFile={data.setUploadedFile}
+                          onProcessFile={processFile}
+                          required={data.required}
+                          // filetypes={["jpg", "jpeg", "png", "tiff"]}
+                        />
+                      </Col>
+                    </Form.Group>
+                  );
+                })}
+                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                  {FormData.map((element, index) => {
+                    return (
+                      <Form.Group as={Row} controlId={index} key={index} className="gg-align-center mb-3">
+                        <Col xs={12} lg={9}>
+                          <FormLabel label={element.label} className="required-asterik" />
+                          <Form.Control
+                            as="select"
+                            name={element.name}
+                            value={element.value}
+                            onChange={element.onchange}
+                            required={true}
+                          >
+                            <option value="">Select {element.label}</option>
+                            {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
+                              getSelectionList(element)}
+                          </Form.Control>
+                          <Feedback message={`${element.message} is required`} />
+
+                          {element.name === "slide" && blocks.length > 0 && !showModal && (
+                            <div>
+                              {getBlocksSelectedPanel()}
+                              {/* <Row style={{ position: "sticky" }}>
+                                <Col md={12}>{getBlocksSelectedPanel()}</Col>
+                              </Row> */}
+                            </div>
+                          )}
+                        </Col>
+                      </Form.Group>
+                    );
+                  })}
+
+                  {showModal && (
+                    <Modal
+                      size="lg"
+                      aria-labelledby="contained-modal-title-vcenter"
+                      centered
+                      show={showModal}
+                      onHide={() => setShowModal(false)}
+                    >
+                      <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                          Please Select Blocks included in this Experiment:
+                        </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>{getBlockSelectTable()} </Modal.Body>
+                      <Modal.Footer></Modal.Footer>
+                    </Modal>
+                  )}
+
+                  <Form.Group as={Row} controlId="powerLevel" className="gg-align-center mb-3">
+                    <Col xs={12} lg={9}>
+                      <FormLabel label={"Power Level"} className="required-asterik" />
+                      <div>
+                        <RangeSlider
+                          value={rawData.powerLevel}
+                          name="powerLevel"
+                          onChange={changeEvent => handleChangeSlider(changeEvent)}
+                          tooltipLabel={currentValue => `${currentValue}%`}
+                          tooltip="on"
+                          variant="danger"
+                        />
+                      </div>
+                      <p className={sliderInvalid ? "error-form-invalid" : "range-slider-errorMessage"}>
+                        Power Level is required
+                      </p>
                     </Col>
                   </Form.Group>
-                </div>
-              );
-            })}
 
-            {showModal && (
-              <Modal
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                show={showModal}
-                onHide={() => setShowModal(false)}
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title id="contained-modal-title-vcenter">
-                    Please Select Blocks included in this Experiment:
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{getBlockSelectTable()} </Modal.Body>
-                <Modal.Footer></Modal.Footer>
-              </Modal>
-            )}
-
-            <Form.Group as={Row} controlId="powerLevel">
-              <FormLabel label={"Power Level"} className="required-asterik" />
-              <Col>
-                <RangeSlider
-                  value={rawData.powerLevel}
-                  name="powerLevel"
-                  onChange={changeEvent => handleChangeSlider(changeEvent)}
-                  tooltipLabel={currentValue => `${currentValue}%`}
-                  tooltip="on"
-                  variant="danger"
-                />
-                <p className={sliderInvalid ? "error-form-invalid" : "range-slider-errorMessage"}>
-                  Power Level is required
-                </p>
-              </Col>
-            </Form.Group>
-
-            <Row style={{ marginTop: "3%" }}>
-              <FormButton className="line-break-2" type="submit" label={"Submit"} />
-              <FormButton className="line-break-2" type="button" label={"Cancel"} onClick={() => history.goBack()} />
-            </Row>
-          </Form>
-        </div>
+                  <div className="text-center mb-2 mt-2">
+                    <Button className="gg-btn-blue mt-2 gg-mr-20" onClick={() => history.goBack()}>
+                      Cancel
+                    </Button>
+                    <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit">
+                      Submit
+                    </Button>
+                  </div>
+                </Form>
+              </Card.Body>
+            </Card>
+          </div>
+        </Container>
       </>
     );
   };
