@@ -1092,44 +1092,42 @@ const AddFeature = props => {
     let glycansList = [];
 
     glycanList.forEach(positionDetails => {
-      if (positionDetails.glycan) {
-        let range;
-        let glycanObj;
-        if (featureAddState.rangeGlycans.length > 0) {
-          glycanObj = positionDetails;
-        } else {
-          glycanObj = positionDetails.glycan;
-        }
-
-        let glycans = {};
-        glycans.type = "LINKEDGLYCAN";
-        let reducingEndConfiguration = {};
-
-        glycans.glycan = glycanObj;
-        glycans.urls = glycanObj.urls;
-
-        glycans.publications = glycanObj.papers;
-
-        reducingEndConfiguration.type = glycanObj.opensRing;
-        reducingEndConfiguration.comment = glycanObj.opensRing === 4 ? glycanObj.equilibriumComment : "";
-        glycans.reducingEndConfiguration = reducingEndConfiguration;
-
-        glycans.source = glycanObj.source;
-
-        if (featureAddState.rangeGlycans.length > 0) {
-          range = {
-            min: glycanObj.min,
-            max: glycanObj.max
-          };
-        }
-
-        glycansList.push({
-          glycans: [glycans],
-          linker: glycanObj.linker,
-          range: range,
-          type: "LINKEDGLYCAN"
-        });
+      let range;
+      let glycanObj;
+      if (featureAddState.rangeGlycans.length > 0) {
+        glycanObj = positionDetails;
+      } else {
+        glycanObj = positionDetails.glycan;
       }
+
+      let glycans = {};
+      glycans.type = "LINKEDGLYCAN";
+      let reducingEndConfiguration = {};
+
+      glycans.glycan = glycanObj;
+      glycans.urls = glycanObj.urls;
+
+      glycans.publications = glycanObj.papers;
+
+      reducingEndConfiguration.type = glycanObj.opensRing;
+      reducingEndConfiguration.comment = glycanObj.opensRing === 4 ? glycanObj.equilibriumComment : "";
+      glycans.reducingEndConfiguration = reducingEndConfiguration;
+
+      glycans.source = glycanObj.source;
+
+      if (featureAddState.rangeGlycans.length > 0) {
+        range = {
+          min: glycanObj.min,
+          max: glycanObj.max
+        };
+      }
+
+      glycansList.push({
+        glycans: [glycans],
+        linker: glycanObj.linker,
+        range: range,
+        type: "LINKEDGLYCAN"
+      });
     });
 
     featureObj = {
@@ -1150,7 +1148,7 @@ const AddFeature = props => {
 
       metadata: metadataToSubmit()
     };
-
+    
     return featureObj;
   }
 

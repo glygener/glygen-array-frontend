@@ -78,11 +78,6 @@ const FeatureView = props => {
   const getGlycanTable = () => {
     return (
       <>
-        {/* <Row className="gg-align-center">
-          <Col xs={12} lg={9}>
-            <h4 className="gg-blue" style={{ paddingTop: "30px", paddingBottom: "15px" }}>
-              Glycans
-            </h4> */}
         <h4 className="gg-blue" style={{ paddingTop: "30px", paddingBottom: "15px" }}>
           Glycans
         </h4>
@@ -185,8 +180,7 @@ const FeatureView = props => {
           showPagination={false}
           showRowsInfo={false}
         />
-        {/* </Col>
-        </Row> */}
+
         {enableGlycanViewInfoDialog && (
           <ViewInfoModal
             setEnableModal={setEnableGlycanViewInfoDialog}
@@ -600,8 +594,6 @@ const FeatureView = props => {
             <FormLabel label="Type" />
             <Form.Control
               type="text"
-              // disabled={page === "case4"}
-              // plaintext={page === "view"}
               disabled={page === "case4" && !editFeature}
               readOnly={page === "view" && !editFeature}
               defaultValue={
@@ -622,8 +614,6 @@ const FeatureView = props => {
     return (
       <>
         <div className="mt-3 pt-3">
-          {/* <Row className="gg-align-center">
-            <Col xs={12} lg={9}> */}
           <GlygenTable
             columns={[
               {
@@ -744,8 +734,7 @@ const FeatureView = props => {
             viewOnClick={getGlycanInfoDisplay}
             infoRowsText="Selected Glycans"
           />
-          {/* </Col>
-          </Row> */}
+
           {enableGlycanViewInfoDialog && (
             <ViewInfoModal
               setEnableModal={setEnableGlycanViewInfoDialog}
@@ -827,6 +816,22 @@ const FeatureView = props => {
     }
   }
 
+  const getGlycansTable = () => {
+    if (
+      props.type &&
+      props.type !== "CONTROL" &&
+      props.type !== "LANDING_LIGHT" &&
+      (props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" || featureDetails.type === "GPLINKEDGLYCOPEPTIDE") &&
+      (props.rangeGlycoPeptides || props.glycoPeptides || featureDetails.peptides)
+    ) {
+      return getGlycoProteinLinkedPeptide();
+    } else if (props.glycans) {
+      return getSelectedGlycanList();
+    } else if (featureDetails.glycans.length > 0) {
+      return getGlycanTable();
+    }
+  };
+
   const getFeatureDetails = () => {
     return (
       <>
@@ -884,16 +889,7 @@ const FeatureView = props => {
                           (featureDetails.metadata.descriptors && featureDetails.metadata.descriptors.length > 0)) &&
                         featureMetadata()}
 
-                    {props.type &&
-                      props.type !== "CONTROL" &&
-                      props.type !== "LANDING_LIGHT" &&
-                      ((props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" ||
-                        featureDetails.type === "GPLINKEDGLYCOPEPTIDE") &&
-                      (props.rangeGlycoPeptides || props.glycoPeptides || featureDetails.peptides)
-                        ? getGlycoProteinLinkedPeptide()
-                        : props.glycans
-                        ? getSelectedGlycanList()
-                        : featureDetails.glycans.length > 0 && getGlycanTable())}
+                    {getGlycansTable()}
 
                     <div className="text-center mb-4 mt-4">
                       {featureDetails && featureDetails.type && (

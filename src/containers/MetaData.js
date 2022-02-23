@@ -1654,10 +1654,10 @@ const MetaData = props => {
 
     const mandatoryGroupsFilled = groupDescriptors.filter(function(e) {
       const filledDesc = e.descriptors.filter(function(subDescriptor) {
-        if (!subDescriptor.group && subDescriptor.value) {
+        if (!subDescriptor.group && (subDescriptor.value || subDescriptor.notRecorded || subDescriptor.notApplicable)) {
           return subDescriptor;
         } else if (subDescriptor.group) {
-          const filledSubGroups = subDescriptor.descriptors.filter(i => i.value);
+          const filledSubGroups = subDescriptor.descriptors.filter(i => i.value || i.notRecorded || i.notApplicable);
           if (filledSubGroups.length > 0) {
             return subDescriptor;
           }
@@ -1674,6 +1674,7 @@ const MetaData = props => {
 
     groupDescriptors.filter(function(e) {
       const sameGroupItems = mandatoryGroupsFilled.filter(i => i.mandateGroup.id === e.mandateGroup.id);
+
       if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.xorMandate).length > 1) {
         mandateGroupExceed.set(e.mandateGroup.id, sameGroupItems);
       } else {
@@ -1686,12 +1687,7 @@ const MetaData = props => {
         }
         deceedGroup.push(e);
 
-        // if (
-        //   (e.descriptors.filter(i => i.value).length === 0 && !e.xorMandate) ||
-        //   (e.descriptors.filter(i => i.value).length < 1 && e.xorMandate)
-        // ) {
         mandateGroupDeceed.set(e.mandateGroup.id, deceedGroup);
-        // }
       }
     });
 
@@ -1701,9 +1697,16 @@ const MetaData = props => {
       for (var descriptorPair of itr) {
         var pair = descriptorPair[1];
         pair.filter(function(desc) {
-          if (!desc.xorMandate && desc.descriptors.filter(i => i.value).length > 0) {
+          if (
+            !desc.xorMandate &&
+            desc.descriptors.filter(i => i.value || i.notRecorded || i.notApplicable).length > 0
+          ) {
             mandateGroupDeceed.delete(descriptorPair[0]);
-          } else if (desc.xorMandate && desc.descriptors.filter(i => i.value && i.value !== undefined).length > 0) {
+          } else if (
+            desc.xorMandate &&
+            desc.descriptors.filter(i => i.value && (i.value !== undefined || i.notRecorded || i.notApplicable))
+              .length > 0
+          ) {
             mandateGroupDeceed.delete(descriptorPair[0]);
           }
         });

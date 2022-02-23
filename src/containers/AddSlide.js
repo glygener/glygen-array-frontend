@@ -30,6 +30,7 @@ const AddSlide = props => {
     fetchList("slidelayoutlist");
     fetchList("listprinters");
     fetchList("listslidemeta");
+    fetchList("listprintrun");
   }, []);
 
   const [title, setTitle] = useState("Add Slide to Repository");
@@ -38,6 +39,7 @@ const AddSlide = props => {
   const history = useHistory();
   const [validated, setValidated] = useState(false);
   const [listPrinters, setListPrinters] = useState([]);
+  const [listPrintRun, setListPrintRun] = useState([]);
   const [enablePrompt, setEnablePrompt] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [listSlideMetas, setListSlideMetas] = useState([]);
@@ -52,7 +54,8 @@ const AddSlide = props => {
     description: "",
     layout: "",
     printer: "",
-    metadata: "",
+    printRun: "",
+    metadata: ""
   };
 
   const [slide, setSlide] = useReducer((state, newState) => ({ ...state, ...newState }), slideFormState);
@@ -63,22 +66,29 @@ const AddSlide = props => {
       name: "layout",
       value: slide.layout,
       list: listSlideLayouts,
-      message: "Slide Layout",
+      message: "Slide Layout"
     },
     {
       label: "Printer Metadata",
       name: "printer",
       value: slide.printer,
       list: listPrinters,
-      message: "Printer Metadata",
+      message: "Printer Metadata"
+    },
+    {
+      label: "Print Run Metadata",
+      name: "printRun",
+      value: slide.printRun,
+      list: listPrintRun,
+      message: "Print Run Metadata"
     },
     {
       label: "Slide Metadata",
       name: "metadata",
       value: slide.metadata,
       list: listSlideMetas,
-      message: "Slide Metadata",
-    },
+      message: "Slide Metadata"
+    }
   ];
 
   const handleChange = e => {
@@ -88,12 +98,15 @@ const AddSlide = props => {
     if (name === "name") {
       setDuplicateName(false);
     }
+
     setSlide({ [name]: value });
   };
 
   const handleSelect = e => {
     const name = e.target.name;
     const selected = e.target.options[e.target.selectedIndex].value;
+    
+
     setSlide({ [name]: selected });
   };
 
@@ -117,6 +130,8 @@ const AddSlide = props => {
         setListSlideMetas(responseJson);
       } else if (fetch === "listprinters") {
         setListPrinters(responseJson);
+      } else if (fetch === "listprintrun") {
+        setListPrintRun(responseJson);
       }
     });
   }
@@ -128,8 +143,9 @@ const AddSlide = props => {
         name: responseJson.name,
         description: responseJson.description,
         layout: responseJson.layout.name,
-        printer: responseJson.printer.name,
-        metadata: responseJson.metadata.name,
+        printer: responseJson.printer && responseJson.printer.name,
+        printRun: responseJson.printRun && responseJson.printRun.name,
+        metadata: responseJson.metadata.name
       });
     });
   }
@@ -156,7 +172,8 @@ const AddSlide = props => {
           description: slide.description,
           layout: { name: slide.layout },
           printer: { name: slide.printer },
-          metadata: { name: slide.metadata },
+          printRun: { name: slide.printRun },
+          metadata: { name: slide.metadata }
         },
         addSlideSuccess,
         addSlideFailure
@@ -294,15 +311,12 @@ const AddSlide = props => {
                   })}
                   <div className="text-center mb-2">
                     <Link to="/slides">
-                      <Button
-                        // className="gg-btn-outline mt-2 gg-mr-20"
-                        className={`${slideId ? "gg-btn-blue mt-2 gg-mr-20" : "gg-btn-outline mt-2 gg-mr-20"}`}
-                      >
+                      <Button className={`${slideId ? "gg-btn-blue mt-2 gg-mr-20" : "gg-btn-outline mt-2 gg-mr-20"}`}>
                         {slideId ? "Cancel" : "Back to Slides"}
                       </Button>
                     </Link>
                     <Button type="submit" disabled={duplicateName} className="gg-btn-blue mt-2 gg-ml-20">
-                      Submit{/* {slideId ? "Update" : "Submit"} */}
+                      Submit
                     </Button>
                   </div>
                 </Form>
