@@ -10,7 +10,7 @@ const ResumableUploader = props => {
     files: [],
     message: "",
     fileId: "",
-    description: ""
+    description: "",
   };
 
   const [fileStateReducer, setFileStateReducer] = useReducer(
@@ -30,7 +30,7 @@ const ResumableUploader = props => {
     setFileStateReducer({
       files: files,
       message: obj.statusCode,
-      fileId: obj.assignedFileName
+      fileId: obj.assignedFileName,
     });
 
     props.setUploadedFile && props.setUploadedFile(obj.file);
@@ -38,6 +38,7 @@ const ResumableUploader = props => {
 
   const handleClose = () => {
     setFileStateReducer({ files: [], message: 400, fileId: "" });
+    props.onCancel && props.onCancel();
   };
 
   const handleSubmit = e => {
@@ -74,7 +75,7 @@ const ResumableUploader = props => {
             onFileRemoved={file => {
               // fetch()
               setFileStateReducer({
-                message: ""
+                message: "",
               });
               return file;
             }}
@@ -113,7 +114,8 @@ ResumableUploader.propTypes = {
   onProcessFile: PropTypes.func,
   setUploadedFile: PropTypes.func,
   enableSubmit: PropTypes.bool,
-  filetypes: PropTypes.array
+  filetypes: PropTypes.array,
+  onCancel: PropTypes.func,
 };
 
 export { ResumableUploader };
