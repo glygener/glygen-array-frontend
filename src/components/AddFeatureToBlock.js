@@ -275,12 +275,13 @@ const AddFeatureToBlock = props => {
               <div key={index}>
                 <Form.Group as={Row} controlId={index} className="gg-align-center mb-3">
                   <Col md={2} style={{ textAlign: "right" }}>
-                    <FormLabel label={element.feature.name} />
+                    <FormLabel label={element.feature.name} className="mt-2" />
                   </Col>
                   <Col md={2} style={{ textAlign: "left" }}>
                     <FormControl
                       name="featureRatio"
                       onChange={handleChange}
+                      placeholder="e.g., 10 or 0.1"
                       value={element.concentrationInfo && element.concentrationInfo.ratio}
                       // pattern={"^d*(.d{0,2})?$"}
                       type="number"
