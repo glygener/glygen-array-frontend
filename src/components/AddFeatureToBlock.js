@@ -346,6 +346,7 @@ const AddFeatureToBlock = props => {
                       <FormControl
                         type="number"
                         name="concentration"
+                        placeholder="e.g., 100 fmol/spot"
                         value={element.concentrationInfo ? element.concentrationInfo.concentration : ""}
                         onChange={handleConcentration}
                         onKeyDown={e => {
@@ -481,7 +482,7 @@ const AddFeatureToBlock = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "feature.name"
+              accessor: "feature.name",
             },
             {
               Header: "Ratio",
@@ -498,7 +499,7 @@ const AddFeatureToBlock = props => {
                       <span
                         key={index}
                         style={{
-                          marginLeft: "65px"
+                          marginLeft: "65px",
                         }}
                       >
                         {row.original.concentrationInfo.ratio}
@@ -509,7 +510,7 @@ const AddFeatureToBlock = props => {
                     )}
                   </Col>
                 </>
-              )
+              ),
             },
             {
               Header: "Linker",
@@ -518,7 +519,7 @@ const AddFeatureToBlock = props => {
                 <input
                   style={{
                     textAlign: "center",
-                    border: "none"
+                    border: "none",
                   }}
                   name="linker"
                   key={index}
@@ -529,7 +530,7 @@ const AddFeatureToBlock = props => {
                   }
                   disabled
                 />
-              )
+              ),
             },
             {
               Header: "Sequence",
@@ -541,14 +542,14 @@ const AddFeatureToBlock = props => {
                         base64={element.glycan ? element.glycan.cartoon : element.cartoon}
                         style={{
                           maxWidth: "100px",
-                          overflow: "scroll"
+                          overflow: "scroll",
                         }}
                       />
                     ))
                   : "";
               },
-              minWidth: 250
-            }
+              minWidth: 250,
+            },
           ]}
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
@@ -590,7 +591,8 @@ const AddFeatureToBlock = props => {
       </Stepper>
 
       <div>
-        {activeStep !== 3 && getNavigationButtons("button-div line-break-2 text-center")}
+        {activeStep !== 3 && getNavigationButtons()}
+        <h5 className="text-center gg-blue mt-4">{getStepLabel(activeStep)}</h5>
 
         {showErrorSummary === true && (
           <ErrorSummary show={showErrorSummary} form="glycans" errorMessage={pageErrorMessage}></ErrorSummary>
@@ -605,6 +607,23 @@ const AddFeatureToBlock = props => {
 
   function getSteps() {
     return ["Select Features", "Add Feature Ratio", "Add Spot Concentrations", "Spot Metadata", "Review and Add"];
+  }
+
+  function getStepLabel(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return "";
+      case 1:
+        return "Specify Ratio Ratio can be specified in the format 1:10:0.1 For unknown ratio leave fields empty";
+      case 2:
+        return "Specify Concentration";
+      case 3:
+        return "";
+      case 4:
+        return "";
+      default:
+        return "Unknown stepIndex";
+    }
   }
 
   function getStepContent(stepIndex) {
