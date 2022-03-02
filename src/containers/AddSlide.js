@@ -11,6 +11,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Link } from "react-router-dom";
+import { Loading } from "../components/Loading";
 
 const AddSlide = props => {
   let { slideId } = useParams();
@@ -21,6 +22,7 @@ const AddSlide = props => {
     }
 
     if (slideId) {
+      setShowLoading(true);
       wsCall("getslide", "GET", [slideId], true, null, getSlideSuccess, wsCallFail);
       setTitle("Edit Slide");
       setSubTitle(
@@ -47,6 +49,7 @@ const AddSlide = props => {
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [listSlideLayouts, setListSlideLayouts] = useState([]);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
   const slideFormState = {
     id: "",
@@ -105,7 +108,6 @@ const AddSlide = props => {
   const handleSelect = e => {
     const name = e.target.name;
     const selected = e.target.options[e.target.selectedIndex].value;
-    
 
     setSlide({ [name]: selected });
   };
@@ -133,6 +135,7 @@ const AddSlide = props => {
       } else if (fetch === "listprintrun") {
         setListPrintRun(responseJson);
       }
+      setShowLoading(false);
     });
   }
 
@@ -154,12 +157,14 @@ const AddSlide = props => {
     response.json().then(responseJson => {
       setPageErrorsJson(responseJson);
       setShowErrorSummary(true);
+      setShowLoading(false);
     });
   }
 
   function handleSubmit(e) {
     setValidated(true);
 
+    setShowLoading(true);
     if (e.currentTarget.checkValidity()) {
       wsCall(
         slideId ? "updateprintedslide" : "addprintedslide",
@@ -188,8 +193,8 @@ const AddSlide = props => {
   }
 
   function addSlideSuccess(response) {
-    console.log(response);
     setEnablePrompt(false);
+    setShowLoading(false);
     history.push("/slides");
   }
 
@@ -211,6 +216,7 @@ const AddSlide = props => {
         setShowErrorSummary(true);
         setPageErrorMessage("");
       }
+      setShowLoading(false);
     });
   }
 
@@ -324,6 +330,7 @@ const AddSlide = props => {
             </Card>
           </div>
         </Container>
+        <Loading show={showLoading} />
       </>
     );
   };
