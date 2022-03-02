@@ -34,7 +34,7 @@ const AddExperiment = props => {
       props.authCheckAgent();
     }
 
-    getExperiment();
+    experimentId && getExperiment();
 
     wsCall(
       "listsamples",
@@ -70,7 +70,7 @@ const AddExperiment = props => {
             grants: responseJson.grants,
             slides: responseJson.slides,
             images: responseJson.images,
-            isPublic: responseJson.isPublic,
+            isPublic: responseJson.isPublic
           });
 
           // setRefreshPage(false);
@@ -99,7 +99,7 @@ const AddExperiment = props => {
     rawDataList: [],
     processedData: [],
     publications: [],
-    pubChemId: "",
+    pubChemId: ""
   };
 
   const [experiment, setExperiment] = useReducer((state, newState) => ({ ...state, ...newState }), experimentState);
@@ -135,7 +135,7 @@ const AddExperiment = props => {
       response.json().then(responseJson => {
         if (!experimentId) {
           setExperiment({
-            publications: experiment.publications.concat([responseJson]),
+            publications: experiment.publications.concat([responseJson])
           });
         } else {
           addPublication(responseJson);
@@ -162,7 +162,7 @@ const AddExperiment = props => {
         endPage: publication.endPage,
         volume: publication.volume,
         year: publication.year,
-        number: publication.number,
+        number: publication.number
       },
       response => {
         console.log(response);
@@ -190,7 +190,7 @@ const AddExperiment = props => {
           name: experiment.name,
           description: experiment.description,
           sample: { name: experiment.sample },
-          publications: experiment.publications,
+          publications: experiment.publications
         },
         addExperimentSuccess,
         addExperimentFailure
@@ -308,7 +308,7 @@ const AddExperiment = props => {
               xl={5}
               style={{
                 // maxWidth: "35%",
-                marginLeft: "-95px",
+                marginLeft: "-95px"
               }}
             >
               {experimentId ? (
