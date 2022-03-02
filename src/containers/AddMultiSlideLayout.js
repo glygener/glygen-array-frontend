@@ -19,6 +19,8 @@ import { PageHeading } from "../components/FormControls";
 import { BlueRadio } from "../components/FormControls";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
+const MAX_ERROR_LIMIT = 10;
+
 const AddMultiSlideLayout = props => {
   const fileMap = new Map();
 
@@ -54,7 +56,6 @@ const AddMultiSlideLayout = props => {
   const [invalidWidth, setInvalidWidth] = useState(false);
   const [invalidHeight, setInvalidHeight] = useState(false);
   const [galFileErrors, setGalFileErrors] = useState([]);
-  const [galFileErrorMessage, setGalFileErrorMessage] = useState([]);
   const [readMore, setReadMore] = useState(false);
 
   const defaultFileType = "*/*";
@@ -64,7 +65,7 @@ const AddMultiSlideLayout = props => {
     name: "",
     description: "",
     height: "",
-    width: ""
+    width: "",
   };
 
   const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
@@ -90,7 +91,7 @@ const AddMultiSlideLayout = props => {
     var selectedrow = [];
     selectedrow.push({
       id: row.id,
-      name: row.name
+      name: row.name,
     });
 
     setRowSelected(selectedrow);
@@ -109,7 +110,7 @@ const AddMultiSlideLayout = props => {
     } else {
       updateSelectedRows.push({
         id: row.id,
-        name: value
+        name: value,
       });
     }
 
@@ -150,7 +151,15 @@ const AddMultiSlideLayout = props => {
         trow.push(
           <tr key={index}>
             <td style={{ width: "50px", marginLeft: "100px" }}>{element.layout.name}</td>
-            <td style={{ width: "50px", marginRight: "100px", whiteSpace: "pre-wrap" }}>{description}</td>
+            <td
+              style={{
+                width: "50px",
+                marginRight: "100px",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {description}
+            </td>
           </tr>
         );
       });
@@ -199,7 +208,7 @@ const AddMultiSlideLayout = props => {
         onChange={e => handleSlideNameChange(row.original, e)}
         value={getUpdateSlideName(row.original)}
         style={{
-          border: "none"
+          border: "none",
         }}
       />
     );
@@ -207,7 +216,7 @@ const AddMultiSlideLayout = props => {
     columnsToRender["nameColumn"] = {
       Header: "Name",
       // eslint-disable-next-line react/display-name
-      Cell: row => editSlideName(row)
+      Cell: row => editSlideName(row),
     };
 
     columnsToRender["selectionColumn"] = {
@@ -221,7 +230,7 @@ const AddMultiSlideLayout = props => {
           onChange={() => handleChecboxChange(row.original)}
           checked={checkSelection(row.original)}
         />
-      )
+      ),
     };
 
     return (
@@ -264,7 +273,7 @@ const AddMultiSlideLayout = props => {
                       padding: "15px",
                       marginBottom: "20px",
                       backgroundColor:
-                        key === "addedLayouts" ? "darkseagreen" : key === "duplicates" ? "orange" : "indianred"
+                        key === "addedLayouts" ? "darkseagreen" : key === "duplicates" ? "orange" : "indianred",
                     }}
                   >
                     {key === "addedLayouts"
@@ -327,7 +336,7 @@ const AddMultiSlideLayout = props => {
           file: encodeURIComponent(fileId),
           name: uploadDetails.name,
           height: uploadDetails.height,
-          width: uploadDetails.width
+          width: uploadDetails.width,
         },
         true,
         null,
@@ -377,48 +386,44 @@ const AddMultiSlideLayout = props => {
   }
 
   const getGalErrorDisplay = () => {
-    let linkName = "Please click here to see the errors!";
-    let aggregatedSummary = [];
-
     if (galFileErrors.errors && galFileErrors.errors.length > 0) {
-      if (galFileErrorMessage.length > 0) linkName = readMore ? "Read More >> " : "  << Read Less";
-      const getReadMore = () => {
-        if (!readMore) {
-          const errorObj = galFileErrors.errors[0];
-          aggregatedSummary.push(
-            <li key={errorObj.objectName}>
-              {errorObj.objectName.toUpperCase()} - {errorObj.defaultMessage}
-            </li>
-          );
+      let errors = [];
+
+      if (galFileErrors && galFileErrors.errors.length > 0) {
+        if (readMore) {
+          errors = galFileErrors.errors;
         } else {
-          galFileErrors.errors.forEach(errorObj => {
-            aggregatedSummary.push(
-              <li key={errorObj.objectName}>
-                {errorObj.objectName.toUpperCase()} - {errorObj.defaultMessage}
-              </li>
-            );
-            aggregatedSummary.push(<>&nbsp;</>);
-          });
+          errors = galFileErrors.errors.filter((item, index) => index < MAX_ERROR_LIMIT);
         }
-        console.log(aggregatedSummary);
-        setGalFileErrorMessage(aggregatedSummary);
-      };
+      }
 
       return (
         <>
-          <h5>File upload failed for following reasons:</h5>
           <Alert variant="danger">
-            {galFileErrorMessage.length > 0 && <div className="list-error-message">{galFileErrorMessage}</div>}
-            <h6
-              className="read-more-link"
-              onClick={() => {
-                getReadMore();
-                setReadMore(!readMore);
-              }}
-            >
-              {linkName}
-            </h6>
+            <Alert.Heading>File upload failed for following reasons:</Alert.Heading>
+
+            {errors.length > 0 && (
+              <ul>
+                {errors.map(errorObj => (
+                  <li key={errorObj.objectName}>
+                    {errorObj.objectName.toUpperCase()} - {errorObj.defaultMessage}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {galFileErrors && galFileErrors.errors.length > MAX_ERROR_LIMIT && (
+              <h6 className="read-more-link" onClick={() => setReadMore(rmore => !rmore)}>
+                {!readMore ? "Read More >>" : "<< Read Less"}
+              </h6>
+            )}
           </Alert>
+
+          <div className="text-center mb-2 mt-4">
+            <Link to="/slideLayouts">
+              <Button className="gg-btn-outline mt-2">Back to Slide Layouts</Button>
+            </Link>
+          </div>
         </>
       );
     }
@@ -516,6 +521,14 @@ const AddMultiSlideLayout = props => {
                     </Col>
                   </Form.Group>
 
+                  {uploadDetails.fileType === defaultFileType && (
+                    <div className="text-center mb-2 mt-4">
+                      <Link to="/slideLayouts">
+                        <Button className="gg-btn-outline mt-2">Back to Slide Layouts</Button>
+                      </Link>
+                    </div>
+                  )}
+
                   {uploadDetails.fileType && uploadDetails.fileType === ".gal" && (
                     <>
                       <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
@@ -603,7 +616,7 @@ const AddMultiSlideLayout = props => {
                           history={history}
                           headerObject={{
                             Authorization: window.localStorage.getItem("token") || "",
-                            Accept: "*/*"
+                            Accept: "*/*",
                           }}
                           fileType={fileDetails.fileType}
                           uploadService={getWsUrl("upload")}
@@ -611,6 +624,7 @@ const AddMultiSlideLayout = props => {
                           onProcessFile={uploadDetails.fileType === ".gal" ? saveGALSlidelayout : processFile}
                           enableSubmit
                           filetypes={uploadDetails.fileType === ".gal" ? ["gal"] : ["xml"]}
+                          onCancel={() => history.push("/slideLayouts")}
                         />
                       </Col>
                     </Form.Group>
