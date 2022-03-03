@@ -78,11 +78,14 @@ const AddFeatureToBlock = props => {
 
     if (activeStep === 1 && featuresSelected.featureSelected.length !== 1) {
       let ratiosNonEmpty = featuresSelected.featureSelected.filter(
-        e => e.concentrationInfo && e.concentrationInfo.ratio !== ""
+        e => e.concentrationInfo && e.concentrationInfo.ratio && e.concentrationInfo.ratio !== ""
       );
 
       let ratiosEmpty = featuresSelected.featureSelected.filter(
-        e => (e.concentrationInfo && e.concentrationInfo.ratio === "") || !e.concentrationInfo
+        e =>
+          (e.concentrationInfo && e.concentrationInfo.ratio === "") ||
+          !e.concentrationInfo ||
+          (e => e.concentrationInfo && !e.concentrationInfo.ratio)
       );
 
       if (
@@ -483,7 +486,7 @@ const AddFeatureToBlock = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "feature.name",
+              accessor: "feature.name"
             },
             {
               Header: "Ratio",
@@ -500,7 +503,7 @@ const AddFeatureToBlock = props => {
                       <span
                         key={index}
                         style={{
-                          marginLeft: "65px",
+                          marginLeft: "65px"
                         }}
                       >
                         {row.original.concentrationInfo.ratio}
@@ -511,7 +514,7 @@ const AddFeatureToBlock = props => {
                     )}
                   </Col>
                 </>
-              ),
+              )
             },
             {
               Header: "Linker",
@@ -520,7 +523,7 @@ const AddFeatureToBlock = props => {
                 <input
                   style={{
                     textAlign: "center",
-                    border: "none",
+                    border: "none"
                   }}
                   name="linker"
                   key={index}
@@ -531,7 +534,7 @@ const AddFeatureToBlock = props => {
                   }
                   disabled
                 />
-              ),
+              )
             },
             {
               Header: "Sequence",
@@ -543,14 +546,14 @@ const AddFeatureToBlock = props => {
                         base64={element.glycan ? element.glycan.cartoon : element.cartoon}
                         style={{
                           maxWidth: "100px",
-                          overflow: "scroll",
+                          overflow: "scroll"
                         }}
                       />
                     ))
                   : "";
               },
-              minWidth: 250,
-            },
+              minWidth: 250
+            }
           ]}
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
@@ -593,7 +596,9 @@ const AddFeatureToBlock = props => {
 
       <div>
         {activeStep !== 3 && getNavigationButtons()}
-        <h5 className="text-center gg-blue mt-4">{getStepLabel(activeStep)}</h5>
+        <h5 className="text-center gg-blue mt-4" style={{ whiteSpace: "pre" }}>
+          {getStepLabel(activeStep)}
+        </h5>
 
         {showErrorSummary === true && (
           <ErrorSummary show={showErrorSummary} form="glycans" errorMessage={pageErrorMessage}></ErrorSummary>
@@ -615,7 +620,7 @@ const AddFeatureToBlock = props => {
       case 0:
         return "";
       case 1:
-        return "Specify Ratio Ratio can be specified in the format 1:10:0.1 For unknown ratio leave fields empty";
+        return "Specify Ratio\nRatio can be specified in the format 1:10:0.1\nFor unknown ratio leave fields empty";
       case 2:
         return "Specify Concentration";
       case 3:
