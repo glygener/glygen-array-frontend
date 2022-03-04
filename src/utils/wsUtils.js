@@ -352,6 +352,8 @@ export function getWsUrl(ws) {
       return ws_base_public_search + "/searchDatasetsByUser";
     case "listdatasetsforsearch":
       return ws_base_public_search + "/listDatasetsForSearch";
+    case "exportslidelayout":
+      return ws_base_array + "/exportSlideLayout";
 
     default:
       return ws_base_user;

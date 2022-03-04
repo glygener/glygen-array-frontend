@@ -9,13 +9,7 @@ import { getLoginStatus, getPageName } from "./utils/commonUtils";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ScrollToTopBtn } from "./components/ScrollToTop";
-import {
-  faEdit,
-  faTrashAlt,
-  faClone,
-  faEyeSlash,
-  faEye,
-} from "@fortawesome/free-regular-svg-icons";
+import { faEdit, faTrashAlt, faClone, faEyeSlash, faEye } from "@fortawesome/free-regular-svg-icons";
 import Footer from "./components/Footer";
 import {
   faUsers,
@@ -38,9 +32,9 @@ import {
   faTable,
   faCaretUp,
   faVial,
+  faFileExport
 } from "@fortawesome/free-solid-svg-icons";
 import { CssBaseline } from "@material-ui/core";
-import { ResponsiveEmbed } from "react-bootstrap";
 
 const theme = createTheme({
   typography: {
@@ -55,15 +49,15 @@ const theme = createTheme({
       '"Fira Sans"',
       '"Droid Sans"',
       '"Helvetica Neue"',
-      "sans-serif",
-    ].join(","),
-  },
+      "sans-serif"
+    ].join(",")
+  }
 });
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const loginUpdater = (flag) => setLoggedIn(flag);
-  const logoutHandler = (e) => logout(e);
+  const loginUpdater = flag => setLoggedIn(flag);
+  const logoutHandler = e => logout(e);
   const history = useHistory();
   const location = useLocation();
 
@@ -95,7 +89,8 @@ const App = () => {
       faUserPlus,
       faTable,
       faCaretUp,
-      faVial
+      faVial,
+      faFileExport
     );
 
     return (
@@ -145,7 +140,7 @@ const App = () => {
       "glycanDetail",
       "datasetDetailSearch",
       "datasetDetailList",
-      "datasetDetail",
+      "datasetDetail"
     ];
     var pagename = getPageName(history);
 
@@ -157,7 +152,7 @@ const App = () => {
         redirectFrom = "/";
         history.push({
           pathname: "/",
-          state: { redirectedFrom: redirectFrom },
+          state: { redirectedFrom: redirectFrom }
         });
       } else {
         redirectFrom = history.location.pathname;
@@ -167,7 +162,7 @@ const App = () => {
     if (!authorized && !loginNotRequiredPages.includes(pagename)) {
       history.push({
         pathname: "/login",
-        state: { redirectedFrom: redirectFrom },
+        state: { redirectedFrom: redirectFrom }
       });
     }
   }

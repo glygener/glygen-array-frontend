@@ -10,9 +10,23 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import { wsCall } from "../utils/wsUtils";
 
 const SlideLayouts = props => {
   useEffect(props.authCheckAgent, []);
+
+  function handleExport(file) {
+    // setShowLoading(true);
+    wsCall("exportslidelayout", "GET", null, true, null, exportSuccess, exportFailure);
+
+    function exportSuccess(response) {
+      response.json.then(resp => {});
+    }
+
+    function exportFailure(response) {
+      response.json.then(resp => {});
+    }
+  }
 
   return (
     <>
@@ -45,8 +59,8 @@ const SlideLayouts = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name",
-                  },
+                    accessor: "name"
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -54,6 +68,10 @@ const SlideLayouts = props => {
                 showDeleteButton
                 showEditButton
                 showSearchBox
+                showDownload
+                showExport
+                downloadApi="filedownload"
+                handleExport={handleExport}
                 commentsRefColumn="description"
                 fetchWS="slidelayoutlist"
                 deleteWS="slidelayoutdelete"

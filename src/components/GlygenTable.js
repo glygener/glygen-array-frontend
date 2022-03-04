@@ -16,6 +16,7 @@ import { LineTooltip } from "../components/tooltip/LineTooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
 import { BlueRadio } from "../components/FormControls";
+import { downloadFile } from "../utils/commonUtils";
 
 const GlygenTable = props => {
   const history = useHistory();
@@ -232,6 +233,7 @@ const GlygenTable = props => {
               </LineTooltip>
             </>
           )}
+
           {props.showDeleteButton && (
             <>
               <LineTooltip text="Delete">
@@ -247,6 +249,46 @@ const GlygenTable = props => {
                         ? props.deleteOnClick(row.original)
                         : deletePrompt(row.original[props.keyColumn], props.queryParamDelete);
                     }}
+                  />
+                </Link>
+              </LineTooltip>
+            </>
+          )}
+
+          {props.showDownload && row.original.file && (
+            <>
+              <LineTooltip text="Download">
+                <Link>
+                  <FontAwesomeIcon
+                    className="table-btn download-btn"
+                    icon={["fas", "download"]}
+                    size="lg"
+                    title="Download"
+                    onClick={() => {
+                      downloadFile(
+                        row.original.file,
+                        props.setPageErrorsJson,
+                        props.setPageErrorMessage,
+                        props.setShowErrorSummary,
+                        props.downloadApi
+                      );
+                    }}
+                  />
+                </Link>
+              </LineTooltip>
+            </>
+          )}
+
+          {props.showExport && !row.original.file && (
+            <>
+              <LineTooltip text="Export">
+                <Link>
+                  <FontAwesomeIcon
+                    className="table-btn download-btn"
+                    icon={["fas", "file-export"]}
+                    size="lg"
+                    title="Export"
+                    onClick={() => props.handleExport(row.original)}
                   />
                 </Link>
               </LineTooltip>
@@ -526,6 +568,7 @@ const GlygenTable = props => {
         tableElement.fireFetchData();
       } else {
         setCustomOffset(false);
+
         setData(responseJson.rows);
         setRows(responseJson.total);
         setPages(Math.ceil(responseJson.total / state.pageSize));

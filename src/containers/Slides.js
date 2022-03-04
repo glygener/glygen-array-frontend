@@ -40,7 +40,7 @@ const Slides = props => {
                   { Header: "Name", accessor: "name" },
                   { Header: "Slidelayout", accessor: "layout.name" },
                   { Header: "Printer", accessor: "printer.name" },
-                  { Header: "Slide Metadata", accessor: "metadata.name" },
+                  { Header: "Slide Metadata", accessor: "metadata.name" }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -48,6 +48,8 @@ const Slides = props => {
                 showEditButton
                 showMakePublic
                 showSearchBox
+                showDownload
+                downloadApi="filedownload"
                 commentsRefColumn="description"
                 fetchWS="slidelist"
                 deleteWS="slidedelete"
