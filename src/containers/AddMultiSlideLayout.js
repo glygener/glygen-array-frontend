@@ -318,7 +318,7 @@ const AddMultiSlideLayout = props => {
       null,
       true,
       {
-        fileWrapper: {
+        file: {
           identifier: uploadedFile.identifier,
           originalName: uploadedFile.originalName,
           fileFolder: uploadedFile.fileFolder,
@@ -361,11 +361,17 @@ const AddMultiSlideLayout = props => {
   };
 
   function importSlideLayoutsFromLibrarySuccess(response) {
-    response.json().then(responseJson => {
-      setTabs(responseJson);
-      setShowLoading(false);
-      console.log(tabs);
-    });
+    if (uploadDetails.fileType === ".gal") {
+      response.text().then(responseJson => {
+        setShowLoading(false);
+        history.push("/slideLayouts");
+      });
+    } else {
+      response.json().then(responseJson => {
+        setTabs(responseJson);
+        setShowLoading(false);
+      });
+    }
   }
 
   function importSlideLayoutsFromLibraryError(response) {
