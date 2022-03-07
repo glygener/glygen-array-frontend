@@ -596,7 +596,7 @@ const AddFeatureToBlock = props => {
 
       <div>
         {activeStep !== 3 && getNavigationButtons()}
-        <h5 className="text-center gg-blue mt-4" style={{ whiteSpace: "pre" }}>
+        <h5 className={`text-center`} style={{ whiteSpace: activeStep === 1 ? "pre" : "" }}>
           {getStepLabel(activeStep)}
         </h5>
 
@@ -616,20 +616,44 @@ const AddFeatureToBlock = props => {
   }
 
   function getStepLabel(stepIndex) {
+    let label = "";
+    let subLabel = "";
+
     switch (stepIndex) {
       case 0:
-        return "";
+        label = "Select Features";
+        break;
+
       case 1:
-        return "Specify Ratio\nRatio can be specified in the format 1:10:0.1\nFor unknown ratio leave fields empty";
+        label = "Specify Ratio\n";
+        subLabel = (
+          <h6 className={'summary-panel pt-1"'}>
+            {"Ratio can be specified in the format 1:10:0.1\n"}
+            {"For unknown ratio leave fields empty"}
+          </h6>
+        );
+        break;
+
       case 2:
-        return "Specify Concentration";
+        label = "Specify Concentration";
+        break;
+
       case 3:
-        return "";
+        break;
       case 4:
-        return "";
+        label = "Review and Add";
+        break;
+
       default:
-        return "Unknown stepIndex";
+        label = "Unknown stepIndex";
     }
+
+    return (
+      <>
+        <p className={label === "" ? "" : "gg-blue mt-4"}> {label}</p>
+        {subLabel}
+      </>
+    );
   }
 
   function getStepContent(stepIndex) {

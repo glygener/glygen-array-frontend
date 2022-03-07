@@ -9,7 +9,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "../components/CardLoader";
 
-const DatasetTable = (props) => {
+const DatasetTable = props => {
   const [listDataSet, setListDataSet] = useState([]);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
@@ -22,12 +22,9 @@ const DatasetTable = (props) => {
 
   const dataset = {
     pages: "",
-    sortBy: "",
+    sortBy: ""
   };
-  const [publicData, setPublicData] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    dataset
-  );
+  const [publicData, setPublicData] = useReducer((state, newState) => ({ ...state, ...newState }), dataset);
   useEffect(() => {
     setShowLoading(true);
 
@@ -35,7 +32,7 @@ const DatasetTable = (props) => {
       offset: "0",
       loadAll: false,
       sortBy: publicData.sortBy,
-      order: orderBy ? 1 : 0,
+      order: orderBy ? 1 : 0
     };
 
     if (props.qsParams) {
@@ -48,8 +45,8 @@ const DatasetTable = (props) => {
       params,
       false,
       null,
-      (response) =>
-        response.json().then((responseJson) => {
+      response =>
+        response.json().then(responseJson => {
           setListDataSet(responseJson.rows);
           setShowLoading(false);
         }),
@@ -58,14 +55,14 @@ const DatasetTable = (props) => {
   }, [orderBy, publicData.sortBy, props.wsName, props.qsParams]);
 
   function errorWscall(response) {
-    response.json().then((responseJson) => {
+    response.json().then(responseJson => {
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
       setShowErrorSummary(true);
     });
   }
 
-  const handleSelectSortBy = (e) => {
+  const handleSelectSortBy = e => {
     const name = e.target.name;
     const selected = e.target.options[e.target.selectedIndex].value;
     setPublicData({ [name]: selected });
@@ -131,8 +128,7 @@ const DatasetTable = (props) => {
                 Cell: (row, index) => (
                   <div key={index} style={{ textAlign: "left", margin: "20px" }}>
                     <div>
-                      <strong>ID:</strong>{" "}
-                      <Link to={`/data/dataset/${row.original.id}`}>{row.original.id}</Link>
+                      <strong>ID:</strong> <Link to={`/data/dataset/${row.original.id}`}>{row.original.id}</Link>
                     </div>
                     <div>
                       <strong>Dataset Name: </strong>
@@ -151,7 +147,7 @@ const DatasetTable = (props) => {
                         style={{
                           color: "dodgerblue",
                           textDecoration: "underline",
-                          textTransform: "uppercase",
+                          textTransform: "uppercase"
                         }}
                       >
                         {row.original.user.name}
@@ -163,8 +159,8 @@ const DatasetTable = (props) => {
                       </span>
                     </div>
                   </div>
-                ),
-              },
+                )
+              }
             ]}
             data={listDataSet}
             pageSizeOptions={[5, 10, 25]}

@@ -157,13 +157,13 @@ const PublicDataset = () => {
               <Col md={8}>
                 <Card>
                   <Title title={"Files"} />
-                  <Files
+                  {/* <Files
                     dataset={dataset}
                     setEnableMetadata={setEnableMetadata}
                     setPageErrorsJson={setPageErrorsJson}
                     setPageErrorMessage={setPageErrorMessage}
                     setShowErrorSummary={setShowErrorSummary}
-                  />
+                  /> */}
                 </Card>
               </Col>
             </Row>
