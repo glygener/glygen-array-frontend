@@ -405,7 +405,7 @@ const AddExperiment = props => {
                         value={experiment.sample}
                         onChange={handleSelect}
                         required={true}
-                        disabled={experiment.isPublic}
+                        disabled={experiment.isPublic || experimentId}
                       >
                         <option value="">Select Sample</option>
                         {sampleList.rows &&
