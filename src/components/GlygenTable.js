@@ -16,7 +16,7 @@ import { LineTooltip } from "../components/tooltip/LineTooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
 import { BlueRadio } from "../components/FormControls";
-import { downloadFile } from "../utils/commonUtils";
+import { downloadFile, fileDownloadSuccess, fileDownloadFailure, fileExportSuccess } from "../utils/commonUtils";
 
 const GlygenTable = props => {
   const history = useHistory();
@@ -255,7 +255,7 @@ const GlygenTable = props => {
             </>
           )}
 
-          {props.showDownload && row.original.file && (
+          {props.showDownload && (row.original.file || (row.original.layout && row.original.layout.file)) && (
             <>
               <LineTooltip text="Download">
                 <Link>
@@ -265,8 +265,15 @@ const GlygenTable = props => {
                     size="lg"
                     title="Download"
                     onClick={() => {
+                      let fileInfo =
+                        row.original && row.original.file
+                          ? row.original.file
+                          : row.original && row.original.layout && row.original.layout.file
+                          ? row.original.layout.file
+                          : "";
+
                       downloadFile(
-                        row.original.file,
+                        fileInfo,
                         props.setPageErrorsJson,
                         props.setPageErrorMessage,
                         props.setShowErrorSummary,
@@ -279,21 +286,30 @@ const GlygenTable = props => {
             </>
           )}
 
-          {props.showExport && !row.original.file && (
-            <>
-              <LineTooltip text="Export">
-                <Link>
-                  <FontAwesomeIcon
-                    className="table-btn download-btn"
-                    icon={["fas", "file-export"]}
-                    size="lg"
-                    title="Export"
-                    onClick={() => props.handleExport(row.original)}
-                  />
-                </Link>
-              </LineTooltip>
-            </>
-          )}
+          {props.showExport &&
+            ((!row.original.file && !props.isPrintedSlide) ||
+              (props.isPrintedSlide && row.original.layout && !row.original.layout.file)) && (
+              <>
+                <LineTooltip text="Export">
+                  <Link>
+                    <FontAwesomeIcon
+                      className="table-btn download-btn"
+                      icon={["fas", "file-export"]}
+                      size="lg"
+                      title="Export"
+                      onClick={() =>
+                        props.handleExport(
+                          row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
+                          setPageErrorsJson,
+                          setPageErrorMessage,
+                          setShowErrorSummary
+                        )
+                      }
+                    />
+                  </Link>
+                </LineTooltip>
+              </>
+            )}
         </>
       ),
       minWidth: 170
@@ -385,6 +401,41 @@ const GlygenTable = props => {
       {props.showRowsInfo && (
         <>
           <Row>
+            <Col style={{ textAlign: "right", marginBottom: "1em" }}>
+              {props.exportData && (
+                <>
+                  <LineTooltip text="Download">
+                    <Link>
+                      <div
+                        onClick={() => {
+                          wsCall(
+                            props.exportWsCall,
+                            "GET",
+                            null,
+                            true,
+                            null,
+                            response => fileExportSuccess(response, props.fileName),
+                            response =>
+                              fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary)
+                          );
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          className="table-btn download-btn"
+                          icon={["fas", "download"]}
+                          size="lg"
+                          title="Download"
+                        />
+                        {"DOWNLOAD"}
+                      </div>
+                    </Link>
+                  </LineTooltip>
+                </>
+              )}
+            </Col>
+          </Row>
+
+          <Row>
             <Col>
               <GlygenTableRowsInfo
                 currentPage={tableElement.state ? tableElement.state.page : 0}
@@ -438,6 +489,7 @@ const GlygenTable = props => {
           </Row>
         </>
       )}
+
       <ReactTable
         columns={Object.values(columnsToRender)}
         pageSizeOptions={[5, 10, 25, 50]}
@@ -523,6 +575,7 @@ const GlygenTable = props => {
           }
         }}
       />
+
       {props.showRowsInfo && (
         <GlygenTableRowsInfo
           currentPage={tableElement.state ? tableElement.state.page : 0}
@@ -532,6 +585,7 @@ const GlygenTable = props => {
           infoRowsText={props.infoRowsText}
         />
       )}
+
       <ConfirmationModal
         showModal={showDeleteModal}
         onCancel={cancelDelete}
@@ -568,7 +622,6 @@ const GlygenTable = props => {
         tableElement.fireFetchData();
       } else {
         setCustomOffset(false);
-
         setData(responseJson.rows);
         setRows(responseJson.total);
         setPages(Math.ceil(responseJson.total / state.pageSize));

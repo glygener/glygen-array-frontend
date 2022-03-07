@@ -10,6 +10,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import { exportFile } from "../utils/commonUtils";
 
 const Slides = props => {
   useEffect(props.authCheckAgent, []);
@@ -49,7 +50,10 @@ const Slides = props => {
                 showMakePublic
                 showSearchBox
                 showDownload
+                showExport
+                isPrintedSlide
                 downloadApi="filedownload"
+                handleExport={exportFile}
                 commentsRefColumn="description"
                 fetchWS="slidelist"
                 deleteWS="slidedelete"

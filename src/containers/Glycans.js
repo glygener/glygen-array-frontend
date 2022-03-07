@@ -93,6 +93,9 @@ const Glycans = props => {
                 showDeleteButton
                 showSearchBox
                 showEditButton
+                exportData
+                exportWsCall={"exportglycans"}
+                fileName={"exportglycans"}
                 commentsRefColumn="description"
                 fetchWS="glycanlist"
                 deleteWS="glycandelete"

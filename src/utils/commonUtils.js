@@ -196,39 +196,69 @@ export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setSh
     true,
     undefined,
     response => fileDownloadSuccess(response),
-    response => fileDownloadFailure(response),
+    response => fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary),
     {
       Accept: "*/*",
       "Content-Type": "application/json"
     }
   );
-  function fileDownloadSuccess(response) {
-    response.headers.forEach(console.log);
+}
 
-    const contentDisposition = response.headers.get("content-disposition");
-    const fileNameIndex = contentDisposition.indexOf("filename=") + 10;
-    const fileName = contentDisposition.substring(fileNameIndex, contentDisposition.length - 1);
+export function fileDownloadSuccess(response) {
+  response.headers.forEach(console.log);
 
-    //   window.location.href = fileUrl;
-    response.blob().then(blob => {
-      var fileUrl = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      a.href = fileUrl;
-      a.download = fileName;
-      a.click();
-      window.URL.revokeObjectURL(fileUrl);
-    });
-  }
+  const contentDisposition = response.headers.get("content-disposition");
+  const fileNameIndex = contentDisposition.indexOf("filename=") + 10;
+  const fileName = contentDisposition.substring(fileNameIndex, contentDisposition.length - 1);
 
-  function fileDownloadFailure(response) {
-    response.json().then(responseJson => {
-      setPageErrorsJson(responseJson);
-      setPageErrorMessage("");
-      setShowErrorSummary(true);
-    });
-  }
+  //   window.location.href = fileUrl;
+  response.blob().then(blob => {
+    var fileUrl = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = fileUrl;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(fileUrl);
+  });
+}
+
+export function fileExportSuccess(response, fileName) {
+  response.json().then(respJson => {
+    const blob = new Blob([JSON.stringify(respJson)], { type: "application/json" });
+
+    let fileUrl = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = fileUrl;
+    a.download = fileName;
+    a.click();
+
+    window.URL.revokeObjectURL(fileUrl);
+  });
+}
+
+export function fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary) {
+  response.json().then(responseJson => {
+    setPageErrorsJson(responseJson);
+    setPageErrorMessage("");
+    setShowErrorSummary(true);
+  });
+}
+
+export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary) {
+  wsCall(
+    "exportslidelayout",
+    "GET",
+    { slidelayoutid: row.id, filename: "" },
+    true,
+    null,
+    response => fileDownloadSuccess(response),
+    response => fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary)
+  );
 }
 
 const alphabets = [

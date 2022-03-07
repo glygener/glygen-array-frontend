@@ -76,6 +76,9 @@ const Linkers = props => {
                 keyColumn="id"
                 form={"linkers"}
                 showRowsInfo
+                exportData
+                exportWsCall={"exportlinkers"}
+                fileName={"exportlinkers"}
                 infoRowsText="Chemicals/Linkers"
                 showDeleteButton={props.isImported ? false : true}
                 showEditButton={props.isImported ? false : true}

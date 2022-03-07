@@ -56,10 +56,14 @@ export function getWsUrl(ws) {
       return ws_base_array + "/getglycan";
     case "addmultipleglycans":
       return ws_base_array + "/addBatchGlycan";
+    case "exportglycans":
+      return ws_base_array + "/exportglycans";
     case "addlinker":
       return ws_base_array + "/addlinker";
     case "linkerlist":
       return ws_base_array + "/listLinkers";
+    case "exportlinkers":
+      return ws_base_array + "/exportlinkers";
     case "listmoleculesbytype":
       return ws_base_array + "/listMoleculesByType";
     case "listallmoleculesbytype":
