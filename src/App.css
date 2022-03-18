@@ -289,6 +289,9 @@ input[type]:not(:-ms-input-placeholder) + label {
   background-color: var(--gg-blue) !important;
   color: var(--gg-light-blue) !important;
 }
+.borderless td, .borderless th {
+  border: none !important;
+}
 
 .table-hover tbody tr:hover td,
 .table-hover tbody tr:hover th,

@@ -17,8 +17,9 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
+import { Table } from "react-bootstrap";
 
-const AddGlycanInfoToFeature = (props) => {
+const AddGlycanInfoToFeature = props => {
   const [invalidUrls, setInvalidUrls] = useState(false);
   const [newURL, setNewURL] = useState("");
   const [newPubMedId, setNewPubMedId] = useState("");
@@ -55,7 +56,7 @@ const AddGlycanInfoToFeature = (props) => {
     }
   };
 
-  const sourceInfoChangeForMetadata = (e) => {
+  const sourceInfoChangeForMetadata = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -80,7 +81,7 @@ const AddGlycanInfoToFeature = (props) => {
     }
   };
 
-  const purityInfoChange = (e) => {
+  const purityInfoChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
     let purityDetails;
@@ -149,38 +150,42 @@ const AddGlycanInfoToFeature = (props) => {
     },
   ];
 
-  const urlWidget = (enableDelete) => {
+  const urlWidget = enableDelete => {
     return (
       <>
         {props.addGlycanInfoToFeature.urls && props.addGlycanInfoToFeature.urls.length > 0
           ? props.addGlycanInfoToFeature.urls.map((url, index) => {
               return (
-                <Row key={index}>
-                  <Col md={10}>
-                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                      {url}
-                    </a>
-                  </Col>
-                  {enableDelete && (
-                    <Col className="pb-2 text-center" md={2}>
-                      <LineTooltip text="Delete URL">
-                        <Link>
-                          <FontAwesomeIcon
-                            icon={["far", "trash-alt"]}
-                            size="lg"
-                            alt="Delete URL"
-                            className="caution-color tbl-icon-btn"
-                            onClick={() => {
-                              const listUrls = props.addGlycanInfoToFeature.urls;
-                              listUrls.splice(index, 1);
-                              props.setAddGlycanInfoToFeature({ urls: listUrls });
-                            }}
-                          />
-                        </Link>
-                      </LineTooltip>
-                    </Col>
-                  )}
-                </Row>
+                <Table hover className="borderless mb-0">
+                  <tbody>
+                    <tr key={index}>
+                      <td>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </td>
+                      {enableDelete && (
+                        <td className="text-right">
+                          <LineTooltip text="Delete URL">
+                            <Link>
+                              <FontAwesomeIcon
+                                icon={["far", "trash-alt"]}
+                                size="lg"
+                                alt="Delete URL"
+                                className="caution-color tbl-icon-btn"
+                                onClick={() => {
+                                  const listUrls = props.addGlycanInfoToFeature.urls;
+                                  listUrls.splice(index, 1);
+                                  props.setAddGlycanInfoToFeature({ urls: listUrls });
+                                }}
+                              />
+                            </Link>
+                          </LineTooltip>
+                        </td>
+                      )}
+                    </tr>
+                  </tbody>
+                </Table>
               );
             })
           : ""}
@@ -191,7 +196,7 @@ const AddGlycanInfoToFeature = (props) => {
   function addURL() {
     var listUrls = props.addGlycanInfoToFeature.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find((i) => i === urlEntered);
+    const urlExists = listUrls.find(i => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -209,7 +214,7 @@ const AddGlycanInfoToFeature = (props) => {
 
   function addPublication() {
     let publications = props.addGlycanInfoToFeature.papers;
-    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
       wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
@@ -218,7 +223,7 @@ const AddGlycanInfoToFeature = (props) => {
     }
 
     function addPublicationSuccess(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         setShowErrorSummary(false);
         props.setAddGlycanInfoToFeature({
           papers: props.addGlycanInfoToFeature.papers.concat([responseJson]),
@@ -228,7 +233,7 @@ const AddGlycanInfoToFeature = (props) => {
     }
 
     function addPublicationError(response) {
-      response.text().then((resp) => {
+      response.text().then(resp => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -241,7 +246,7 @@ const AddGlycanInfoToFeature = (props) => {
 
   function deletePublication(id, wscall) {
     const publications = props.addGlycanInfoToFeature.papers;
-    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     props.setAddGlycanInfoToFeature({ papers: publications });
@@ -259,7 +264,7 @@ const AddGlycanInfoToFeature = (props) => {
                 name="name"
                 placeholder="Enter Name"
                 value={props.metadata.name}
-                onChange={(e) => {
+                onChange={e => {
                   props.setMetadata({ name: e.target.value });
                   props.setMetadata({ invalidName: false });
                 }}
@@ -279,7 +284,7 @@ const AddGlycanInfoToFeature = (props) => {
                 name="featureId"
                 placeholder="Enter Feature ID"
                 value={props.metadata.featureId}
-                onChange={(e) => {
+                onChange={e => {
                   props.setMetadata({ featureId: e.target.value });
                   props.setMetadata({ validateFeatureId: false });
                 }}
@@ -399,7 +404,7 @@ const AddGlycanInfoToFeature = (props) => {
     );
   };
 
-  const getSourceOptions = (sourceProp) => {
+  const getSourceOptions = sourceProp => {
     return (
       <>
         <Row className="gg-align-center mb-3">
@@ -508,7 +513,7 @@ const AddGlycanInfoToFeature = (props) => {
                 placeholder="Enter Min Range"
                 value={props.addGlycanInfoToFeature.minRangeSelected}
                 isInvalid={minRangeInValid}
-                onChange={(e) => {
+                onChange={e => {
                   if (
                     parseInt(e.target.value) > parseInt(props.maxRange) ||
                     parseInt(e.target.value) < 1 ||
@@ -522,7 +527,7 @@ const AddGlycanInfoToFeature = (props) => {
                   props.setAddGlycanInfoToFeature({ minRangeSelected: e.target.value });
                 }}
                 min={1}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key.length === 1) {
                     if (e.key !== "v" && e.key !== "V") {
                       isValidNumber(e);
@@ -543,7 +548,7 @@ const AddGlycanInfoToFeature = (props) => {
                 placeholder="Enter Max Range"
                 value={props.addGlycanInfoToFeature.maxRangeSelected}
                 isInvalid={maxRangeInValid}
-                onChange={(e) => {
+                onChange={e => {
                   if (
                     parseInt(e.target.value) > parseInt(props.maxRange) ||
                     parseInt(e.target.value) < 1 ||
@@ -556,7 +561,7 @@ const AddGlycanInfoToFeature = (props) => {
                   props.setAddGlycanInfoToFeature({ maxRangeSelected: e.target.value });
                 }}
                 min={1}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key.length === 1) {
                     if (e.key !== "v" && e.key !== "V") {
                       isValidNumber(e);
@@ -594,7 +599,7 @@ const AddGlycanInfoToFeature = (props) => {
                 name="urls"
                 placeholder="Enter URL and click +"
                 value={newURL}
-                onChange={(e) => {
+                onChange={e => {
                   setNewURL(e.target.value);
                   setInvalidUrls(false);
                 }}
@@ -630,7 +635,7 @@ const AddGlycanInfoToFeature = (props) => {
                 placeholder="Enter name of the Paper and click +"
                 value={newPubMedId}
                 maxLength={100}
-                onChange={(e) => {
+                onChange={e => {
                   const _value = e.target.value;
                   if (_value && !/^[0-9]+$/.test(_value)) {
                     return;
@@ -659,7 +664,7 @@ const AddGlycanInfoToFeature = (props) => {
           <MultiToggle
             options={opensRingOptions}
             selectedOption={props.addGlycanInfoToFeature.opensRing}
-            onSelectOption={(value) => {
+            onSelectOption={value => {
               props.setAddGlycanInfoToFeature({ opensRing: value });
             }}
           />
@@ -676,7 +681,7 @@ const AddGlycanInfoToFeature = (props) => {
               name="equilibriumComment"
               placeholder="Enter Equilibrium Comment"
               value={props.addGlycanInfoToFeature.equilibriumComment}
-              onChange={(e) => {
+              onChange={e => {
                 const name = e.target.name;
                 props.setAddGlycanInfoToFeature({
                   [name]: e.target.value,

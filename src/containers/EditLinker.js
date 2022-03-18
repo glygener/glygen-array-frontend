@@ -15,6 +15,7 @@ import { Button } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { addCommas } from "../utils/commonUtils";
+import { Table } from "react-bootstrap";
 
 const EditLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -382,11 +383,17 @@ const EditLinker = props => {
                       {linkerDetails.urls && linkerDetails.urls.length > 0
                         ? linkerDetails.urls.map((url, index) => {
                             return (
-                              <div className="mb-2" key={index}>
-                                <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                                  {url}
-                                </a>
-                              </div>
+                              <Table hover className="borderless mb-0">
+                                <tbody>
+                                  <tr key={index}>
+                                    <td>
+                                      <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                                        {url}
+                                      </a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </Table>
                             );
                           })
                         : ""}

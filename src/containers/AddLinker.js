@@ -26,6 +26,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
+import { Table } from "react-bootstrap";
 
 const AddLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -65,7 +66,7 @@ const AddLinker = props => {
     urls: [],
     source: "commercial",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -81,7 +82,7 @@ const AddLinker = props => {
     canonicalSmiles: { label: "Canonical SMILES", type: "text" },
     isomericSmiles: { label: "Isomeric SMILES", type: "text" },
     name: { label: "Name", type: "text", length: 100 },
-    comment: { label: "Comment", type: "textarea", length: 10000 }
+    comment: { label: "Comment", type: "textarea", length: 10000 },
   };
 
   const sourceSelection = e => {
@@ -173,7 +174,7 @@ const AddLinker = props => {
       window.scrollTo({
         top: 0,
         left: 0,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -277,7 +278,7 @@ const AddLinker = props => {
           isomericSmiles: responseJson.isomericSmiles,
           canonicalSmiles: responseJson.smiles,
           mass: responseJson.mass,
-          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`]
+          urls: [`${displayNames.pubchem.url}${responseJson.pubChemId}`],
         });
 
         setShowErrorSummary(false);
@@ -333,38 +334,37 @@ const AddLinker = props => {
         {linker.urls && linker.urls.length > 0
           ? linker.urls.map((url, index) => {
               return (
-                <Row key={index}>
-                  <Col
-                    md={10}
-                    style={{
-                      wordBreak: "break-all"
-                    }}
-                  >
-                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                      {url}
-                    </a>
-                  </Col>
+                <Table hover className="borderless mb-0">
+                  <tbody>
+                    <tr key={index}>
+                      <td>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </td>
 
-                  {enableDelete && (
-                    <Col className="pb-2 text-center" md={2}>
-                      <LineTooltip text="Delete URL">
-                        <Link>
-                          <FontAwesomeIcon
-                            icon={["far", "trash-alt"]}
-                            size="lg"
-                            alt="Delete URL"
-                            className="caution-color tbl-icon-btn"
-                            onClick={() => {
-                              const listUrls = linker.urls;
-                              listUrls.splice(index, 1);
-                              setLinker({ urls: listUrls });
-                            }}
-                          />
-                        </Link>
-                      </LineTooltip>
-                    </Col>
-                  )}
-                </Row>
+                      {enableDelete && (
+                        <td className="text-right">
+                          <LineTooltip text="Delete URL">
+                            <Link>
+                              <FontAwesomeIcon
+                                icon={["far", "trash-alt"]}
+                                size="lg"
+                                alt="Delete URL"
+                                className="caution-color tbl-icon-btn"
+                                onClick={() => {
+                                  const listUrls = linker.urls;
+                                  listUrls.splice(index, 1);
+                                  setLinker({ urls: listUrls });
+                                }}
+                              />
+                            </Link>
+                          </LineTooltip>
+                        </td>
+                      )}
+                    </tr>
+                  </tbody>
+                </Table>
               );
             })
           : ""}
@@ -401,8 +401,8 @@ const AddLinker = props => {
           inChiSequence: linker.inChiSequence,
           source: linker.source,
           uniProtId: linker.uniProtId,
-          pdbIds: linker.pdbIds
-        }
+          pdbIds: linker.pdbIds,
+        },
       });
       setNewURL("");
       setNewPubMedId("");
@@ -424,7 +424,7 @@ const AddLinker = props => {
       response.json().then(responseJson => {
         setShowErrorSummary(false);
         setLinker({
-          publications: linker.publications.concat([responseJson])
+          publications: linker.publications.concat([responseJson]),
         });
         setNewPubMedId("");
         clearFieldsReset();
@@ -856,11 +856,17 @@ const AddLinker = props => {
                   <FormLabel label="URLs" />
                   {linker.urls.map((url, index) => {
                     return (
-                      <div key={index}>
-                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                          {url}
-                        </a>
-                      </div>
+                      <Table hover className="borderless mb-0">
+                        <tbody>
+                          <tr key={index}>
+                            <td>
+                              <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                                {url}
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
                     );
                   })}
                 </Col>
@@ -909,7 +915,7 @@ const AddLinker = props => {
     let unknownLinker = linker.selectedLinker === "Unknown" ? true : false;
 
     var source = {
-      type: "NOTRECORDED"
+      type: "NOTRECORDED",
     };
 
     if (linker.source === "commercial") {
@@ -940,7 +946,7 @@ const AddLinker = props => {
       description: linker.comment,
       publications: linker.publications,
       urls: linker.urls,
-      source: source
+      source: source,
     };
 
     wsCall(

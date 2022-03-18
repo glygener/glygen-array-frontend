@@ -4,18 +4,19 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Table } from "react-bootstrap";
 
-const PublicationCard = (props) => {
+const PublicationCard = props => {
   return (
     <>
-      <table hover fluid="true" className="table-striped mb-3">
-        <tbody className="table-body">
-          <tr className="table-row p-3" key={props.pubIndex + "tr"}>
-            <td key={props.pubIndex} className="pt-3 pb-3 pl-2">
+      <Table hover className="borderless mb-0">
+        <tbody>
+          <tr key={props.pubIndex}>
+            <td key={props.pubIndex}>
               <div>
-                <h5 style={{ marginBottom: "3px" }}>
+                <h6 style={{ marginBottom: "3px" }}>
                   <strong>{props.title}</strong>
-                </h5>
+                </h6>
               </div>
 
               <div style={{ textAlign: "left", paddingLeft: "35px" }}>
@@ -38,7 +39,7 @@ const PublicationCard = (props) => {
               </div>
             </td>
             {props.enableDelete && (
-              <td>
+              <td className="text-right">
                 <LineTooltip text="Delete Publication">
                   <Link>
                     <FontAwesomeIcon
@@ -54,7 +55,7 @@ const PublicationCard = (props) => {
             )}
           </tr>
         </tbody>
-      </table>
+      </Table>
     </>
   );
 };

@@ -29,6 +29,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
+import { Table } from "react-bootstrap";
 
 const AddProtein = props => {
   useEffect(props.authCheckAgent, []);
@@ -60,7 +61,7 @@ const AddProtein = props => {
     urls: [],
     source: "commercial",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -71,7 +72,7 @@ const AddProtein = props => {
     sequence: { label: "Sequence", type: "textarea" },
     comment: { label: "Comment", type: "textarea", length: 10000 },
     uniProtId: { label: "UniProt ID", type: "text", length: 100 },
-    pdbIds: { label: "PDB IDs", type: "text" }
+    pdbIds: { label: "PDB IDs", type: "text" },
   };
 
   const sourceSelection = e => {
@@ -198,8 +199,8 @@ const AddProtein = props => {
           sequence: protein.sequence,
           source: protein.source,
           uniProtId: protein.uniProtId,
-          pdbIds: protein.pdbIds
-        }
+          pdbIds: protein.pdbIds,
+        },
       });
       setNewURL("");
       setNewPubMedId("");
@@ -258,7 +259,7 @@ const AddProtein = props => {
       response.json().then(responseJson => {
         setShowErrorSummary(false);
         setProtein({
-          publications: protein.publications.concat([responseJson])
+          publications: protein.publications.concat([responseJson]),
         });
         setNewPubMedId("");
         clearFieldsReset();
@@ -293,7 +294,7 @@ const AddProtein = props => {
     function getSequenceFromUniprotSuccess(response) {
       response.text().then(sequence => {
         setProtein({
-          sequence: sequence
+          sequence: sequence,
         });
       });
       setShowLoading(false);
@@ -303,7 +304,7 @@ const AddProtein = props => {
     function getSequenceFromUniprotError(response) {
       let status = response.status;
 
-      response.text().then(function(text) {
+      response.text().then(function (text) {
         if (text) {
           setPageErrorMessage(JSON.parse(text));
         } else {
@@ -351,37 +352,36 @@ const AddProtein = props => {
         {protein.urls && protein.urls.length > 0
           ? protein.urls.map((url, index) => {
               return (
-                <Row key={index}>
-                  <Col
-                    md={10}
-                    style={{
-                      wordBreak: "break-all"
-                    }}
-                  >
-                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                      {url}
-                    </a>
-                  </Col>
-                  {enableDelete && (
-                    <Col className="pb-2 text-center" md={2}>
-                      <LineTooltip text="Delete URL">
-                        <Link>
-                          <FontAwesomeIcon
-                            icon={["far", "trash-alt"]}
-                            size="lg"
-                            alt="Delete URL"
-                            className="caution-color tbl-icon-btn"
-                            onClick={() => {
-                              const listUrls = protein.urls;
-                              listUrls.splice(index, 1);
-                              setProtein({ urls: listUrls });
-                            }}
-                          />
-                        </Link>
-                      </LineTooltip>
-                    </Col>
-                  )}
-                </Row>
+                <Table hover className="borderless mb-0">
+                  <tbody>
+                    <tr key={index}>
+                      <td>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </td>
+                      {enableDelete && (
+                        <td className="text-right">
+                          <LineTooltip text="Delete URL">
+                            <Link>
+                              <FontAwesomeIcon
+                                icon={["far", "trash-alt"]}
+                                size="lg"
+                                alt="Delete URL"
+                                className="caution-color tbl-icon-btn"
+                                onClick={() => {
+                                  const listUrls = protein.urls;
+                                  listUrls.splice(index, 1);
+                                  setProtein({ urls: listUrls });
+                                }}
+                              />
+                            </Link>
+                          </LineTooltip>
+                        </td>
+                      )}
+                    </tr>
+                  </tbody>
+                </Table>
               );
             })
           : ""}
@@ -448,7 +448,7 @@ const AddProtein = props => {
                     onChange={e => {
                       setShowErrorSummary(false);
                       setProtein({
-                        pdbIds: csvToArray(e.target.value)
+                        pdbIds: csvToArray(e.target.value),
                       });
                     }}
                     maxLength={100}
@@ -698,11 +698,17 @@ const AddProtein = props => {
                   <FormLabel label="URLs" />
                   {protein.urls.map((url, index) => {
                     return (
-                      <div key={index}>
-                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                          {url}
-                        </a>
-                      </div>
+                      <Table hover className="borderless mb-0">
+                        <tbody>
+                          <tr key={index}>
+                            <td>
+                              <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                                {url}
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
                     );
                   })}
                 </Col>
@@ -766,7 +772,7 @@ const AddProtein = props => {
     let unknownProtien = protein.selectedProtein === "Unknown" ? true : false;
 
     var source = {
-      type: "NOTRECORDED"
+      type: "NOTRECORDED",
     };
 
     if (protein.source === "commercial") {
@@ -791,7 +797,7 @@ const AddProtein = props => {
       sequence: protein.sequence.trim(),
       source: source,
       uniProtId: protein.uniProtId,
-      pdbIds: protein.pdbIds
+      pdbIds: protein.pdbIds,
     };
 
     wsCall(

@@ -29,8 +29,9 @@ import { BlueRadio } from "../components/FormControls";
 import { Link } from "react-router-dom";
 import ExampleExploreControl from "../components/ExampleExploreControl";
 import moleculeExamples from "../appData/moleculeExamples";
+import { Table } from "react-bootstrap";
 
-const AddPeptide = (props) => {
+const AddPeptide = props => {
   useEffect(props.authCheckAgent, []);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -70,12 +71,12 @@ const AddPeptide = (props) => {
     comment: { label: "Comment", type: "textarea", length: 10000 },
   };
 
-  const sourceSelection = (e) => {
+  const sourceSelection = e => {
     const newValue = e.target.value;
     setPeptide({ source: newValue });
   };
 
-  const sourceChange = (e) => {
+  const sourceChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -100,7 +101,7 @@ const AddPeptide = (props) => {
 
   const steps = getSteps();
 
-  const handleNext = (e) => {
+  const handleNext = e => {
     setValidate(false);
     var stepIncrement = 1;
 
@@ -141,10 +142,10 @@ const AddPeptide = (props) => {
       return;
     }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + stepIncrement);
+    setActiveStep(prevActiveStep => prevActiveStep + stepIncrement);
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const name = e.target.name;
     const newValue = e.target.value;
 
@@ -164,10 +165,10 @@ const AddPeptide = (props) => {
         stepDecrement += 1;
       }
     }
-    setActiveStep((prevActiveStep) => prevActiveStep - stepDecrement);
+    setActiveStep(prevActiveStep => prevActiveStep - stepDecrement);
   };
 
-  const handleSelect = (e) => {
+  const handleSelect = e => {
     const newValue = e.target.value;
     setPeptide({ ...peptideInitialState, ...{ selectedPeptide: newValue } });
   };
@@ -235,7 +236,7 @@ const AddPeptide = (props) => {
 
   function addPublication() {
     let publications = peptide.publications;
-    let pubmedExists = publications.find((i) => i.pubmedId === parseInt(newPubMedId));
+    let pubmedExists = publications.find(i => i.pubmedId === parseInt(newPubMedId));
 
     if (!pubmedExists) {
       wsCall("getpublication", "GET", [newPubMedId], true, null, addPublicationSuccess, addPublicationError);
@@ -244,7 +245,7 @@ const AddPeptide = (props) => {
     }
 
     function addPublicationSuccess(response) {
-      response.json().then((responseJson) => {
+      response.json().then(responseJson => {
         setShowErrorSummary(false);
         setPeptide({
           publications: peptide.publications.concat([responseJson]),
@@ -260,7 +261,7 @@ const AddPeptide = (props) => {
     }
 
     function addPublicationError(response) {
-      response.text().then((resp) => {
+      response.text().then(resp => {
         if (resp) {
           setPageErrorsJson(JSON.parse(resp));
         } else {
@@ -273,7 +274,7 @@ const AddPeptide = (props) => {
 
   function deletePublication(id, wscall) {
     const publications = peptide.publications;
-    const publicationToBeDeleted = publications.find((i) => i.pubmedId === id);
+    const publicationToBeDeleted = publications.find(i => i.pubmedId === id);
     const pubDeleteIndex = publications.indexOf(publicationToBeDeleted);
     publications.splice(pubDeleteIndex, 1);
     setPeptide({ publications: publications });
@@ -282,7 +283,7 @@ const AddPeptide = (props) => {
   function addURL() {
     var listUrls = peptide.urls;
     var urlEntered = csvToArray(newURL)[0];
-    const urlExists = listUrls.find((i) => i === urlEntered);
+    const urlExists = listUrls.find(i => i === urlEntered);
 
     if (!urlExists) {
       if (urlEntered !== "" && !isValidURL(urlEntered)) {
@@ -298,43 +299,42 @@ const AddPeptide = (props) => {
     setNewURL("");
   }
 
-  const urlWidget = (enableDelete) => {
+  const urlWidget = enableDelete => {
     return (
       <>
         {peptide.urls && peptide.urls.length > 0
           ? peptide.urls.map((url, index) => {
               return (
-                <Row key={index}>
-                  <Col
-                    md={10}
-                    style={{
-                      wordBreak: "break-all",
-                    }}
-                  >
-                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                      {url}
-                    </a>
-                  </Col>
-                  {enableDelete && (
-                    <Col className="pb-2 text-center" md={2}>
-                      <LineTooltip text="Delete URL">
-                        <Link>
-                          <FontAwesomeIcon
-                            icon={["far", "trash-alt"]}
-                            alt="Delete URL"
-                            size="lg"
-                            className="caution-color tbl-icon-btn"
-                            onClick={() => {
-                              const listUrls = peptide.urls;
-                              listUrls.splice(index, 1);
-                              setPeptide({ urls: listUrls });
-                            }}
-                          />
-                        </Link>
-                      </LineTooltip>
-                    </Col>
-                  )}
-                </Row>
+                <Table hover className="borderless mb-0">
+                  <tbody>
+                    <tr key={index}>
+                      <td>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </td>
+                      {enableDelete && (
+                        <td className="text-right">
+                          <LineTooltip text="Delete URL">
+                            <Link>
+                              <FontAwesomeIcon
+                                icon={["far", "trash-alt"]}
+                                alt="Delete URL"
+                                size="lg"
+                                className="caution-color tbl-icon-btn"
+                                onClick={() => {
+                                  const listUrls = peptide.urls;
+                                  listUrls.splice(index, 1);
+                                  setPeptide({ urls: listUrls });
+                                }}
+                              />
+                            </Link>
+                          </LineTooltip>
+                        </td>
+                      )}
+                    </tr>
+                  </tbody>
+                </Table>
               );
             })
           : ""}
@@ -464,7 +464,7 @@ const AddPeptide = (props) => {
                           name="urls"
                           placeholder="Enter the URL and click +"
                           value={newURL}
-                          onChange={(e) => {
+                          onChange={e => {
                             setNewURL(e.target.value);
                             setInvalidUrls(false);
                             clearFieldsReset();
@@ -502,7 +502,7 @@ const AddPeptide = (props) => {
                           name="publication"
                           placeholder="Enter the Pubmed ID and click +"
                           value={newPubMedId}
-                          onChange={(e) => {
+                          onChange={e => {
                             const _value = e.target.value;
                             if (_value && !/^[0-9]+$/.test(_value)) {
                               return;
@@ -581,7 +581,7 @@ const AddPeptide = (props) => {
       case 3:
         return (
           <Form>
-            {Object.keys(reviewFields).map((key) =>
+            {Object.keys(reviewFields).map(key =>
               key === "sequence" && peptide.selectedPeptide === "Unknown" ? (
                 ""
               ) : (
@@ -607,11 +607,17 @@ const AddPeptide = (props) => {
                   <FormLabel label="URLs" />
                   {peptide.urls.map((url, index) => {
                     return (
-                      <div key={index}>
-                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                          {url}
-                        </a>
-                      </div>
+                      <Table hover className="borderless mb-0">
+                        <tbody>
+                          <tr key={index}>
+                            <td>
+                              <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                                {url}
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
                     );
                   })}
                 </Col>
@@ -620,10 +626,10 @@ const AddPeptide = (props) => {
 
             {peptide.publications && peptide.publications.length > 0 && (
               <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
-                 <Col xs={12} lg={9}>
+                <Col xs={12} lg={9}>
                   <FormLabel label="Publications" />
                   {peptide.publications && peptide.publications.length > 0
-                    ? peptide.publications.map((pub) => {
+                    ? peptide.publications.map(pub => {
                         return (
                           <div>
                             <PublicationCard key={pub.pubmedId} {...pub} enableDelete={false} />
@@ -703,12 +709,12 @@ const AddPeptide = (props) => {
       { unknown: unknownPeptide },
       true,
       peptideObj,
-      (response) => history.push("/peptides"),
+      response => history.push("/peptides"),
       addPeptideFailure
     );
 
     function addPeptideFailure(response) {
-      response.json().then((parsedJson) => {
+      response.json().then(parsedJson => {
         setPageErrorsJson(parsedJson);
         setShowErrorSummary(true);
       });
@@ -744,7 +750,7 @@ const AddPeptide = (props) => {
     }
   }
 
-  const isStepSkipped = (step) => {
+  const isStepSkipped = step => {
     return peptide.selectedPeptide === "Unknown" && step === 1 && activeStep === 2;
   };
 

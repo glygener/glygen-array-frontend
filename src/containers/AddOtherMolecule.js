@@ -24,6 +24,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
+import { Table } from "react-bootstrap";
 
 const AddOtherMolecule = props => {
   useEffect(props.authCheckAgent, []);
@@ -50,7 +51,7 @@ const AddOtherMolecule = props => {
     urls: [],
     source: "commercial",
     commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
+    nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -112,7 +113,7 @@ const AddOtherMolecule = props => {
       response.json().then(responseJson => {
         setShowErrorSummary(false);
         setOtherMolecule({
-          publications: otherMolecule.publications.concat([responseJson])
+          publications: otherMolecule.publications.concat([responseJson]),
         });
         setNewPubMedId("");
         setDisableReset(true);
@@ -164,32 +165,36 @@ const AddOtherMolecule = props => {
         {otherMolecule.urls && otherMolecule.urls.length > 0
           ? otherMolecule.urls.map((url, index) => {
               return (
-                <Row key={index}>
-                  <Col md={10}>
-                    <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                      {url}
-                    </a>
-                  </Col>
-                  {enableDelete && (
-                    <Col className="pb-2 text-center" md={2}>
-                      <LineTooltip text="Delete URL">
-                        <Link>
-                          <FontAwesomeIcon
-                            icon={["far", "trash-alt"]}
-                            size="lg"
-                            alt="Delete URL"
-                            className="caution-color tbl-icon-btn"
-                            onClick={() => {
-                              const listUrls = otherMolecule.urls;
-                              listUrls.splice(index, 1);
-                              setOtherMolecule({ urls: listUrls });
-                            }}
-                          />
-                        </Link>
-                      </LineTooltip>
-                    </Col>
-                  )}
-                </Row>
+                <Table hover className="borderless mb-0">
+                  <tbody>
+                    <tr key={index}>
+                      <td>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </td>
+                      {enableDelete && (
+                        <td className="text-right">
+                          <LineTooltip text="Delete URL">
+                            <Link>
+                              <FontAwesomeIcon
+                                icon={["far", "trash-alt"]}
+                                size="lg"
+                                alt="Delete URL"
+                                className="caution-color tbl-icon-btn"
+                                onClick={() => {
+                                  const listUrls = otherMolecule.urls;
+                                  listUrls.splice(index, 1);
+                                  setOtherMolecule({ urls: listUrls });
+                                }}
+                              />
+                            </Link>
+                          </LineTooltip>
+                        </td>
+                      )}
+                    </tr>
+                  </tbody>
+                </Table>
               );
             })
           : ""}
@@ -203,8 +208,8 @@ const AddOtherMolecule = props => {
       commercial: othermoleculeInitialState.commercial,
       nonCommercial: othermoleculeInitialState.nonCommercial,
       ...{
-        source: otherMolecule.source
-      }
+        source: otherMolecule.source,
+      },
     });
     setNewURL("");
     setNewPubMedId("");
@@ -389,7 +394,7 @@ const AddOtherMolecule = props => {
     }
 
     var source = {
-      type: "NOTRECORDED"
+      type: "NOTRECORDED",
     };
 
     if (otherMolecule.source === "commercial") {
@@ -421,7 +426,7 @@ const AddOtherMolecule = props => {
         description: otherMolecule.comment,
         publications: otherMolecule.publications,
         urls: otherMolecule.urls,
-        source: source
+        source: source,
       };
 
       wsCall(
@@ -441,7 +446,6 @@ const AddOtherMolecule = props => {
 
     function addOtherMoleculeFailure(response) {
       response.json().then(parsedJson => {
-        
         if (parsedJson.errors.filter(i => i.objectName === "name").length > 0) {
           setValidate(false);
           setDuplicateName(true);

@@ -7,6 +7,7 @@ import { PublicationCard } from "./PublicationCard";
 import { ViewSourceInfo } from "./ViewSourceInfo";
 import { getReducingEndState } from "../containers/FeatureView";
 import { getSource } from "../utils/FeatureUtils";
+import { Table } from "react-bootstrap";
 
 const GlycanInFeatureInfoView = props => {
   const glycanInfoInit = {
@@ -15,9 +16,9 @@ const GlycanInFeatureInfoView = props => {
       source: {
         type: "",
         commercial: { vendor: "", catalogueNumber: "", batchId: "" },
-        nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" }
-      }
-    }
+        nonCommercial: { providerLab: "", batchId: "", method: "", sourceComment: "" },
+      },
+    },
   };
 
   const [glycanDetails, setGlycanDetails] = useReducer(
@@ -164,11 +165,17 @@ const GlycanInFeatureInfoView = props => {
             <FormLabel label="URLs" />
             {glycanDetails.glycan.urls.map((url, index) => {
               return (
-                <div className="mb-2" key={index}>
-                  <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
-                    {url}
-                  </a>
-                </div>
+                <Table hover className="borderless mb-0">
+                  <tbody>
+                    <tr key={index}>
+                      <td>
+                        <a href={externalizeUrl(url)} target="_blank" rel="external noopener noreferrer">
+                          {url}
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
               );
             })}
           </Col>
