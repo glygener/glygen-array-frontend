@@ -843,7 +843,7 @@ const Descriptors = props => {
           <FormLabel label={element.name} className={element.mandatory ? "required-asterik" : ""} />
           <Row>
             {element.namespace.name === "text" ? (
-              <>
+              <Col>
                 <Form.Control
                   as="textarea"
                   name={element.name}
@@ -855,11 +855,11 @@ const Descriptors = props => {
                   rows={4}
                   disabled={descriptorDetails.isHide || element.disabled}
                 />
-                <div className="text-right text-muted">
+                <div className="gg-align-right text-right text-muted">
                   {element.value && element.value.length > 0 ? element.value.length : "0"}
                   /2000
                 </div>
-              </>
+              </Col>
             ) : element.namespace.name === "number" ? (
               <Col className="ml-0 pl-0 mr-0 pr-0">
                 <Form.Control

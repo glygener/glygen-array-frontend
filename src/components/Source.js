@@ -83,7 +83,7 @@ const Source = (props) => {
               placeholder="Enter Provider Lab name"
               value={props.nonCommercial.providerLab}
               isInvalid={props.validate}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
               disabled={props.nonCommercial.providerLabNotRecorded}
               required
             />
@@ -115,7 +115,7 @@ const Source = (props) => {
               name="batchId"
               type="text"
               placeholder="Enter Batch ID"
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
               value={props.nonCommercial.batchId}
             />
           </Col>
@@ -130,8 +130,14 @@ const Source = (props) => {
               rows={4}
               placeholder="Enter Method"
               value={props.nonCommercial.method}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
             />
+            <div className="text-right text-muted">
+              {props.nonCommercial.method && props.nonCommercial.method.length > 0
+                ? props.nonCommercial.method.length
+                : "0"}
+              /2000
+            </div>
           </Col>
         </Form.Group>
 
@@ -144,7 +150,7 @@ const Source = (props) => {
               name="sourceComment"
               placeholder="Enter Source Comment"
               value={props.nonCommercial.sourceComment}
-              onChange={(e) => props.sourceChange(e)}
+              onChange={e => props.sourceChange(e)}
               maxLength={2000}
             />
             <div className="text-right text-muted">

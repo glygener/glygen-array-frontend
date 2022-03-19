@@ -374,7 +374,19 @@ const AddGlycanInfoToFeature = props => {
                 disabled={props.metadata.purity.methodNotRecorded}
                 required
               />
-              <Feedback message={"Method is required"} />
+              <Row>
+                <Col>
+                  <Feedback message={"Method is required"} className="text-left" />
+                </Col>
+                <Col className="text-right text-muted">
+                  {props.metadata.purity &&
+                  props.metadata.purity.method &&
+                  (props.metadata.purity.length && props.metadata.purity.method.length) > 0
+                    ? props.metadata.purity.length && props.metadata.purity.method.length
+                    : "0"}
+                  /2000
+                </Col>
+              </Row>
             </Col>
             {getDisableCheck("methodNotRecorded", "validateMethod")}
           </Form.Group>
@@ -386,7 +398,7 @@ const AddGlycanInfoToFeature = props => {
                 as="textarea"
                 rows={4}
                 name="comment"
-                placeholder="Comment"
+                placeholder="Enter Comment"
                 value={props.metadata.purity && props.metadata.purity.comment}
                 onChange={purityInfoChange}
                 maxLength={2000}
