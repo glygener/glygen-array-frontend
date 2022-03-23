@@ -1,33 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import Tree from "react-animated-tree";
-import { Button, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { downloadFile } from "../utils/commonUtils";
 import { LineTooltip } from "./tooltip/LineTooltip";
+import { SlideOnExperiment } from "../containers/SlideOnExperiment";
+import { ImageOnSlideExp } from "../containers/ImageOnSlideExp";
+import { RawdataOnImage } from "../containers/RawdataOnImage";
+import { ProcessDataOnRd } from "../containers/ProcessDataOnRd";
 import "../components/DataTreeView.css";
 
 const DataTreeView = props => {
-  let { data } = props;
+  let { data, experimentId } = props;
 
-  function handleAddImage(slideId, image) {
-    debugger;
-  }
+  const [enableSlideModal, setEnableSlideModal] = useState(false);
+  const [enableImageOnSlide, setEnableImageOnSlide] = useState(false);
+  const [enableRawdataOnImage, setEnableRawdataOnImage] = useState(false);
+  const [enableProcessRawdata, setEnableProcessRawdata] = useState(false);
+  const [slideSelected, setSlideSelected] = useState();
+  const [imageSelected, setImageSelected] = useState();
+  const [rawdataSelected, setRawdataSelected] = useState();
 
-  const handleAddSlide = experimentId => {};
-
+  const slideView = row => {};
   return (
     <>
       <Tree
-        style={{ paddingTop: "25px" }}
+        style={{ paddingTop: "15px" }}
         content={
           <>
             <div style={{ marginTop: "-45px", marginLeft: "30px" }}>
               <div className={"rst__rowWrapper"}>
                 <div className={"rst__row"}>
-                  <div className={"handle_bar "} />
                   <div className={"row_headline"}>
                     <span style={{ marginLeft: "10px" }}>{"Experiment"}</span>
-                    <span style={{ marginLeft: "110px" }}>
+                    <span style={{ marginLeft: "40px" }}>
                       <LineTooltip text="Add Slide">
                         <span>
                           <FontAwesomeIcon
@@ -35,7 +40,9 @@ const DataTreeView = props => {
                             size="lg"
                             title="Add Slide"
                             alt="Add Slide"
-                            onClick={() => handleAddSlide(props.experimentId)}
+                            onClick={() => {
+                              setEnableSlideModal(true);
+                            }}
                           />
                         </span>
                       </LineTooltip>
@@ -50,90 +57,88 @@ const DataTreeView = props => {
         open
         visible
       >
-        {data.map(exp => {
-          return exp.slides.map((slide, index) => {
+        {/* {data.map(exp => { 
+          return */}
+        {data.slides &&
+          data.slides.map((slide, index) => {
             return (
               <Tree
-                style={{ paddingTop: "25px" }}
+                style={{ paddingTop: "15px", marginLeft: "30px" }}
                 content={
                   <>
                     {/*  */}
                     <div style={{ marginTop: "-45px", marginLeft: "30px" }}>
                       <div className={"rst__rowWrapper"}>
                         <div className={"rst__row"}>
-                          <div className={"handle_bar "} />
                           <div className={"row_headline"}>
-                            <span style={{ marginLeft: "10px" }}>{"Slide"}</span>
-                            <span style={{ marginLeft: "110px" }}>
+                            <span>{"Slide"}</span>
+                            <span style={{ marginLeft: "20px" }}>{slide.printedSlide.name}</span>
+                            <span style={{ marginLeft: "75px" }}>
                               <LineTooltip text="Add Image">
                                 <span>
                                   <FontAwesomeIcon
                                     icon={["fas", "plus"]}
                                     size="lg"
-                                    title="Add Slide"
-                                    alt="Add Slide"
-                                    onClick={() => handleAddSlide(props.experimentId)}
+                                    title="Add Image"
+                                    alt="Add Image"
+                                    className="tbl-icon-btn"
+                                    onClick={() => {
+                                      setSlideSelected(slide.id);
+                                      setEnableImageOnSlide(true);
+                                    }}
                                   />
                                 </span>
                               </LineTooltip>
+
+                              {slide.file && (
+                                <FontAwesomeIcon
+                                  className="tbl-icon-btn download-btn"
+                                  icon={["fas", "download"]}
+                                  size="lg"
+                                  title="Download Metadata"
+                                  onClick={() => {
+                                    downloadFile(
+                                      slide.file,
+                                      props.setPageErrorsJson,
+                                      props.setPageErrorMessage,
+                                      props.setShowErrorSummary,
+                                      "filedownload"
+                                    );
+                                  }}
+                                />
+                              )}
+
+                              {slide.id && (
+                                <>
+                                  <LineTooltip text="Delete Slide">
+                                    <FontAwesomeIcon
+                                      key={"delete" + index}
+                                      icon={["far", "trash-alt"]}
+                                      size="lg"
+                                      title="Delete"
+                                      className="caution-color tbl-icon-btn"
+                                      onClick={() => props.deleteSlide(slide.id, "deleteslide")}
+                                    />
+                                  </LineTooltip>
+                                  <LineTooltip text="View Details">
+                                    <FontAwesomeIcon
+                                      key={"view" + index}
+                                      icon={["far", "eye"]}
+                                      alt="View icon"
+                                      size="lg"
+                                      color="#45818e"
+                                      className="tbl-icon-btn"
+                                      onClick={() => slideView(slide)}
+                                    />
+                                  </LineTooltip>
+                                </>
+                              )}
                             </span>
                           </div>
                         </div>
                       </div>
                     </div>
                     {/*  */}
-
-                    <div
-                      style={{
-                        marginLeft: "30px"
-                      }}
-                    >
-                      <Row style={{ fontWeight: "bold" }}>
-                        <Col>Name/File Name</Col>
-                        <Col>Status</Col>
-                        <Col>Comment</Col>
-                        <Col>{"Action"}</Col>
-                      </Row>
-                      <Row>
-                        <Col>{slide.originalName}</Col>
-                        <Col>{slide.status}</Col>
-                        <Col>{slide.comment}</Col>
-                        <Col>
-                          {slide.file && (
-                            <FontAwesomeIcon
-                              className="table-btn download-btn"
-                              icon={["fas", "download"]}
-                              size="lg"
-                              title="Download Metadata"
-                              onClick={() => {
-                                downloadFile(
-                                  slide.file,
-                                  props.setPageErrorsJson,
-                                  props.setPageErrorMessage,
-                                  props.setShowErrorSummary,
-                                  "filedownload"
-                                );
-                              }}
-                            />
-                          )}
-
-                          {slide.id && (
-                            <>
-                              <LineTooltip text="Delete Slide">
-                                <FontAwesomeIcon
-                                  key={"delete" + index}
-                                  icon={["far", "trash-alt"]}
-                                  size="lg"
-                                  title="Delete"
-                                  className="caution-color table-btn"
-                                  onClick={() => props.deleteSlide(slide.id, "deleteslide")}
-                                />
-                              </LineTooltip>
-                            </>
-                          )}
-                        </Col>
-                      </Row>
-                    </div>
                   </>
                 }
               >
@@ -141,17 +146,17 @@ const DataTreeView = props => {
                   slide.images.map(img => {
                     return (
                       <Tree
-                        style={{ paddingTop: "25px" }}
+                        style={{ paddingTop: "15px", marginLeft: "50px" }}
                         content={
                           <>
                             {/*  */}
                             <div style={{ marginTop: "-45px", marginLeft: "30px" }}>
                               <div className={"rst__rowWrapper"}>
                                 <div className={"rst__row"}>
-                                  <div className={"handle_bar "} />
                                   <div className={"row_headline"}>
-                                    <span style={{ marginLeft: "10px" }}>{"Images"}</span>
-                                    <span style={{ marginLeft: "110px" }}>
+                                    <span>{"Images"}</span>
+                                    <span style={{ marginLeft: "20px" }}>{img.scanner.name}</span>
+                                    <span style={{ marginLeft: "40px" }}>
                                       <LineTooltip text="Add Rawdata">
                                         <span>
                                           <FontAwesomeIcon
@@ -159,27 +164,64 @@ const DataTreeView = props => {
                                             size="lg"
                                             title="Add Rawdata"
                                             alt="Add Rawdata"
-                                            onClick={() => handleAddImage(slide.id, img)}
+                                            className="tbl-icon-btn"
+                                            onClick={() => {
+                                              setImageSelected(img.id);
+                                              setEnableRawdataOnImage(true);
+                                            }}
                                           />
                                         </span>
                                       </LineTooltip>
+
+                                      {img.id && (
+                                        <>
+                                          <LineTooltip text="Delete Slide">
+                                            <FontAwesomeIcon
+                                              key={"delete" + index}
+                                              icon={["far", "trash-alt"]}
+                                              size="lg"
+                                              title="Delete"
+                                              className="caution-color tbl-icon-btn"
+                                              onClick={() => props.deleteSlide(slide.id, "deleteslide")}
+                                            />
+                                          </LineTooltip>
+                                        </>
+                                      )}
+
+                                      <LineTooltip text="View Details">
+                                        <FontAwesomeIcon
+                                          key={"view" + index}
+                                          icon={["far", "eye"]}
+                                          alt="View icon"
+                                          size="lg"
+                                          color="#45818e"
+                                          className="tbl-icon-btn"
+                                          // onClick={() => imageView(slide)}
+                                        />
+                                      </LineTooltip>
+
+                                      {img.file && (
+                                        <FontAwesomeIcon
+                                          icon={["fas", "download"]}
+                                          size="lg"
+                                          title="Download Metadata"
+                                          className="tbl-icon-btn download-btn"
+                                          onClick={() => {
+                                            downloadFile(
+                                              img.file,
+                                              props.setPageErrorsJson,
+                                              props.setPageErrorMessage,
+                                              props.setShowErrorSummary,
+                                              "filedownload"
+                                            );
+                                          }}
+                                        />
+                                      )}
                                     </span>
                                   </div>
                                 </div>
                               </div>
                             </div>
-
-                            {/* <Row>
-                              <Col>Images</Col>
-                              <Col>
-                                <Button
-                                  style={{ color: "grey", backgroundColor: "white" }}
-                                  onClick={() => handleAddImage(slide.id, img)}
-                                >
-                                  {"Add Image"}
-                                </Button>
-                              </Col>
-                            </Row> */}
                           </>
                         }
                       >
@@ -187,26 +229,79 @@ const DataTreeView = props => {
                           img.rawDataList.map(rawData => {
                             return (
                               <Tree
-                                style={{ paddingTop: "25px" }}
+                                style={{ paddingTop: "15px", marginLeft: "80px" }}
                                 content={
                                   <>
-                                    {/*  */}
                                     <div style={{ marginTop: "-45px", marginLeft: "30px" }}>
                                       <div className={"rst__rowWrapper"}>
                                         <div className={"rst__row"}>
-                                          <div className={"handle_bar "} />
                                           <div className={"row_headline"}>
-                                            <span style={{ marginLeft: "10px" }}>{"Rawdata"}</span>
-                                            <span style={{ marginLeft: "110px" }}>
+                                            <span>{"Rawdata"}</span>
+                                            <span style={{ marginLeft: "20px" }}>{rawData.metadata.name}</span>
+                                            <span style={{ marginLeft: "10px" }}>
+                                              {"Status"}
+                                              <br />
+                                              {rawData.status}
+                                            </span>
+
+                                            <span style={{ marginLeft: "5px" }}>
                                               <LineTooltip text="Add Processdata">
                                                 <span>
                                                   <FontAwesomeIcon
                                                     icon={["fas", "plus"]}
                                                     size="lg"
                                                     title="Add Processdata"
-                                                    alt="Add Processdata"
-                                                    onClick={() => handleAddImage(slide.id, img)}
+                                                    className="tbl-icon-btn"
+                                                    onClick={() => {
+                                                      setRawdataSelected(rawData.id);
+                                                      setEnableProcessRawdata(true);
+                                                    }}
                                                   />
+
+                                                  {rawData.id && (
+                                                    <>
+                                                      <LineTooltip text="Delete RawData">
+                                                        <FontAwesomeIcon
+                                                          key={"delete" + index}
+                                                          icon={["far", "trash-alt"]}
+                                                          size="lg"
+                                                          title="Delete"
+                                                          className="caution-color tbl-icon-btn"
+                                                          onClick={() => props.deleteRawData(slide.id, "deleteRawData")}
+                                                        />
+                                                      </LineTooltip>
+                                                    </>
+                                                  )}
+
+                                                  <LineTooltip text="View Details">
+                                                    <FontAwesomeIcon
+                                                      key={"view" + index}
+                                                      icon={["far", "eye"]}
+                                                      alt="View icon"
+                                                      size="lg"
+                                                      color="#45818e"
+                                                      className="tbl-icon-btn"
+                                                      // onClick={() => rawDataView(slide)}
+                                                    />
+                                                  </LineTooltip>
+
+                                                  {rawData.file && (
+                                                    <FontAwesomeIcon
+                                                      icon={["fas", "download"]}
+                                                      size="lg"
+                                                      title="Download Metadata"
+                                                      className="tbl-icon-btn download-btn"
+                                                      onClick={() => {
+                                                        downloadFile(
+                                                          rawData.file,
+                                                          props.setPageErrorsJson,
+                                                          props.setPageErrorMessage,
+                                                          props.setShowErrorSummary,
+                                                          "filedownload"
+                                                        );
+                                                      }}
+                                                    />
+                                                  )}
                                                 </span>
                                               </LineTooltip>
                                             </span>
@@ -214,17 +309,6 @@ const DataTreeView = props => {
                                         </div>
                                       </div>
                                     </div>
-                                    {/* <Row>
-                                    <Col>Rawdata</Col>
-                                    <Col>
-                                      <Button
-                                        style={{ color: "grey", backgroundColor: "white" }}
-                                        onClick={() => handleAddImage(slide.id, img)}
-                                      >
-                                        {"Add Image"}
-                                      </Button>
-                                    </Col>
-                                  </Row> */}
                                   </>
                                 }
                               >
@@ -232,36 +316,77 @@ const DataTreeView = props => {
                                   rawData.processedDataList.map(processData => {
                                     return (
                                       <Tree
-                                        style={{ paddingTop: "25px" }}
+                                        open
+                                        style={{ paddingTop: "15px", marginLeft: "100px" }}
                                         content={
                                           <>
                                             <div style={{ marginTop: "-45px", marginLeft: "30px" }}>
                                               <div className={"rst__rowWrapper"}>
                                                 <div className={"rst__row"}>
-                                                  <div className={"handle_bar "} />
                                                   <div className={"row_headline"}>
-                                                    <span style={{ marginLeft: "10px" }}>{"Process Data"}</span>
+                                                    <span>{"Process Data"}</span>
+                                                    <span style={{ marginLeft: "10px" }}>
+                                                      {processData.metadata.name}
+                                                    </span>
+                                                    <span style={{ marginLeft: "5px" }}>
+                                                      <LineTooltip text="Add Processdata">
+                                                        <span>
+                                                          {processData.id && (
+                                                            <>
+                                                              <LineTooltip text="Delete RawData">
+                                                                <FontAwesomeIcon
+                                                                  key={"delete" + index}
+                                                                  icon={["far", "trash-alt"]}
+                                                                  size="lg"
+                                                                  title="Delete"
+                                                                  className="caution-color tbl-icon-btn"
+                                                                  onClick={() =>
+                                                                    props.deleteRawData(slide.id, "deleteRawData")
+                                                                  }
+                                                                />
+                                                              </LineTooltip>
+                                                            </>
+                                                          )}
+
+                                                          <LineTooltip text="View Details">
+                                                            <FontAwesomeIcon
+                                                              key={"view" + index}
+                                                              icon={["far", "eye"]}
+                                                              alt="View icon"
+                                                              size="lg"
+                                                              color="#45818e"
+                                                              className="tbl-icon-btn"
+                                                              // onClick={() => processDataView(slide)}
+                                                            />
+                                                          </LineTooltip>
+
+                                                          {processData.file && (
+                                                            <FontAwesomeIcon
+                                                              icon={["fas", "download"]}
+                                                              size="lg"
+                                                              title="Download Metadata"
+                                                              className="tbl-icon-btn download-btn"
+                                                              onClick={() => {
+                                                                downloadFile(
+                                                                  rawData.file,
+                                                                  props.setPageErrorsJson,
+                                                                  props.setPageErrorMessage,
+                                                                  props.setShowErrorSummary,
+                                                                  "filedownload"
+                                                                );
+                                                              }}
+                                                            />
+                                                          )}
+                                                        </span>
+                                                      </LineTooltip>
+                                                    </span>
                                                   </div>
                                                 </div>
                                               </div>
                                             </div>
-                                            {/* <Row>
-                                            <Col>Process Data</Col>
-                                            <Col>
-                                              <Button
-                                                style={{ color: "grey", backgroundColor: "white" }}
-                                                onClick={() => handleAddImage(slide.id, img)}
-                                              >
-                                                {"Add Image"}
-                                              </Button>
-                                            </Col>
-                                          </Row> */}
                                           </>
                                         }
-                                      >
-                                        <Tree content={processData.id} />
-                                        <Tree content={processData.name} />
-                                      </Tree>
+                                      ></Tree>
                                     );
                                   })}
                               </Tree>
@@ -272,9 +397,44 @@ const DataTreeView = props => {
                   })}
               </Tree>
             );
-          });
-        })}
+          })}
+        {/* })} */}
       </Tree>
+
+      {enableSlideModal && (
+        <SlideOnExperiment
+          experimentId={experimentId}
+          enableSlideModal={enableSlideModal}
+          setEnableSlideModal={setEnableSlideModal}
+        />
+      )}
+
+      {enableImageOnSlide && (
+        <ImageOnSlideExp
+          experimentId={experimentId}
+          slideId={slideSelected}
+          enableImageOnSlide={enableImageOnSlide}
+          setEnableImageOnSlide={setEnableImageOnSlide}
+        />
+      )}
+
+      {enableRawdataOnImage && (
+        <RawdataOnImage
+          experimentId={experimentId}
+          imageId={imageSelected}
+          enableRawdataOnImage={enableRawdataOnImage}
+          setEnableRawdataOnImage={setEnableRawdataOnImage}
+        />
+      )}
+
+      {enableProcessRawdata && (
+        <ProcessDataOnRd
+          experimentId={experimentId}
+          rawDataId={rawdataSelected}
+          enableProcessRawdata={enableProcessRawdata}
+          setEnableProcessRawdata={setEnableProcessRawdata}
+        />
+      )}
     </>
   );
 };

@@ -255,12 +255,14 @@ const GlygenTable = props => {
             </>
           )}
 
-          {props.showDownload && (row.original.file || (row.original.layout && row.original.layout.file)) && (
+          {props.showDownload && (
             <>
               <LineTooltip text="Download">
                 <Link>
                   <FontAwesomeIcon
-                    className="table-btn download-btn"
+                    className={`table-btn download-btn ${
+                      row.original.file || (row.original.layout && row.original.layout.file) ? "" : "fa-disabled"
+                    }`}
                     icon={["fas", "download"]}
                     size="lg"
                     title="Download"
@@ -286,30 +288,33 @@ const GlygenTable = props => {
             </>
           )}
 
-          {props.showExport &&
-            ((!row.original.file && !props.isPrintedSlide) ||
-              (props.isPrintedSlide && row.original.layout && !row.original.layout.file)) && (
-              <>
-                <LineTooltip text="Export">
-                  <Link>
-                    <FontAwesomeIcon
-                      className="table-btn download-btn"
-                      icon={["fas", "file-export"]}
-                      size="lg"
-                      title="Export"
-                      onClick={() =>
-                        props.handleExport(
-                          row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
-                          setPageErrorsJson,
-                          setPageErrorMessage,
-                          setShowErrorSummary
-                        )
-                      }
-                    />
-                  </Link>
-                </LineTooltip>
-              </>
-            )}
+          {props.showExport && (
+            <>
+              <LineTooltip text="Export">
+                <Link>
+                  <FontAwesomeIcon
+                    className={`table-btn download-btn ${
+                      (!row.original.file && !props.isPrintedSlide) ||
+                      (props.isPrintedSlide && row.original.layout && !row.original.layout.file)
+                        ? ""
+                        : "fa-disabled"
+                    }`}
+                    icon={["fas", "file-export"]}
+                    size="lg"
+                    title="Export"
+                    onClick={() =>
+                      props.handleExport(
+                        row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
+                        setPageErrorsJson,
+                        setPageErrorMessage,
+                        setShowErrorSummary
+                      )
+                    }
+                  />
+                </Link>
+              </LineTooltip>
+            </>
+          )}
         </>
       ),
       minWidth: 170

@@ -52,6 +52,9 @@ const OtherMolecules = props => {
                 showDeleteButton
                 showSearchBox
                 showEditButton
+                exportData
+                exportWsCall={"exportlinkers"}
+                fileName={"exportlinkers"}
                 commentsRefColumn="comment"
                 fetchWS="listmoleculesbytype"
                 paramTypeValue={"OTHER"}

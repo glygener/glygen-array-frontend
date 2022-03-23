@@ -1,28 +1,24 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { wsCall } from "../utils/wsUtils";
-import { Form, Row, Col, Breadcrumb, Table, Button, ButtonToolbar } from "react-bootstrap";
-import { FormLabel, Feedback, Title, FormButton } from "../components/FormControls";
+import { Form, Row, Col, Breadcrumb, Accordion } from "react-bootstrap";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { useHistory, useParams, Link } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
-import { PublicationCard } from "../components/PublicationCard";
 import "../containers/AddExperiment.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ConfirmationModal } from "../components/ConfirmationModal";
-import { Grants } from "./Grants";
-import { AddCoOwnerandCollab } from "./AddCoOwnerandCollab";
-import { ArraydatasetTables } from "../containers/ArraydatasetTables";
-import { Collaborators } from "./Collaborators";
-import { CoOwners } from "./CoOwners";
-import { isValidNumber } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
-import { Image } from "react-bootstrap";
-import plusIcon from "../images/icons/plus.svg";
-import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { PubOnExp } from "../components/PubOnExp";
+import { GrantsOnExp } from "../components/GrantsOnExp";
+import { CollabsOnExp } from "../components/CollabsOnExp";
+import { CoOwnersOnExp } from "../components/CoOwnersOnExp";
+import { DataTreeView } from "../components/DataTreeView";
+import { ContextAwareToggle } from "../utils/commonUtils";
+import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
+import { ExperimentInfo } from "./ExperimentInfo";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -59,6 +55,7 @@ const AddExperiment = props => {
       null,
       response =>
         response.json().then(responseJson => {
+          debugger;
           setExperiment({
             name: responseJson.name,
             sample: responseJson.sample.name,
@@ -231,7 +228,6 @@ const AddExperiment = props => {
     return (
       <>
         <Form.Control
-          // type="number"
           as="input"
           name="publication"
           placeholder="Enter the Pubmed ID and click +"
@@ -249,15 +245,6 @@ const AddExperiment = props => {
             // clearFieldsReset();
           }}
           maxLength={100}
-          // onChange={e => {
-          //   setNewPubMedId(e.target.value);
-          //   if (showErrorSummary) {
-          //     setShowErrorSummary(false);
-          //   }
-          // }}
-          // onKeyDown={e => {
-          //   isValidNumber(e);
-          // }}
         />
       </>
     );
@@ -339,237 +326,100 @@ const AddExperiment = props => {
                 errorMessage={pageErrorMessage}
               />
             )}
-            <Card>
-              <Card.Body>
-                <Form className="mb-4" noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-                  {experimentId ? (
-                    <Form.Group as={Row} controlId="experimentId" className="gg-align-center mb-3">
-                      <Col xs={12} lg={9}>
-                        <FormLabel label="Experiment ID" />
-                        <Form.Control readOnly value={experimentId} disabled />
-                      </Col>
-                    </Form.Group>
-                  ) : (
-                    ""
-                  )}
+            {/* experiment Info */}
+            <ExperimentInfo
+              experimentId={experimentId}
+              validated={validated}
+              handleSubmit={handleSubmit}
+              experiment={experiment}
+              handleChange={handleChange}
+              duplicateName={duplicateName}
+              handleSelect={handleSelect}
+              sampleList={sampleList}
+              getPublication={getPublication}
+              getPublicationFormControl={getPublicationFormControl}
+              showErrorSummary={showErrorSummary}
+            />
+            {/* {refreshPage && getExperiment()} */}
+            &nbsp;
+            {experimentId && (
+              <>
+                {experiment.slides && experiment.slides.length > 0 && (
+                  <Accordion defaultActiveKey={0}>
+                    <Card>
+                      <Card.Header style5={{ height: "65px" }}>
+                        <Row>
+                          <Col className="font-awesome-color" style={{ textAlign: "left" }}>
+                            <span className="descriptor-header"> {"Data"}</span>
+                          </Col>
 
-                  <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
-                    <Col xs={12} lg={9}>
-                      <FormLabel label="Name" className="required-asterik" />
-                      <Form.Control
-                        type="text"
-                        name="name"
-                        placeholder="Enter Name"
-                        value={experiment.name}
-                        onChange={handleChange}
-                        required
-                        isInvalid={duplicateName}
-                      />
-                      <Feedback
-                        message={
-                          duplicateName
-                            ? "Another experiment  has the same Name. Please use a different Name."
-                            : "Name is required"
-                        }
-                      />
-                    </Col>
-                  </Form.Group>
-
-                  <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
-                    <Col xs={12} lg={9}>
-                      <FormLabel label="Description" />
-                      <Form.Control
-                        as="textarea"
-                        rows={4}
-                        name="description"
-                        placeholder="Enter Description"
-                        value={experiment.description}
-                        onChange={handleChange}
-                        maxLength={2000}
-                      />
-                      <div className="text-right text-muted">
-                        {experiment.description && experiment.description.length > 0
-                          ? experiment.description.length
-                          : "0"}
-                        /2000
-                      </div>
-                    </Col>
-                  </Form.Group>
-
-                  <Form.Group as={Row} controlId="samples" className="gg-align-center mb-3">
-                    <Col xs={12} lg={9}>
-                      <FormLabel label="Samples" className="required-asterik" />
-                      <Form.Control
-                        as="select"
-                        name="sample"
-                        value={experiment.sample}
-                        onChange={handleSelect}
-                        required={true}
-                        disabled={experiment.isPublic || experimentId}
-                      >
-                        <option value="">Select Sample</option>
-                        {sampleList.rows &&
-                          sampleList.rows.map((element, index) => {
-                            return (
-                              <option key={index} value={element.name}>
-                                {element.name}
-                              </option>
-                            );
-                          })}
-                      </Form.Control>
-                      <Feedback message="Sample is required"></Feedback>
-                    </Col>
-                  </Form.Group>
-
-                  {!experimentId && (
-                    <>
-                      <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
-                        <Col xs={12} lg={9}>
-                          <FormLabel label="Publications" />
-                          {experiment.publications.map(pub => {
-                            return <PublicationCard key={pub.pubmedId} enableDelete {...pub} />;
-                          })}
-                          <Row>
-                            <Col md={10}>{getPublicationFormControl()}</Col>
-                            {!experimentId && (
-                              <Col md={1}>
-                                <Button onClick={() => getPublication()} className="gg-btn-outline-reg">
-                                  <LineTooltip text="Add Publication">
-                                    <Link>
-                                      <Image src={plusIcon} alt="plus button" />
-                                    </Link>
-                                  </LineTooltip>
-                                </Button>
-                              </Col>
-                              // <Col md={1}>
-                              //   <FontAwesomeIcon
-                              //     style={{
-                              //       color: "var(--legacy-blue)",
-                              //       marginTop: "8px",
-                              //       marginLeft: "-18px",
-                              //       // backgroundColor: "rgb(230, 230, 230)"
-                              //     }}
-                              //     icon={["fas", "plus"]}
-                              //     size="lg"
-                              //     title="Get Publication"
-                              //     onClick={() => getPublication()}
-                              //   />
-                              // </Col>
-                            )}
-                          </Row>
-                        </Col>
-                      </Form.Group>
-                    </>
-                  )}
-
-                  <div className="text-center mb-4 mt-4">
-                    <Link to="/experiments">
-                      <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
-                    </Link>
-                    <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit" disabled={showErrorSummary}>
-                      {!experimentId ? "Submit" : "Submit"}
-                    </Button>
-                  </div>
-
-                  {/* {refreshPage && getExperiment()} */}
-
-                  {experimentId && (
-                    <>
-                      <h4 className="gg-mt-60">Slide</h4>
-                      <div className="text-center mb-2">
-                        <Link to={`/experiments/addRawdata/${experimentId}`}>
-                          <Button className="gg-btn-blue mt-2 mb-3"> Add Slide</Button>
-                        </Link>
-                      </div>
-                      {experiment.name.length > 0 ? (
-                        <ArraydatasetTables dataset={experiment} deleteSlide={deleteRow} experimentId={experimentId} />
-                      ) : null}
-
-                      <h4 className="gg-mt-60"> Publications</h4>
-                      <Form.Group as={Row} controlId="publications" className="mt-2 mb-3">
-                        <Col md={6}>{getPublicationFormControl()}</Col>
-                        <Col md={1}>
-                          <Button
-                            className="gg-btn-outline-reg"
-                            onClick={() => {
-                              getPublication();
-                            }}
-                            disabled={newPubMedId && newPubMedId.length > 0 ? false : true}
-                          >
-                            <LineTooltip text="Add Publication">
-                              <Link>
-                                <Image src={plusIcon} alt="plus button" />
-                              </Link>
-                            </LineTooltip>
-                          </Button>
-                        </Col>
-                      </Form.Group>
-                      <Table hover>
-                        <tbody className="table-body">
-                          {experiment.publications.length < 1 ? (
-                            <tr className="table-row">
-                              <td>
-                                <p className="no-data-msg-publication">No data available.</p>
-                              </td>
-                            </tr>
-                          ) : (
-                            experiment.publications.map((pub, pubIndex) => {
-                              return (
-                                <PublicationCard key={pubIndex} {...pub} enableDelete deletePublication={deleteRow} />
-                              );
-                            })
-                          )}
-                        </tbody>
-                      </Table>
-
-                      <h4 className="gg-mt-60 mb-2"> Grants </h4>
-                      <Grants
-                        experimentId={experimentId}
-                        delete={deleteRow}
-                        grants={experiment.grants}
-                        deleteWsCall={"deletegrant"}
-                      />
-
-                      <h4 className="gg-mt-60 mb-2"> Collaborator </h4>
-                      <AddCoOwnerandCollab
-                        addWsCall={"addcollaborator"}
-                        experimentId={experimentId}
-                        getExperiment={getExperiment}
-                      />
-
-                      <Collaborators
-                        delete={deleteRow}
-                        collaborators={experiment.collaborators}
-                        deleteWsCall={"deletecollaborator"}
-                      />
-
-                      <h4 className="gg-mt-60 mb-2"> Co-Owners </h4>
-                      <AddCoOwnerandCollab
-                        addWsCall={"addcoowner"}
-                        experimentId={experimentId}
-                        setRefreshListCoOwners={setRefreshListCoOwners}
-                      />
-
-                      <CoOwners
-                        experimentId={experimentId}
-                        delete={deleteRow}
-                        deleteWsCall={"deletecoowner"}
-                        refreshListCoOwners={refreshListCoOwners}
-                        setRefreshListCoOwners={setRefreshListCoOwners}
-                      />
-
-                      <ConfirmationModal
-                        showModal={showDeleteModal}
-                        onCancel={cancelDelete}
-                        onConfirm={confirmDelete}
-                        title="Confirm Delete"
-                        body="Are you sure you want to delete?"
-                      />
-                    </>
-                  )}
-                </Form>
-              </Card.Body>
-            </Card>
+                          <Col style={{ textAlign: "right" }}>
+                            <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
+                          </Col>
+                        </Row>
+                      </Card.Header>
+                      <Accordion.Collapse eventKey={0}>
+                        <div
+                          style={{
+                            height: 600,
+                            overflow: "scroll",
+                            padding: "20px"
+                          }}
+                        >
+                          <DataTreeView data={experiment} experimentId={experimentId} />
+                        </div>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+                )}
+                {/* Publications */}
+                &nbsp;
+                <PubOnExp
+                  getPublication={getPublication}
+                  getPublicationFormControl={getPublicationFormControl}
+                  newPubMedId={newPubMedId}
+                  publications={experiment.publications}
+                  deleteRow={deleteRow}
+                />
+                &nbsp;
+                {/* Grants */}
+                <GrantsOnExp
+                  experimentId={experimentId}
+                  delete={deleteRow}
+                  grants={experiment.grants}
+                  deleteWsCall={"deletegrant"}
+                />
+                &nbsp;
+                {/* Collaborators */}
+                <CollabsOnExp
+                  experimentId={experimentId}
+                  getExperiment={getExperiment}
+                  delete={deleteRow}
+                  addWsCall={"addcollaborator"}
+                  deleteWsCall={"deletecollaborator"}
+                />
+                &nbsp;
+                {/* Co-Owners */} 
+                <CoOwnersOnExp
+                  experimentId={experimentId}
+                  delete={deleteRow}
+                  addWsCall={"addcoowner"}
+                  deleteWsCall={"deletecoowner"}
+                  setRefreshListCoOwners={setRefreshListCoOwners}
+                  refreshListCoOwners={refreshListCoOwners}
+                />
+                {/* ConfirmationModal */}
+                <ConfirmationModal
+                  showModal={showDeleteModal}
+                  onCancel={cancelDelete}
+                  onConfirm={confirmDelete}
+                  title="Confirm Delete"
+                  body="Are you sure you want to delete?"
+                />
+              </>
+            )}
+            {/* </Card.Body> */}
+            {/* </Card> */}
           </Container>
         </div>
       </>

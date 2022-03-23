@@ -3,19 +3,11 @@ import "../components/PublicationCard.css";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Row, Col, Table } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Button } from "@material-ui/core";
 
 const Grants = props => {
   const getGrantTable = () => {
     return (
       <>
-        <div className="text-center mt-2 mb-4">
-          <Link to={`/experiments/addExperiment/addGrant/${props.experimentId}`}>
-            <Button className="gg-btn-blue btn-to-lower"> Add Grant</Button>
-          </Link>
-        </div>
-
         <Table hover>
           <tbody className="table-body">
             {!props.grants || props.grants.length < 1 ? (

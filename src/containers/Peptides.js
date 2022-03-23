@@ -66,6 +66,9 @@ const Peptides = props => {
                 keyColumn="id"
                 form={"linkers"}
                 showRowsInfo
+                exportData
+                exportWsCall={"exportlinkers"}
+                fileName={"exportlinkers"}
                 infoRowsText="Peptides"
                 showDeleteButton={props.isImported ? false : true}
                 showEditButton={props.isImported ? false : true}

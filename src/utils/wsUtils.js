@@ -249,7 +249,7 @@ export function getWsUrl(ws) {
     case "makearraydatasetpublic":
       return ws_base_array + "/makearraydatasetpublic";
     case "addrawdata":
-      return ws_base_array + "/addRawData";
+      return ws_base_array + "/addRawdata";
     case "deleterawdata":
       return ws_base_array + "/deleterawdata";
     case "listrawdata":
@@ -292,6 +292,8 @@ export function getWsUrl(ws) {
       return ws_base_util + "/getTypeAhead";
     case "addslide":
       return ws_base_array + "/addSlide";
+    case "addimage":
+      return ws_base_array + "/addImage";
     case "getpublicsample":
       return ws_base_public + "/getsample";
     case "getslidemetadata":

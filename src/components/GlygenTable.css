@@ -81,3 +81,19 @@
   float: right;
   color: #fff;
 }
+
+/* .fa-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+} */
+
+.fa-disabled,
+.fa[disabled],
+.disabled > .fa,
+[disabled] > .fa {
+  opacity: 0.5;
+  /*optional*/
+  cursor: not-allowed;
+  /*optional*/
+  pointer-events: none;
+}
