@@ -259,11 +259,19 @@ const AddFeature = props => {
       "Review and Add Molecule to Repository"
     ];
 
+    const controlAndLandingStepLabels = [
+      "Select the Feature Type",
+      "Select Molecule From the Table Below",
+      "Add Generic Information (${moleculeType})",
+      "Review and Add Molecule to Repository",
+    ];
+
     switch (featureAddState.type) {
       case "LINKED_GLYCAN":
+        return generalStepLabels[stepIndex];
       case "CONTROL":
       case "LANDING_LIGHT":
-        return generalStepLabels[stepIndex];
+        return controlAndLandingStepLabels[stepIndex];
 
       case "GLYCO_LIPID":
         return glycoLipidStepLabels[stepIndex];
