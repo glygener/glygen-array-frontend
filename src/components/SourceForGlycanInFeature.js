@@ -329,7 +329,7 @@ const SourceForGlycanInFeature = props => {
                   Back
                 </Button>
                 <Button onClick={handleNext} className="gg-btn-blue mt-2 gg-ml-20">
-                  {activeStep === steps.length - 1 ? "Submit" : "Next"}
+                  {activeStep === steps.length - 1 ? "Add" : "Next"}
                 </Button>
               </div>
 
@@ -347,7 +347,7 @@ const SourceForGlycanInFeature = props => {
                   Back
                 </Button>
                 <Button onClick={handleNext} className="gg-btn-blue mt-2 gg-ml-20">
-                  {activeStep === steps.length - 1 ? "Submit" : "Next"}
+                  {activeStep === steps.length - 1 ? "Add" : "Next"}
                 </Button>
               </div>
             </Modal.Body>

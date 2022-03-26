@@ -103,7 +103,7 @@ const GridForm = props => {
                 <Form.Control
                   type="number"
                   name="cols"
-                  placeholder="Entter # of Columns"
+                  placeholder="Enter # of Columns"
                   value={props.gridParams.cols}
                   onChange={props.handleChange}
                   readOnly={props.isUpdate || props.publicView}

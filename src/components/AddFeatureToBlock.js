@@ -117,7 +117,7 @@ const AddFeatureToBlock = props => {
       }
     }
 
-    if (e.currentTarget.innerText === "SUBMIT") {
+    if (e.currentTarget.innerText === "ADD") {
       //increment group counter
       ++groupCounter;
 
@@ -127,7 +127,7 @@ const AddFeatureToBlock = props => {
             spot.selectedFeatures.push({
               feature: element.feature,
               ratio: element.concentrationInfo && element.concentrationInfo.ratio,
-              concentrationInfo: element.concentrationInfo
+              concentrationInfo: element.concentrationInfo,
             });
           });
           // spot.selectedConcentration = feature.concentrationInfo;
@@ -167,7 +167,7 @@ const AddFeatureToBlock = props => {
       concentration: "",
       unitlevel: "FMOL",
       notReported: false,
-      ratio: ""
+      ratio: "",
     };
 
     let rowUpdated = [...featuresSelected.featureSelected];
@@ -486,7 +486,7 @@ const AddFeatureToBlock = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "feature.name"
+              accessor: "feature.name",
             },
             {
               Header: "Ratio",
@@ -503,7 +503,7 @@ const AddFeatureToBlock = props => {
                       <span
                         key={index}
                         style={{
-                          marginLeft: "65px"
+                          marginLeft: "65px",
                         }}
                       >
                         {row.original.concentrationInfo.ratio}
@@ -514,7 +514,7 @@ const AddFeatureToBlock = props => {
                     )}
                   </Col>
                 </>
-              )
+              ),
             },
             {
               Header: "Linker",
@@ -523,7 +523,7 @@ const AddFeatureToBlock = props => {
                 <input
                   style={{
                     textAlign: "center",
-                    border: "none"
+                    border: "none",
                   }}
                   name="linker"
                   key={index}
@@ -534,7 +534,7 @@ const AddFeatureToBlock = props => {
                   }
                   disabled
                 />
-              )
+              ),
             },
             {
               Header: "Sequence",
@@ -546,14 +546,14 @@ const AddFeatureToBlock = props => {
                         base64={element.glycan ? element.glycan.cartoon : element.cartoon}
                         style={{
                           maxWidth: "100px",
-                          overflow: "scroll"
+                          overflow: "scroll",
                         }}
                       />
                     ))
                   : "";
               },
-              minWidth: 250
-            }
+              minWidth: 250,
+            },
           ]}
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
@@ -669,12 +669,12 @@ const AddFeatureToBlock = props => {
               columns={[
                 {
                   Header: "Name",
-                  accessor: "name"
+                  accessor: "name",
                 },
                 {
                   Header: "Feature ID",
-                  accessor: "internalId"
-                }
+                  accessor: "internalId",
+                },
               ]}
               defaultPageSize={10}
               defaultSortColumn="id"
@@ -719,7 +719,7 @@ const AddFeatureToBlock = props => {
           Back
         </Button>
         <Button className="gg-btn-blue mt-2 gg-ml-20" onClick={handleNext}>
-          {activeStep === steps.length - 1 ? "Submit" : "Next"}
+          {activeStep === steps.length - 1 ? "Add" : "Next"}
         </Button>
       </div>
     );

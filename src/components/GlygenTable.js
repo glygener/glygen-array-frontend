@@ -19,9 +19,8 @@ import { BlueRadio } from "../components/FormControls";
 import { downloadFile, fileDownloadSuccess, fileDownloadFailure, fileExportSuccess } from "../utils/commonUtils";
 import { Tooltip } from "@material-ui/core";
 import "../css/HelpToolTip.css";
-// import HelpOutline from "@material-ui/icons/HelpOutline";
-// import CommentIcon from "@mui/icons-material/Comment";
-import CommentIcon from "@material-ui/icons/Comment";
+// import CommentIcon from "@material-ui/icons/Comment";
+// import EditIcon from "@material-ui/icons/Edit";
 
 const GlygenTable = props => {
   const history = useHistory();
@@ -93,12 +92,13 @@ const GlygenTable = props => {
             disableTouchListener
             interactive
             arrow
-            placement={"bottom-start"}
+            placement={"bottom"}
             classes={{
               tooltip: "gg-tooltip",
             }}
+         
             title={
-              <>
+              <span className="text-overflow text-max-height">
                 <h5>
                   <strong>
                     Comments for{" "}
@@ -112,52 +112,22 @@ const GlygenTable = props => {
                   </strong>
                 </h5>
                 {row.value ? row.value : row.original.description ? row.original.description : ""}
-              </>
+              </span>
             }
           >
-            <CommentIcon className={"gg-blue tbl-icon-btn5"} fontSize="medium" />
-            {/* <FontAwesomeIcon
-              key={"comments" + index}
-              icon={["fas", "comments"]}
-              size="lg"
-              title="Click to see comments"
-              className="gg-blue tbl-icon-btn"
-              style={{ cursor: "pointer" }}
-            />  */}
+            {/* <CommentIcon className={"gg-blue tbl-icon-btn5"} fontSize="medium" /> */}
+            <span>
+              <FontAwesomeIcon
+                key={"comments" + index}
+                icon={["fas", "comments"]}
+                size="lg"
+                title="Comments"
+                className="gg-blue tbl-icon-btn"
+                style={{ cursor: "pointer" }}
+              />
+            </span>
           </Tooltip>
         ) : (
-          // <OverlayTrigger
-          //   key={index}
-          //   trigger="click"
-          //   placement="top"
-          //   rootClose
-          //   overlay={
-          //     <Popover>
-          //       <Popover.Title as="h3">
-          //         Comments for{" "}
-          //         {props.customCommentColumn
-          //           ? row.original.name
-          //             ? row.original.name
-          //             : row.original.glytoucanId
-          //             ? row.original.glytoucanId
-          //             : row.original.internalId
-          //           : ""}
-          //       </Popover.Title>
-          //       <Popover.Content className={"popover-body-custom"}>
-          //         {row.value ? row.value : row.original.description ? row.original.description : ""}
-          //       </Popover.Content>
-          //     </Popover>
-          //   }
-          // >
-          //   <FontAwesomeIcon
-          //     key={"comments" + index}
-          //     icon={["fas", "comments"]}
-          //     size="lg"
-          //     title="Click to see comments"
-          //     className="gg-blue tbl-icon-btn"
-          //     style={{ cursor: "pointer" }}
-          //   />
-          // </OverlayTrigger>
           <div key={index}></div>
         ),
       minWidth: 80,
@@ -199,14 +169,16 @@ const GlygenTable = props => {
           {props.showEditButton && (
             <>
               <LineTooltip text="Edit">
-                <FontAwesomeIcon
-                  key={"edit" + index}
-                  icon={["far", "edit"]}
-                  alt="Edit icon"
-                  size="lg"
-                  className="gg-blue tbl-icon-btn"
-                  onClick={() => history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])}
-                />
+                <span>
+                  <FontAwesomeIcon
+                    key={"edit" + index}
+                    icon={["far", "edit"]}
+                    alt="Edit icon"
+                    size="lg"
+                    className="gg-blue tbl-icon-btn"
+                    onClick={() => history.push("/" + props.editUrl + "/" + row.original[props.keyColumn])}
+                  />
+                </span>
               </LineTooltip>
             </>
           )}
