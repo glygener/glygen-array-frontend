@@ -17,6 +17,11 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
 import { BlueRadio } from "../components/FormControls";
 import { downloadFile, fileDownloadSuccess, fileDownloadFailure, fileExportSuccess } from "../utils/commonUtils";
+import { Tooltip } from "@material-ui/core";
+import "../css/HelpToolTip.css";
+// import HelpOutline from "@material-ui/icons/HelpOutline";
+// import CommentIcon from "@mui/icons-material/Comment";
+import CommentIcon from "@material-ui/icons/Comment";
 
 const GlygenTable = props => {
   const history = useHistory();
@@ -79,47 +84,83 @@ const GlygenTable = props => {
       Header: "Comments",
       accessor: props.commentsRefColumn,
       style: {
-        textAlign: "center"
+        textAlign: "center",
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) =>
         row.value || row.original.description ? (
-          <OverlayTrigger
-            key={index}
-            trigger="click"
-            placement="top"
-            rootClose
-            overlay={
-              <Popover>
-                <Popover.Title as="h3">
-                  Comments for{" "}
-                  {props.customCommentColumn
-                    ? row.original.name
+          <Tooltip
+            disableTouchListener
+            interactive
+            arrow
+            placement={"bottom-start"}
+            classes={{
+              tooltip: "gg-tooltip",
+            }}
+            title={
+              <>
+                <h5>
+                  <strong>
+                    Comments for{" "}
+                    {props.customCommentColumn
                       ? row.original.name
-                      : row.original.glytoucanId
-                      ? row.original.glytoucanId
-                      : row.original.internalId
-                    : ""}
-                </Popover.Title>
-                <Popover.Content className={"popover-body-custom"}>
-                  {row.value ? row.value : row.original.description ? row.original.description : ""}
-                </Popover.Content>
-              </Popover>
+                        ? row.original.name
+                        : row.original.glytoucanId
+                        ? row.original.glytoucanId
+                        : row.original.internalId
+                      : ""}
+                  </strong>
+                </h5>
+                {row.value ? row.value : row.original.description ? row.original.description : ""}
+              </>
             }
           >
-            <FontAwesomeIcon
+            <CommentIcon className={"gg-blue tbl-icon-btn5"} fontSize="medium" />
+            {/* <FontAwesomeIcon
               key={"comments" + index}
               icon={["fas", "comments"]}
               size="lg"
               title="Click to see comments"
               className="gg-blue tbl-icon-btn"
               style={{ cursor: "pointer" }}
-            />
-          </OverlayTrigger>
+            />  */}
+          </Tooltip>
         ) : (
+          // <OverlayTrigger
+          //   key={index}
+          //   trigger="click"
+          //   placement="top"
+          //   rootClose
+          //   overlay={
+          //     <Popover>
+          //       <Popover.Title as="h3">
+          //         Comments for{" "}
+          //         {props.customCommentColumn
+          //           ? row.original.name
+          //             ? row.original.name
+          //             : row.original.glytoucanId
+          //             ? row.original.glytoucanId
+          //             : row.original.internalId
+          //           : ""}
+          //       </Popover.Title>
+          //       <Popover.Content className={"popover-body-custom"}>
+          //         {row.value ? row.value : row.original.description ? row.original.description : ""}
+          //       </Popover.Content>
+          //     </Popover>
+          //   }
+          // >
+          //   <FontAwesomeIcon
+          //     key={"comments" + index}
+          //     icon={["fas", "comments"]}
+          //     size="lg"
+          //     title="Click to see comments"
+          //     className="gg-blue tbl-icon-btn"
+          //     style={{ cursor: "pointer" }}
+          //   />
+          // </OverlayTrigger>
           <div key={index}></div>
         ),
-      minWidth: 80
+      minWidth: 80,
     };
   }
 
@@ -127,7 +168,7 @@ const GlygenTable = props => {
     columnsToRender["actionsColumn"] = {
       Header: "Actions",
       style: {
-        textAlign: "center"
+        textAlign: "center",
       },
       sortable: false,
       // eslint-disable-next-line react/display-name
@@ -317,7 +358,7 @@ const GlygenTable = props => {
           )}
         </>
       ),
-      minWidth: 170
+      minWidth: 170,
     };
   }
 
@@ -333,7 +374,7 @@ const GlygenTable = props => {
         >
           {props.selectButtonHeader || "Select"}
         </Button>
-      )
+      ),
     };
   }
 
@@ -341,7 +382,7 @@ const GlygenTable = props => {
     columnsToRender["multiSelectColumn"] = {
       Header: "Select",
       style: {
-        textAlign: "center"
+        textAlign: "center",
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
@@ -362,7 +403,7 @@ const GlygenTable = props => {
           }
           className="mb-0 pb-0 mt-0 pt-0"
         />
-      )
+      ),
     };
   }
 
@@ -388,7 +429,7 @@ const GlygenTable = props => {
           }}
           checked={row.original.name === selectedRadio ? true : false}
         />
-      )
+      ),
     };
   }
 
@@ -456,7 +497,7 @@ const GlygenTable = props => {
               <Col
                 style={{
                   marginTop: "10px",
-                  marginLeft: "40px"
+                  marginLeft: "40px",
                 }}
               >
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -546,8 +587,8 @@ const GlygenTable = props => {
                   loadAll: false, //only useful for features, blocks and slides
                   filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
                   type: props.paramTypeValue,
-                  ...props.qsParams
-                }
+                  ...props.qsParams,
+                },
               },
               // {
               //   offset: state.page * state.pageSize,
