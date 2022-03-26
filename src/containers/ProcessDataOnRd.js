@@ -198,7 +198,72 @@ const ProcessDataOnRd = props => {
         });
   };
 
-  const rawDataForm = () => {
+  // const processDataView = () => {
+  //   return (
+  //     <>
+  //       <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
+  //         <Col xs={12} lg={9}>
+  //           <FormLabel label={"Rawdata"} className="required-asterik" />
+  //           <Form.Control type="text" name={"rawdata"} value={rawDataView.file.originalName} readOnly plaintext />
+  //         </Col>
+  //       </Form.Group>
+
+  //       <Form.Group as={Row} controlId={"imageAnalysis"} className="gg-align-center mb-3">
+  //         <Col xs={12} lg={9}>
+  //           <FormLabel label={"Image Analysis"} className="required-asterik" />
+  //           <Form.Control type="text" name={"metadata"} value={rawDataView.metadata.name} readOnly plaintext />
+  //         </Col>
+  //       </Form.Group>
+
+  //       <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
+  //         <Col xs={12} lg={9}>
+  //           <FormLabel label={"RawData Fileformat"} className="required-asterik" />
+  //           <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file.fileFormat} readOnly plaintext />
+  //         </Col>
+  //       </Form.Group>
+
+  //       {rawDataView.powerLevel && (
+  //         <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
+  //           <Col xs={12} lg={9}>
+  //             <FormLabel label={"Power Level"} className="required-asterik" />
+  //             <Form.Control type="text" name={"powerLevel"} value={rawDataView.powerLevel} readOnly plaintext />
+  //           </Col>
+  //         </Form.Group>
+  //       )}
+
+  //       {rawDataView.channel && (
+  //         <>
+  //           <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
+  //             <Col xs={12} lg={9}>
+  //               <FormLabel label={"ChannelUsage Type"} className="required-asterik" />
+  //               <Form.Control
+  //                 type="text"
+  //                 name={"channelUsageType"}
+  //                 value={rawDataView.channel.usage}
+  //                 readOnly
+  //                 plaintext
+  //               />
+  //             </Col>
+  //           </Form.Group>
+  //           <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
+  //             <Col xs={12} lg={9}>
+  //               <FormLabel label={"Wavelength"} className="required-asterik" />
+  //               <Form.Control
+  //                 type="text"
+  //                 name={"wavelength"}
+  //                 value={rawDataView.channel.wavelength}
+  //                 readOnly
+  //                 plaintext
+  //               />
+  //             </Col>
+  //           </Form.Group>
+  //         </>
+  //       )}
+  //     </>
+  //   );
+  // };
+
+  const processDataForm = () => {
     return (
       <>
         <Modal
@@ -304,7 +369,7 @@ const ProcessDataOnRd = props => {
     );
   };
 
-  return <>{rawDataForm()}</>;
+  return <>{processDataForm()}</>;
 };
 
 ProcessDataOnRd.propTypes = {

@@ -17,7 +17,7 @@ import { CollabsOnExp } from "../components/CollabsOnExp";
 import { CoOwnersOnExp } from "../components/CoOwnersOnExp";
 import { DataTreeView } from "../components/DataTreeView";
 import { ContextAwareToggle } from "../utils/commonUtils";
-import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
+// import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import { ExperimentInfo } from "./ExperimentInfo";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));

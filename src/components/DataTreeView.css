@@ -14,7 +14,7 @@
 
 .row_headline {
   height: 75px;
-  width: 50%;
+  width: 100%;
   border: solid #aaa 1px;
   -webkit-box-shadow: 0 2px 2px -2px;
   box-shadow: 0 2px 2px -2px;
@@ -22,5 +22,10 @@
   border-radius: 1px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
+}
+
+.btn-more-less {
+  border: none;
+  background-color: white;
 }

@@ -5,14 +5,12 @@ import { FormLabel, Feedback } from "../components/FormControls";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import Container from "@material-ui/core/Container";
 import { Loading } from "../components/Loading";
-import Helmet from "react-helmet";
 import { ResumableUploader } from "../components/ResumableUploader";
-import { head, getMeta } from "../utils/head";
 import { ErrorSummary } from "../components/ErrorSummary";
 
 const ImageOnSlideExp = props => {
   let { experimentId } = useParams();
-  let { slideId, enableImageOnSlide, setEnableImageOnSlide } = props;
+  let { slideId, enableImageOnSlide, setEnableImageOnSlide, imageView, setImageView } = props;
 
   const [validated, setValidated] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -156,6 +154,7 @@ const ImageOnSlideExp = props => {
         response => {
           setEnablePrompt(false);
           setShowLoading(false);
+          setEnableImageOnSlide(false);
           history.push("/experiments/editExperiment/" + experimentId);
         },
         addSlideOnExpFailure
@@ -209,11 +208,33 @@ const ImageOnSlideExp = props => {
     );
   };
 
+  const getImageView = () => {
+    return (
+      <>
+        <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Image"} className="required-asterik" />
+            <Form.Control type="text" name={"image"} value={imageView.file.originalName} readOnly plaintext />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId={"scannermetadata"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Scanner Metadata"} className="required-asterik" />
+            <Form.Control type="text" name={"metadata"} value={imageView.scanner.name} readOnly plaintext />
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
+
   return (
     <>
       <Modal
         show={enableImageOnSlide}
-        onHide={() => setEnableImageOnSlide(false)}
+        onHide={() => {
+          setImageView();
+          setEnableImageOnSlide(false);
+        }}
         animation={false}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
@@ -223,10 +244,6 @@ const ImageOnSlideExp = props => {
           <Modal.Title>{"Add Image to Slide"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Helmet>
-            <title>{head.addSlideOnExp.title}</title>
-            {getMeta(head.addSlideOnExp)}
-          </Helmet>
           <Container maxWidth="xl">
             <div className="page-container">
               {showErrorSummary === true && (
@@ -241,43 +258,54 @@ const ImageOnSlideExp = props => {
 
               {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
 
-              {getImageFileUploader()}
+              {!imageView ? (
+                <>
+                  {getImageFileUploader()}
+                  <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                    {FormData.map((element, index) => {
+                      return (
+                        <>
+                          <Form.Group as={Row} controlId={index} key={index} className="gg-align-center mb-3">
+                            <Col xs={12} lg={9}>
+                              <FormLabel label={element.label} className="required-asterik" />
+                              <Form.Control
+                                as="select"
+                                name={element.name}
+                                value={element.value}
+                                onChange={element.onchange}
+                                required={true}
+                              >
+                                <option value="">Select {element.label}</option>
+                                {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
+                                  getSelectionList(element)}
+                              </Form.Control>
+                              <Feedback message={`${element.message} is required`} />
+                            </Col>
+                          </Form.Group>
+                        </>
+                      );
+                    })}
 
-              <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-                {FormData.map((element, index) => {
-                  return (
-                    <>
-                      <Form.Group as={Row} controlId={index} key={index} className="gg-align-center mb-3">
-                        <Col xs={12} lg={9}>
-                          <FormLabel label={element.label} className="required-asterik" />
-                          <Form.Control
-                            as="select"
-                            name={element.name}
-                            value={element.value}
-                            onChange={element.onchange}
-                            required={true}
-                          >
-                            <option value="">Select {element.label}</option>
-                            {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
-                              getSelectionList(element)}
-                          </Form.Control>
-                          <Feedback message={`${element.message} is required`} />
-                        </Col>
-                      </Form.Group>
-                    </>
-                  );
-                })}
-
-                <div className="mt-4 mb-4 text-center">
-                  <Button className="gg-btn-outline-reg" onClick={() => setEnableImageOnSlide(false)}>
-                    Cancel
-                  </Button>
-                  &nbsp;
-                  <Button type="submit" className="gg-btn-blue-reg">
-                    Submit
-                  </Button>
-                </div>
-              </Form>
+                    <div className="mt-4 mb-4 text-center">
+                      <Button
+                        className="gg-btn-outline-reg"
+                        onClick={() => {
+                          setImageView();
+                          setEnableImageOnSlide(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      &nbsp;
+                      <Button type="submit" className="gg-btn-blue-reg">
+                        Submit
+                      </Button>
+                    </div>
+                  </Form>
+                </>
+              ) : (
+                getImageView()
+              )}
             </div>
           </Container>
         </Modal.Body>

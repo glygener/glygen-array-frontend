@@ -6,13 +6,12 @@ import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import Container from "@material-ui/core/Container";
 import { Loading } from "../components/Loading";
-import Helmet from "react-helmet";
-import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { ErrorSummary } from "../components/ErrorSummary";
 
 const SlideOnExperiment = props => {
   let { experimentId } = useParams();
+  let { slideView, setSlideView, setEnableSlideModal } = props;
 
   const [blocks, setBlocks] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -133,6 +132,7 @@ const SlideOnExperiment = props => {
   };
 
   const getBlocksSelectedPanel = () => {
+    let listOfBlocks = slideView && slideView.blocks && slideView.blocks.length > 0 ? slideView.blocks : blocksSelected;
     return (
       <Popover id="popover-basic" className="popover-custom mt-3" style={{ maxWidth: "100%", width: "100%" }}>
         <Popover.Title
@@ -154,7 +154,7 @@ const SlideOnExperiment = props => {
           </Row>
         </Popover.Title>
         <Popover.Content className="popover-body-custom">
-          {blocksSelected.map((block, index) => {
+          {listOfBlocks.map((block, index) => {
             return (
               <>
                 <div
@@ -302,11 +302,32 @@ const SlideOnExperiment = props => {
     });
   }
 
+  const getSlideView = () => {
+    return (
+      <>
+        <Form.Group as={Row} controlId={"slide"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Slide"} className="required-asterik" />
+            <Form.Control type="text" name={"slide"} value={slideView.printedSlide.name} readOnly plaintext />
+
+            {slideView.blocks && slideView.blocks.length > 0 && <div>{getBlocksSelectedPanel()}</div>}
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId={"metadata"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Assay Metadata"} className="required-asterik" />
+            <Form.Control type="text" name={"metadata"} value={slideView.metadata.name} readOnly plaintext />
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
+
   return (
     <>
       <Modal
         show={props.enableSlideModal}
-        onHide={() => props.setEnableSlideModal(false)}
+        onHide={() => setEnableSlideModal(false)}
         animation={false}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
@@ -316,10 +337,6 @@ const SlideOnExperiment = props => {
           <Modal.Title>{"Add Slide to DataSet"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Helmet>
-            <title>{head.addSlideOnExp.title}</title>
-            {getMeta(head.addSlideOnExp)}
-          </Helmet>
           <Container maxWidth="xl">
             <div className="page-container">
               {showErrorSummary === true && (
@@ -334,45 +351,63 @@ const SlideOnExperiment = props => {
 
               {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
 
-              <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-                {FormData.map((element, index) => {
-                  return (
-                    <>
-                      <Form.Group as={Row} controlId={index} key={index} className="gg-align-center mb-3">
-                        <Col xs={12} lg={9}>
-                          <FormLabel label={element.label} className="required-asterik" />
-                          <Form.Control
-                            as="select"
-                            name={element.name}
-                            value={element.value}
-                            onChange={element.onchange}
-                            required={true}
-                          >
-                            <option value="">Select {element.label}</option>
-                            {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
-                              getSelectionList(element)}
-                          </Form.Control>
-                          <Feedback message={`${element.message} is required`} />
+              {!slideView ? (
+                <>
+                  <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                    {FormData.map((element, index) => {
+                      return (
+                        <>
+                          <Form.Group as={Row} controlId={index} key={index} className="gg-align-center mb-3">
+                            <Col xs={12} lg={9}>
+                              <FormLabel label={element.label} className="required-asterik" />
+                              <Form.Control
+                                as="select"
+                                name={element.name}
+                                value={
+                                  !slideView
+                                    ? element.value
+                                    : element.name === "slide"
+                                    ? slideView.printedSlide.name
+                                    : slideView.metadata.name
+                                }
+                                onChange={element.onchange}
+                                required={true}
+                                disabled={slideView && slideView.id}
+                              >
+                                <option value="">Select {element.label}</option>
+                                {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
+                                  getSelectionList(element)}
+                              </Form.Control>
+                              <Feedback message={`${element.message} is required`} />
 
-                          {element.name === "slide" && blocks.length > 0 && !showModal && (
-                            <div>{getBlocksSelectedPanel()}</div>
-                          )}
-                        </Col>
-                      </Form.Group>
-                    </>
-                  );
-                })}
-
-                <div className="mt-4 mb-4 text-center">
-                  <Button className="gg-btn-outline-reg" onClick={() => props.setEnableSlideModal(false)}>
-                    Cancel
-                  </Button>
-                  &nbsp;
-                  <Button type="submit" className="gg-btn-blue-reg">
-                    Submit
-                  </Button>
-                </div>
-              </Form>
+                              {element.name === "slide" && blocks.length > 0 && !showModal && (
+                                <div>{getBlocksSelectedPanel()}</div>
+                              )}
+                            </Col>
+                          </Form.Group>
+                        </>
+                      );
+                    })}
+                    <div className="mt-4 mb-4 text-center">
+                      <Button
+                        className="gg-btn-outline-reg"
+                        onClick={() => {
+                          setEnableSlideModal(false);
+                          setSlideView();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      &nbsp;
+                      <Button type="submit" className="gg-btn-blue-reg">
+                        Submit
+                      </Button>
+                    </div>
+                  </Form>
+                </>
+              ) : (
+                getSlideView()
+              )}
             </div>
           </Container>
         </Modal.Body>
