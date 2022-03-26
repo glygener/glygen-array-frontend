@@ -31,28 +31,24 @@
   margin-left: 0 !important;
   padding-right: 0 !important;
   padding-left: 0 !important;
-  
 } */
 .gg-nav-link {
   color: var(--light) !important;
-  padding: 10px !important;
+  /* padding: 10px !important; */
   font-weight: 600;
   letter-spacing: 0.4px;
+  border-bottom: 4px solid transparent;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 .gg-nav-link:hover{
   color: var(--gg-light-blue) !important;
-  padding: 10px !important;
 }
 .gg-nav-link.active {
   color: var(--white) !important;
-  border-bottom: 4px solid var(--gg-light-blue) !important;
-  padding-bottom: 0 !important;
-  padding-right: 15px !important;
-  padding-left: 15px !important;
-  margin-right: 10px !important;
-  margin-left: 10px !important;
-  padding-right: 0 !important;
-  padding-left: 0 !important;
+  border-bottom-color: var(--gg-light-blue);
 }
 .gg-nav-link.active:hover {
   color: var(--gg-light-blue) !important;
