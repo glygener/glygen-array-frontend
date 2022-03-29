@@ -1,6 +1,6 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { wsCall } from "../utils/wsUtils";
-import { Form, Row, Col, Breadcrumb, Accordion } from "react-bootstrap";
+import { Form, Row, Col, Breadcrumb, Accordion, Button } from "react-bootstrap";
 import { ErrorSummary } from "../components/ErrorSummary";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -19,6 +19,7 @@ import { DataTreeView } from "../components/DataTreeView";
 import { ContextAwareToggle } from "../utils/commonUtils";
 // import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import { ExperimentInfo } from "./ExperimentInfo";
+import { Link } from "react-router-dom";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -67,7 +68,7 @@ const AddExperiment = props => {
             grants: responseJson.grants,
             slides: responseJson.slides,
             images: responseJson.images,
-            isPublic: responseJson.isPublic
+            isPublic: responseJson.isPublic,
           });
 
           // setRefreshPage(false);
@@ -96,7 +97,7 @@ const AddExperiment = props => {
     rawDataList: [],
     processedData: [],
     publications: [],
-    pubChemId: ""
+    pubChemId: "",
   };
 
   const [experiment, setExperiment] = useReducer((state, newState) => ({ ...state, ...newState }), experimentState);
@@ -132,7 +133,7 @@ const AddExperiment = props => {
       response.json().then(responseJson => {
         if (!experimentId) {
           setExperiment({
-            publications: experiment.publications.concat([responseJson])
+            publications: experiment.publications.concat([responseJson]),
           });
         } else {
           addPublication(responseJson);
@@ -159,7 +160,7 @@ const AddExperiment = props => {
         endPage: publication.endPage,
         volume: publication.volume,
         year: publication.year,
-        number: publication.number
+        number: publication.number,
       },
       response => {
         console.log(response);
@@ -187,7 +188,7 @@ const AddExperiment = props => {
           name: experiment.name,
           description: experiment.description,
           sample: { name: experiment.sample },
-          publications: experiment.publications
+          publications: experiment.publications,
         },
         addExperimentSuccess,
         addExperimentFailure
@@ -295,7 +296,7 @@ const AddExperiment = props => {
               xl={5}
               style={{
                 // maxWidth: "35%",
-                marginLeft: "-95px"
+                marginLeft: "-95px",
               }}
             >
               {experimentId ? (
@@ -318,108 +319,119 @@ const AddExperiment = props => {
                   : "Please provide the information for the new experiment."
               }
             />
-            {showErrorSummary === true && (
-              <ErrorSummary
-                show={showErrorSummary}
-                form="experiments"
-                errorJson={pageErrorsJson}
-                errorMessage={pageErrorMessage}
-              />
-            )}
-            {/* experiment Info */}
-            <ExperimentInfo
-              experimentId={experimentId}
-              validated={validated}
-              handleSubmit={handleSubmit}
-              experiment={experiment}
-              handleChange={handleChange}
-              duplicateName={duplicateName}
-              handleSelect={handleSelect}
-              sampleList={sampleList}
-              getPublication={getPublication}
-              getPublicationFormControl={getPublicationFormControl}
-              showErrorSummary={showErrorSummary}
-            />
-            {/* {refreshPage && getExperiment()} */}
-            &nbsp;
-            {experimentId && (
-              <>
-                {experiment.slides && experiment.slides.length > 0 && (
-                  <Accordion defaultActiveKey={0}>
-                    <Card>
-                      <Card.Header style5={{ height: "65px" }}>
-                        <Row>
-                          <Col className="font-awesome-color" style={{ textAlign: "left" }}>
-                            <span className="descriptor-header"> {"Data"}</span>
-                          </Col>
-
-                          <Col style={{ textAlign: "right" }}>
-                            <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
-                          </Col>
-                        </Row>
-                      </Card.Header>
-                      <Accordion.Collapse eventKey={0}>
-                        <div
-                          style={{
-                            height: 600,
-                            overflow: "scroll",
-                            padding: "20px"
-                          }}
-                        >
-                          <DataTreeView data={experiment} experimentId={experimentId} />
-                        </div>
-                      </Accordion.Collapse>
-                    </Card>
-                  </Accordion>
+            <Card>
+              <Card.Body>
+                {showErrorSummary === true && (
+                  <ErrorSummary
+                    show={showErrorSummary}
+                    form="experiments"
+                    errorJson={pageErrorsJson}
+                    errorMessage={pageErrorMessage}
+                  />
                 )}
-                {/* Publications */}
-                &nbsp;
-                <PubOnExp
-                  getPublication={getPublication}
-                  getPublicationFormControl={getPublicationFormControl}
-                  newPubMedId={newPubMedId}
-                  publications={experiment.publications}
-                  deleteRow={deleteRow}
-                />
-                &nbsp;
-                {/* Grants */}
-                <GrantsOnExp
-                  experimentId={experimentId}
-                  delete={deleteRow}
-                  grants={experiment.grants}
-                  deleteWsCall={"deletegrant"}
-                />
-                &nbsp;
-                {/* Collaborators */}
-                <CollabsOnExp
-                  experimentId={experimentId}
-                  getExperiment={getExperiment}
-                  delete={deleteRow}
-                  addWsCall={"addcollaborator"}
-                  deleteWsCall={"deletecollaborator"}
-                />
-                &nbsp;
-                {/* Co-Owners */} 
-                <CoOwnersOnExp
-                  experimentId={experimentId}
-                  delete={deleteRow}
-                  addWsCall={"addcoowner"}
-                  deleteWsCall={"deletecoowner"}
-                  setRefreshListCoOwners={setRefreshListCoOwners}
-                  refreshListCoOwners={refreshListCoOwners}
-                />
-                {/* ConfirmationModal */}
-                <ConfirmationModal
-                  showModal={showDeleteModal}
-                  onCancel={cancelDelete}
-                  onConfirm={confirmDelete}
-                  title="Confirm Delete"
-                  body="Are you sure you want to delete?"
-                />
-              </>
-            )}
-            {/* </Card.Body> */}
-            {/* </Card> */}
+                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                  <div className="text-center mb-4">
+                    <Link to="/experiments">
+                      <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                    </Link>
+                    <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit" disabled={showErrorSummary}>
+                      {!experimentId ? "Submit" : "Submit"}
+                    </Button>
+                  </div>
+                  {/* experiment Info */}
+                  <ExperimentInfo
+                    experimentId={experimentId}
+                    validated={validated}
+                    handleSubmit={handleSubmit}
+                    experiment={experiment}
+                    handleChange={handleChange}
+                    duplicateName={duplicateName}
+                    handleSelect={handleSelect}
+                    sampleList={sampleList}
+                    getPublication={getPublication}
+                    getPublicationFormControl={getPublicationFormControl}
+                    showErrorSummary={showErrorSummary}
+                    className="mb-4"
+                  />
+                  {/* {refreshPage && getExperiment()} */}
+
+                  {experimentId && (
+                    <>
+                      {experiment.slides && experiment.slides.length > 0 && (
+                        <Accordion defaultActiveKey={0} className="mb-4">
+                          <Card>
+                            <Card.Header>
+                              <Row>
+                                <Col className="font-awesome-color">
+                                  <span className="descriptor-header">Data</span>
+                                </Col>
+
+                                <Col style={{ textAlign: "right" }}>
+                                  <ContextAwareToggle eventKey={0} classname="font-awesome-color" />
+                                </Col>
+                              </Row>
+                            </Card.Header>
+                            <Accordion.Collapse eventKey={0}>
+                              <Card.Body>
+                                <DataTreeView data={experiment} experimentId={experimentId} />
+                              </Card.Body>
+                            </Accordion.Collapse>
+                          </Card>
+                        </Accordion>
+                      )}
+                      {/* Publications */}
+                      <PubOnExp
+                        getPublication={getPublication}
+                        getPublicationFormControl={getPublicationFormControl}
+                        newPubMedId={newPubMedId}
+                        publications={experiment.publications}
+                        deleteRow={deleteRow}
+                      />
+                      {/* Grants */}
+                      <GrantsOnExp
+                        experimentId={experimentId}
+                        delete={deleteRow}
+                        grants={experiment.grants}
+                        deleteWsCall={"deletegrant"}
+                      />
+                      {/* Collaborators */}
+                      <CollabsOnExp
+                        experimentId={experimentId}
+                        getExperiment={getExperiment}
+                        delete={deleteRow}
+                        addWsCall={"addcollaborator"}
+                        deleteWsCall={"deletecollaborator"}
+                      />
+                      {/* Co-Owners */} 
+                      <CoOwnersOnExp
+                        experimentId={experimentId}
+                        delete={deleteRow}
+                        addWsCall={"addcoowner"}
+                        deleteWsCall={"deletecoowner"}
+                        setRefreshListCoOwners={setRefreshListCoOwners}
+                        refreshListCoOwners={refreshListCoOwners}
+                      />
+                      {/* ConfirmationModal */}
+                      <ConfirmationModal
+                        showModal={showDeleteModal}
+                        onCancel={cancelDelete}
+                        onConfirm={confirmDelete}
+                        title="Confirm Delete"
+                        body="Are you sure you want to delete?"
+                      />
+                    </>
+                  )}
+                  <div className="text-center mts-4">
+                    <Link to="/experiments">
+                      <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                    </Link>
+                    <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit" disabled={showErrorSummary}>
+                      {!experimentId ? "Submit" : "Submit"}
+                    </Button>
+                  </div>
+                </Form>
+              </Card.Body>
+            </Card>
           </Container>
         </div>
       </>

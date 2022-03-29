@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import ReactTable from "react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { wsCall } from "../utils/wsUtils";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const CoOwners = props => {
   const [data, setData] = useState();
@@ -45,40 +46,52 @@ const CoOwners = props => {
         columns={[
           {
             Header: "Username",
-            accessor: "userName"
+            accessor: "userName",
           },
           {
             Header: "FirstName",
-            accessor: "firstName"
+            accessor: "firstName",
           },
           {
             Header: "LastName",
-            accessor: "lastName"
+            accessor: "lastName",
           },
           {
             Header: "Organization",
-            accessor: "affiliation"
+            accessor: "affiliation",
           },
           {
             Header: "Actions",
             Cell: (row, index) => (
               <div style={{ textAlign: "center" }}>
-                <FontAwesomeIcon
-                  key={"delete" + index}
-                  icon={["far", "trash-alt"]}
-                  size="lg"
-                  title="Delete"
-                  className="caution-color table-btn"
-                  onClick={() => props.delete(row.original.userName, props.deleteWsCall)}
-                />
+                <LineTooltip text="Delete Co-Owner">
+                  <span>
+                    <FontAwesomeIcon
+                      key={"delete" + index}
+                      icon={["far", "trash-alt"]}
+                      size="lg"
+                      title="Delete"
+                      className="caution-color table-btn"
+                      onClick={() => props.delete(row.original.userName, props.deleteWsCall)}
+                    />
+                  </span>
+                </LineTooltip>
               </div>
             ),
-            minWidth: 60
-          }
+            minWidth: 60,
+          },
         ]}
         className={"-striped -highlight"}
         defaultPageSize={data && data.length > 10 ? data.length : 5}
         // showPagination={false}
+        minRows={0}
+        NoDataComponent={({ state, ...rest }) =>
+          !state?.loading ? (
+            <p className="pt-2 text-center">
+              <strong>No data available </strong>
+            </p>
+          ) : null
+        }
         showPaginationTop
       />
     </>

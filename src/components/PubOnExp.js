@@ -9,53 +9,48 @@ import plusIcon from "../images/icons/plus.svg";
 const PubOnExp = props => {
   return (
     <>
-      <Accordion defaultActiveKey={0}>
+      <Accordion defaultActiveKey={0} className="mb-4">
         <Card>
-          <Card.Header style5={{ height: "65px" }}>
+          <Card.Header>
             <Row>
-              <Col md={2} className="font-awesome-color" style={{ textAlign: "left" }}>
-                <span className="descriptor-header"> {"Publications"}</span>
-              </Col>
-              <Col>
-                <Form.Group as={Row} controlId="publications" className="mt-2 mb-3">
-                  <Col md={6}>{props.getPublicationFormControl()}</Col>
-                  <Col md={1}>
-                    <Button
-                      className="gg-btn-outline-reg"
-                      onClick={() => props.getPublication()}
-                      disabled={props.newPubMedId && props.newPubMedId.length > 0 ? false : true}
-                    >
-                      <LineTooltip text="Add Publication">
-                        <Link>
-                          <Image src={plusIcon} alt="plus button" />
-                        </Link>
-                      </LineTooltip>
-                    </Button>
-                  </Col>
-                </Form.Group>
+              <Col className="font-awesome-color">
+                <span className="descriptor-header">Publications</span>
               </Col>
 
-              <Col md={2} style={{ textAlign: "right" }}>
-                <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
+              <Col style={{ textAlign: "right" }}>
+                <ContextAwareToggle eventKey={0} classname="font-awesome-color" />
               </Col>
             </Row>
           </Card.Header>
           <Accordion.Collapse eventKey={0}>
-            <Table hover>
-              <tbody className="table-body">
-                {props.publications.length < 1 ? (
-                  <tr className="table-row">
-                    <td>
-                      <p className="no-data-msg-publication">No data available.</p>
-                    </td>
-                  </tr>
-                ) : (
-                  props.publications.map((pub, pubIndex) => {
-                    return <PublicationCard key={pubIndex} {...pub} enableDelete deletePublication={props.deleteRow} />;
-                  })
-                )}
-              </tbody>
-            </Table>
+            <Card.Body>
+              {
+                // props.publications.length < 1 ? (
+                //   <p className="no-data-msg-publication">No data available.</p>
+                // ) : (
+                props.publications.map((pub, pubIndex) => {
+                  return <PublicationCard key={pubIndex} {...pub} enableDelete deletePublication={props.deleteRow} />;
+                })
+                // )
+              }
+
+              <Form.Group as={Row} controlId="publications" className="mt-2 mb-3">
+                <Col md={6}>{props.getPublicationFormControl()}</Col>
+                <Col md={1}>
+                  <Button
+                    className="gg-btn-outline-reg"
+                    onClick={() => props.getPublication()}
+                    disabled={props.newPubMedId && props.newPubMedId.length > 0 ? false : true}
+                  >
+                    <LineTooltip text="Add Publication">
+                      <Link>
+                        <Image src={plusIcon} alt="plus button" />
+                      </Link>
+                    </LineTooltip>
+                  </Button>
+                </Col>
+              </Form.Group>
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
       </Accordion>

@@ -22,6 +22,7 @@
   border-radius: 1px;
   display: flex;
   align-items: center;
+  margin-left: 1px !important;
   /* justify-content: space-evenly; */
 }
 

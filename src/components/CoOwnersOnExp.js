@@ -7,34 +7,34 @@ import { CoOwners } from "../containers/CoOwners";
 const CoOwnersOnExp = props => {
   return (
     <>
-      <Accordion defaultActiveKey={0}>
+      <Accordion defaultActiveKey={0} className="mb-4">
         <Card>
-          <Card.Header style5={{ height: "65px" }}>
+          <Card.Header>
             <Row>
-              <Col md={2} className="font-awesome-color" style={{ textAlign: "left" }}>
+              <Col className="font-awesome-color" style={{ textAlign: "left" }}>
                 <span className="descriptor-header"> {"Co-Owners"}</span>
               </Col>
-              <Col>
-                <AddCoOwnerandCollab
-                  addWsCall={props.addWsCall}
-                  experimentId={props.experimentId}
-                  setRefreshListCoOwners={props.setRefreshListCoOwners}
-                />
-              </Col>
 
-              <Col md={2} style={{ textAlign: "right" }}>
+              <Col style={{ textAlign: "right" }}>
                 <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
               </Col>
             </Row>
           </Card.Header>
           <Accordion.Collapse eventKey={0}>
-            <CoOwners
-              experimentId={props.experimentId}
-              delete={props.deleteRow}
-              deleteWsCall={props.deleteWsCall}
-              refreshListCoOwners={props.refreshListCoOwners}
-              setRefreshListCoOwners={props.setRefreshListCoOwners}
-            />
+            <Card.Body>
+              <AddCoOwnerandCollab
+                addWsCall={props.addWsCall}
+                experimentId={props.experimentId}
+                setRefreshListCoOwners={props.setRefreshListCoOwners}
+              />
+              <CoOwners
+                experimentId={props.experimentId}
+                delete={props.deleteRow}
+                deleteWsCall={props.deleteWsCall}
+                refreshListCoOwners={props.refreshListCoOwners}
+                setRefreshListCoOwners={props.setRefreshListCoOwners}
+              />
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
       </Accordion>

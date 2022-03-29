@@ -7,32 +7,32 @@ import { Collaborators } from "../containers/Collaborators";
 const CollabsOnExp = props => {
   return (
     <>
-      <Accordion defaultActiveKey={0}>
+      <Accordion defaultActiveKey={0} className="mb-4">
         <Card>
-          <Card.Header style5={{ height: "65px" }}>
+          <Card.Header>
             <Row>
-              <Col md={2} className="font-awesome-color" style={{ textAlign: "left" }}>
+              <Col className="font-awesome-color" style={{ textAlign: "left" }}>
                 <span className="descriptor-header"> {"Collaborator"}</span>
               </Col>
-              <Col>
-                <AddCoOwnerandCollab
-                  addWsCall={props.addWsCall}
-                  experimentId={props.experimentId}
-                  getExperiment={props.getExperiment}
-                />
-              </Col>
 
-              <Col md={2} style={{ textAlign: "right" }}>
+              <Col style={{ textAlign: "right" }}>
                 <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
               </Col>
             </Row>
           </Card.Header>
           <Accordion.Collapse eventKey={0}>
-            <Collaborators
-              delete={props.deleteRow}
-              collaborators={props.collaborators}
-              deleteWsCall={props.deleteWsCall}
-            />
+            <Card.Body>
+              <AddCoOwnerandCollab
+                addWsCall={props.addWsCall}
+                experimentId={props.experimentId}
+                getExperiment={props.getExperiment}
+              />
+              <Collaborators
+                delete={props.deleteRow}
+                collaborators={props.collaborators}
+                deleteWsCall={props.deleteWsCall}
+              />
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
       </Accordion>

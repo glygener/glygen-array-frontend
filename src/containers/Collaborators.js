@@ -4,6 +4,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import ReactTable from "react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const Collaborators = props => {
   return (
@@ -13,40 +14,52 @@ const Collaborators = props => {
         columns={[
           {
             Header: "Username",
-            accessor: "name"
+            accessor: "name",
           },
           {
             Header: "FirstName",
-            accessor: "firstName"
+            accessor: "firstName",
           },
           {
             Header: "LastName",
-            accessor: "lastName"
+            accessor: "lastName",
           },
           {
             Header: "Organization",
-            accessor: "affiliation"
+            accessor: "affiliation",
           },
           {
             Header: "Actions",
             Cell: (row, index) => (
               <div style={{ textAlign: "center" }}>
-                <FontAwesomeIcon
-                  key={"delete" + index}
-                  icon={["far", "trash-alt"]}
-                  size="lg"
-                  title="Delete"
-                  className="caution-color table-btn"
-                  onClick={() => props.delete(row.original.name, props.deleteWsCall)}
-                />
+                <LineTooltip text="Delete Collaborator">
+                  <span>
+                    <FontAwesomeIcon
+                      key={"delete" + index}
+                      icon={["far", "trash-alt"]}
+                      size="lg"
+                      title="Delete"
+                      className="caution-color table-btn"
+                      onClick={() => props.delete(row.original.name, props.deleteWsCall)}
+                    />
+                  </span>
+                </LineTooltip>
               </div>
             ),
-            minWidth: 60
-          }
+            minWidth: 60,
+          },
         ]}
         className={"-striped -highlight"}
         defaultPageSize={5}
         // showPagination={false}
+        minRows={0}
+        NoDataComponent={({ state, ...rest }) =>
+          !state?.loading ? (
+            <p className="pt-2 text-center">
+              <strong>No data available </strong>
+            </p>
+          ) : null
+        }
         showPaginationTop
       />
     </>
