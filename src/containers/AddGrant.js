@@ -2,11 +2,13 @@ import React, { useReducer, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { Row, Col, Form } from "react-bootstrap";
-import { FormButton, FormLabel, Title } from "../components/FormControls";
+import { Row, Col, Form, Button } from "react-bootstrap";
+import { FormButton, FormLabel, PageHeading } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
-import { useHistory, useParams, Prompt } from "react-router-dom";
+import { useHistory, useParams, Prompt, Link } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import { Card } from "react-bootstrap";
 
 const AddGrant = props => {
   let { experimentId } = useParams();
@@ -22,7 +24,7 @@ const AddGrant = props => {
     fundingOrganization: "",
     identifier: "",
     title: "",
-    url: ""
+    url: "",
   };
   const [grant, setGrant] = useReducer((state, newState) => ({ ...state, ...newState }), grantPage);
 
@@ -72,70 +74,77 @@ const AddGrant = props => {
         {getMeta(head.addRawData)}
       </Helmet>
 
-      <div className="page-container">
-        <Title title="Create Raw Data" />
+      <Container maxWidth="xl">
+        <div className="page-container">
+          <PageHeading title="Add Grant to Repository" subTitle="Please provide the information for the new grant." />
+          <Card>
+            <Card.Body>
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="grants"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                />
+              )}
 
-        {showErrorSummary === true && (
-          <ErrorSummary
-            show={showErrorSummary}
-            form="grants"
-            errorJson={pageErrorsJson}
-            errorMessage={pageErrorMessage}
-          />
-        )}
+              {showErrorSummary === true && window.scrollTo({ top: 0, behavior: "smooth" })}
 
-        {showErrorSummary === true && window.scrollTo({ top: 0, behavior: "smooth" })}
+              {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
 
-        {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
+              <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                <Form.Group as={Row} controlId="fundingOrganization" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Funding Organization" className="required-asterik" />
 
-        <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-          <Form.Group as={Row} controlId="fundingOrganization">
-            <FormLabel label="Funding Organization" className={"text-fields required-asterik"} />
-            <Col md={4}>
-              <Form.Control
-                type="text"
-                name="fundingOrganization"
-                value={grant.fundingOrganization}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
+                    <Form.Control
+                      type="text"
+                      name="fundingOrganization"
+                      value={grant.fundingOrganization}
+                      onChange={handleChange}
+                    />
+                  </Col>
+                </Form.Group>
 
-          <Form.Group as={Row} controlId="grantNumber">
-            <FormLabel label="Grant Number" className={"text-fields"} />
-            <Col md={4}>
-              <Form.Control type="text" name="identifier" value={grant.grantNumber} onChange={handleChange} />
-            </Col>
-          </Form.Group>
+                <Form.Group as={Row} controlId="grantNumber" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Grant Number" />
 
-          <Form.Group as={Row} controlId="grantTitle">
-            <FormLabel label="Grant Title" className={"text-fields required-asterik"} />
-            <Col md={4}>
-              <Form.Control type="text" name="title" value={grant.grantTitle} onChange={handleChange} />
-            </Col>
-          </Form.Group>
+                    <Form.Control type="text" name="identifier" value={grant.grantNumber} onChange={handleChange} />
+                  </Col>
+                </Form.Group>
 
-          <Form.Group as={Row} controlId="url">
-            <FormLabel label="Url" className={"text-fields"} />
-            <Col md={4}>
-              <Form.Control type="url" name="url" value={grant.url} onChange={handleChange} />
-            </Col>
-          </Form.Group>
+                <Form.Group as={Row} controlId="grantTitle" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="Grant Title" className="required-asterik" />
+                    <Form.Control type="text" name="title" value={grant.grantTitle} onChange={handleChange} />
+                  </Col>
+                </Form.Group>
 
-          <Row style={{ marginTop: "3%" }}>
-            <FormButton className="line-break-2" type="submit" label={"Submit"} />
-            <FormButton
-              className="line-break-2"
-              type="button"
-              label={"Cancel"}
-              onClick={
-                () => history.push("/experiments/editExperiment/" + experimentId)
-                // history.goBack()
-              }
-            />
-          </Row>
-        </Form>
-      </div>
+                <Form.Group as={Row} controlId="url" className="gg-align-center mb-3">
+                  <Col xs={12} lg={9}>
+                    <FormLabel label="URL" />
+                    <Form.Control type="url" name="url" value={grant.url} onChange={handleChange} />
+                  </Col>
+                </Form.Group>
+
+                <div className="text-center mb-4 mt-4">
+                  <Button
+                    className="gg-btn-blue mt-2 gg-mr-20"
+                    onClick={() => history.push("/experiments/editExperiment/" + experimentId)}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+                    Submit
+                  </Button>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 };
