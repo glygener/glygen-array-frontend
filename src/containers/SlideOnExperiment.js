@@ -334,7 +334,7 @@ const SlideOnExperiment = props => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>{"Add Slide to DataSet"}</Modal.Title>
+          <Modal.Title>{!slideView ? "Add Slide to DataSet" : "View Slide Details"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container maxWidth="xl">
@@ -388,9 +388,9 @@ const SlideOnExperiment = props => {
                         </>
                       );
                     })}
-                    <div className="mt-4 mb-4 text-center">
+                    <div className="text-center mb-4 mt-4">
                       <Button
-                        className="gg-btn-outline-reg"
+                        className="gg-btn-outline mt-2 gg-mr-20"
                         onClick={() => {
                           setEnableSlideModal(false);
                           setSlideView();
@@ -398,8 +398,8 @@ const SlideOnExperiment = props => {
                       >
                         Cancel
                       </Button>
-                      &nbsp;
-                      <Button type="submit" className="gg-btn-blue-reg">
+
+                      <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
                         Submit
                       </Button>
                     </div>

@@ -302,7 +302,7 @@ const RawdataOnImage = props => {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>{"Add Raw Data to Repository"}</Modal.Title>
+            <Modal.Title>{!rawDataView ? "Add Raw Data to Repository" : "View Raw Data Details"}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Helmet>
@@ -339,7 +339,7 @@ const RawdataOnImage = props => {
                               history={history}
                               headerObject={{
                                 Authorization: window.localStorage.getItem("token") || "",
-                                Accept: "*/*"
+                                Accept: "*/*",
                               }}
                               fileType={data.fileType}
                               uploadService={getWsUrl("upload")}
@@ -378,21 +378,19 @@ const RawdataOnImage = props => {
 
                       <Form.Group as={Row} controlId="wavelengths" className="gg-align-center mb-3">
                         <Col xs={12} lg={9}>
-                          <FormLabel label={"Wavelength"} />
-                          <div>
-                            <Form.Control
-                              type="text"
-                              value={rawData.wavelength}
-                              name="wavelength"
-                              onChange={e => setRawData({ wavelength: e.target.value })}
-                            />
-                          </div>
+                          <FormLabel label="Wave Length" />
+                          <Form.Control
+                            type="text"
+                            value={rawData.wavelength}
+                            name="wavelength"
+                            onChange={e => setRawData({ wavelength: e.target.value })}
+                          />
                         </Col>
                       </Form.Group>
 
                       <Form.Group as={Row} controlId="powerLevel" className="gg-align-center mb-3">
                         <Col xs={12} lg={9}>
-                          <FormLabel label={"Power Level"} className="required-asterik" />
+                          <FormLabel label="Power Level" className="required-asterik" />
                           <div>
                             <RangeSlider
                               value={rawData.powerLevel}
@@ -410,7 +408,7 @@ const RawdataOnImage = props => {
                       </Form.Group>
                       <div className="mt-4 mb-4 text-center">
                         <Button
-                          className="gg-btn-outline-reg"
+                          className="gg-btn-outline mt-2 gg-mr-20"
                           onClick={() => {
                             setRawDataView();
                             setEnableRawdataOnImage(false);
@@ -418,13 +416,12 @@ const RawdataOnImage = props => {
                         >
                           Cancel
                         </Button>
-                        &nbsp;
-                        <Button type="submit" className="gg-btn-blue-reg">
+
+                        <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
                           Submit
                         </Button>
                       </div>
                     </Form>
-                    }
                   </>
                 ) : (
                   getRawDataView()

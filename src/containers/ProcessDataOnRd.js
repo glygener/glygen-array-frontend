@@ -312,7 +312,7 @@ const ProcessDataOnRd = props => {
                           history={history}
                           headerObject={{
                             Authorization: window.localStorage.getItem("token") || "",
-                            Accept: "*/*"
+                            Accept: "*/*",
                           }}
                           fileType={data.fileType}
                           uploadService={getWsUrl("upload")}
@@ -350,12 +350,12 @@ const ProcessDataOnRd = props => {
                     );
                   })}
 
-                  <div className="mt-4 mb-4 text-center">
-                    <Button className="gg-btn-outline-reg" onClick={() => setEnableProcessRawdata(false)}>
+                  <div className="text-center mb-4 mt-4">
+                    <Button className="gg-btn-outline mt-2 gg-mr-20" onClick={() => setEnableProcessRawdata(false)}>
                       Cancel
                     </Button>
-                    &nbsp;
-                    <Button type="submit" className="gg-btn-blue-reg">
+
+                    <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
                       Submit
                     </Button>
                   </div>

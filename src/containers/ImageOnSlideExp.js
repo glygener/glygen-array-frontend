@@ -241,7 +241,7 @@ const ImageOnSlideExp = props => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>{"Add Image to Slide"}</Modal.Title>
+          <Modal.Title>{!imageView ? "Add Image to Slide" : "View Image Details"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container maxWidth="xl">
