@@ -83,7 +83,7 @@ const GlygenTable = props => {
       Header: "Comments",
       accessor: props.commentsRefColumn,
       style: {
-        textAlign: "center",
+        textAlign: "center"
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) =>
@@ -94,9 +94,8 @@ const GlygenTable = props => {
             arrow
             placement={"bottom"}
             classes={{
-              tooltip: "gg-tooltip",
+              tooltip: "gg-tooltip"
             }}
-         
             title={
               <span className="text-overflow text-max-height">
                 <h5>
@@ -130,7 +129,7 @@ const GlygenTable = props => {
         ) : (
           <div key={index}></div>
         ),
-      minWidth: 80,
+      minWidth: 80
     };
   }
 
@@ -138,7 +137,7 @@ const GlygenTable = props => {
     columnsToRender["actionsColumn"] = {
       Header: "Actions",
       style: {
-        textAlign: "center",
+        textAlign: "center"
       },
       sortable: false,
       // eslint-disable-next-line react/display-name
@@ -330,7 +329,7 @@ const GlygenTable = props => {
           )}
         </>
       ),
-      minWidth: 170,
+      minWidth: 170
     };
   }
 
@@ -346,7 +345,7 @@ const GlygenTable = props => {
         >
           {props.selectButtonHeader || "Select"}
         </Button>
-      ),
+      )
     };
   }
 
@@ -354,7 +353,7 @@ const GlygenTable = props => {
     columnsToRender["multiSelectColumn"] = {
       Header: "Select",
       style: {
-        textAlign: "center",
+        textAlign: "center"
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => (
@@ -375,7 +374,7 @@ const GlygenTable = props => {
           }
           className="mb-0 pb-0 mt-0 pt-0"
         />
-      ),
+      )
     };
   }
 
@@ -401,7 +400,7 @@ const GlygenTable = props => {
           }}
           checked={row.original.name === selectedRadio ? true : false}
         />
-      ),
+      )
     };
   }
 
@@ -429,7 +428,7 @@ const GlygenTable = props => {
                           wsCall(
                             props.exportWsCall,
                             "GET",
-                            null,
+                            { type: props.moleculeType },
                             true,
                             null,
                             response => fileExportSuccess(response, props.fileName),
@@ -469,7 +468,7 @@ const GlygenTable = props => {
               <Col
                 style={{
                   marginTop: "10px",
-                  marginLeft: "40px",
+                  marginLeft: "40px"
                 }}
               >
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -559,8 +558,8 @@ const GlygenTable = props => {
                   loadAll: false, //only useful for features, blocks and slides
                   filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
                   type: props.paramTypeValue,
-                  ...props.qsParams,
-                },
+                  ...props.qsParams
+                }
               },
               // {
               //   offset: state.page * state.pageSize,

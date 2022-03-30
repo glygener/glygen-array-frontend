@@ -67,7 +67,8 @@ const Proteins = props => {
                 showRowsInfo
                 exportData
                 exportWsCall={"exportlinkers"}
-                fileName={"exportlinkers"}
+                moleculeType={"PROTEIN"}
+                fileName={"exportproteins"}
                 infoRowsText="Proteins"
                 showDeleteButton={props.isImported ? false : true}
                 showEditButton={props.isImported ? false : true}
