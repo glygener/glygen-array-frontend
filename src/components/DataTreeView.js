@@ -40,7 +40,7 @@ const DataTreeView = props => {
                       <strong>Experiment</strong>
                     </Col>
                     <Col style={{ textAlign: "right" }}>
-                      <LineTooltip text="Add Experiment">
+                      <LineTooltip text="Add Slide">
                         <span>
                           <FontAwesomeIcon
                             icon={["fas", "plus"]}
@@ -81,7 +81,7 @@ const DataTreeView = props => {
                               <strong>Slide:</strong> {slide.printedSlide.name}
                             </Col>
                             <Col style={{ textAlign: "right" }}>
-                              <LineTooltip text="Add Slide">
+                              <LineTooltip text="Add Image">
                                 <span>
                                   <FontAwesomeIcon
                                     icon={["fas", "plus"]}
@@ -183,7 +183,7 @@ const DataTreeView = props => {
                                     </Col>
 
                                     <Col style={{ textAlign: "right" }}>
-                                      <LineTooltip text="Add Image">
+                                      <LineTooltip text="Add Raw Data">
                                         <span>
                                           <FontAwesomeIcon
                                             icon={["fas", "plus"]}
@@ -279,7 +279,7 @@ const DataTreeView = props => {
                                               </span>
                                             </Col>
                                             <Col style={{ textAlign: "right" }}>
-                                              <LineTooltip text="Add Raw Data">
+                                              <LineTooltip text="Add Process Data">
                                                 <span>
                                                   <FontAwesomeIcon
                                                     icon={["fas", "plus"]}
