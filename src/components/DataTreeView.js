@@ -24,6 +24,7 @@ const DataTreeView = props => {
   const [slideView, setSlideView] = useState();
   const [imageView, setImageView] = useState();
   const [rawDataView, setRawDataView] = useState();
+  const [processDataView, setProcessDataView] = useState();
 
   return (
     <>
@@ -354,7 +355,7 @@ const DataTreeView = props => {
                                 }
                               >
                                 {rawData.processedDataList &&
-                                  rawData.processedDataList.map(processData => {
+                                  rawData.processedDataList.map(pd => {
                                     return (
                                       <Tree
                                         open
@@ -367,12 +368,10 @@ const DataTreeView = props => {
                                                   <Row className={"row_headline"}>
                                                     <Col>
                                                       <strong>Process Data</strong>{" "}
-                                                      <span style={{ marginLeft: "20px" }}>
-                                                        {processData.metadata.name}
-                                                      </span>
+                                                      <span style={{ marginLeft: "20px" }}>{pd.metadata.name}</span>
                                                     </Col>
                                                     <Col style={{ textAlign: "right" }}>
-                                                      {processData.id && (
+                                                      {pd.id && (
                                                         <>
                                                           <LineTooltip text="Delete Process Data">
                                                             <span>
@@ -399,12 +398,15 @@ const DataTreeView = props => {
                                                             size="lg"
                                                             color="#45818e"
                                                             className="tbl-icon-btn"
-                                                            // onClick={() => processDataView(slide)}
+                                                            onClick={() => {
+                                                              setProcessDataView(pd);
+                                                              setEnableProcessRawdata(true);
+                                                            }}
                                                           />
                                                         </span>
                                                       </LineTooltip>
 
-                                                      {processData.file && (
+                                                      {pd.file && (
                                                         <LineTooltip text="Download Metadata">
                                                           <span>
                                                             <FontAwesomeIcon
@@ -482,6 +484,8 @@ const DataTreeView = props => {
         <ProcessDataOnRd
           experimentId={experimentId}
           rawDataId={rawdataSelected}
+          processDataView={processDataView}
+          setProcessDataView={setProcessDataView}
           enableProcessRawdata={enableProcessRawdata}
           setEnableProcessRawdata={setEnableProcessRawdata}
         />

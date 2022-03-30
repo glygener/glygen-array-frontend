@@ -20,6 +20,8 @@ import { ContextAwareToggle } from "../utils/commonUtils";
 // import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import { ExperimentInfo } from "./ExperimentInfo";
 import { Link } from "react-router-dom";
+import { FilesOnExp } from "../components/FilesOnExp";
+import { KeywordsOnExp } from "../components/KeywordsOnExp";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -56,7 +58,6 @@ const AddExperiment = props => {
       null,
       response =>
         response.json().then(responseJson => {
-          debugger;
           setExperiment({
             name: responseJson.name,
             sample: responseJson.sample.name,
@@ -69,6 +70,8 @@ const AddExperiment = props => {
             slides: responseJson.slides,
             images: responseJson.images,
             isPublic: responseJson.isPublic,
+            files: responseJson.files,
+            keywords: responseJson.keywords
           });
 
           // setRefreshPage(false);
@@ -97,7 +100,7 @@ const AddExperiment = props => {
     rawDataList: [],
     processedData: [],
     publications: [],
-    pubChemId: "",
+    pubChemId: ""
   };
 
   const [experiment, setExperiment] = useReducer((state, newState) => ({ ...state, ...newState }), experimentState);
@@ -133,7 +136,7 @@ const AddExperiment = props => {
       response.json().then(responseJson => {
         if (!experimentId) {
           setExperiment({
-            publications: experiment.publications.concat([responseJson]),
+            publications: experiment.publications.concat([responseJson])
           });
         } else {
           addPublication(responseJson);
@@ -160,7 +163,7 @@ const AddExperiment = props => {
         endPage: publication.endPage,
         volume: publication.volume,
         year: publication.year,
-        number: publication.number,
+        number: publication.number
       },
       response => {
         console.log(response);
@@ -188,7 +191,7 @@ const AddExperiment = props => {
           name: experiment.name,
           description: experiment.description,
           sample: { name: experiment.sample },
-          publications: experiment.publications,
+          publications: experiment.publications
         },
         addExperimentSuccess,
         addExperimentFailure
@@ -296,7 +299,7 @@ const AddExperiment = props => {
               xl={5}
               style={{
                 // maxWidth: "35%",
-                marginLeft: "-95px",
+                marginLeft: "-95px"
               }}
             >
               {experimentId ? (
@@ -410,6 +413,22 @@ const AddExperiment = props => {
                         deleteWsCall={"deletecoowner"}
                         setRefreshListCoOwners={setRefreshListCoOwners}
                         refreshListCoOwners={refreshListCoOwners}
+                      />
+                      {/* Files */}
+                      <FilesOnExp
+                        experimentId={experimentId}
+                        files={experiment.files}
+                        delete={deleteRow}
+                        addWsCall={"addfileonexp"}
+                        deleteWsCall={"deletefileonexp"}
+                      />
+                      {/* Key words */}
+                      <KeywordsOnExp
+                        experimentId={experimentId}
+                        keywords={experiment.keywords}
+                        delete={deleteRow}
+                        addWsCall={"addkeywords"}
+                        deleteWsCall={"deletekeyword"}
                       />
                       {/* ConfirmationModal */}
                       <ConfirmationModal

@@ -8,24 +8,18 @@ const Grants = props => {
   const getGrantTable = () => {
     return (
       <>
-        {
-          // !props.grants || props.grants.length < 1 ? (
-          //   <p className="no-data-msg-publication">No data available.</p>
-          // ) : (
-          props.grants &&
-            props.grants.map((grant, grantIndex) => {
-              return (
-                <Table hover>
-                  <tbody className="table-body">
-                    <tr className="table-row" key={grantIndex}>
-                      {getPublicationDisplayTable(grant, grantIndex)}
-                    </tr>
-                  </tbody>
-                </Table>
-              );
-            })
-          // )
-        }
+        {props.grants &&
+          props.grants.map((grant, grantIndex) => {
+            return (
+              <Table hover>
+                <tbody className="table-body">
+                  <tr className="table-row" key={grantIndex}>
+                    {getPublicationDisplayTable(grant, grantIndex)}
+                  </tr>
+                </tbody>
+              </Table>
+            );
+          })}
       </>
     );
   };

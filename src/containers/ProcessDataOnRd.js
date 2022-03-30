@@ -16,17 +16,17 @@ import "./AddRawData.css";
 
 const ProcessDataOnRd = props => {
   let { experimentId } = useParams();
-  let { rawDataId, enableProcessRawdata, setEnableProcessRawdata } = props;
+  let { rawDataId, enableProcessRawdata, setEnableProcessRawdata, processDataView, setProcessDataView } = props;
 
   const history = useHistory();
 
+  const [uploadedDF, setUploadedDF] = useState();
+  const [showLoading, setShowLoading] = useState(false);
   const [validated, setValidated] = useState(false);
   const [enablePrompt, setEnablePrompt] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
-  const [uploadedDF, setUploadedDF] = useState();
-  const [showLoading, setShowLoading] = useState(false);
   const [listDataProcessing, setListDataProcessing] = useState([]);
   const [statisticalMethods, setStatisticalMethods] = useState([]);
   const [supportedProcessedFF, setSupportedProcessedFF] = useState([]);
@@ -198,84 +198,63 @@ const ProcessDataOnRd = props => {
         });
   };
 
-  // const processDataView = () => {
-  //   return (
-  //     <>
-  //       <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
-  //         <Col xs={12} lg={9}>
-  //           <FormLabel label={"Rawdata"} className="required-asterik" />
-  //           <Form.Control type="text" name={"rawdata"} value={rawDataView.file.originalName} readOnly plaintext />
-  //         </Col>
-  //       </Form.Group>
+  const getProcessDataView = () => {
+    return (
+      <>
+        <Form.Group as={Row} controlId={"processdata"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Process Data"} className="required-asterik" />
+            <Form.Control
+              type="text"
+              name={"processdata"}
+              value={processDataView.file.originalName}
+              readOnly
+              plaintext
+            />
+          </Col>
+        </Form.Group>
 
-  //       <Form.Group as={Row} controlId={"imageAnalysis"} className="gg-align-center mb-3">
-  //         <Col xs={12} lg={9}>
-  //           <FormLabel label={"Image Analysis"} className="required-asterik" />
-  //           <Form.Control type="text" name={"metadata"} value={rawDataView.metadata.name} readOnly plaintext />
-  //         </Col>
-  //       </Form.Group>
+        <Form.Group as={Row} controlId={"dataProcessing"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Data Processing"} className="required-asterik" />
+            <Form.Control type="text" name={"metadata"} value={processDataView.metadata.name} readOnly plaintext />
+          </Col>
+        </Form.Group>
 
-  //       <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
-  //         <Col xs={12} lg={9}>
-  //           <FormLabel label={"RawData Fileformat"} className="required-asterik" />
-  //           <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file.fileFormat} readOnly plaintext />
-  //         </Col>
-  //       </Form.Group>
-
-  //       {rawDataView.powerLevel && (
-  //         <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
-  //           <Col xs={12} lg={9}>
-  //             <FormLabel label={"Power Level"} className="required-asterik" />
-  //             <Form.Control type="text" name={"powerLevel"} value={rawDataView.powerLevel} readOnly plaintext />
-  //           </Col>
-  //         </Form.Group>
-  //       )}
-
-  //       {rawDataView.channel && (
-  //         <>
-  //           <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
-  //             <Col xs={12} lg={9}>
-  //               <FormLabel label={"ChannelUsage Type"} className="required-asterik" />
-  //               <Form.Control
-  //                 type="text"
-  //                 name={"channelUsageType"}
-  //                 value={rawDataView.channel.usage}
-  //                 readOnly
-  //                 plaintext
-  //               />
-  //             </Col>
-  //           </Form.Group>
-  //           <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
-  //             <Col xs={12} lg={9}>
-  //               <FormLabel label={"Wavelength"} className="required-asterik" />
-  //               <Form.Control
-  //                 type="text"
-  //                 name={"wavelength"}
-  //                 value={rawDataView.channel.wavelength}
-  //                 readOnly
-  //                 plaintext
-  //               />
-  //             </Col>
-  //           </Form.Group>
-  //         </>
-  //       )}
-  //     </>
-  //   );
-  // };
+        <Form.Group as={Row} controlId={"processDataFF"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"ProcessData Fileformat"} className="required-asterik" />
+            <Form.Control
+              type="text"
+              name={"processDataFF"}
+              value={processDataView.file.fileFormat}
+              readOnly
+              plaintext
+            />
+          </Col>
+        </Form.Group>
+      </>
+    );
+  };
 
   const processDataForm = () => {
     return (
       <>
         <Modal
           show={enableProcessRawdata}
-          onHide={() => setEnableProcessRawdata(false)}
+          onHide={() => {
+            setProcessDataView();
+            setEnableProcessRawdata(false);
+          }}
           animation={false}
           size="xl"
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>{"Add Process Data to Repository"}</Modal.Title>
+            <Modal.Title>
+              {!processDataView ? "Add Process Data to Repository" : "View Process Data Details"}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Helmet>
@@ -292,74 +271,83 @@ const ProcessDataOnRd = props => {
                     errorMessage={pageErrorMessage}
                   />
                 )}
-
                 {showErrorSummary === true && window.scrollTo({ top: 0, behavior: "smooth" })}
-
                 {enablePrompt && <Prompt message="If you leave you will lose this data!" />}
 
-                {fileData.map((data, index) => {
-                  return (
-                    <Form.Group
-                      as={Row}
-                      controlId={data.controlId}
-                      key={index + data.controlId}
-                      className="gg-align-center mt-0 pt-0"
-                    >
-                      <Col xs={12} lg={9}>
-                        <FormLabel label={data.label} className="required-asterik pb-0 mb-0" />
-                        <ResumableUploader
-                          className="mt-0 pt-0"
-                          history={history}
-                          headerObject={{
-                            Authorization: window.localStorage.getItem("token") || "",
-                            Accept: "*/*",
+                {!processDataView ? (
+                  <>
+                    {fileData.map((data, index) => {
+                      return (
+                        <Form.Group
+                          as={Row}
+                          controlId={data.controlId}
+                          key={index + data.controlId}
+                          className="gg-align-center mt-0 pt-0"
+                        >
+                          <Col xs={12} lg={9}>
+                            <FormLabel label={data.label} className="required-asterik pb-0 mb-0" />
+                            <ResumableUploader
+                              className="mt-0 pt-0"
+                              history={history}
+                              headerObject={{
+                                Authorization: window.localStorage.getItem("token") || "",
+                                Accept: "*/*"
+                              }}
+                              fileType={data.fileType}
+                              uploadService={getWsUrl("upload")}
+                              maxFiles={1}
+                              setUploadedFile={data.setUploadedFile}
+                              onProcessFile={() => {}}
+                              required={data.required}
+                              // filetypes={["jpg", "jpeg", "png", "tiff"]}
+                            />
+                          </Col>
+                        </Form.Group>
+                      );
+                    })}
+                    <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
+                      {FormData.map((element, index) => {
+                        return (
+                          <Form.Group as={Row} controlId={index} key={index} className="gg-align-center mb-3">
+                            <Col xs={12} lg={9}>
+                              <FormLabel label={element.label} className="required-asterik" />
+                              <Form.Control
+                                as="select"
+                                name={element.name}
+                                value={element.value}
+                                onChange={element.onchange}
+                                required={true}
+                              >
+                                <option value="">Select {element.label}</option>
+                                {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
+                                  getSelectionList(element)}
+                              </Form.Control>
+                              <Feedback message={`${element.message} is required`} />
+                            </Col>
+                          </Form.Group>
+                        );
+                      })}
+
+                      <div className="text-center mb-4 mt-4">
+                        <Button
+                          className="gg-btn-outline mt-2 gg-mr-20"
+                          onClick={() => {
+                            setProcessDataView();
+                            setEnableProcessRawdata(false);
                           }}
-                          fileType={data.fileType}
-                          uploadService={getWsUrl("upload")}
-                          maxFiles={1}
-                          setUploadedFile={data.setUploadedFile}
-                          onProcessFile={() => {}}
-                          required={data.required}
-                          // filetypes={["jpg", "jpeg", "png", "tiff"]}
-                        />
-                      </Col>
-                    </Form.Group>
-                  );
-                })}
-
-                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-                  {FormData.map((element, index) => {
-                    return (
-                      <Form.Group as={Row} controlId={index} key={index} className="gg-align-center mb-3">
-                        <Col xs={12} lg={9}>
-                          <FormLabel label={element.label} className="required-asterik" />
-                          <Form.Control
-                            as="select"
-                            name={element.name}
-                            value={element.value}
-                            onChange={element.onchange}
-                            required={true}
-                          >
-                            <option value="">Select {element.label}</option>
-                            {(element.list.length > 0 || (element.list.rows && element.list.rows.length > 0)) &&
-                              getSelectionList(element)}
-                          </Form.Control>
-                          <Feedback message={`${element.message} is required`} />
-                        </Col>
-                      </Form.Group>
-                    );
-                  })}
-
-                  <div className="text-center mb-4 mt-4">
-                    <Button className="gg-btn-outline mt-2 gg-mr-20" onClick={() => setEnableProcessRawdata(false)}>
-                      Cancel
-                    </Button>
-
-                    <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-                      Submit
-                    </Button>
-                  </div>
-                </Form>
+                        >
+                          Cancel
+                        </Button>
+                        &nbsp;
+                        <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+                          Submit
+                        </Button>
+                      </div>
+                    </Form>
+                  </>
+                ) : (
+                  getProcessDataView()
+                )}
               </div>
             </Container>
           </Modal.Body>

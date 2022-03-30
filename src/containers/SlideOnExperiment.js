@@ -327,7 +327,10 @@ const SlideOnExperiment = props => {
     <>
       <Modal
         show={props.enableSlideModal}
-        onHide={() => setEnableSlideModal(false)}
+        onHide={() => {
+          setSlideView();
+          setEnableSlideModal(false);
+        }}
         animation={false}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
@@ -392,8 +395,8 @@ const SlideOnExperiment = props => {
                       <Button
                         className="gg-btn-outline mt-2 gg-mr-20"
                         onClick={() => {
-                          setEnableSlideModal(false);
                           setSlideView();
+                          setEnableSlideModal(false);
                         }}
                       >
                         Cancel
