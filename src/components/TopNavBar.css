@@ -76,14 +76,16 @@
   margin-right: 10px !important;
   margin-left: 10px !important;
 }
-/* .dropdown-item {
-  color: white !important;
-} */
+.dropdown-item {
+  margin-left: 0;
+  padding-left: 15px !important;
+}
 .dropdown-item:hover {
   color: var(--gg-dark-blue) !important;
 }
 .dropdown-item.active,
 .dropdown-item:active {
   background-color: rgb(250, 250, 250, 0.25) !important;
-  width: 94%;
+  margin-left: 0;
+  padding-left: 15px !important;
 }
