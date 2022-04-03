@@ -299,7 +299,7 @@ const AddExperiment = props => {
               xl={5}
               style={{
                 // maxWidth: "35%",
-                marginLeft: "-95px"
+                marginLeft: "-95px",
               }}
             >
               {experimentId ? (
@@ -332,123 +332,116 @@ const AddExperiment = props => {
                     errorMessage={pageErrorMessage}
                   />
                 )}
-                <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-                  <div className="text-center mb-4">
-                    <Link to="/experiments">
-                      <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
-                    </Link>
-                    <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit" disabled={showErrorSummary}>
-                      {!experimentId ? "Submit" : "Submit"}
-                    </Button>
-                  </div>
-                  {/* experiment Info */}
-                  <ExperimentInfo
-                    experimentId={experimentId}
-                    validated={validated}
-                    handleSubmit={handleSubmit}
-                    experiment={experiment}
-                    handleChange={handleChange}
-                    duplicateName={duplicateName}
-                    handleSelect={handleSelect}
-                    sampleList={sampleList}
-                    getPublication={getPublication}
-                    getPublicationFormControl={getPublicationFormControl}
-                    showErrorSummary={showErrorSummary}
-                    className="mb-4"
-                  />
-                  {/* {refreshPage && getExperiment()} */}
 
-                  {experimentId && (
-                    <>
-                      {experiment.slides && experiment.slides.length > 0 && (
-                        <Accordion defaultActiveKey={0} className="mb-4">
-                          <Card>
-                            <Card.Header>
-                              <Row>
-                                <Col className="font-awesome-color">
-                                  <span className="descriptor-header">Data</span>
-                                </Col>
+                <div className="text-center mb-4">
+                  <Link to="/experiments">
+                    <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Experiments</Button>
+                  </Link>
+                </div>
+                {/* experiment Info */}
+                <ExperimentInfo
+                  experimentId={experimentId}
+                  validated={validated}
+                  handleSubmit={handleSubmit}
+                  experiment={experiment}
+                  handleChange={handleChange}
+                  duplicateName={duplicateName}
+                  handleSelect={handleSelect}
+                  sampleList={sampleList}
+                  getPublication={getPublication}
+                  getPublicationFormControl={getPublicationFormControl}
+                  showErrorSummary={showErrorSummary}
+                  className="mb-4"
+                />
+                {/* {refreshPage && getExperiment()} */}
 
-                                <Col style={{ textAlign: "right" }}>
-                                  <ContextAwareToggle eventKey={0} classname="font-awesome-color" />
-                                </Col>
-                              </Row>
-                            </Card.Header>
-                            <Accordion.Collapse eventKey={0}>
-                              <Card.Body>
-                                <DataTreeView data={experiment} experimentId={experimentId} />
-                              </Card.Body>
-                            </Accordion.Collapse>
-                          </Card>
-                        </Accordion>
-                      )}
-                      {/* Publications */}
-                      <PubOnExp
-                        getPublication={getPublication}
-                        getPublicationFormControl={getPublicationFormControl}
-                        newPubMedId={newPubMedId}
-                        publications={experiment.publications}
-                        deleteRow={deleteRow}
-                      />
-                      {/* Grants */}
-                      <GrantsOnExp
-                        experimentId={experimentId}
-                        delete={deleteRow}
-                        grants={experiment.grants}
-                        deleteWsCall={"deletegrant"}
-                      />
-                      {/* Collaborators */}
-                      <CollabsOnExp
-                        experimentId={experimentId}
-                        getExperiment={getExperiment}
-                        delete={deleteRow}
-                        addWsCall={"addcollaborator"}
-                        deleteWsCall={"deletecollaborator"}
-                      />
-                      {/* Co-Owners */} 
-                      <CoOwnersOnExp
-                        experimentId={experimentId}
-                        delete={deleteRow}
-                        addWsCall={"addcoowner"}
-                        deleteWsCall={"deletecoowner"}
-                        setRefreshListCoOwners={setRefreshListCoOwners}
-                        refreshListCoOwners={refreshListCoOwners}
-                      />
-                      {/* Files */}
-                      <FilesOnExp
-                        experimentId={experimentId}
-                        files={experiment.files}
-                        delete={deleteRow}
-                        addWsCall={"addfileonexp"}
-                        deleteWsCall={"deletefileonexp"}
-                      />
-                      {/* Key words */}
-                      <KeywordsOnExp
-                        experimentId={experimentId}
-                        keywords={experiment.keywords}
-                        delete={deleteRow}
-                        addWsCall={"addkeywords"}
-                        deleteWsCall={"deletekeyword"}
-                      />
-                      {/* ConfirmationModal */}
-                      <ConfirmationModal
-                        showModal={showDeleteModal}
-                        onCancel={cancelDelete}
-                        onConfirm={confirmDelete}
-                        title="Confirm Delete"
-                        body="Are you sure you want to delete?"
-                      />
-                    </>
-                  )}
-                  <div className="text-center mts-4">
-                    <Link to="/experiments">
-                      <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
-                    </Link>
-                    <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit" disabled={showErrorSummary}>
-                      {!experimentId ? "Submit" : "Submit"}
-                    </Button>
-                  </div>
-                </Form>
+                {experimentId && (
+                  <>
+                    {experiment.slides && experiment.slides.length > 0 && (
+                      <Accordion defaultActiveKey={0} className="mb-4">
+                        <Card>
+                          <Card.Header>
+                            <Row>
+                              <Col className="font-awesome-color">
+                                <span className="descriptor-header">Data</span>
+                              </Col>
+
+                              <Col style={{ textAlign: "right" }}>
+                                <ContextAwareToggle eventKey={0} classname="font-awesome-color" />
+                              </Col>
+                            </Row>
+                          </Card.Header>
+                          <Accordion.Collapse eventKey={0}>
+                            <Card.Body>
+                              <DataTreeView data={experiment} experimentId={experimentId} />
+                            </Card.Body>
+                          </Accordion.Collapse>
+                        </Card>
+                      </Accordion>
+                    )}
+                    {/* Publications */}
+                    <PubOnExp
+                      getPublication={getPublication}
+                      getPublicationFormControl={getPublicationFormControl}
+                      newPubMedId={newPubMedId}
+                      publications={experiment.publications}
+                      deleteRow={deleteRow}
+                    />
+                    {/* Grants */}
+                    <GrantsOnExp
+                      experimentId={experimentId}
+                      delete={deleteRow}
+                      grants={experiment.grants}
+                      deleteWsCall={"deletegrant"}
+                    />
+                    {/* Collaborators */}
+                    <CollabsOnExp
+                      experimentId={experimentId}
+                      getExperiment={getExperiment}
+                      delete={deleteRow}
+                      addWsCall={"addcollaborator"}
+                      deleteWsCall={"deletecollaborator"}
+                    />
+                    {/* Co-Owners */} 
+                    <CoOwnersOnExp
+                      experimentId={experimentId}
+                      delete={deleteRow}
+                      addWsCall={"addcoowner"}
+                      deleteWsCall={"deletecoowner"}
+                      setRefreshListCoOwners={setRefreshListCoOwners}
+                      refreshListCoOwners={refreshListCoOwners}
+                    />
+                    {/* Files */}
+                    <FilesOnExp
+                      experimentId={experimentId}
+                      files={experiment.files}
+                      delete={deleteRow}
+                      addWsCall={"addfileonexp"}
+                      deleteWsCall={"deletefileonexp"}
+                    />
+                    {/* Key words */}
+                    <KeywordsOnExp
+                      experimentId={experimentId}
+                      keywords={experiment.keywords}
+                      delete={deleteRow}
+                      addWsCall={"addkeywords"}
+                      deleteWsCall={"deletekeyword"}
+                    />
+                    {/* ConfirmationModal */}
+                    <ConfirmationModal
+                      showModal={showDeleteModal}
+                      onCancel={cancelDelete}
+                      onConfirm={confirmDelete}
+                      title="Confirm Delete"
+                      body="Are you sure you want to delete?"
+                    />
+                  </>
+                )}
+                <div className="text-center mts-4">
+                  <Link to="/experiments">
+                    <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Experiment</Button>
+                  </Link>
+                </div>
               </Card.Body>
             </Card>
           </Container>

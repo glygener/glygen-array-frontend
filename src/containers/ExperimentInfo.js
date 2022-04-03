@@ -143,14 +143,14 @@ const ExperimentInfo = props => {
                   </>
                 )}
 
-                {/* <div className="text-center mb-4 mt-4">
-                  <Link to="/experiments">
+                <div className="text-center mb-4 mt-4">
+                  {/* <Link to="/experiments">
                     <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
-                  </Link>
-                  <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit" disabled={showErrorSummary}>
+                  </Link> */}
+                  <Button className="gg-btn-blue mt-2" type="submit" disabled={showErrorSummary}>
                     {!experimentId ? "Submit" : "Submit"}
                   </Button>
-                </div> */}
+                </div>
               </Form>
             </Card.Body>
           </Accordion.Collapse>
