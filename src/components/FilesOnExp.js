@@ -86,7 +86,7 @@ const FilesOnExp = props => {
                 history={history}
                 headerObject={{
                   Authorization: window.localStorage.getItem("token") || "",
-                  Accept: "*/*"
+                  Accept: "*/*",
                 }}
                 // fileType={data.fileType}
                 uploadService={getWsUrl("upload")}

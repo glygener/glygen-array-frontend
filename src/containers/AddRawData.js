@@ -609,7 +609,7 @@ const AddRawData = props => {
                   </Form.Group>
 
                   <div className="text-center mb-2 mt-2">
-                    <Button className="gg-btn-blue mt-2 gg-mr-20" onClick={() => history.goBack()}>
+                    <Button className="gg-btn-outline mt-2 gg-mr-20" onClick={() => history.goBack()}>
                       Cancel
                     </Button>
                     <Button className="gg-btn-blue mt-2 gg-ml-20" type="submit">

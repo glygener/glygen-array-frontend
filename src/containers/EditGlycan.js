@@ -216,7 +216,7 @@ const EditGlycan = (props) => {
 
                 <div className="text-center mb-4 mt-4">
                   <Link to="/glycans">
-                    <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                    <Button className="gg-btn-outline mt-2 gg-mr-20">Cancel</Button>
                   </Link>
 
                   <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">

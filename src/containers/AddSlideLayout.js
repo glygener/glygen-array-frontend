@@ -324,7 +324,7 @@ const AddSlideLayout = props => {
   const getUpdateButtons = () => {
     return (
       <div className="text-center mb-2">
-        <Button onClick={() => history.push("/slideLayouts")} className="gg-btn-blue mt-2 gg-mr-20">
+        <Button onClick={() => history.push("/slideLayouts")} className="gg-btn-outline mt-2 gg-mr-20">
           Cancel
         </Button>
         <Button disabled={!enableUpdateButton} type="submit" className="gg-btn-blue mt-2 gg-ml-20">

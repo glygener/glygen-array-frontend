@@ -1,7 +1,7 @@
 import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 import { head, getMeta } from "../utils/head";
-import { Form, Row, Col } from "react-bootstrap";
+import { Form, Row, Col, Button } from "react-bootstrap";
 
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -240,7 +240,7 @@ const AddProcessedData = props => {
                 history={history}
                 headerObject={{
                   Authorization: window.localStorage.getItem("token") || "",
-                  Accept: "*/*"
+                  Accept: "*/*",
                 }}
                 fileType={processData.fileType}
                 uploadService={getWsUrl("upload")}
@@ -278,14 +278,14 @@ const AddProcessedData = props => {
               );
             })}
 
-            <Row style={{ marginTop: "3%" }}>
-              <FormButton className="line-break-2" type="submit" label={processedDataId ? "Update" : "Submit"} />
-              <Col md={1}>
-                <Link to={`/experiments/editExperiment/` + experimentId} className="link-button">
-                  Cancel
-                </Link>
-              </Col>
-            </Row>
+            <div className="text-center mb-4 mt-4">
+              <Link to={`/experiments/editExperiment/` + experimentId}>
+                <Button className="gg-btn-outline mt-2 gg-mr-20">Cancel</Button>
+              </Link>
+              <Button className="line-break-2" type="gg-btn-blue mt-2 gg-ml-20">
+                {processedDataId ? "Update" : "Submit"}
+              </Button>
+            </div>
           </Form>
         </div>
       </>

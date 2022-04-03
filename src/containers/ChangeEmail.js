@@ -41,14 +41,10 @@ const ChangeEmail = () => {
           <Title title={"Change Email"} />
 
           {showErrorSummary === true && (
-            <ErrorSummary
-              show={showErrorSummary}
-              form="changeEmail"
-              errorMessage={pageErrorMessage}
-            />
+            <ErrorSummary show={showErrorSummary} form="changeEmail" errorMessage={pageErrorMessage} />
           )}
 
-          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
             <Form.Group as={Row} controlId="password">
               <Col>
                 <Form.Control
@@ -91,15 +87,14 @@ const ChangeEmail = () => {
 
             <Row className="mt-2">
               <Col md={6}>
+                <Link to="/profile">
+                  <Button className="link-button-outline mt-3">Cancel</Button>
+                </Link>
+              </Col>
+              <Col md={6}>
                 <Button type="submit" className="link-button mt-3" disabled={showErrorSummary}>
                   Submit
                 </Button>
-              </Col>
-
-              <Col md={6}>
-                <Link to="/profile">
-                  <Button className="link-button mt-3">Cancel</Button>
-                </Link>
               </Col>
             </Row>
           </Form>

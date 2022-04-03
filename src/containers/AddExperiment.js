@@ -333,11 +333,11 @@ const AddExperiment = props => {
                   />
                 )}
                 <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
-                   <div className="text-center mb-4">
-                  <Link to="/experiments">
-                    <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Experiments</Button>
-                  </Link>
-                </div>
+                  <div className="text-center mb-4">
+                    <Link to="/experiments">
+                      <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Experiments</Button>
+                    </Link>
+                  </div>
                   {/* experiment Info */}
                   <ExperimentInfo
                     experimentId={experimentId}
@@ -437,11 +437,11 @@ const AddExperiment = props => {
                       />
                     </>
                   )}
-                 <div className="text-center mts-4">
-                  <Link to="/experiments">
-                    <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Experiment</Button>
-                  </Link>
-                </div>
+                  <div className="text-center mts-4">
+                    <Link to="/experiments">
+                      <Button className="gg-btn-outline mt-2 gg-mr-20">Back to Experiment</Button>
+                    </Link>
+                  </div>
                 </Form>
               </Card.Body>
             </Card>

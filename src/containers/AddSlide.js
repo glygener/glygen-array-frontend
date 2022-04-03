@@ -317,7 +317,7 @@ const AddSlide = props => {
                   })}
                   <div className="text-center mb-2">
                     <Link to="/slides">
-                      <Button className={`${slideId ? "gg-btn-blue mt-2 gg-mr-20" : "gg-btn-outline mt-2 gg-mr-20"}`}>
+                      <Button className={`${slideId ? "gg-btn-outline mt-2 gg-mr-20" : "gg-btn-outline mt-2 gg-mr-20"}`}>
                         {slideId ? "Cancel" : "Back to Slides"}
                       </Button>
                     </Link>

@@ -72,7 +72,7 @@ const Profile = (props) => {
             <ErrorSummary show={showErrorSummary} form="editProfile" errorJson={pageErrorsJson} />
           )}
 
-          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+          <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
             <Row>
               <Col md={6}>
                 <Form.Group controlId="firstName">
@@ -194,11 +194,11 @@ const Profile = (props) => {
             </Row>
 
             <div className={isUpdate ? "text-center mt-2" : "hide-content"}>
-              <Button className="gg-btn-blue mt-3 gg-mr-20" type="submit" disabled={validated}>
-                Submit
-              </Button>
-              <Button className="gg-btn-blue mt-3 gg-ml-20" onClick={() => handlecancel()}>
+              <Button className="gg-btn-outline mt-3 gg-mr-20" onClick={() => handlecancel()}>
                 Cancel
+              </Button>
+              <Button className="gg-btn-blue mt-3 gg-ml-20" type="submit" disabled={validated}>
+                Submit
               </Button>
             </div>
           </Form>
