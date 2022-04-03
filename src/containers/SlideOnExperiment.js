@@ -414,6 +414,19 @@ const SlideOnExperiment = props => {
             </div>
           </Container>
         </Modal.Body>
+        {slideView && (
+          <Modal.Footer>
+            <Button
+            className="gg-btn-blue-reg"
+              onClick={() => {
+                setSlideView();
+                setEnableSlideModal(false);
+              }}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        )}
 
         {showModal && (
           <Modal

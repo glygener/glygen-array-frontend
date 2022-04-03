@@ -291,7 +291,7 @@ const ProcessDataOnRd = props => {
                               history={history}
                               headerObject={{
                                 Authorization: window.localStorage.getItem("token") || "",
-                                Accept: "*/*"
+                                Accept: "*/*",
                               }}
                               fileType={data.fileType}
                               uploadService={getWsUrl("upload")}
@@ -338,7 +338,7 @@ const ProcessDataOnRd = props => {
                         >
                           Cancel
                         </Button>
-                      
+
                         <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
                           Submit
                         </Button>
@@ -351,6 +351,19 @@ const ProcessDataOnRd = props => {
               </div>
             </Container>
           </Modal.Body>
+          {processDataView && (
+            <Modal.Footer>
+              <Button
+                className="gg-btn-blue-reg"
+                onClick={() => {
+                  setProcessDataView();
+                  setEnableProcessRawdata(false);
+                }}
+              >
+                Close
+              </Button>
+            </Modal.Footer>
+          )}
           <Loading show={showLoading} />
         </Modal>
       </>

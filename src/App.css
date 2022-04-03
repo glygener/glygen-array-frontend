@@ -406,7 +406,8 @@ input[type]:not(:-ms-input-placeholder) + label {
   width: 270px;
 }
 
-.gg-btn-blue:hover {
+.gg-btn-blue:hover,
+.gg-btn-blue-reg:hover {
   background-color: var(--gg-dark-blue) !important;
   border-color: var(--gg-dark-blue) !important;
 }

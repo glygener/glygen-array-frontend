@@ -309,7 +309,19 @@ const ImageOnSlideExp = props => {
             </div>
           </Container>
         </Modal.Body>
-
+        {imageView && (
+          <Modal.Footer>
+            <Button
+              className="gg-btn-blue-reg"
+              onClick={() => {
+                setImageView();
+                setEnableImageOnSlide(false);
+              }}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        )}
         <Loading show={showLoading} />
       </Modal>
     </>

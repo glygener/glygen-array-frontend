@@ -227,7 +227,7 @@ const RawdataOnImage = props => {
       <>
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Rawdata"} className="required-asterik" />
+            <FormLabel label={"Raw Data"} className="required-asterik" />
             <Form.Control type="text" name={"rawdata"} value={rawDataView.file.originalName} readOnly plaintext />
           </Col>
         </Form.Group>
@@ -241,7 +241,7 @@ const RawdataOnImage = props => {
 
         <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"RawData Fileformat"} className="required-asterik" />
+            <FormLabel label={"Raw Data File Format"} className="required-asterik" />
             <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file.fileFormat} readOnly plaintext />
           </Col>
         </Form.Group>
@@ -259,7 +259,7 @@ const RawdataOnImage = props => {
           <>
             <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
               <Col xs={12} lg={9}>
-                <FormLabel label={"ChannelUsage Type"} className="required-asterik" />
+                <FormLabel label={"Channel Usage Type"} className="required-asterik" />
                 <Form.Control
                   type="text"
                   name={"channelUsageType"}
@@ -271,7 +271,7 @@ const RawdataOnImage = props => {
             </Form.Group>
             <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
               <Col xs={12} lg={9}>
-                <FormLabel label={"Wavelength"} className="required-asterik" />
+                <FormLabel label={"Wave Length"} className="required-asterik" />
                 <Form.Control
                   type="text"
                   name={"wavelength"}
@@ -429,6 +429,19 @@ const RawdataOnImage = props => {
               </div>
             </Container>
           </Modal.Body>
+          {rawDataView && (
+            <Modal.Footer>
+              <Button
+                className="gg-btn-blue-reg"
+                onClick={() => {
+                  setRawDataView();
+                  setEnableRawdataOnImage(false);
+                }}
+              >
+                Close
+              </Button>
+            </Modal.Footer>
+          )}
           <Loading show={showLoading} />
         </Modal>
       </>
