@@ -159,7 +159,7 @@ const KeywordsOnExp = props => {
 
           <div className="mt-4 mb-4 text-center">
             <Button
-              className="gg-btn-blue mt-2 gg-mr-20"
+              className="gg-btn-outline mt-2 gg-mr-20"
               onClick={() => {
                 setKeyword();
                 setShowKWModal(false);

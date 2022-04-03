@@ -432,31 +432,31 @@ const EditLinker = props => {
                     <>
                       {linkerDetails.type.includes("OTHER") && (
                         <Link to="/otherMolecules">
-                          <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                          <Button className="gg-btn-outline mt-2 gg-mr-20">Cancel</Button>
                         </Link>
                       )}
 
                       {(linkerDetails.type.includes("LINKERS") || linkerDetails.type.includes("SMALLMOLECULE")) && (
                         <Link to="/linkers">
-                          <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                          <Button className="gg-btn-outline mt-2 gg-mr-20">Cancel</Button>
                         </Link>
                       )}
 
                       {linkerDetails.type.includes("LIPID") && (
                         <Link to="/lipids">
-                          <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                          <Button className="gg-btn-outline mt-2 gg-mr-20">Cancel</Button>
                         </Link>
                       )}
 
                       {linkerDetails.type.includes("PROTEIN") && (
                         <Link to="/proteins">
-                          <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                          <Button className="gg-btn-outline mt-2 gg-mr-20">Cancel</Button>
                         </Link>
                       )}
 
                       {linkerDetails.type.includes("PEPTIDE") && (
                         <Link to="/peptides">
-                          <Button className="gg-btn-blue mt-2 gg-mr-20">Cancel</Button>
+                          <Button className="gg-btn-outline mt-2 gg-mr-20">Cancel</Button>
                         </Link>
                       )}
                     </>
