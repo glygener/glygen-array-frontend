@@ -23,7 +23,7 @@ const PrintRun = props => {
         <div className="page-container">
           <PageHeading
             title="Your Print Run"
-            subTitle="The table below displays a list of all printruns that have been uploaded to your repository. New printruns may be added, old printruns can be edited, and unused printrun can be removed."
+            subTitle="The table below displays a list of all printruns that have been uploaded to your repository. New printruns may be added, old printruns can be edited, and unused Print Run can be removed."
           />
           <Card>
             <Card.Body>

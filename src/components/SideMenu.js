@@ -38,25 +38,26 @@ const SideMenu = props => {
 
   const metadataPages = [
     "/samples/?",
-    "/printers/?",
-    "/imageAnalysis/?",
-    "/dataProcessing/?",
-    "/scanners/?",
-    "/listSlideMeta/?",
-    "/assays/?",
     "/spots/?",
-    "/printRun/?"
+    "/listSlideMeta/?",
+    "/printers/?",
+    "/printRun/?",
+    "/assays/?",
+    "/scanners/?",
+    "/imageAnalysis/?",
+    "/dataProcessing/?"
   ];
+
   const metaDataSubMenuLabels = [
     "Sample",
-    "Printer",
-    "Image Analysis",
-    "Data Processing",
-    "Scanner ",
-    "Slide ",
-    "Assay ",
     "Spot",
-    "Printrun"
+    "Slide",
+    "Printer",
+    "Print Run",
+    "Assay",
+    "Scanner",
+    "Image Analysis",
+    "Data Processing"
   ];
 
   var menu = new Map();

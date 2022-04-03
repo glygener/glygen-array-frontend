@@ -240,6 +240,12 @@ export function getWsUrl(ws) {
       return ws_base_array + "/listArrayDataset";
     case "getexperiment":
       return ws_base_array + "/getarraydataset";
+    case "addfileonexperiment":
+      return ws_base_array + "/addFile";
+    case "listkeywords":
+      return ws_base_array + "/getallkeywords";
+    case "addkeyword":
+      return ws_base_array + "/addKeyword";
     case "adddataset":
       return ws_base_array + "/addDataset";
     case "updatearraydataset":

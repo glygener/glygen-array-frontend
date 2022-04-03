@@ -892,7 +892,10 @@ const MetaData = props => {
             (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ? (
               <Form.Group as={Row} controlId="type" className="gg-align-center mb-3">
                 <Col xs={12} lg={9}>
-                  <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+                  <FormLabel
+                    label={`${props.metadataType === "Printrun" ? "Print Run" : props.metadataType} Type`}
+                    className="required-asterik"
+                  />
                   <Form.Control type="text" name="type" disabled value={metaDataDetails.selectedtemplate} />
                 </Col>
               </Form.Group>
@@ -1405,7 +1408,10 @@ const MetaData = props => {
           <Col xs={12} lg={9}>
             {(sampleModel && sampleModel.length > 1) ||
               (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default") && (
-                <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+                <FormLabel
+                  label={`${props.metadataType === "Printrun" ? "Print Run" : props.metadataType} Type`}
+                  className="required-asterik"
+                />
               ))}
             {((sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default")) ||
               sampleModel.length > 0) && (
@@ -1473,7 +1479,10 @@ const MetaData = props => {
         {!isUpdate && !props.isCopy && (
           <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
             <Col xs={12} lg={9}>
-              <FormLabel label={`${props.metadataType} Type`} className="required-asterik" />
+              <FormLabel
+                label={`${props.metadataType === "Printrun" ? "Print Run" : props.metadataType} Type`}
+                className="required-asterik"
+              />
               <Form.Control
                 as="select"
                 name="selectedtemplate"
