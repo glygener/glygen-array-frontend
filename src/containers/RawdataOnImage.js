@@ -92,11 +92,11 @@ const RawdataOnImage = props => {
   const fileData = [
     {
       controlId: "fileUploader",
-      label: "RawData File",
+      label: "Raw Data File",
       fileType: rawData.fileType,
       setUploadedFile: setUploadedRawDF,
-      required: false
-    }
+      required: false,
+    },
   ];
 
   const handleSelect = e => {
@@ -310,7 +310,7 @@ const RawdataOnImage = props => {
               {getMeta(head.addRawData)}
             </Helmet>
             <Container maxWidth="xl">
-              <div className="page-container">
+              <div>
                 {showErrorSummary === true && (
                   <ErrorSummary
                     show={showErrorSummary}

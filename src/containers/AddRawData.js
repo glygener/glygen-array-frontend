@@ -174,7 +174,7 @@ const AddRawData = props => {
     },
     {
       controlId: "fileUploader2",
-      label: "RawData File",
+      label: "Raw Data File",
       fileType: rawData.fileType,
       setUploadedFile: setUploadedRawDF,
       required: false,
@@ -408,7 +408,7 @@ const AddRawData = props => {
           resolveData={data => data.map(row => row)}
           columns={[
             {
-              Header: "Id",
+              Header: "ID",
               accessor: "id",
             },
             {

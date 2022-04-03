@@ -262,7 +262,7 @@ const ProcessDataOnRd = props => {
               {getMeta(head.addProcessData)}
             </Helmet>
             <Container maxWidth="xl">
-              <div className="page-container">
+              <div>
                 {showErrorSummary === true && (
                   <ErrorSummary
                     show={showErrorSummary}

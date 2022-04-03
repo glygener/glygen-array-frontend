@@ -341,7 +341,7 @@ const SlideOnExperiment = props => {
         </Modal.Header>
         <Modal.Body>
           <Container maxWidth="xl">
-            <div className="page-container">
+            <div>
               {showErrorSummary === true && (
                 <ErrorSummary
                   show={showErrorSummary}
