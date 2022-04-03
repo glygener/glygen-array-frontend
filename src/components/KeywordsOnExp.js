@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ContextAwareToggle } from "../utils/commonUtils";
 import { Row, Col, Button, Accordion, Card, Table, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 const KeywordsOnExp = props => {
   let { experimentId } = useParams();
 
+  const [listkeywords, setListKeywords] = useState();
   const [keyword, setKeyword] = useState();
   const [otherKW, setOtherKW] = useState();
   const [showLoading, setShowLoading] = useState(false);
@@ -19,18 +20,41 @@ const KeywordsOnExp = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
 
+  useEffect(() => {
+    wsCall(
+      "listkeywords",
+      "GET",
+      null,
+      true,
+      null,
+      response => {
+        response.json().then(responseJson => {
+          setListKeywords(responseJson);
+        });
+      },
+      listKeyWordsFail
+    );
+  }, []);
+
+  function listKeyWordsFail(response) {
+    response.json().then(responseJson => {
+      setPageErrorsJson(responseJson);
+      setShowErrorSummary(true);
+    });
+  }
+
   const getListKeywords = () => {
     return (
       <>
-        {props.files &&
-          props.files.map((keyword, index) => {
+        {props.keywords &&
+          props.keywords.map((kw, index) => {
             return (
               <Table hover>
                 <tbody className="table-body">
-                  <tr className="table-row" key={index}>
-                    <td key={index + keyword}>
+                  <tr className="table-row" key={index + kw}>
+                    <td>
                       <div>
-                        <h5>{keyword}</h5>
+                        <h5>{kw}</h5>
                       </div>
                     </td>
                     <td className="text-right">
@@ -39,7 +63,7 @@ const KeywordsOnExp = props => {
                         size="lg"
                         title="Delete"
                         className="caution-color table-btn"
-                        onClick={() => props.delete(keyword, props.deleteWsCall)}
+                        onClick={() => props.delete(kw, props.deleteWsCall)}
                       />
                     </td>
                   </tr>
@@ -52,8 +76,8 @@ const KeywordsOnExp = props => {
   };
 
   const handleSelect = e => {
-    const keyword = e.target.options[e.target.selectedIndex].value;
-    setKeyword(keyword);
+    const kwd = e.target.options[e.target.selectedIndex].value;
+    setKeyword(kwd);
   };
 
   const getKeywordsModal = () => {
@@ -65,7 +89,7 @@ const KeywordsOnExp = props => {
           centered
           show={showKWModal}
           onHide={() => {
-            setKeyword();
+            setListKeywords();
             setShowKWModal(false);
           }}
         >
@@ -85,31 +109,28 @@ const KeywordsOnExp = props => {
     if (e.currentTarget.checkValidity()) {
       setShowLoading(true);
 
-      setShowErrorSummary(false);
-
       wsCall(
-        "keyword",
+        "addkeyword",
         "POST",
         {
-          arraydatasetId: experimentId
+          arraydatasetId: experimentId,
+          keyword: otherKW
         },
         true,
-        {
-          keyword: { name: "other", value: otherKW }
-        },
+        null,
         response => {
           setShowLoading(false);
           setShowKWModal(false);
           history.push("/experiments/editExperiment/" + experimentId);
         },
-        fileOnExpFailure
+        keywordOnExpFailure
       );
     }
 
     e.preventDefault();
   }
 
-  function fileOnExpFailure(response) {
+  function keywordOnExpFailure(response) {
     response.json().then(responseJson => {
       setPageErrorsJson(responseJson);
       setShowErrorSummary(true);
@@ -128,9 +149,9 @@ const KeywordsOnExp = props => {
               <Form.Control as="select" name={"sortBy"} value={keyword} onChange={handleSelect} required={true}>
                 <option value="select">select</option>
 
-                {props.keywords &&
-                  props.keywords.map(kw => {
-                    return <option value={kw}>kw</option>;
+                {listkeywords &&
+                  listkeywords.map(kw => {
+                    return <option value={kw}>{kw}</option>;
                   })}
                 <option value="other">other</option>
               </Form.Control>
@@ -139,9 +160,8 @@ const KeywordsOnExp = props => {
 
           {keyword === "other" && (
             <>
-              <Form.Group as={Row} controlId={"fileType"} className="gg-align-center mt-0 pt-0">
+              <Form.Group as={Row} controlId={"keyword"} className="gg-align-center mt-0 pt-0">
                 <Col xs={12} lg={9}>
-                  {/* <FormLabel label="Keyword" /> */}
                   <Form.Control
                     name="otherKW"
                     type="text"
@@ -159,7 +179,7 @@ const KeywordsOnExp = props => {
 
           <div className="mt-4 mb-4 text-center">
             <Button
-              className="gg-btn-outline-reg"
+              className="gg-btn-outline mt-2 gg-mr-20"
               onClick={() => {
                 setKeyword();
                 setShowKWModal(false);
@@ -167,8 +187,8 @@ const KeywordsOnExp = props => {
             >
               Cancel
             </Button>
-            &nbsp;
-            <Button type="submit" className="gg-btn-blue-reg">
+
+            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
               Submit
             </Button>
           </div>

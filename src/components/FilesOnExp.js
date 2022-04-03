@@ -31,6 +31,9 @@ const FilesOnExp = props => {
 
   const getFileBody = () => {
     function handleSubmit(e) {
+      debugger;
+      uploadedFile.fileFormat = file.type;
+
       setValidated(true);
 
       if (e.currentTarget.checkValidity()) {
@@ -39,16 +42,18 @@ const FilesOnExp = props => {
         setShowErrorSummary(false);
 
         wsCall(
-          "fileonexperiment",
+          "addfileonexperiment",
           "POST",
           {
             arraydatasetId: experimentId
           },
           true,
           {
-            file: uploadedFile,
-            type: file.type,
-            description: file.description
+            identifier: uploadedFile.identifier,
+            originalName: uploadedFile.originalName,
+            fileFolder: uploadedFile.fileFolder,
+            fileFormat: uploadedFile.fileFormat
+            // description: file.description
           },
           response => {
             setShowLoading(false);
@@ -126,15 +131,14 @@ const FilesOnExp = props => {
 
           <div className="mt-4 mb-4 text-center">
             <Button
-              className="gg-btn-outline-reg"
+              className="gg-btn-outline mt-2 gg-mr-20"
               onClick={() => {
                 setShowFileModal(false);
               }}
             >
               Cancel
             </Button>
-            &nbsp;
-            <Button type="submit" className="gg-btn-blue-reg">
+            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
               Submit
             </Button>
           </div>
@@ -171,19 +175,19 @@ const FilesOnExp = props => {
           columns={[
             {
               Header: "File name",
-              accessor: "name"
+              accessor: "originalName"
             },
             {
               Header: "File type",
-              accessor: "fileType"
+              accessor: "fileFormat"
             },
             {
               Header: "Size",
-              accessor: "size"
+              accessor: "fileSize"
             },
             {
               Header: "Description",
-              accessor: "description"
+              accessor: "fileDescription"
             },
             {
               Header: "Actions",

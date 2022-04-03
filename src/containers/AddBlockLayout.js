@@ -469,11 +469,12 @@ const AddBlockLayout = props => {
   };
 
   const getButtons = () => {
+    debugger;
     return (
       <div className="text-center mb-2 mt-2">
         <Button
           onClick={() => removeDuplicateSpots()}
-          disabled={spotsSelected.length < 1}
+          disabled={spotsSelected.length < 1 || !selectedSpotMetadata.value}
           className="gg-btn-blue mt-2 gg-mr-20"
         >
           Add Features
@@ -481,7 +482,7 @@ const AddBlockLayout = props => {
         <Button
           type="submit"
           className={loadGrid ? "gg-btn-blue mt-2 gg-ml-20" : "hide-content"}
-          disabled={spotsSelected.length < 1}
+          disabled={spotsSelected.length < 1 || !selectedSpotMetadata.value}
         >
           Submit
         </Button>
@@ -492,7 +493,7 @@ const AddBlockLayout = props => {
   const getUpdateButtons = () => {
     return (
       <div className="text-center mb-2">
-        <Button onClick={() => history.push("/blockLayouts")} className="gg-btn-blue mt-2 gg-mr-20">
+        <Button onClick={() => history.push("/blockLayouts")} className="gg-btn-outline mt-2 gg-mr-20">
           Cancel
         </Button>
         <Button disabled={!enableUpdateButton} type="submit" className="gg-btn-blue mt-2 gg-ml-20">
