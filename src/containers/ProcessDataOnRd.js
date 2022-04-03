@@ -338,7 +338,7 @@ const ProcessDataOnRd = props => {
                         >
                           Cancel
                         </Button>
-                        &nbsp;
+                      
                         <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
                           Submit
                         </Button>

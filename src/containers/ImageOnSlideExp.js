@@ -288,7 +288,7 @@ const ImageOnSlideExp = props => {
 
                     <div className="mt-4 mb-4 text-center">
                       <Button
-                        className="gg-btn-outline-reg"
+                        className="gg-btn-outline mt-2 gg-mr-20"
                         onClick={() => {
                           setImageView();
                           setEnableImageOnSlide(false);
@@ -296,8 +296,8 @@ const ImageOnSlideExp = props => {
                       >
                         Cancel
                       </Button>
-                      &nbsp;
-                      <Button type="submit" className="gg-btn-blue-reg">
+
+                      <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
                         Submit
                       </Button>
                     </div>

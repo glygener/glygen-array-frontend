@@ -130,7 +130,7 @@ const AddGrant = props => {
 
                 <div className="text-center mb-4 mt-4">
                   <Button
-                    className="gg-btn-blue mt-2 gg-mr-20"
+                    className="gg-btn-outline mt-2 gg-mr-20"
                     onClick={() => history.push("/experiments/editExperiment/" + experimentId)}
                   >
                     Cancel
