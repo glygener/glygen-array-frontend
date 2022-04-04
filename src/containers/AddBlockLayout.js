@@ -148,7 +148,13 @@ const AddBlockLayout = props => {
   };
 
   const validateForm = () => {
-    if (gridParams.name === "" || gridParams.rows === "" || gridParams.cols === "") {
+    if (
+      gridParams.name === "" ||
+      gridParams.rows === "" ||
+      gridParams.cols === "" ||
+      selectedSpotMetadata.value === "" ||
+      selectedSpotMetadata.value === undefined
+    ) {
       setValidated(true);
     } else {
       setUpdatedGridParams(gridParams);

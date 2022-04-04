@@ -157,6 +157,7 @@ const GridForm = props => {
           </Row>
         </Col>
       </Row>
+
       {props.enableSpotMetadataSelection && (
         <Form.Group as={Row} controlId="spotmetadataid" className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
@@ -167,6 +168,7 @@ const GridForm = props => {
               value={props.selectedSpotMetadata.value}
               onChange={props.handleSpotSelection.bind(this)}
               readOnly={props.isUpdate || props.publicView}
+              isInvalid={props.selectedSpotMetadata.value === "" ? true : false}
               required
             >
               <option value="">Select Spot Metadata</option>

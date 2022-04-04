@@ -1869,6 +1869,12 @@ const MetaData = props => {
               simpleDesc.value = generalDsc.value;
               simpleDesc.unit = generalDsc.unit ? generalDsc.unit : "";
             }
+          } else if (!generalDsc.key.mandateGroup && (generalDsc.notApplicable || generalDsc.notRecorded)) {
+            if (generalDsc.notApplicable) {
+              simpleDesc.notApplicable = true;
+            } else {
+              simpleDesc.notRecorded = true;
+            }
           } else {
             if (generalDsc.value) {
               simpleDesc.value = generalDsc.value;
@@ -1928,6 +1934,14 @@ const MetaData = props => {
                 defaultSelectedUnfilledDesc.mandateGroup.defaultSelection = false;
               }
             }
+          } else if (!group.key.mandateGroup && (group.notApplicable || group.notRecorded)) {
+            templateDescriptorGroup = tempDescGroup;
+
+            if (group.notApplicable) {
+              templateDescriptorGroup.notApplicable = true;
+            } else {
+              templateDescriptorGroup.notRecorded = true;
+            }
           } else {
             templateDescriptorGroup = tempDescGroup;
           }
@@ -1945,8 +1959,16 @@ const MetaData = props => {
               templateDescriptorGroup && group.descriptors.filter(i => i.key.id === dbRetrivedDesc.key.id);
 
             if (subDescriptor && !subDescriptor.group) {
-              subDescriptor.value = dbRetrivedDesc.value;
-              subDescriptor.unit = dbRetrivedDesc.unit ? dbRetrivedDesc.unit : "";
+              if (dbRetrivedDesc.notApplicable) {
+                subDescriptor.notApplicable = true;
+                subDescriptor.disabled = true;
+              } else if (dbRetrivedDesc.notRecorded) {
+                subDescriptor.notRecorded = true;
+                subDescriptor.disabled = true;
+              } else {
+                subDescriptor.value = dbRetrivedDesc.value;
+                subDescriptor.unit = dbRetrivedDesc.unit ? dbRetrivedDesc.unit : "";
+              }
             } else {
               if (subDescriptor && !subDescriptor.mandatory && newlyAddedGroupsInDBRetrivedDesc.length < 2) {
                 subDescriptor.id = "newlyAddedItems" + subDescriptor.id;

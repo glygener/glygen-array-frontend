@@ -60,13 +60,11 @@ const DataTreeView = props => {
             </div>
           </>
         }
-        // type="Experiment"
+        // type="Experiment
         open
         visible
       >
         {/* Slide */}
-        {/* {data.map(exp => { 
-          return */}
         {data.slides &&
           data.slides.map((slide, index) => {
             return (
@@ -127,7 +125,13 @@ const DataTreeView = props => {
                                         icon={["far", "trash-alt"]}
                                         size="lg"
                                         className="caution-color tbl-icon-btn"
-                                        onClick={() => props.deleteSlide(slide.id, "deleteslide")}
+                                        onClick={() => {
+                                          props.deleteRow(slide.id, "deleteslide");
+                                          props.setDeleteMessage(
+                                            "This will remove all images, raw data and processed data that belongs to this slide. Do you want to continue?"
+                                          );
+                                          props.setShowDeleteModal(true);
+                                        }}
                                       />
                                     </span>
                                   </LineTooltip>
@@ -207,7 +211,13 @@ const DataTreeView = props => {
                                                 icon={["far", "trash-alt"]}
                                                 size="lg"
                                                 className="caution-color tbl-icon-btn"
-                                                onClick={() => props.deleteSlide(slide.id, "deleteslide")}
+                                                onClick={() => {
+                                                  props.deleteRow(img.id, "deleteimage");
+                                                  props.setDeleteMessage(
+                                                    "This will remove all raw data and processed data that belongs to this image. Do you want to continue?"
+                                                  );
+                                                  props.setShowDeleteModal(true);
+                                                }}
                                               />
                                             </span>
                                           </LineTooltip>
@@ -302,7 +312,13 @@ const DataTreeView = props => {
                                                         icon={["far", "trash-alt"]}
                                                         size="lg"
                                                         className="caution-color tbl-icon-btn"
-                                                        onClick={() => props.deleteRawData(slide.id, "deleteRawData")}
+                                                        onClick={() => {
+                                                          props.deleteRow(rawData.id, "deleterawdata");
+                                                          props.setDeleteMessage(
+                                                            "This will remove all processed data that belongs to this raw data. Do you want to continue?"
+                                                          );
+                                                          props.setShowDeleteModal(true);
+                                                        }}
                                                       />
                                                     </span>
                                                   </LineTooltip>
@@ -380,9 +396,13 @@ const DataTreeView = props => {
                                                                 icon={["far", "trash-alt"]}
                                                                 size="lg"
                                                                 className="caution-color tbl-icon-btn"
-                                                                onClick={() =>
-                                                                  props.deleteRawData(slide.id, "deleteRawData")
-                                                                }
+                                                                onClick={() => {
+                                                                  props.deleteRow(pd.id, "deleteprocessdata");
+                                                                  props.setDeleteMessage(
+                                                                    "This will remove the selected processed data. Do you want to continue?"
+                                                                  );
+                                                                  props.setShowDeleteModal(true);
+                                                                }}
                                                               />
                                                             </span>
                                                           </LineTooltip>
@@ -415,7 +435,7 @@ const DataTreeView = props => {
                                                               className="tbl-icon-btn download-btn"
                                                               onClick={() => {
                                                                 downloadFile(
-                                                                  rawData.file,
+                                                                  pd.file,
                                                                   props.setPageErrorsJson,
                                                                   props.setPageErrorMessage,
                                                                   props.setShowErrorSummary,
@@ -445,7 +465,6 @@ const DataTreeView = props => {
               </Tree>
             );
           })}
-        {/* })} */}
       </Tree>
 
       {enableSlideModal && (

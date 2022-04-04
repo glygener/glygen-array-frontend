@@ -92,6 +92,7 @@ const AddExperiment = props => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [refreshListCoOwners, setRefreshListCoOwners] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState();
 
   const experimentState = {
     name: "",
@@ -259,8 +260,6 @@ const AddExperiment = props => {
     setShowDeleteModal(true);
   }
 
-  const cancelDelete = () => setShowDeleteModal(false);
-
   const confirmDelete = () => {
     setShowDeleteModal(false);
 
@@ -373,7 +372,16 @@ const AddExperiment = props => {
                             </Card.Header>
                             <Accordion.Collapse eventKey={0}>
                               <Card.Body>
-                                <DataTreeView data={experiment} experimentId={experimentId} />
+                                <DataTreeView
+                                  data={experiment}
+                                  experimentId={experimentId}
+                                  deleteRow={deleteRow}
+                                  setShowDeleteModal={setShowDeleteModal}
+                                  setDeleteMessage={setDeleteMessage}
+                                  setPageErrorsJson={setPageErrorsJson}
+                                  setPageErrorMessage={setPageErrorMessage}
+                                  setShowErrorSummary={setShowErrorSummary}
+                                />
                               </Card.Body>
                             </Accordion.Collapse>
                           </Card>
@@ -430,10 +438,10 @@ const AddExperiment = props => {
                       {/* ConfirmationModal */}
                       <ConfirmationModal
                         showModal={showDeleteModal}
-                        onCancel={cancelDelete}
+                        onCancel={() => setShowDeleteModal(false)}
                         onConfirm={confirmDelete}
                         title="Confirm Delete"
-                        body="Are you sure you want to delete?"
+                        body={deleteMessage ? deleteMessage : "Are you sure you want to delete?"}
                       />
                     </>
                   )}

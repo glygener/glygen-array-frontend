@@ -270,7 +270,7 @@ export function getWsUrl(ws) {
       return ws_base_array + "/addProcessedDataFromExcel";
     case "getprocesseddata":
       return ws_base_array + "/getprocesseddata";
-    case "deleteprocesseddata":
+    case "deleteprocessdata":
       return ws_base_array + "/deleteprocesseddata";
     case "updateprocesseddata":
       return ws_base_array + "/updateprocesseddata";
@@ -322,6 +322,8 @@ export function getWsUrl(ws) {
       return ws_base_public + "/getdatasetforglycan";
     case "deleteslide":
       return ws_base_array + "/deleteslide";
+    case "deleteimage":
+      return ws_base_array + "/deleteimage";
     case "publicfiledownload":
       return ws_base_public + "/download";
     case "filedownload":
