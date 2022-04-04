@@ -64,6 +64,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/listLinkers";
     case "exportlinkers":
       return ws_base_array + "/exportlinkers";
+    case "uploadmolecules":
+      return ws_base_array + "/addBatchLinker";
     case "listmoleculesbytype":
       return ws_base_array + "/listMoleculesByType";
     case "listallmoleculesbytype":

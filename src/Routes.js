@@ -73,6 +73,7 @@ import { FeatureView } from "./containers/FeatureView";
 import { AddMultipleGlycanDetails } from "./containers/AddMultipleGlycanDetails";
 import { AddPrintRun } from "./containers/AddPrintRun";
 import { PrintRun } from "./containers/PrintRun";
+import { UploadMolecules } from "./containers/UploadMolecules";
 
 const Routes = props => {
   const routes = [
@@ -242,6 +243,11 @@ const Routes = props => {
       sidebar: () => getSidemenu("molecules")
     },
     {
+      path: "/peptides/uploadMolecules",
+      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
       path: "/peptides",
       main: () => <Peptides authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
@@ -259,6 +265,11 @@ const Routes = props => {
       sidebar: () => getSidemenu("molecules")
     },
     {
+      path: "/proteins/uploadMolecules",
+      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
       path: "/proteins",
       main: () => <Proteins authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
@@ -273,6 +284,11 @@ const Routes = props => {
     {
       path: "/lipids/addLipid",
       main: () => <AddLipid authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
+      path: "/lipids/uploadMolecules",
+      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
     {
@@ -294,6 +310,11 @@ const Routes = props => {
       sidebar: () => getSidemenu("molecules")
     },
     {
+      path: "/linkers/uploadMolecules",
+      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
       path: "/linkers",
       main: () => <Linkers authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
@@ -312,13 +333,17 @@ const Routes = props => {
       sidebar: () => getSidemenu("molecules")
     },
     {
+      path: "/otherMolecules/uploadMolecules",
+      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("molecules")
+    },
+    {
       path: "/otherMolecules",
       main: () => <OtherMolecules authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
 
     /*  features */
-
     {
       path: "/features/editFeature/:editFeature/:featureId",
       main: () => <FeatureView {...props} authCheckAgent={props.authCheckAgent} />,
@@ -700,6 +725,16 @@ const Routes = props => {
         {routes.map((element, index) => {
           return <Route key={index} path={element.path} exact={element.exact} render={element.main} />;
         })}
+      </Switch>
+      <Switch>
+        <Route
+          path="*"
+          render={() => (
+            <main style={{ padding: "1rem" }}>
+              <p>There's nothing here!</p>
+            </main>
+          )}
+        />
       </Switch>
     </>
   );

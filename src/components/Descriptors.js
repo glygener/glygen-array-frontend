@@ -97,7 +97,8 @@ const Descriptors = props => {
     //General Descriptors for FeatureMetadata
     if (metaType === "Feature") {
       if (accorSimpleDesc.length > 0) {
-        descriptorForm.push(loadSimpleDescs(accorSimpleDesc));
+        // descriptorForm.push(loadSimpleDescs(accorSimpleDesc));
+        descriptorForm.push(getSimpleDescriptorsAccord(accorSimpleDesc));
       }
     }
 

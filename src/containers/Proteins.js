@@ -35,9 +35,14 @@ const Proteins = props => {
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
-                  <Link to="/proteins/addProtein">
-                    <Button className="gg-btn-blue mt-2">Add Protein</Button>
-                  </Link>
+                  <>
+                    <Link to="/proteins/addProtein">
+                      <Button className="gg-btn-blue mt-2">Add Protein</Button>
+                    </Link>
+                    <Link to={"/proteins/uploadMolecules"}>
+                      <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Proteins</Button>
+                    </Link>
+                  </>
                 )}
               </div>
 

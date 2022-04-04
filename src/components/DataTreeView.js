@@ -47,6 +47,7 @@ const DataTreeView = props => {
                             icon={["fas", "plus"]}
                             size="lg"
                             alt="Add Slide"
+                            className="tbl-icon-btn"
                             onClick={() => {
                               setEnableSlideModal(true);
                             }}
