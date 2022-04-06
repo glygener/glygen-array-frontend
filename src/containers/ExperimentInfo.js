@@ -27,7 +27,7 @@ const ExperimentInfo = props => {
         <Card>
           <Card.Header>
             <Row>
-              <Col className="descriptor-header required-asterik">Experiment Information</Col>
+              <Col className="descriptor-header">Experiment Information</Col>
 
               <Col style={{ textAlign: "right" }}>
                 <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
@@ -145,7 +145,7 @@ const ExperimentInfo = props => {
 
                 <div className="text-center mb-4 mt-4">
                   <Button className="gg-btn-blue mt-2" type="submit" disabled={showErrorSummary}>
-                    {!experimentId ? "Submit" : "Submit"}
+                    {!experimentId ? "Submit" : "Update"}
                   </Button>
                 </div>
               </Form>
