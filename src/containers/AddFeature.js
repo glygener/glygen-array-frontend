@@ -262,7 +262,7 @@ const AddFeature = props => {
     const controlAndLandingStepLabels = [
       "Select the Feature Type",
       "Select Molecule From the Table Below",
-      "Add Generic Information (${moleculeType})",
+      `Add Generic Information (${moleculeType})`,
       "Review and Add Molecule to Repository",
     ];
 
