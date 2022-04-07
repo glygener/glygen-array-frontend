@@ -475,7 +475,6 @@ const AddBlockLayout = props => {
   };
 
   const getButtons = () => {
-    debugger;
     return (
       <div className="text-center mb-2 mt-2">
         <Button

@@ -13,12 +13,12 @@ import "../containers/AddMultipleGlycans.css";
 import Container from "@material-ui/core/Container";
 
 const UploadMolecules = props => {
-  debugger;
   useEffect(() => {
     props.authCheckAgent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const history = useHistory();
   const [showLoading, setShowLoading] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -27,9 +27,7 @@ const UploadMolecules = props => {
 
   const [title, setTitle] = useState("Upload Molecules");
 
-  const history = useHistory();
-
-  const defaultFileType = "json";
+  const defaultFileType = "Repository Export (.json)";
 
   const fileDetails = {
     fileType: defaultFileType,
@@ -53,7 +51,8 @@ const UploadMolecules = props => {
       "uploadmolecules",
       "POST",
       {
-        filetype: encodeURIComponent("Exported From Repository")
+        filetype: encodeURIComponent(defaultFileType),
+        type: encodeURIComponent(props.moleculeUploadType)
         // uploadDetails.fileType
       },
       true,
@@ -127,7 +126,7 @@ const UploadMolecules = props => {
                       required={true}
                       value={uploadDetails.fileType}
                     >
-                      <option value="json">JSON</option>
+                      <option value="Repository Export (.json)">Repository Export (*.json)</option>
                     </Form.Control>
                     <Feedback message="Please choose a file type for the file to be uploaded" />
                   </Col>

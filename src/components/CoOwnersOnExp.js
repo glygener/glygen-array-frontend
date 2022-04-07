@@ -25,15 +25,9 @@ const CoOwnersOnExp = props => {
               <AddCoOwnerandCollab
                 addWsCall={props.addWsCall}
                 experimentId={props.experimentId}
-                setRefreshListCoOwners={props.setRefreshListCoOwners}
+                getExperiment={props.getExperiment}
               />
-              <CoOwners
-                experimentId={props.experimentId}
-                delete={props.deleteRow}
-                deleteWsCall={props.deleteWsCall}
-                refreshListCoOwners={props.refreshListCoOwners}
-                setRefreshListCoOwners={props.setRefreshListCoOwners}
-              />
+              <CoOwners experimentId={props.experimentId} delete={props.delete} deleteWsCall={props.deleteWsCall} />
             </Card.Body>
           </Accordion.Collapse>
         </Card>

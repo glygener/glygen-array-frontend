@@ -244,7 +244,7 @@ const Routes = props => {
     },
     {
       path: "/peptides/uploadMolecules",
-      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      main: () => <UploadMolecules {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
     {
@@ -266,7 +266,7 @@ const Routes = props => {
     },
     {
       path: "/proteins/uploadMolecules",
-      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      main: () => <UploadMolecules {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
     {
@@ -288,7 +288,7 @@ const Routes = props => {
     },
     {
       path: "/lipids/uploadMolecules",
-      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      main: () => <UploadMolecules {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
     {
@@ -311,7 +311,7 @@ const Routes = props => {
     },
     {
       path: "/linkers/uploadMolecules",
-      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      main: () => <UploadMolecules {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
     {
@@ -334,7 +334,7 @@ const Routes = props => {
     },
     {
       path: "/otherMolecules/uploadMolecules",
-      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      main: () => <UploadMolecules {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("molecules")
     },
     {

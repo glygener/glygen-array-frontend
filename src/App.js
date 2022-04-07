@@ -64,6 +64,8 @@ const App = () => {
   useEffect(checkAuthorization, [loggedIn]);
 
   const setRouting = () => {
+    let moleculeUploadType;
+
     library.add(
       faTrashAlt,
       faEdit,
@@ -93,6 +95,8 @@ const App = () => {
       faFileExport
     );
 
+    moleculeUploadType = location.state && location.state.type;
+
     return (
       <div className="app">
         <ThemeProvider theme={theme}>
@@ -110,9 +114,17 @@ const App = () => {
             location.pathname === "/datasetDetail" ||
             location.pathname === "/submitterSearch" ||
             location.pathname === "/") ? (
-            <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
+            <Routes
+              updateLogin={loginUpdater}
+              authCheckAgent={checkAuthorization}
+              moleculeUploadType={moleculeUploadType}
+            />
           ) : (
-            <Routes updateLogin={loginUpdater} authCheckAgent={checkAuthorization} />
+            <Routes
+              updateLogin={loginUpdater}
+              authCheckAgent={checkAuthorization}
+              moleculeUploadType={moleculeUploadType}
+            />
           )}
           <Footer />
         </ThemeProvider>

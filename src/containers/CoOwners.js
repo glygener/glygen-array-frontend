@@ -1,64 +1,58 @@
 /* eslint-disable react/display-name */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import ReactTable from "react-table";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { wsCall } from "../utils/wsUtils";
-import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { GlygenTable } from "../components/GlygenTable";
 
 const CoOwners = props => {
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    listCoOwners();
-  }, [props.experimentId]);
-
-  const listCoOwners = () => {
-    wsCall(
-      "listcoowners",
-      "GET",
-      { arraydatasetId: props.experimentId },
-      true,
-      null,
-      response =>
-        response.json().then(responseJson => {
-          setData(responseJson);
-        }),
-      response =>
-        response.json().then(responseJson => {
-          console.log(responseJson);
-        })
-    );
-  };
-
-  const checkRefreshList = () => {
-    if (props.refreshListCoOwners) {
-      listCoOwners();
-      props.setRefreshListCoOwners(false);
-    }
-  };
   return (
     <>
-      {checkRefreshList()}
+      <GlygenTable
+        columns={[
+          {
+            Header: "Username",
+            accessor: "userName"
+          },
+          {
+            Header: "FirstName",
+            accessor: "firstName"
+          },
+          {
+            Header: "LastName",
+            accessor: "lastName"
+          },
+          {
+            Header: "Organization",
+            accessor: "affiliation"
+          }
+        ]}
+        defaultPageSize={10}
+        defaultSortColumn="userName"
+        showDeleteButton
+        fetchWS="listcoowners"
+        queryParamDelete={props.experimentId}
+        qsParams={{ arraydatasetId: props.experimentId }}
+        deleteWS={props.deleteWsCall}
+        keyColumn="userName"
+      />
 
-      <ReactTable
+      {/* <ReactTable
         data={data}
         columns={[
           {
             Header: "Username",
-            accessor: "userName",
+            accessor: "userName"
           },
           {
             Header: "FirstName",
-            accessor: "firstName",
+            accessor: "firstName"
           },
           {
             Header: "LastName",
-            accessor: "lastName",
+            accessor: "lastName"
           },
           {
             Header: "Organization",
-            accessor: "affiliation",
+            accessor: "affiliation"
           },
           {
             Header: "Actions",
@@ -78,8 +72,8 @@ const CoOwners = props => {
                 </LineTooltip>
               </div>
             ),
-            minWidth: 60,
-          },
+            minWidth: 60
+          }
         ]}
         className={"-striped -highlight"}
         defaultPageSize={data && data.length > 10 ? data.length : 5}
@@ -93,7 +87,7 @@ const CoOwners = props => {
           ) : null
         }
         showPaginationTop
-      />
+      /> */}
     </>
   );
 };
@@ -101,9 +95,7 @@ const CoOwners = props => {
 CoOwners.propTypes = {
   delete: PropTypes.func,
   experimentId: PropTypes.string,
-  deleteWsCall: PropTypes.string,
-  setRefreshListCoOwners: PropTypes.func,
-  refreshListCoOwners: PropTypes.bool
+  deleteWsCall: PropTypes.string
 };
 
 export { CoOwners };

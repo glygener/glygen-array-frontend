@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { wsCall } from "../utils/wsUtils";
 import { Button, Row, Col } from "react-bootstrap";
@@ -10,13 +10,19 @@ const AddCoOwnerandCollab = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [userSelected, setUserSelected] = useState();
   const [users, setUsers] = useState();
+  let ref = useRef();
 
   const handleSearch = value => {
     setIsLoading(true);
+
     wsCall(
-      "listusernamestypeahead",
+      "gettypeahead",
       "GET",
-      { value: value, limit: "10" },
+      {
+        namespace: "username",
+        value: encodeURIComponent(value),
+        limit: "10"
+      },
       true,
       null,
       response =>
@@ -37,8 +43,6 @@ const AddCoOwnerandCollab = props => {
   const filterBy = () => true;
 
   const handleChange = userSelected => {
-    // const users = [];
-    // users.push({ name: userSelected });
     if (userSelected === "") {
       setUsers();
     }
@@ -55,11 +59,11 @@ const AddCoOwnerandCollab = props => {
       response =>
         response.json().then(responseJson => {
           console.log(responseJson);
+          ref && ref.current && ref.current.clear();
           setUserSelected("");
           setUsers("");
-          if (props.addWsCall && props.addWsCall === "addcoowner") {
-            props.setRefreshListCoOwners(true);
-          } else {
+
+          if (props.addWsCall && props.addWsCall === "addcollaborator") {
             props.getExperiment();
           }
         }),
@@ -93,6 +97,7 @@ const AddCoOwnerandCollab = props => {
             // )}
             useCache={false}
             // labelKey={"option"}
+            ref={ref}
           />
         </Col>
 
@@ -108,7 +113,7 @@ AddCoOwnerandCollab.propTypes = {
   experimentId: PropTypes.string,
   addWsCall: PropTypes.string,
   setRefreshListCoOwners: PropTypes.func,
-  getExperiment: PropTypes.func,
+  getExperiment: PropTypes.func
 };
 
 export { AddCoOwnerandCollab };

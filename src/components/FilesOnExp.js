@@ -7,6 +7,7 @@ import { LineTooltip } from "./tooltip/LineTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ResumableUploader } from "./ResumableUploader";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
+import { downloadFile } from "../utils/commonUtils";
 import { FormLabel } from "../components/FormControls";
 
 const FilesOnExp = props => {
@@ -31,7 +32,6 @@ const FilesOnExp = props => {
 
   const getFileBody = () => {
     function handleSubmit(e) {
-      debugger;
       uploadedFile.fileFormat = file.type;
 
       setValidated(true);
@@ -52,13 +52,14 @@ const FilesOnExp = props => {
             identifier: uploadedFile.identifier,
             originalName: uploadedFile.originalName,
             fileFolder: uploadedFile.fileFolder,
-            fileFormat: uploadedFile.fileFormat
-            // description: file.description
+            fileFormat: uploadedFile.fileFormat,
+            description: file.description
           },
           response => {
             setShowLoading(false);
             setShowFileModal(false);
-            history.push("/experiments/editExperiment/" + experimentId);
+            // history.push("/experiments/editExperiment/" + experimentId);
+            props.getExperiment();
           },
           fileOnExpFailure
         );
@@ -86,7 +87,7 @@ const FilesOnExp = props => {
                 history={history}
                 headerObject={{
                   Authorization: window.localStorage.getItem("token") || "",
-                  Accept: "*/*",
+                  Accept: "*/*"
                 }}
                 // fileType={data.fileType}
                 uploadService={getWsUrl("upload")}
@@ -116,16 +117,21 @@ const FilesOnExp = props => {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId={"description"} className="gg-align-center mt-0 pt-0">
+          <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
             <Col xs={12} lg={9}>
-              <FormLabel label="Description" />
+              <FormLabel label="Comment" />
               <Form.Control
+                as="textarea"
+                rows={4}
                 name="description"
-                type="textbox"
-                placeholder="description"
+                placeholder="Enter description"
                 value={file.description}
-                onChange={() => {}}
+                onChange={e => {
+                  setFile({ description: e.target.value });
+                }}
+                maxLength={2000}
               />
+              <div className="text-right text-muted">{file.description.length}/2000</div>
             </Col>
           </Form.Group>
 
@@ -182,8 +188,11 @@ const FilesOnExp = props => {
               accessor: "fileFormat"
             },
             {
-              Header: "Size",
-              accessor: "fileSize"
+              Header: "File size in kB",
+              accessor: "fileSize",
+              Cell: (row, index) => {
+                return row.original && (row.original.fileSize / 1024).toFixed(2);
+              }
             },
             {
               Header: "Description",
@@ -191,22 +200,53 @@ const FilesOnExp = props => {
             },
             {
               Header: "Actions",
-              Cell: (row, index) => (
-                <div style={{ textAlign: "center" }}>
-                  <LineTooltip text="Delete File">
-                    <span>
-                      <FontAwesomeIcon
-                        key={"delete" + index}
-                        icon={["far", "trash-alt"]}
-                        size="lg"
-                        title="Delete"
-                        className="caution-color table-btn"
-                        onClick={() => props.delete(row.original.id, props.deleteWsCall)}
-                      />
-                    </span>
-                  </LineTooltip>
-                </div>
-              ),
+              Cell: (row, index) => {
+                return (
+                  <>
+                    <div style={{ textAlign: "center" }}>
+                      <LineTooltip text="Delete File">
+                        <span>
+                          <FontAwesomeIcon
+                            key={"delete" + index}
+                            icon={["far", "trash-alt"]}
+                            size="lg"
+                            title="Delete"
+                            className="caution-color table-btn"
+                            onClick={() => props.delete(row.original.id, props.deleteWsCall)}
+                          />
+                        </span>
+                      </LineTooltip>
+
+                      {row.original && row.original.originalName && (
+                        <LineTooltip text="Download Metadata">
+                          <span>
+                            <FontAwesomeIcon
+                              className="tbl-icon-btn download-btn"
+                              icon={["fas", "download"]}
+                              size="lg"
+                              onClick={() => {
+                                downloadFile(
+                                  {
+                                    file: {
+                                      fileFolder: row.original.fileFolder,
+                                      originalName: row.original.originalName,
+                                      identifier: row.original.identifier
+                                    }
+                                  },
+                                  props.setPageErrorsJson,
+                                  props.setPageErrorMessage,
+                                  props.setShowErrorSummary,
+                                  "filedownload"
+                                );
+                              }}
+                            />
+                          </span>
+                        </LineTooltip>
+                      )}
+                    </div>
+                  </>
+                );
+              },
               minWidth: 60
             }
           ]}
@@ -233,7 +273,7 @@ const FilesOnExp = props => {
           <Card.Header>
             <Row>
               <Col className="font-awesome-color" style={{ textAlign: "left" }}>
-                <span className="descriptor-header"> {"Other file"}</span>
+                <span className="descriptor-header"> {"Supplementary Files"}</span>
               </Col>
 
               <Col style={{ textAlign: "right" }}>
@@ -244,7 +284,13 @@ const FilesOnExp = props => {
           <Accordion.Collapse eventKey={0}>
             <Card.Body>
               <div className="text-center mt-2 mb-4">
-                <Button className="gg-btn-blue" onClick={() => setShowFileModal(true)}>
+                <Button
+                  className="gg-btn-blue"
+                  onClick={() => {
+                    setFile(fileDetails);
+                    setShowFileModal(true);
+                  }}
+                >
                   Add File
                 </Button>
               </div>

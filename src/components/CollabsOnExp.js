@@ -28,8 +28,8 @@ const CollabsOnExp = props => {
                 getExperiment={props.getExperiment}
               />
               <Collaborators
-                delete={props.deleteRow}
-                collaborators={props.collaborators}
+                listCollaborators={props.listCollaborators}
+                delete={props.delete}
                 deleteWsCall={props.deleteWsCall}
               />
             </Card.Body>

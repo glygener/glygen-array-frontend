@@ -91,7 +91,6 @@ const AddExperiment = props => {
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
-  const [refreshListCoOwners, setRefreshListCoOwners] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState();
 
   const experimentState = {
@@ -271,7 +270,6 @@ const AddExperiment = props => {
       null,
       response => {
         getExperiment();
-        setRefreshListCoOwners(true);
         console.log(response);
       },
 
@@ -410,6 +408,7 @@ const AddExperiment = props => {
                       delete={deleteRow}
                       addWsCall={"addcollaborator"}
                       deleteWsCall={"deletecollaborator"}
+                      listCollaborators={experiment.collaborators}
                     />
                     {/* Co-Owners */} 
                     <CoOwnersOnExp
@@ -417,12 +416,12 @@ const AddExperiment = props => {
                       delete={deleteRow}
                       addWsCall={"addcoowner"}
                       deleteWsCall={"deletecoowner"}
-                      setRefreshListCoOwners={setRefreshListCoOwners}
-                      refreshListCoOwners={refreshListCoOwners}
+                      listCoOwners={experiment.listCoOwners}
                     />
                     {/* Files */}
                     <FilesOnExp
                       experimentId={experimentId}
+                      getExperiment={getExperiment}
                       files={experiment.files}
                       delete={deleteRow}
                       addWsCall={"addfileonexp"}

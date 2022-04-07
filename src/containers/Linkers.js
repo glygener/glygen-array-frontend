@@ -43,7 +43,14 @@ const Linkers = props => {
                       <Button className="gg-btn-blue mt-2">Add Chemical/Linker</Button>
                     </Link>
 
-                    <Link to={"/linkers/uploadMolecules"}>
+                    <Link
+                      to={{
+                        pathname: "/linkers/uploadMolecules",
+                        state: {
+                          type: "SMALLMOLECULE"
+                        }
+                      }}
+                    >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Linkers</Button>
                     </Link>
                   </>

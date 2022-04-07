@@ -639,8 +639,14 @@ const GlygenTable = props => {
         tableElement.fireFetchData();
       } else {
         setCustomOffset(false);
-        setData(responseJson.rows);
-        setRows(responseJson.total);
+
+        if (responseJson.rows) {
+          setData(responseJson.rows);
+          setRows(responseJson.total);
+        } else {
+          setData(responseJson);
+          setRows(responseJson.length);
+        }
         setPages(Math.ceil(responseJson.total / state.pageSize));
         setShowLoading(false);
       }
