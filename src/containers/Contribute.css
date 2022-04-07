@@ -9,9 +9,11 @@
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 10px;
-  margin-top: 62px;
+  margin-top: 72px;
   text-align: center;
-  min-width: 225px !important;
+  min-width: 300px !important;
+  padding-bottom: 150px;
+  overflow: auto;
 }
 
 .sidenav a {
