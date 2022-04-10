@@ -3,13 +3,21 @@ import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { wsCall } from "../utils/wsUtils";
 import { Button, Row, Col } from "react-bootstrap";
 import PropTypes from "prop-types";
+import { ErrorSummary } from "../components/ErrorSummary";
+import CardLoader from "../components/CardLoader";
 
 const AddCoOwnerandCollab = props => {
   let experimentId = props.experimentId;
 
+  const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [pageErrorMessage, setPageErrorMessage] = useState("");
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [userSelected, setUserSelected] = useState();
   const [users, setUsers] = useState();
+  const [showLoading, setShowLoading] = useState(false);
+
   let ref = useRef();
 
   const handleSearch = value => {
@@ -50,6 +58,7 @@ const AddCoOwnerandCollab = props => {
   };
 
   const addCoOwner = () => {
+    setShowLoading(true);
     wsCall(
       props.addWsCall,
       "POST",
@@ -58,6 +67,7 @@ const AddCoOwnerandCollab = props => {
       { userName: userSelected[0] },
       response =>
         response.json().then(responseJson => {
+          setShowLoading(false);
           console.log(responseJson);
           ref && ref.current && ref.current.clear();
           setUserSelected("");
@@ -65,17 +75,33 @@ const AddCoOwnerandCollab = props => {
 
           if (props.addWsCall && props.addWsCall === "addcollaborator") {
             props.getExperiment();
+          } else {
+            props.setRefreshTable(true);
           }
         }),
       response =>
         response.json().then(responseJson => {
-          console.log(responseJson);
+          if (responseJson.errors && responseJson.errors.length > 0) {
+            setPageErrorsJson(responseJson);
+          } else {
+            setPageErrorMessage("");
+          }
+          setShowErrorSummary(true);
+          setShowLoading(false);
         })
     );
   };
 
   return (
     <>
+      {showErrorSummary === true && (
+        <ErrorSummary
+          show={showErrorSummary}
+          form="typeahead"
+          errorJson={pageErrorsJson}
+          errorMessage={pageErrorMessage}
+        />
+      )}
       <Row className="mb-2">
         <Col md={4}>
           <AsyncTypeahead
@@ -104,6 +130,8 @@ const AddCoOwnerandCollab = props => {
         <Button className="gg-btn-blue-reg" disabled={!userSelected || userSelected.length < 1} onClick={addCoOwner}>
           Add
         </Button>
+
+        {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
       </Row>
     </>
   );

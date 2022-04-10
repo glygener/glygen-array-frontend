@@ -35,19 +35,20 @@ const AddExperiment = props => {
 
     experimentId && getExperiment();
 
-    wsCall(
-      "listsamples",
-      "GET",
-      { offset: "0", loadAll: false, arraydatasetId: experimentId },
-      true,
-      null,
-      response =>
-        response.json().then(responseJson => {
-          setSampleList(responseJson);
-        }),
-      wsCallFail
-    );
-  }, []);
+    !experimentId &&
+      wsCall(
+        "listsamples",
+        "GET",
+        { offset: "0", loadAll: false, arraydatasetId: experimentId },
+        true,
+        null,
+        response =>
+          response.json().then(responseJson => {
+            setSampleList(responseJson);
+          }),
+        wsCallFail
+      );
+  }, [experimentId]);
 
   function getExperiment() {
     wsCall(
@@ -425,14 +426,14 @@ const AddExperiment = props => {
                       files={experiment.files}
                       delete={deleteRow}
                       addWsCall={"addfileonexp"}
-                      deleteWsCall={"deletefileonexp"}
+                      deleteWsCall={"deletefileonexperiment"}
                     />
                     {/* Key words */}
                     <KeywordsOnExp
                       experimentId={experimentId}
                       keywords={experiment.keywords}
                       delete={deleteRow}
-                      addWsCall={"addkeywords"}
+                      addWsCall={"addkeyword"}
                       deleteWsCall={"deletekeyword"}
                     />
                     {/* ConfirmationModal */}

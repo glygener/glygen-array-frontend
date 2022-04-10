@@ -39,7 +39,14 @@ const Proteins = props => {
                     <Link to="/proteins/addProtein">
                       <Button className="gg-btn-blue mt-2">Add Protein</Button>
                     </Link>
-                    <Link to={"/proteins/uploadMolecules"}>
+                    <Link
+                      to={{
+                        pathname: "/proteins/uploadMolecules",
+                        state: {
+                          type: "PROTEIN"
+                        }
+                      }}
+                    >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Proteins</Button>
                     </Link>
                   </>

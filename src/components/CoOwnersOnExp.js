@@ -1,7 +1,6 @@
 import React from "react";
 import { Row, Col, Accordion, Card } from "react-bootstrap";
 import { ContextAwareToggle } from "../utils/commonUtils";
-import { AddCoOwnerandCollab } from "../containers/AddCoOwnerandCollab";
 import { CoOwners } from "../containers/CoOwners";
 
 const CoOwnersOnExp = props => {
@@ -22,12 +21,11 @@ const CoOwnersOnExp = props => {
           </Card.Header>
           <Accordion.Collapse eventKey={0}>
             <Card.Body>
-              <AddCoOwnerandCollab
-                addWsCall={props.addWsCall}
+              <CoOwners
                 experimentId={props.experimentId}
-                getExperiment={props.getExperiment}
+                deleteWsCall={props.deleteWsCall}
+                addWsCall={props.addWsCall}
               />
-              <CoOwners experimentId={props.experimentId} delete={props.delete} deleteWsCall={props.deleteWsCall} />
             </Card.Body>
           </Accordion.Collapse>
         </Card>

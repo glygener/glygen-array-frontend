@@ -212,7 +212,7 @@ const FilesOnExp = props => {
                             size="lg"
                             title="Delete"
                             className="caution-color table-btn"
-                            onClick={() => props.delete(row.original.id, props.deleteWsCall)}
+                            onClick={() => props.delete(row.original.identifier, props.deleteWsCall)}
                           />
                         </span>
                       </LineTooltip>

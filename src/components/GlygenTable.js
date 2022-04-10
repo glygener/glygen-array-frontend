@@ -62,6 +62,7 @@ const GlygenTable = props => {
 
   const cancelDelete = () => setShowDeleteModal(false);
   const confirmDelete = () => {
+    setShowDeleteModal(false);
     setShowLoading(true);
     wsCall(
       props.deleteWS,
@@ -665,6 +666,7 @@ const GlygenTable = props => {
     props.enableRefreshOnAction && props.enableRefreshOnAction(true);
     setShowDeleteModal(false);
     tableElement.fireFetchData();
+
     setShowLoading(false);
   }
 
@@ -743,7 +745,8 @@ GlygenTable.propTypes = {
   showViewIcon: PropTypes.bool,
   viewUrl: PropTypes.string,
   customViewonClick: PropTypes.bool,
-  viewOnClick: PropTypes.func
+  viewOnClick: PropTypes.func,
+  refreshTable: PropTypes.bool
 };
 
 GlygenTable.defaultProps = {

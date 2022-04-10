@@ -137,7 +137,7 @@ const AddMultipleGlycans = props => {
                       <option value="GlycoWorkbench">GlycoWorkbench (*.gws)</option>
                       <option value="wurcs">WURCS</option>
                       <option value="cfg">CFG IUPAC Condensed</option>
-                      <option value="json">JSON</option>
+                      <option value="Repository Export (.json)">Repository Export (*.json)</option>
                     </Form.Control>
                     <Feedback message="Please choose a file type for the file to be uploaded" />
                   </Col>
