@@ -9,19 +9,22 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import "./SideMenu.css";
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper
+    maxWidth: 250,
+    backgroundColor: theme.palette.background.paper,
   },
   nested: {
-    paddingLeft: theme.spacing(4)
-  }
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
 const SideMenu = props => {
+  const history = useHistory();
+
   if (props.match) {
   }
 
@@ -45,7 +48,7 @@ const SideMenu = props => {
     "/assays/?",
     "/scanners/?",
     "/imageAnalysis/?",
-    "/dataProcessing/?"
+    "/dataProcessing/?",
   ];
 
   const metaDataSubMenuLabels = [
@@ -57,29 +60,29 @@ const SideMenu = props => {
     "Assay",
     "Scanner",
     "Image Analysis",
-    "Data Processing"
+    "Data Processing",
   ];
 
   var menu = new Map();
 
   menu.set("Molecules", {
     labels: chemicalEntityLabels,
-    pages: chemicalEntity
+    pages: chemicalEntity,
   });
 
   menu.set("Slide", {
     labels: slideSubMenuLabels,
-    pages: slidePages
+    pages: slidePages,
   });
 
   menu.set("Metadata", {
     labels: metaDataSubMenuLabels,
-    pages: metadataPages
+    pages: metadataPages,
   });
 
   menu.set("Experiment", {
     labels: experimentSubMenuLabels,
-    pages: experimentPages
+    pages: experimentPages,
   });
 
   const [open, setOpen] = useState("");
@@ -114,7 +117,11 @@ const SideMenu = props => {
     <List
       component="nav"
       aria-labelledby="nested-list-subheader"
-      subheader={<div className="side-menu-header"> Contribute</div>}
+      subheader={
+        <div className="side-menu-header">
+          <Link onClick={() => history.push("/contribute")}>Contribute</Link>
+        </div>
+      }
       className={classes.root}
       style={{ backgroundColor: "#e6e6e6", color: "#4a4a4a" }}
     >
