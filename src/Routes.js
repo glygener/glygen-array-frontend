@@ -389,7 +389,7 @@ const Routes = props => {
     },
     {
       path: "/features/uploadFeatures",
-      main: () => <UploadMolecules authCheckAgent={props.authCheckAgent} />,
+      main: () => <UploadMolecules {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide")
     },
     {

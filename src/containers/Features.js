@@ -37,7 +37,14 @@ const Features = props => {
                       <Button className="gg-btn-blue mt-2">Add Feature</Button>
                     </Link>
 
-                    <Link to={"/features/uploadFeatures"}>
+                    <Link
+                      to={{
+                        pathname: "/features/uploadFeatures",
+                        state: {
+                          type: "FEATURE"
+                        }
+                      }}
+                    >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Features</Button>
                     </Link>
                   </>

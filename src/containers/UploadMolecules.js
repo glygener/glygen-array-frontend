@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Loading } from "../components/Loading";
-import { Helmet } from "react-helmet";
 import { FormLabel, Feedback, PageHeading } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Form, Row, Col, Button, Card } from "react-bootstrap";
@@ -23,10 +22,9 @@ const UploadMolecules = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
-  const [uploadedGlycanFile, setUploadedGlycanFile] = useState();
+  const [uploadedFile, setUploadedFile] = useState();
 
-  const [title, setTitle] = useState("Upload Molecules");
-
+  const [title, setTitle] = useState(props.moleculeUploadType === "FEATURE" ? "Upload Features" : "Upload Molecules");
   const defaultFileType = "Repository Export (.json)";
 
   const fileDetails = {
@@ -48,7 +46,7 @@ const UploadMolecules = props => {
     setShowErrorSummary(false);
 
     wsCall(
-      "uploadmolecules",
+      props.moleculeUploadType === "FEATURE" ? "uploadfeature" : "uploadmolecules",
       "POST",
       {
         filetype: encodeURIComponent(defaultFileType),
@@ -57,10 +55,10 @@ const UploadMolecules = props => {
       },
       true,
       {
-        identifier: uploadedGlycanFile.identifier,
-        originalName: uploadedGlycanFile.originalName,
-        fileFolder: uploadedGlycanFile.fileFolder,
-        fileFormat: uploadedGlycanFile.fileFormat
+        identifier: uploadedFile.identifier,
+        originalName: uploadedFile.originalName,
+        fileFolder: uploadedFile.fileFolder,
+        fileFormat: uploadedFile.fileFormat
       },
       moleculeUploadSucess,
       moleculeUploadError
@@ -87,7 +85,7 @@ const UploadMolecules = props => {
   function moleculeUploadError(response) {
     response.json().then(resp => {
       setTitle("Molecule File Upload Details");
-      resp.error
+      !resp.errors
         ? setPageErrorMessage("The file is invalid. Please verify the file and format selection before re-uploading.")
         : setPageErrorsJson(resp);
       setShowErrorSummary(true);
@@ -97,8 +95,6 @@ const UploadMolecules = props => {
 
   return (
     <>
-      <Helmet>{/* <title>{head.uploadMolecules.title}</title>
-        {getMeta(head.uploadMolecules)} */}</Helmet>
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
@@ -148,7 +144,7 @@ const UploadMolecules = props => {
                       fileType={fileDetails.fileType}
                       uploadService={getWsUrl("upload")}
                       maxFiles={1}
-                      setUploadedFile={setUploadedGlycanFile}
+                      setUploadedFile={setUploadedFile}
                       required={true}
                     />
                   </Col>
@@ -159,7 +155,7 @@ const UploadMolecules = props => {
                     Back
                   </Button>
 
-                  <Button type="submit" disabled={!uploadedGlycanFile} className="gg-btn-blue mt-2 gg-ml-20">
+                  <Button type="submit" disabled={!uploadedFile} className="gg-btn-blue mt-2 gg-ml-20">
                     Submit
                   </Button>
                 </div>

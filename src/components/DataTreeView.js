@@ -272,7 +272,6 @@ const DataTreeView = props => {
                       >
                         {img.rawDataList &&
                           img.rawDataList.map(rawData => {
-                            debugger;
                             return (
                               <Tree
                                 style={{ paddingTop: "35px", marginLeft: "70px" }}

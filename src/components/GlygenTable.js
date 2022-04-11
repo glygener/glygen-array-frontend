@@ -393,7 +393,7 @@ const GlygenTable = props => {
                           wsCall(
                             props.exportWsCall,
                             "GET",
-                            { type: props.moleculeType },
+                            props.moleculeType ? { type: props.moleculeType } : "",
                             true,
                             null,
                             response => fileExportSuccess(response, props.fileName),

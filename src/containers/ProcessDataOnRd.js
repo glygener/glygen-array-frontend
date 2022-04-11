@@ -21,6 +21,7 @@ const ProcessDataOnRd = props => {
   const history = useHistory();
 
   const [uploadedDF, setUploadedDF] = useState();
+  const [uploadedExclusiveFile, setUploadedExclusiveFile] = useState();
   const [showLoading, setShowLoading] = useState(false);
   const [validated, setValidated] = useState(false);
   const [enablePrompt, setEnablePrompt] = useState(false);
@@ -100,6 +101,13 @@ const ProcessDataOnRd = props => {
       fileType: processData.fileType,
       setUploadedFile: setUploadedDF,
       required: false
+    },
+    {
+      controlId: "fileUploader",
+      label: "Exclusion List File",
+      fileType: processData.fileType,
+      setUploadedFile: setUploadedExclusiveFile,
+      required: false
     }
   ];
 
@@ -132,6 +140,7 @@ const ProcessDataOnRd = props => {
 
   function handleSubmit(e) {
     setValidated(true);
+    debugger;
     uploadedDF.fileFormat = processData.supportedProcessedFF;
 
     if (e.currentTarget.checkValidity()) {
@@ -143,7 +152,8 @@ const ProcessDataOnRd = props => {
           arraydatasetId: experimentId,
           rawdataId: rawDataId,
           metadataId: processData.dataProcessing,
-          methodName: processData.statisticalMethod
+          methodName: processData.statisticalMethod,
+          exclusionFile: uploadedExclusiveFile.identifier
         },
         true,
         {

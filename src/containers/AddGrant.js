@@ -33,7 +33,6 @@ const AddGrant = props => {
     const name = e.target.name;
     const value = e.target.value;
     setGrant({ [name]: value });
-    debugger;
   };
 
   function handleSubmit(e) {

@@ -10,7 +10,6 @@ import displayNames from "../appData/displayNames";
 import { getToolTip, getPath } from "../utils/commonUtils";
 
 const UploadMoleculeDetails = props => {
-  debugger;
   const history = useHistory();
 
   let uploadResponse = history.location && history.location.state && history.location.state.uploadResponse;
