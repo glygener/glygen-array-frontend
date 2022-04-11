@@ -340,6 +340,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/download";
     case "statistics":
       return ws_base_util + "/getstatistics";
+    case "statisticscontribute":
+      return ws_base_array + "/getstatistics";
     case "listarraydatasetcoowner":
       return ws_base_array + "/listArrayDatasetCoowner";
     case "addgrant":
