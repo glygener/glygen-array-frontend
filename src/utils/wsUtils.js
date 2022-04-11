@@ -124,6 +124,10 @@ export function getWsUrl(ws) {
       return ws_base_array + "/deletefeature";
     case "addfeature":
       return ws_base_array + "/addfeature";
+    case "uploadfeature":
+      return ws_base_array + "/addBatchFeature";
+    case "exportfeatures":
+      return ws_base_array + "/exportfeatures";
     case "getfeature":
       return ws_base_array + "/getfeature";
     case "updatefeature":

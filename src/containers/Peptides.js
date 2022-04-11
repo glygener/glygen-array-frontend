@@ -41,7 +41,14 @@ const Peptides = props => {
                       <Button className="gg-btn-blue mt-2">Add Peptide</Button>
                     </Link>
 
-                    <Link to={"/peptides/uploadMolecules"}>
+                    <Link
+                      to={{
+                        pathname: "/peptides/uploadMolecules",
+                        state: {
+                          type: "PEPTIDE"
+                        }
+                      }}
+                    >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Peptides</Button>
                     </Link>
                   </>

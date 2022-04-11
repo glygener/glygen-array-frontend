@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Loading } from "../components/Loading";
 import { Helmet } from "react-helmet";
-import { head, getMeta } from "../utils/head";
 import { FormLabel, Feedback, PageHeading } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Form, Row, Col, Button, Card } from "react-bootstrap";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { ResumableUploader } from "../components/ResumableUploader";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import "../containers/AddMultiSlideLayout.css";
 import "../containers/AddMultipleGlycans.css";
+import { getPath } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 
 const UploadMolecules = props => {
@@ -75,8 +75,11 @@ const UploadMolecules = props => {
       setShowLoading(false);
 
       history.push({
-        pathname: "/molecules/uploadMoleculesDetails",
-        state: { uploadResponse: resp }
+        pathname: `/${getPath(props.moleculeUploadType)}/uploadMoleculeDetails`,
+        state: {
+          uploadResponse: resp,
+          type: props.moleculeUploadType
+        }
       });
     });
   }

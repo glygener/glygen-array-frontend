@@ -32,9 +32,15 @@ const Features = props => {
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
-                  <Link to="/features/addFeature">
-                    <Button className="gg-btn-blue mt-2">Add Feature</Button>
-                  </Link>
+                  <>
+                    <Link to="/features/addFeature">
+                      <Button className="gg-btn-blue mt-2">Add Feature</Button>
+                    </Link>
+
+                    <Link to={"/features/uploadFeatures"}>
+                      <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Features</Button>
+                    </Link>
+                  </>
                 )}
               </div>
 
@@ -115,6 +121,9 @@ const Features = props => {
                 showViewIcon
                 viewUrl="features/viewFeature"
                 commentsRefColumn="name"
+                exportData
+                exportWsCall={"exportfeatures"}
+                fileName={"exportfeatures"}
                 fetchWS="featurelist"
                 deleteWS="featuredelete"
                 editUrl="features/editFeature/:editFeature"

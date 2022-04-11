@@ -37,9 +37,21 @@ const Lipids = props => {
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
-                  <Link to="/lipids/addLipid">
-                    <Button className="gg-btn-blue mt-2">Add Lipid</Button>
-                  </Link>
+                  <>
+                    <Link to="/lipids/addLipid">
+                      <Button className="gg-btn-blue mt-2">Add Lipid</Button>
+                    </Link>
+                    <Link
+                      to={{
+                        pathname: "/lipids/uploadMolecules",
+                        state: {
+                          type: "LIPID"
+                        }
+                      }}
+                    >
+                      <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Lipids</Button>
+                    </Link>
+                  </>
                 )}
               </div>
 

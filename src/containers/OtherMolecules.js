@@ -36,7 +36,14 @@ const OtherMolecules = props => {
                       <Button className="gg-btn-blue mt-2">Add Other Molecule</Button>
                     </Link>
 
-                    <Link to={"/otherMolecules/uploadMolecules"}>
+                    <Link
+                      to={{
+                        pathname: "/otherMolecules/uploadMolecules",
+                        state: {
+                          type: "OTHER"
+                        }
+                      }}
+                    >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Other Molecules</Button>
                     </Link>
                   </>

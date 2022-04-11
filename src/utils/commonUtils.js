@@ -405,3 +405,19 @@ export function getToolTip(displayValue) {
     </>
   );
 }
+
+export function getPath(type) {
+  switch (type) {
+    case "PROTEIN":
+      return "proteins";
+    case "PEPTIDE":
+      return "peptides";
+    case "LIPID":
+      return "lipids";
+    case "OTHER":
+      return "otherMolecules";
+
+    default:
+      return "linkers";
+  }
+}

@@ -88,7 +88,6 @@ const GlygenTable = props => {
       },
       // eslint-disable-next-line react/display-name
       Cell: (row, index) => {
-        debugger;
         return row.value || (row.original.description && row.original.description !== "") ? (
           getCommentsToolTip(row, props.customCommentColumn, index)
         ) : (
