@@ -104,6 +104,13 @@ const FORM_ERROR_MESSAGES = {
   grants: {
     Duplicate_grant: "Another grant has the same grant number as this one. Use a different grant number if possible."
   },
+  keywords: {
+    Duplicate_keyword: "Dataset has this Keyword added already. Use a different keyword if possible."
+  },
+  supplementaryfiles: {
+    Toolarge_file: "Please keep the file size to a maximum of 1MB.",
+    Notvalid_file: "The uploaded file appears to be invalid. Please verify it and try again."
+  },
 
   default: {
     default_key: "An unidentified error has occurred. Please be patient while we investigate this."

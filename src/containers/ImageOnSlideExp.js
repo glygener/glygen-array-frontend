@@ -155,7 +155,7 @@ const ImageOnSlideExp = props => {
           setEnablePrompt(false);
           setShowLoading(false);
           setEnableImageOnSlide(false);
-          history.push("/experiments/editExperiment/" + experimentId);
+          props.getExperiment();
         },
         addSlideOnExpFailure
       );

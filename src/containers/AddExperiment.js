@@ -351,42 +351,42 @@ const AddExperiment = props => {
                     showErrorSummary={showErrorSummary}
                     className="mb-4"
                   />
-                  {/* {refreshPage && getExperiment()} */}
                 </Form>
 
                 {experimentId && (
                   <>
-                    {experiment.slides && experiment.slides.length > 0 && (
-                      <Accordion defaultActiveKey={0} className="mb-4">
-                        <Card>
-                          <Card.Header>
-                            <Row>
-                              <Col className="font-awesome-color">
-                                <span className="descriptor-header">Data</span>
-                              </Col>
+                    {/* {experiment.slides && experiment.slides.length > 0 && ( */}
+                    <Accordion defaultActiveKey={0} className="mb-4">
+                      <Card>
+                        <Card.Header>
+                          <Row>
+                            <Col className="font-awesome-color">
+                              <span className="descriptor-header">Data</span>
+                            </Col>
 
-                              <Col style={{ textAlign: "right" }}>
-                                <ContextAwareToggle eventKey={0} classname="font-awesome-color" />
-                              </Col>
-                            </Row>
-                          </Card.Header>
-                          <Accordion.Collapse eventKey={0}>
-                            <Card.Body>
-                              <DataTreeView
-                                data={experiment}
-                                experimentId={experimentId}
-                                deleteRow={deleteRow}
-                                setShowDeleteModal={setShowDeleteModal}
-                                setDeleteMessage={setDeleteMessage}
-                                setPageErrorsJson={setPageErrorsJson}
-                                setPageErrorMessage={setPageErrorMessage}
-                                setShowErrorSummary={setShowErrorSummary}
-                              />
-                            </Card.Body>
-                          </Accordion.Collapse>
-                        </Card>
-                      </Accordion>
-                    )}
+                            <Col style={{ textAlign: "right" }}>
+                              <ContextAwareToggle eventKey={0} classname="font-awesome-color" />
+                            </Col>
+                          </Row>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey={0}>
+                          <Card.Body>
+                            <DataTreeView
+                              data={experiment}
+                              experimentId={experimentId}
+                              getExperiment={getExperiment}
+                              deleteRow={deleteRow}
+                              setShowDeleteModal={setShowDeleteModal}
+                              setDeleteMessage={setDeleteMessage}
+                              setPageErrorsJson={setPageErrorsJson}
+                              setPageErrorMessage={setPageErrorMessage}
+                              setShowErrorSummary={setShowErrorSummary}
+                            />
+                          </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                    </Accordion>
+                    {/* )} */}
                     {/* Publications */}
                     <PubOnExp
                       getPublication={getPublication}
@@ -398,24 +398,25 @@ const AddExperiment = props => {
                     {/* Grants */}
                     <GrantsOnExp
                       experimentId={experimentId}
-                      delete={deleteRow}
+                      getExperiment={getExperiment}
                       grants={experiment.grants}
+                      delete={deleteRow}
                       deleteWsCall={"deletegrant"}
                     />
                     {/* Collaborators */}
                     <CollabsOnExp
                       experimentId={experimentId}
                       getExperiment={getExperiment}
-                      delete={deleteRow}
-                      addWsCall={"addcollaborator"}
-                      deleteWsCall={"deletecollaborator"}
                       listCollaborators={experiment.collaborators}
+                      addWsCall={"addcollaborator"}
+                      delete={deleteRow}
+                      deleteWsCall={"deletecollaborator"}
                     />
                     {/* Co-Owners */} 
                     <CoOwnersOnExp
                       experimentId={experimentId}
-                      delete={deleteRow}
                       addWsCall={"addcoowner"}
+                      delete={deleteRow}
                       deleteWsCall={"deletecoowner"}
                       listCoOwners={experiment.listCoOwners}
                     />
@@ -424,16 +425,17 @@ const AddExperiment = props => {
                       experimentId={experimentId}
                       getExperiment={getExperiment}
                       files={experiment.files}
-                      delete={deleteRow}
                       addWsCall={"addfileonexp"}
+                      delete={deleteRow}
                       deleteWsCall={"deletefileonexperiment"}
                     />
                     {/* Key words */}
                     <KeywordsOnExp
                       experimentId={experimentId}
+                      getExperiment={getExperiment}
                       keywords={experiment.keywords}
-                      delete={deleteRow}
                       addWsCall={"addkeyword"}
+                      delete={deleteRow}
                       deleteWsCall={"deletekeyword"}
                     />
                     {/* ConfirmationModal */}

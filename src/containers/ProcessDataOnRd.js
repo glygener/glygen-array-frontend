@@ -156,7 +156,8 @@ const ProcessDataOnRd = props => {
         // eslint-disable-next-line no-unused-vars
         response => {
           setEnablePrompt(false);
-          history.push("/experiments/editExperiment/" + experimentId);
+          // history.push("/experiments/editExperiment/" + experimentId);
+          props.getExperiment();
         },
         addRawDataFailure
       );
@@ -291,7 +292,7 @@ const ProcessDataOnRd = props => {
                               history={history}
                               headerObject={{
                                 Authorization: window.localStorage.getItem("token") || "",
-                                Accept: "*/*",
+                                Accept: "*/*"
                               }}
                               fileType={data.fileType}
                               uploadService={getWsUrl("upload")}

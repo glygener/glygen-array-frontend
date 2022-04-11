@@ -4,7 +4,9 @@ import { Row, Col, Button, Accordion, Card, Table, Form, Modal } from "react-boo
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormLabel } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { ErrorSummary } from "./ErrorSummary";
+import CardLoader from "./CardLoader";
 
 const KeywordsOnExp = props => {
   let { experimentId } = useParams();
@@ -14,7 +16,6 @@ const KeywordsOnExp = props => {
   const [otherKW, setOtherKW] = useState();
   const [showLoading, setShowLoading] = useState(false);
   const [showKWModal, setShowKWModal] = useState();
-  const history = useHistory();
   const [validated, setValidated] = useState(false);
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
@@ -78,6 +79,7 @@ const KeywordsOnExp = props => {
   const handleSelect = e => {
     const kwd = e.target.options[e.target.selectedIndex].value;
     setKeyword(kwd);
+    setShowErrorSummary(false);
   };
 
   const getKeywordsModal = () => {
@@ -114,14 +116,14 @@ const KeywordsOnExp = props => {
         "POST",
         {
           arraydatasetId: experimentId,
-          keyword: otherKW
+          keyword: keyword === "other" ? otherKW : keyword
         },
         true,
         null,
         response => {
-          setShowLoading(false);
           setShowKWModal(false);
-          history.push("/experiments/editExperiment/" + experimentId);
+          props.getExperiment();
+          setShowLoading(false);
         },
         keywordOnExpFailure
       );
@@ -133,15 +135,24 @@ const KeywordsOnExp = props => {
   function keywordOnExpFailure(response) {
     response.json().then(responseJson => {
       setPageErrorsJson(responseJson);
-      setShowErrorSummary(true);
       setPageErrorMessage("");
       setShowLoading(false);
+      setShowErrorSummary(true);
     });
   }
 
   const getKeywordBody = () => {
     return (
       <>
+        {showErrorSummary === true && (
+          <ErrorSummary
+            show={showErrorSummary}
+            form="keywords"
+            errorJson={pageErrorsJson}
+            errorMessage={pageErrorMessage}
+          />
+        )}
+
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
           <Form.Group as={Row} controlId={0} className="gg-align-center mt-0 pt-0">
             <Col xs={12} lg={9}>
@@ -188,7 +199,16 @@ const KeywordsOnExp = props => {
               Cancel
             </Button>
 
-            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+            <Button
+              type="submit"
+              className="gg-btn-blue mt-2 gg-ml-20"
+              disabled={
+                (keyword === "other" && (otherKW === "" || !otherKW)) ||
+                keyword === "select" ||
+                !keyword ||
+                showErrorSummary
+              }
+            >
               Submit
             </Button>
           </div>
@@ -215,11 +235,19 @@ const KeywordsOnExp = props => {
           <Accordion.Collapse eventKey={0}>
             <Card.Body>
               <div className="text-center mt-2 mb-4">
-                <Button className="gg-btn-blue" onClick={() => setShowKWModal(true)}>
+                <Button
+                  className="gg-btn-blue"
+                  onClick={() => {
+                    setKeyword();
+                    setShowErrorSummary(false);
+                    setShowKWModal(true);
+                  }}
+                >
                   Add Keyword
                 </Button>
               </div>
               {getListKeywords()}
+              {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
             </Card.Body>
           </Accordion.Collapse>
         </Card>

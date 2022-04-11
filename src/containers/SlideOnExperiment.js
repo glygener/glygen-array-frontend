@@ -285,7 +285,8 @@ const SlideOnExperiment = props => {
         response => {
           setEnablePrompt(false);
           setShowLoading(false);
-          history.push("/experiments/editExperiment/" + experimentId);
+          setEnableSlideModal(false);
+          props.getExperiment();
         },
         addSlideOnExpFailure
       );
@@ -417,7 +418,7 @@ const SlideOnExperiment = props => {
         {slideView && (
           <Modal.Footer>
             <Button
-            className="gg-btn-blue-reg"
+              className="gg-btn-blue-reg"
               onClick={() => {
                 setSlideView();
                 setEnableSlideModal(false);

@@ -87,49 +87,14 @@ const GlygenTable = props => {
         textAlign: "center"
       },
       // eslint-disable-next-line react/display-name
-      Cell: (row, index) =>
-        row.value || row.original.description ? (
-          <Tooltip
-            disableTouchListener
-            interactive
-            arrow
-            placement={"bottom"}
-            classes={{
-              tooltip: "gg-tooltip"
-            }}
-            title={
-              <span className="text-overflow text-max-height">
-                <h5>
-                  <strong>
-                    Comments for{" "}
-                    {props.customCommentColumn
-                      ? row.original.name
-                        ? row.original.name
-                        : row.original.glytoucanId
-                        ? row.original.glytoucanId
-                        : row.original.internalId
-                      : ""}
-                  </strong>
-                </h5>
-                {row.value ? row.value : row.original.description ? row.original.description : ""}
-              </span>
-            }
-          >
-            {/* <CommentIcon className={"gg-blue tbl-icon-btn5"} fontSize="medium" /> */}
-            <span>
-              <FontAwesomeIcon
-                key={"comments" + index}
-                icon={["fas", "comments"]}
-                size="lg"
-                title="Comments"
-                className="gg-blue tbl-icon-btn"
-                style={{ cursor: "pointer" }}
-              />
-            </span>
-          </Tooltip>
+      Cell: (row, index) => {
+        debugger;
+        return row.value || (row.original.description && row.original.description !== "") ? (
+          getCommentsToolTip(row, props.customCommentColumn, index)
         ) : (
           <div key={index}></div>
-        ),
+        );
+      },
       minWidth: 80
     };
   }
@@ -699,6 +664,51 @@ const GlygenTable = props => {
   }
 };
 
+const getCommentsToolTip = (row, customCommentColumn, index) => {
+  return (
+    <>
+      <Tooltip
+        disableTouchListener
+        interactive
+        arrow
+        placement={"bottom"}
+        classes={{
+          tooltip: "gg-tooltip"
+        }}
+        title={
+          <span className="text-overflow text-max-height">
+            <h5>
+              <strong>
+                Comments for{" "}
+                {customCommentColumn
+                  ? row.original.name
+                    ? row.original.name
+                    : row.original.glytoucanId
+                    ? row.original.glytoucanId
+                    : row.original.internalId
+                  : ""}
+              </strong>
+            </h5>
+            {row.value ? row.value : row.original.description ? row.original.description : ""}
+          </span>
+        }
+      >
+        {/* <CommentIcon className={"gg-blue tbl-icon-btn5"} fontSize="medium" /> */}
+        <span>
+          <FontAwesomeIcon
+            key={"comments" + index}
+            icon={["fas", "comments"]}
+            size="lg"
+            title="Comments"
+            className="gg-blue tbl-icon-btn"
+            style={{ cursor: "pointer" }}
+          />
+        </span>
+      </Tooltip>
+    </>
+  );
+};
+
 GlygenTable.propTypes = {
   columns: PropTypes.array.isRequired,
   defaultPageSize: PropTypes.number,
@@ -754,4 +764,4 @@ GlygenTable.defaultProps = {
   defaultSortOrder: 0
 };
 
-export { GlygenTable };
+export { GlygenTable, getCommentsToolTip };

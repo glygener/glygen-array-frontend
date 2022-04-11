@@ -1,10 +1,43 @@
-import React from "react";
 import "../components/PublicationCard.css";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Row, Col, Table } from "react-bootstrap";
+import React, { useState } from "react";
+import { Row, Col, Button, Table, Modal } from "react-bootstrap";
+import { AddGrant } from "./AddGrant";
+import CardLoader from "../components/CardLoader";
 
 const Grants = props => {
+  const [showLoading, setShowLoading] = useState(false);
+  const [showModal, setShowModal] = useState();
+
+  const getGrantModal = () => {
+    return (
+      <>
+        <Modal
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          show={showModal}
+          onHide={() => {
+            setShowModal(false);
+          }}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">Add Grant</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <AddGrant
+              experimentId={props.experimentId}
+              getExperiment={props.getExperiment}
+              setShowModal={setShowModal}
+            />
+          </Modal.Body>
+          <Modal.Footer></Modal.Footer>
+        </Modal>
+      </>
+    );
+  };
+
   const getGrantTable = () => {
     return (
       <>
@@ -14,7 +47,7 @@ const Grants = props => {
               <Table hover>
                 <tbody className="table-body">
                   <tr className="table-row" key={grantIndex}>
-                    {getPublicationDisplayTable(grant, grantIndex)}
+                    {grantsTable(grant, grantIndex)}
                   </tr>
                 </tbody>
               </Table>
@@ -24,7 +57,7 @@ const Grants = props => {
     );
   };
 
-  const getPublicationDisplayTable = (grant, grantIndex) => {
+  const grantsTable = (grant, grantIndex) => {
     return (
       <>
         <td key={grantIndex}>
@@ -56,7 +89,26 @@ const Grants = props => {
     );
   };
 
-  return <>{getGrantTable()}</>;
+  return (
+    <>
+      <div className="text-center mt-2 mb-4">
+        <Button
+          className="gg-btn-blue"
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          Add Grant
+        </Button>
+      </div>
+
+      {showModal && getGrantModal()}
+
+      {getGrantTable()}
+
+      {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
+    </>
+  );
 };
 
 Grants.propTypes = {

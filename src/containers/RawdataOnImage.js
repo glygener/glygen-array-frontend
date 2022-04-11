@@ -95,8 +95,8 @@ const RawdataOnImage = props => {
       label: "Raw Data File",
       fileType: rawData.fileType,
       setUploadedFile: setUploadedRawDF,
-      required: false,
-    },
+      required: false
+    }
   ];
 
   const handleSelect = e => {
@@ -175,7 +175,8 @@ const RawdataOnImage = props => {
           // eslint-disable-next-line no-unused-vars
           response => {
             setEnablePrompt(false);
-            history.push("/experiments/editExperiment/" + experimentId);
+            setEnableRawdataOnImage(false);
+            props.getExperiment();
           },
           addRawDataFailure
         );
@@ -339,7 +340,7 @@ const RawdataOnImage = props => {
                               history={history}
                               headerObject={{
                                 Authorization: window.localStorage.getItem("token") || "",
-                                Accept: "*/*",
+                                Accept: "*/*"
                               }}
                               fileType={data.fileType}
                               uploadService={getWsUrl("upload")}

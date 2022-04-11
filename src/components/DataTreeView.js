@@ -272,6 +272,7 @@ const DataTreeView = props => {
                       >
                         {img.rawDataList &&
                           img.rawDataList.map(rawData => {
+                            debugger;
                             return (
                               <Tree
                                 style={{ paddingTop: "35px", marginLeft: "70px" }}
@@ -290,20 +291,24 @@ const DataTreeView = props => {
                                                 <strong>Status:</strong> {rawData.status}
                                               </span>
                                             </Col>
+
                                             <Col style={{ textAlign: "right" }}>
-                                              <LineTooltip text="Add Process Data">
-                                                <span>
-                                                  <FontAwesomeIcon
-                                                    icon={["fas", "plus"]}
-                                                    size="lg"
-                                                    className="tbl-icon-btn"
-                                                    onClick={() => {
-                                                      setRawdataSelected(rawData.id);
-                                                      setEnableProcessRawdata(true);
-                                                    }}
-                                                  />
-                                                </span>
-                                              </LineTooltip>
+                                              {rawData.status === "DONE" && (
+                                                <LineTooltip text="Add Process Data">
+                                                  <span>
+                                                    <FontAwesomeIcon
+                                                      icon={["fas", "plus"]}
+                                                      size="lg"
+                                                      className="tbl-icon-btn"
+                                                      onClick={() => {
+                                                        setRawdataSelected(rawData.id);
+                                                        setEnableProcessRawdata(true);
+                                                      }}
+                                                    />
+                                                  </span>
+                                                </LineTooltip>
+                                              )}
+
                                               {rawData.id && (
                                                 <>
                                                   <LineTooltip text="Delete Raw Data">
@@ -471,6 +476,7 @@ const DataTreeView = props => {
       {enableSlideModal && (
         <SlideOnExperiment
           slideView={slideView}
+          getExperiment={props.getExperiment}
           setSlideView={setSlideView}
           experimentId={experimentId}
           enableSlideModal={enableSlideModal}
@@ -481,6 +487,7 @@ const DataTreeView = props => {
       {enableImageOnSlide && (
         <ImageOnSlideExp
           experimentId={experimentId}
+          getExperiment={props.getExperiment}
           slideId={slideSelected}
           imageView={imageView}
           setImageView={setImageView}
@@ -492,6 +499,7 @@ const DataTreeView = props => {
       {enableRawdataOnImage && (
         <RawdataOnImage
           experimentId={experimentId}
+          getExperiment={props.getExperiment}
           imageId={imageSelected}
           rawDataView={rawDataView}
           setRawDataView={setRawDataView}
@@ -503,6 +511,7 @@ const DataTreeView = props => {
       {enableProcessRawdata && (
         <ProcessDataOnRd
           experimentId={experimentId}
+          getExperiment={props.getExperiment}
           rawDataId={rawdataSelected}
           processDataView={processDataView}
           setProcessDataView={setProcessDataView}

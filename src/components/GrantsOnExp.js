@@ -1,7 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { ContextAwareToggle } from "../utils/commonUtils";
-import { Row, Col, Button, Accordion, Card } from "react-bootstrap";
+import { Row, Col, Accordion, Card } from "react-bootstrap";
 import { Grants } from "../containers/Grants";
 
 const GrantsOnExp = props => {
@@ -22,16 +21,11 @@ const GrantsOnExp = props => {
           </Card.Header>
           <Accordion.Collapse eventKey={0}>
             <Card.Body>
-              <div className="text-center mt-2 mb-4">
-                <Link to={`/experiments/addExperiment/addGrant/${props.experimentId}`}>
-                  <Button className="gg-btn-blue">Add Grant</Button>
-                </Link>
-              </div>
-
               <Grants
                 experimentId={props.experimentId}
-                delete={props.deleteRow}
+                getExperiment={props.getExperiment}
                 grants={props.grants}
+                delete={props.delete}
                 deleteWsCall={"deletegrant"}
               />
             </Card.Body>

@@ -1,7 +1,6 @@
 import React, { useState, useReducer } from "react";
 import { Row, Col, Accordion, Card, Button, Modal, Form } from "react-bootstrap";
 import { ContextAwareToggle } from "../utils/commonUtils";
-import ReactTable from "react-table";
 import { useHistory, useParams } from "react-router-dom";
 import { LineTooltip } from "./tooltip/LineTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +8,9 @@ import { ResumableUploader } from "./ResumableUploader";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import { downloadFile } from "../utils/commonUtils";
 import { FormLabel } from "../components/FormControls";
+import { GlygenTable, getCommentsToolTip } from "./GlygenTable";
+import { ErrorSummary } from "./ErrorSummary";
+import CardLoader from "./CardLoader";
 
 const FilesOnExp = props => {
   let { experimentId } = useParams();
@@ -56,10 +58,9 @@ const FilesOnExp = props => {
             description: file.description
           },
           response => {
-            setShowLoading(false);
             setShowFileModal(false);
-            // history.push("/experiments/editExperiment/" + experimentId);
             props.getExperiment();
+            setShowLoading(false);
           },
           fileOnExpFailure
         );
@@ -79,6 +80,14 @@ const FilesOnExp = props => {
 
     return (
       <>
+        {showErrorSummary === true && (
+          <ErrorSummary
+            show={showErrorSummary}
+            form="supplementaryfiles"
+            errorJson={pageErrorsJson}
+            errorMessage={pageErrorMessage}
+          />
+        )}
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
           <Form.Group as={Row} controlId={"file"} className="gg-align-center mt-0 pt-0">
             <Col xs={12} lg={9}>
@@ -144,7 +153,7 @@ const FilesOnExp = props => {
             >
               Cancel
             </Button>
-            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
+            <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20" disabled={!uploadedFile || !file.type}>
               Submit
             </Button>
           </div>
@@ -176,7 +185,7 @@ const FilesOnExp = props => {
   const fileTableOnExp = () => {
     return (
       <>
-        <ReactTable
+        <GlygenTable
           data={props.files}
           columns={[
             {
@@ -196,7 +205,13 @@ const FilesOnExp = props => {
             },
             {
               Header: "Description",
-              accessor: "fileDescription"
+              Cell: (row, index) => {
+                return row.value || (row.original.description && row.original.description !== "") ? (
+                  getCommentsToolTip(row, false, index)
+                ) : (
+                  <div key={index}></div>
+                );
+              }
             },
             {
               Header: "Actions",
@@ -227,11 +242,9 @@ const FilesOnExp = props => {
                               onClick={() => {
                                 downloadFile(
                                   {
-                                    file: {
-                                      fileFolder: row.original.fileFolder,
-                                      originalName: row.original.originalName,
-                                      identifier: row.original.identifier
-                                    }
+                                    fileFolder: row.original.fileFolder,
+                                    originalName: row.original.originalName,
+                                    identifier: row.original.identifier
                                   },
                                   props.setPageErrorsJson,
                                   props.setPageErrorMessage,
@@ -295,6 +308,7 @@ const FilesOnExp = props => {
                 </Button>
               </div>
               {fileTableOnExp()}
+              {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
             </Card.Body>
           </Accordion.Collapse>
         </Card>
