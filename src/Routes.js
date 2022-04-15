@@ -758,7 +758,7 @@ const Routes = props => {
           return <Route key={index} path={element.path} exact={element.exact} render={element.main} />;
         })}
       </Switch>
-      <Switch>
+      {/* <Switch>
         <Route
           path="*"
           render={() => (
@@ -767,7 +767,7 @@ const Routes = props => {
             </main>
           )}
         />
-      </Switch>
+      </Switch> */}
     </>
   );
 };
