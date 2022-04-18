@@ -116,15 +116,6 @@ const RawdataOnImage = props => {
       onchange: handleSelect
     },
     {
-      label: "Raw Data File Format",
-      name: "rawDataFF",
-      value: rawData.rawDataFF,
-      list: listSupportedRawFileFormat,
-      message: "Raw Data File Format",
-      onchange: handleSelect,
-      maxFileSize: 20 * 1024 * 1024
-    },
-    {
       label: "Channel Usage Type",
       name: "channelUsageType",
       value: rawData.channelUsageType,
@@ -227,6 +218,13 @@ const RawdataOnImage = props => {
   const getRawDataView = () => {
     return (
       <>
+        <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Raw Data File Format"} className="required-asterik" />
+            <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file.fileFormat} readOnly plaintext />
+          </Col>
+        </Form.Group>
+
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Raw Data"} className="required-asterik" />
@@ -238,13 +236,6 @@ const RawdataOnImage = props => {
           <Col xs={12} lg={9}>
             <FormLabel label={"Image Analysis"} className="required-asterik" />
             <Form.Control type="text" name={"metadata"} value={rawDataView.metadata.name} readOnly plaintext />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
-          <Col xs={12} lg={9}>
-            <FormLabel label={"Raw Data File Format"} className="required-asterik" />
-            <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file.fileFormat} readOnly plaintext />
           </Col>
         </Form.Group>
 
@@ -271,18 +262,21 @@ const RawdataOnImage = props => {
                 />
               </Col>
             </Form.Group>
-            <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
-              <Col xs={12} lg={9}>
-                <FormLabel label={"Wave Length"} className="required-asterik" />
-                <Form.Control
-                  type="text"
-                  name={"wavelength"}
-                  value={rawDataView.channel.wavelength}
-                  readOnly
-                  plaintext
-                />
-              </Col>
-            </Form.Group>
+
+            {rawDataView.channel.wavelength && (
+              <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
+                <Col xs={12} lg={9}>
+                  <FormLabel label={"Wave Length"} className="required-asterik" />
+                  <Form.Control
+                    type="text"
+                    name={"wavelength"}
+                    value={rawDataView.channel.wavelength}
+                    readOnly
+                    plaintext
+                  />
+                </Col>
+              </Form.Group>
+            )}
           </>
         )}
       </>
@@ -326,6 +320,33 @@ const RawdataOnImage = props => {
 
                 {!rawDataView ? (
                   <>
+                    <Form.Group as={Row} controlId={"fileFormat"} className="gg-align-center mb-3">
+                      <Col xs={12} lg={9}>
+                        <FormLabel label={"Raw Data File Format"} className="required-asterik" />
+                        <Form.Control
+                          as="select"
+                          name={"rawDataFF"}
+                          value={rawData.rawDataFF}
+                          onChange={handleSelect}
+                          required={true}
+                        >
+                          <option value="">Select {"Raw Data File Format"}</option>
+                          {(listSupportedRawFileFormat.length > 0 ||
+                            (listSupportedRawFileFormat.rows && listSupportedRawFileFormat.rows.length > 0)) &&
+                            getSelectionList({
+                              label: "Raw Data File Format",
+                              name: "rawDataFF",
+                              value: rawData.rawDataFF,
+                              list: listSupportedRawFileFormat,
+                              message: "Raw Data File Format",
+                              onchange: handleSelect,
+                              maxFileSize: 20 * 1024 * 1024
+                            })}
+                        </Form.Control>
+                        <Feedback message={"Raw Data File Format is required"} />
+                      </Col>
+                    </Form.Group>
+
                     {fileData.map((data, index) => {
                       return (
                         <Form.Group
@@ -356,6 +377,7 @@ const RawdataOnImage = props => {
                         </Form.Group>
                       );
                     })}
+
                     <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
                       {FormData.map((element, index) => {
                         return (
