@@ -30,8 +30,13 @@ const KeywordsOnExp = props => {
       null,
       response => {
         response.json().then(responseJson => {
-          responseJson.sort((a, b) => a - b);
-          setListKeywords(responseJson);
+          let sortedList = responseJson.sort(function(a, b) {
+            return a.localeCompare(b, undefined, {
+              numeric: true,
+              sensitivity: "base"
+            });
+          });
+          setListKeywords(sortedList);
         });
       },
       listKeyWordsFail
@@ -52,14 +57,21 @@ const KeywordsOnExp = props => {
           props.keywords.map((kw, index) => {
             return (
               <Table hover>
-                <tbody className="table-body">
-                  <tr className="table-row" key={index + kw}>
-                    <td>
+                <tbody
+                  // className="table-body"
+                  style={{ border: "none" }}
+                >
+                  <tr
+                    // className="table-row"
+                    style={{ border: "none" }}
+                    key={index + kw}
+                  >
+                    <td style={{ border: "none" }}>
                       <div>
                         <h5>{kw}</h5>
                       </div>
                     </td>
-                    <td className="text-right">
+                    <td className="text-right" style={{ border: "none" }}>
                       <FontAwesomeIcon
                         icon={["far", "trash-alt"]}
                         size="lg"

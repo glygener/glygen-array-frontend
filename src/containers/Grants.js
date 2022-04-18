@@ -44,9 +44,16 @@ const Grants = props => {
         {props.grants &&
           props.grants.map((grant, grantIndex) => {
             return (
-              <Table hover>
-                <tbody className="table-body">
-                  <tr className="table-row" key={grantIndex}>
+              <Table hover style={{ border: "none" }}>
+                <tbody
+                  //  className="table-body"
+                  style={{ border: "none" }}
+                >
+                  <tr
+                    // className="table-row"
+                    style={{ border: "none" }}
+                    key={grantIndex}
+                  >
                     {grantsTable(grant, grantIndex)}
                   </tr>
                 </tbody>
@@ -60,7 +67,7 @@ const Grants = props => {
   const grantsTable = (grant, grantIndex) => {
     return (
       <>
-        <td key={grantIndex}>
+        <td key={grantIndex} style={{ border: "none" }}>
           <div>
             <h5>
               <a href={grant.url} target={"_blank"}>
@@ -76,7 +83,7 @@ const Grants = props => {
             </Row>
           </div>
         </td>
-        <td className="text-right">
+        <td className="text-right" style={{ border: "none" }}>
           <FontAwesomeIcon
             icon={["far", "trash-alt"]}
             size="lg"
