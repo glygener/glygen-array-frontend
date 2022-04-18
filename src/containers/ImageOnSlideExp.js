@@ -66,7 +66,8 @@ const ImageOnSlideExp = props => {
       label: "Image",
       fileType: imageOnSlide.fileType,
       setUploadedFile: setImageUploaded,
-      required: true
+      required: true,
+      maxFileSize: 5 * 1024 * 1024 * 1024
     }
   ];
 
@@ -198,6 +199,7 @@ const ImageOnSlideExp = props => {
                   setUploadedFile={data.setUploadedFile}
                   onProcessFile={fileId => {}}
                   required={data.required}
+                  maxFileSize={data.maxFileSize}
                   // filetypes={["jpg", "jpeg", "png", "tiff"]}
                 />
               </Col>

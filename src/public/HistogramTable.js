@@ -7,8 +7,10 @@ import { StructureImage } from "../components/StructureImage";
 import { OverlayTrigger, Popover, Row, Col } from "react-bootstrap";
 import CardLoader from "../components/CardLoader";
 import { ErrorSummary } from "../components/ErrorSummary";
+import { Title } from "../components/FormControls";
 
 const HistogramTable = props => {
+  let { dataset } = props;
   const [listIntensity, setListIntensity] = useState([]);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
@@ -16,13 +18,19 @@ const HistogramTable = props => {
   const [showloading, setShowloading] = useState(true);
 
   useEffect(() => {
+    let rdList = dataset && dataset.rawDataList && dataset.rawDataList.length > 0 ? dataset.rawDataList[0] : undefined;
+    let pdList =
+      rdList && rdList.processedDataList && rdList.processedDataList.length > 0
+        ? rdList.processedDataList[0]
+        : undefined;
+
     wsCall(
       "getlistintensities",
       "GET",
       {
         offset: "0",
-        processedDataId: props.dataset.rawDataList[0].processedDataList[0].id,
-        datasetId: props.dataset.id
+        processedDataId: pdList && pdList.id,
+        datasetId: dataset.id
       },
       false,
       null,
@@ -37,15 +45,17 @@ const HistogramTable = props => {
 
   function errorWscall(response) {
     response.json().then(responseJson => {
+      // debugger;
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
-      setShowErrorSummary(true);
+      setShowErrorSummary(false);
     });
   }
 
   const getIntensitiesTable = () => {
     return (
       <>
+        <Title title={"Data"} />
         <ReactTable
           style={{ minHeight: "355px" }}
           data={listIntensity.rows}

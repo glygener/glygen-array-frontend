@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useReducer } from "react";
 import { Row, Col, Accordion, Card, Button, Modal, Form } from "react-bootstrap";
-import { ContextAwareToggle } from "../utils/commonUtils";
+import { ContextAwareToggle, getToolTip } from "../utils/commonUtils";
 import { useHistory, useParams } from "react-router-dom";
 import { LineTooltip } from "./tooltip/LineTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,9 +9,11 @@ import { ResumableUploader } from "./ResumableUploader";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import { downloadFile } from "../utils/commonUtils";
 import { FormLabel } from "../components/FormControls";
-import { GlygenTable, getCommentsToolTip } from "./GlygenTable";
+import { getCommentsToolTip } from "./GlygenTable";
 import { ErrorSummary } from "./ErrorSummary";
 import CardLoader from "./CardLoader";
+import ReactTable from "react-table";
+import "react-table/react-table.css";
 
 const FilesOnExp = props => {
   let { experimentId } = useParams();
@@ -88,6 +91,7 @@ const FilesOnExp = props => {
             errorMessage={pageErrorMessage}
           />
         )}
+
         <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
           <Form.Group as={Row} controlId={"file"} className="gg-align-center mt-0 pt-0">
             <Col xs={12} lg={9}>
@@ -104,6 +108,7 @@ const FilesOnExp = props => {
                 setUploadedFile={setUploadedFile}
                 onProcessFile={fileId => {}}
                 required={true}
+                maxFileSize={100 * 1024 * 1024}
                 // filetypes={["jpg", "jpeg", "png", "tiff"]}
               />
             </Col>
@@ -185,26 +190,36 @@ const FilesOnExp = props => {
   const fileTableOnExp = () => {
     return (
       <>
-        <GlygenTable
+        <ReactTable
           data={props.files}
           columns={[
             {
               Header: "File name",
-              accessor: "originalName"
+              accessor: "originalName",
+              Cell: (row, index) => {
+                return getToolTip(row.original.originalName);
+              },
+              sortable: true
             },
             {
               Header: "File type",
-              accessor: "fileFormat"
+              accessor: "fileFormat",
+              Cell: (row, index) => {
+                return getToolTip(row.original.fileFormat);
+              },
+              sortable: true
             },
             {
               Header: "File size in kB",
               accessor: "fileSize",
+              sortable: true,
               Cell: (row, index) => {
                 return row.original && (row.original.fileSize / 1024).toFixed(2);
               }
             },
             {
               Header: "Description",
+              sortable: false,
               Cell: (row, index) => {
                 return row.value || (row.original.description && row.original.description !== "") ? (
                   getCommentsToolTip(row, false, index)
@@ -263,7 +278,7 @@ const FilesOnExp = props => {
               minWidth: 60
             }
           ]}
-          className={"-striped -highlight"}
+          className={"-striped -highlight MyReactTableClass"}
           defaultPageSize={5}
           minRows={0}
           NoDataComponent={({ state, ...rest }) =>

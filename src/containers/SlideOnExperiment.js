@@ -13,11 +13,10 @@ const SlideOnExperiment = props => {
   let { experimentId } = useParams();
   let { slideView, setSlideView, setEnableSlideModal } = props;
 
-  const [blocks, setBlocks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [validated, setValidated] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-
+  const [blocks, setBlocks] = useState([]);
   let [blocksSelected, setBlocksSelected] = useState([]);
   let [totalBlocksSelected, setTotalBlocksSelected] = useState([]);
   const [listSlide, setListSlide] = useState([]);
@@ -250,18 +249,18 @@ const SlideOnExperiment = props => {
   };
 
   const handleChecboxChange = row => {
-    var selectedrow = [...totalBlocksSelected];
-    var deselectedRow = selectedrow.find(e => e.id === row.id);
+    var selectedrows = [...totalBlocksSelected];
+    var deselectedRow = selectedrows.find(e => e.id === row.id);
 
     if (deselectedRow) {
-      var deselectedRowIndex = selectedrow.indexOf(deselectedRow);
-      selectedrow.splice(deselectedRowIndex, 1);
+      var deselectedRowIndex = selectedrows.indexOf(deselectedRow);
+      selectedrows.splice(deselectedRowIndex, 1);
     } else {
-      selectedrow.push(row);
+      selectedrows.push(row);
     }
 
-    setBlocksSelected(selectedrow);
-    setTotalBlocksSelected(selectedrow);
+    setBlocksSelected(selectedrows);
+    setTotalBlocksSelected(selectedrows);
   };
 
   function handleSubmit(e) {
@@ -389,6 +388,7 @@ const SlideOnExperiment = props => {
                               )}
                             </Col>
                           </Form.Group>
+                          {/* {slideOnExp.slide && element.name === "slide" && getBlockSelectTable()} */}
                         </>
                       );
                     })}
@@ -443,7 +443,20 @@ const SlideOnExperiment = props => {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>{getBlockSelectTable()} </Modal.Body>
-            <Modal.Footer></Modal.Footer>
+            <Modal.Footer>
+              <Button
+                className="gg-btn-outline-reg"
+                onClick={() => {
+                  setBlocksSelected(blocks);
+                  setShowModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button className="gg-btn-blue-reg" onClick={() => setShowModal(false)}>
+                OK
+              </Button>
+            </Modal.Footer>
           </Modal>
         )}
 

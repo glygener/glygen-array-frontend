@@ -30,6 +30,7 @@ const KeywordsOnExp = props => {
       null,
       response => {
         response.json().then(responseJson => {
+          responseJson.sort((a, b) => a - b);
           setListKeywords(responseJson);
         });
       },

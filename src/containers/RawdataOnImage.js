@@ -121,7 +121,8 @@ const RawdataOnImage = props => {
       value: rawData.rawDataFF,
       list: listSupportedRawFileFormat,
       message: "Raw Data File Format",
-      onchange: handleSelect
+      onchange: handleSelect,
+      maxFileSize: 20 * 1024 * 1024
     },
     {
       label: "Channel Usage Type",
@@ -348,6 +349,7 @@ const RawdataOnImage = props => {
                               setUploadedFile={data.setUploadedFile}
                               onProcessFile={fileId => {}}
                               required={data.required}
+                              maxFileSize={data.maxFileSize}
                               // filetypes={["jpg", "jpeg", "png", "tiff"]}
                             />
                           </Col>

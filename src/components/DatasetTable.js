@@ -130,16 +130,20 @@ const DatasetTable = props => {
                     <div>
                       <strong>ID:</strong> <Link to={`/data/dataset/${row.original.id}`}>{row.original.id}</Link>
                     </div>
+
                     <div>
                       <strong>Dataset Name: </strong>
                       {row.original.name}
                     </div>
+
                     <div>
                       <strong>Sample:</strong> {row.original.sample.name}
                     </div>
+
                     <div>
                       <strong>Dataset Description:</strong> {row.original.description}
                     </div>
+
                     <div>
                       <strong>Submitter:</strong> &nbsp;
                       <Link
@@ -153,6 +157,7 @@ const DatasetTable = props => {
                         {row.original.user.name}
                       </Link>
                     </div>
+
                     <div>
                       <span>
                         <strong>Public since:</strong> {getDateCreated(row.original.dateCreated)}

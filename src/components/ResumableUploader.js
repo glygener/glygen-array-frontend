@@ -56,7 +56,7 @@ const ResumableUploader = props => {
             fileAccept={props.fileType}
             chunkSize={1 * 1024 * 1024}
             tmpDir="http://localhost:3000/tmp/"
-            maxFileSize={10 * 1024 * 1024 * 1024}
+            maxFileSize={props.maxFileSize ? props.maxFileSize : 10 * 1024 * 1024 * 1024}
             fileAddedMessage="Started!"
             completedMessage="Complete!"
             service={props.uploadService}

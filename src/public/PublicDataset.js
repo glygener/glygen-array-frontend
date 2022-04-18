@@ -11,7 +11,6 @@ import { head, getMeta } from "../utils/head";
 import HistogramTable from "./HistogramTable";
 import SubmitterDetails from "./SubmitterDetails";
 import PublicMetadata from "./PublicMetadata";
-import Files from "./Files";
 import MetadataKeyPairs from "../public/MetadataKeyPairs";
 import { Title } from "../components/FormControls";
 
@@ -139,7 +138,6 @@ const PublicDataset = () => {
             <Row>
               <Col md={8}>
                 <Card>
-                  <Title title={"Data"} />
                   <HistogramTable dataset={dataset} />
                 </Card>
               </Col>
