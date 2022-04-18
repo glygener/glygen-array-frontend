@@ -41,7 +41,7 @@ const KeywordsOnExp = props => {
       },
       listKeyWordsFail
     );
-  }, []);
+  }, [listkeywords, otherKW]);
 
   function listKeyWordsFail(response) {
     response.json().then(responseJson => {
@@ -194,7 +194,7 @@ const KeywordsOnExp = props => {
                     onChange={e => {
                       setOtherKW(e.target.value);
                     }}
-                    maxLength={20}
+                    maxLength={50}
                   />
                 </Col>
               </Form.Group>
