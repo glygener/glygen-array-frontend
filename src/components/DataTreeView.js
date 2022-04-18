@@ -8,7 +8,8 @@ import { ImageOnSlideExp } from "../containers/ImageOnSlideExp";
 import { RawdataOnImage } from "../containers/RawdataOnImage";
 import { ProcessDataOnRd } from "../containers/ProcessDataOnRd";
 import "../components/DataTreeView.css";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Modal, Button } from "react-bootstrap";
+import { ErrorPage } from "./ErrorPage";
 
 const DataTreeView = props => {
   let { data, experimentId } = props;
@@ -25,6 +26,8 @@ const DataTreeView = props => {
   const [imageView, setImageView] = useState();
   const [rawDataView, setRawDataView] = useState();
   const [processDataView, setProcessDataView] = useState();
+  const [enableErrorView, setEnableErrorView] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
 
   return (
     <>
@@ -272,6 +275,10 @@ const DataTreeView = props => {
                       >
                         {img.rawDataList &&
                           img.rawDataList.map(rawData => {
+                            if (rawData.status === "ERROR") {
+                              debugger;
+                            }
+
                             return (
                               <Tree
                                 style={{ paddingTop: "35px", marginLeft: "70px" }}
@@ -287,7 +294,36 @@ const DataTreeView = props => {
                                                 <strong>{rawData.metadata.name}</strong>
                                               </span>
                                               <span style={{ marginLeft: "20px" }}>
-                                                <strong>Status:</strong> {rawData.status}
+                                                <strong>Status:</strong>
+
+                                                {rawData.status &&
+                                                rawData.status === "ERROR" &&
+                                                rawData.error &&
+                                                rawData.error.errors.length > 0 ? (
+                                                  <>
+                                                    {rawData.error.errors.length}{" "}
+                                                    {rawData.error.errors.length === 1 ? `Error` : `Errors`}
+                                                    &nbsp;&nbsp;
+                                                    <LineTooltip text={"View Errors in file"}>
+                                                      <FontAwesomeIcon
+                                                        key={"error" + index}
+                                                        icon={["fas", "exclamation-triangle"]}
+                                                        size="xs"
+                                                        className={"caution-color table-btn"}
+                                                        style={{
+                                                          paddingTop: "9px"
+                                                        }}
+                                                        onClick={() => {
+                                                          // alert(rawData.error);
+                                                          setErrorMessage(rawData.error);
+                                                          setEnableErrorView(true);
+                                                        }}
+                                                      />
+                                                    </LineTooltip>
+                                                  </>
+                                                ) : (
+                                                  rawData.status
+                                                )}
                                               </span>
                                             </Col>
 
@@ -518,6 +554,34 @@ const DataTreeView = props => {
           setEnableProcessRawdata={setEnableProcessRawdata}
         />
       )}
+
+      {
+        <>
+          <Modal
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            show={enableErrorView}
+            onHide={() => setEnableErrorView(false)}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title id="contained-modal-title-vcenter">Errors</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <ErrorPage
+                experimentId={experimentId}
+                errorMessage={errorMessage}
+                setEnableErrorView={setEnableErrorView}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button className="gg-btn-blue-reg" onClick={() => setEnableErrorView(false)}>
+                OK
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+      }
     </>
   );
 };

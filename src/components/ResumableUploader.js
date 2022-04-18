@@ -57,6 +57,7 @@ const ResumableUploader = props => {
             chunkSize={1 * 1024 * 1024}
             tmpDir="http://localhost:3000/tmp/"
             maxFileSize={props.maxFileSize ? props.maxFileSize : 10 * 1024 * 1024 * 1024}
+            onMaxFileSizeErrorCallback={props.maxFileSizeErrorCallback}
             fileAddedMessage="Started!"
             completedMessage="Complete!"
             service={props.uploadService}
@@ -71,6 +72,7 @@ const ResumableUploader = props => {
             disableDragAndDrop={false}
             onFileSuccess={(file, message) => {
               setFiles(file, message);
+              props.setShowErrorSummary && props.setShowErrorSummary(false);
             }}
             onFileRemoved={file => {
               // fetch()
@@ -78,6 +80,7 @@ const ResumableUploader = props => {
                 message: ""
               });
               props.setUploadedFile && props.setUploadedFile();
+              props.setShowErrorSummary && props.setShowErrorSummary(false);
               return file;
             }}
             maxFiles={maxFiles}

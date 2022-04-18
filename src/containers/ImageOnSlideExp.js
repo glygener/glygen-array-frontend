@@ -173,6 +173,11 @@ const ImageOnSlideExp = props => {
     });
   }
 
+  function maxFileSizeErrorCallback() {
+    setPageErrorMessage("Max file size of 5GB exceeded");
+    setShowErrorSummary(true);
+  }
+
   const getImageFileUploader = () => {
     return (
       <>
@@ -200,6 +205,8 @@ const ImageOnSlideExp = props => {
                   onProcessFile={fileId => {}}
                   required={data.required}
                   maxFileSize={data.maxFileSize}
+                  maxFileSizeErrorCallback={maxFileSizeErrorCallback}
+                  setShowErrorSummary={setShowErrorSummary}
                   // filetypes={["jpg", "jpeg", "png", "tiff"]}
                 />
               </Col>

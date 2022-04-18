@@ -95,7 +95,8 @@ const RawdataOnImage = props => {
       label: "Raw Data File",
       fileType: rawData.fileType,
       setUploadedFile: setUploadedRawDF,
-      required: false
+      required: false,
+      maxFileSize: 20 * 1024 * 1024
     }
   ];
 
@@ -283,6 +284,11 @@ const RawdataOnImage = props => {
     );
   };
 
+  function maxFileSizeErrorCallback() {
+    setPageErrorMessage("Max file size of 20MB exceeded");
+    setShowErrorSummary(true);
+  }
+
   const rawDataForm = () => {
     return (
       <>
@@ -371,6 +377,8 @@ const RawdataOnImage = props => {
                               onProcessFile={fileId => {}}
                               required={data.required}
                               maxFileSize={data.maxFileSize}
+                              maxFileSizeErrorCallback={maxFileSizeErrorCallback}
+                              setShowErrorSummary={setShowErrorSummary}
                               // filetypes={["jpg", "jpeg", "png", "tiff"]}
                             />
                           </Col>

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ResumableUploader } from "./ResumableUploader";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import { downloadFile } from "../utils/commonUtils";
-import { FormLabel } from "../components/FormControls";
+import { FormLabel, Feedback } from "../components/FormControls";
 import { getCommentsToolTip } from "./GlygenTable";
 import { ErrorSummary } from "./ErrorSummary";
 import CardLoader from "./CardLoader";
@@ -81,6 +81,11 @@ const FilesOnExp = props => {
       });
     }
 
+    function maxFileSizeErrorCallback() {
+      setPageErrorMessage("Max file size of 100MB exceeded");
+      setShowErrorSummary(true);
+    }
+
     return (
       <>
         {showErrorSummary === true && (
@@ -109,6 +114,8 @@ const FilesOnExp = props => {
                 onProcessFile={fileId => {}}
                 required={true}
                 maxFileSize={100 * 1024 * 1024}
+                maxFileSizeErrorCallback={maxFileSizeErrorCallback}
+                setShowErrorSummary={setShowErrorSummary}
                 // filetypes={["jpg", "jpeg", "png", "tiff"]}
               />
             </Col>

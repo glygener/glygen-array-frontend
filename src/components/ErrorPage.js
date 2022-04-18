@@ -7,7 +7,7 @@ import { OverlayTrigger, Popover, Col, Alert, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Title } from "./FormControls";
 
-const ErrorPage = () => {
+const ErrorPage = props => {
   let location = useLocation();
   let backLink = "";
   let errorMessage = "";
@@ -16,6 +16,8 @@ const ErrorPage = () => {
   if (location && location.state) {
     backLink = location.state.goBack;
     errorMessage = location.state.errorMessage;
+  } else {
+    errorMessage = props.errorMessage;
   }
 
   const getErrorsContent = () => {
@@ -31,19 +33,21 @@ const ErrorPage = () => {
             },
             {
               Header: "Error Message",
-              Cell: row => (
-                <>
-                  <Alert
-                    style={{
-                      marginLeft: "35%",
-                      width: "fit-content"
-                    }}
-                    variant={"danger"}
-                  >
-                    {row.original.defaultMessage.substring(0, row.original.defaultMessage.indexOf(":"))}
-                  </Alert>
-                </>
-              )
+              Cell: row => {
+                return (
+                  <>
+                    <Alert
+                      style={{
+                        marginLeft: "35%",
+                        width: "fit-content"
+                      }}
+                      variant={"danger"}
+                    >
+                      {row.original.defaultMessage.substring(0, row.original.defaultMessage.indexOf(":"))}
+                    </Alert>
+                  </>
+                );
+              }
             },
             {
               Header: "Comments",
@@ -57,9 +61,7 @@ const ErrorPage = () => {
                     rootClose
                     overlay={
                       <Popover>
-                        <Popover.Title as="h3" style={{ marginTop: "-70px" }}>
-                          {row.original.objectName}
-                        </Popover.Title>
+                        <Popover.Title as="h3">{row.original.objectName}</Popover.Title>
                         <Popover.Content style={{ textTransform: "uppercase", textAlign: "justify" }}>
                           {row.original.defaultMessage} &nbsp; &nbsp;
                           <br />
@@ -102,27 +104,7 @@ const ErrorPage = () => {
     );
   };
 
-  return (
-    <>
-      <div className="page-container">
-        <Title title="Errors Processdata File" />
-
-        <div style={{ paddingTop: "100px" }}>
-          <h2 className="card-subheading"> Errors - Process Data File Uploaded: </h2>
-
-          {errorMessage && getErrorsContent()}
-
-          <Row style={{ marginTop: "3%" }}>
-            <Col md={{ span: 2, offset: 5 }}>
-              <Link to={backLink} className="link-button">
-                Back
-              </Link>
-            </Col>
-          </Row>
-        </div>
-      </div>
-    </>
-  );
+  return errorMessage && getErrorsContent();
 };
 
 export { ErrorPage };

@@ -100,7 +100,8 @@ const ProcessDataOnRd = props => {
       label: "Process Data File",
       fileType: processData.fileType,
       setUploadedFile: setUploadedDF,
-      required: false
+      required: false,
+      maxFileSize: 20 * 1024 * 1024
     },
     {
       controlId: "fileUploader",
@@ -248,6 +249,11 @@ const ProcessDataOnRd = props => {
     );
   };
 
+  function maxFileSizeErrorCallback() {
+    setPageErrorMessage("Max file size of 20MB exceeded");
+    setShowErrorSummary(true);
+  }
+
   const processDataForm = () => {
     return (
       <>
@@ -310,6 +316,10 @@ const ProcessDataOnRd = props => {
                               setUploadedFile={data.setUploadedFile}
                               onProcessFile={() => {}}
                               required={data.required}
+                              maxFileSize={data.maxFileSize}
+                              maxFileSizeErrorCallback={maxFileSizeErrorCallback}
+                              setShowErrorSummary={setShowErrorSummary}
+
                               // filetypes={["jpg", "jpeg", "png", "tiff"]}
                             />
                           </Col>
