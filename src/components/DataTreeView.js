@@ -276,7 +276,6 @@ const DataTreeView = props => {
                         {img.rawDataList &&
                           img.rawDataList.map(rawData => {
                             if (rawData.status === "ERROR") {
-                              debugger;
                             }
 
                             return (

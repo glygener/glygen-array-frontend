@@ -45,7 +45,6 @@ const HistogramTable = props => {
 
   function errorWscall(response) {
     response.json().then(responseJson => {
-      // debugger;
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
       setShowErrorSummary(false);

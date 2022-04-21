@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ResumableUploader } from "./ResumableUploader";
 import { getWsUrl, wsCall } from "../utils/wsUtils";
 import { downloadFile } from "../utils/commonUtils";
-import { FormLabel, Feedback } from "../components/FormControls";
+import { FormLabel } from "../components/FormControls";
 import { getCommentsToolTip } from "./GlygenTable";
 import { ErrorSummary } from "./ErrorSummary";
 import CardLoader from "./CardLoader";

@@ -4,16 +4,17 @@ import { Row, Col, Form, Button } from "react-bootstrap";
 import { FormLabel, Feedback } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const AddGrant = props => {
   let { experimentId } = useParams();
 
-  const history = useHistory();
   const [validated, setValidate] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
+  const [listFundingOrganizations, setListFundingOrganizations] = useState();
+  const [otherFO, setOtherFO] = useState();
 
   const grantPage = {
     fundingOrganization: "",
@@ -23,11 +24,40 @@ const AddGrant = props => {
   };
   const [grant, setGrant] = useReducer((state, newState) => ({ ...state, ...newState }), grantPage);
 
+  // useEffect(() => {
+  //   if (props.authCheckAgent) {
+  //     props.authCheckAgent();
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (props.authCheckAgent) {
-      props.authCheckAgent();
-    }
-  }, []);
+    wsCall(
+      "listfundingorganizations",
+      "GET",
+      null,
+      true,
+      null,
+      response => {
+        response.json().then(responseJson => {
+          let sortedList = responseJson.sort(function(a, b) {
+            return a.localeCompare(b, undefined, {
+              numeric: true,
+              sensitivity: "base"
+            });
+          });
+          setListFundingOrganizations(sortedList);
+        });
+      },
+      listFOFail
+    );
+  }, [listFundingOrganizations, otherFO]);
+
+  function listFOFail(response) {
+    response.json().then(responseJson => {
+      setPageErrorsJson(responseJson);
+      setShowErrorSummary(true);
+    });
+  }
 
   const handleChange = e => {
     const name = e.target.name;
@@ -37,6 +67,12 @@ const AddGrant = props => {
 
   function handleSubmit(e) {
     setValidate(true);
+
+    // grant;
+
+    if (otherFO) {
+      grant.fundingOrganization = otherFO;
+    }
 
     if (e.currentTarget.checkValidity()) {
       wsCall(
@@ -79,18 +115,42 @@ const AddGrant = props => {
             <FormLabel label="Funding Organization" className="required-asterik" />
 
             <Form.Control
-              type="text"
+              as="select"
               name="fundingOrganization"
               value={grant.fundingOrganization}
               onChange={handleChange}
-            />
+            >
+              <option value="select">select</option>
+              {listFundingOrganizations &&
+                listFundingOrganizations.map(fundOrg => {
+                  return <option value={fundOrg}>{fundOrg}</option>;
+                })}
+            </Form.Control>
           </Col>
         </Form.Group>
+
+        {grant.fundingOrganization === "Other" && (
+          <>
+            <Form.Group as={Row} controlId={"fundOrg"} className="gg-align-center mt-0 pt-0">
+              <Col xs={12} lg={9}>
+                <Form.Control
+                  name="otherFO"
+                  type="text"
+                  placeholder="enter funding organization"
+                  value={otherFO}
+                  onChange={e => {
+                    setOtherFO(e.target.value);
+                  }}
+                  maxLength={50}
+                />
+              </Col>
+            </Form.Group>
+          </>
+        )}
 
         <Form.Group as={Row} controlId="grantNumber" className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label="Grant Number" />
-
             <Form.Control type="text" name="identifier" value={grant.grantNumber} onChange={handleChange} />
           </Col>
         </Form.Group>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ContextAwareToggle } from "../utils/commonUtils";
-import { Row, Col, Button, Accordion, Card, Table, Form, Modal } from "react-bootstrap";
+import { Row, Col, Button, Accordion, Card, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormLabel } from "../components/FormControls";
 import { wsCall } from "../utils/wsUtils";
@@ -11,7 +11,6 @@ import CardLoader from "./CardLoader";
 const KeywordsOnExp = props => {
   let { experimentId } = useParams();
 
-  const [listkeywords, setListKeywords] = useState();
   const [keyword, setKeyword] = useState();
   const [otherKW, setOtherKW] = useState();
   const [showLoading, setShowLoading] = useState(false);
@@ -21,68 +20,23 @@ const KeywordsOnExp = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
 
-  useEffect(() => {
-    wsCall(
-      "listkeywords",
-      "GET",
-      null,
-      true,
-      null,
-      response => {
-        response.json().then(responseJson => {
-          let sortedList = responseJson.sort(function(a, b) {
-            return a.localeCompare(b, undefined, {
-              numeric: true,
-              sensitivity: "base"
-            });
-          });
-          setListKeywords(sortedList);
-        });
-      },
-      listKeyWordsFail
-    );
-  }, [listkeywords, otherKW]);
-
-  function listKeyWordsFail(response) {
-    response.json().then(responseJson => {
-      setPageErrorsJson(responseJson);
-      setShowErrorSummary(true);
-    });
-  }
-
   const getListKeywords = () => {
     return (
       <>
         {props.keywords &&
           props.keywords.map((kw, index) => {
             return (
-              <Table hover>
-                <tbody
-                  // className="table-body"
-                  style={{ border: "none" }}
-                >
-                  <tr
-                    // className="table-row"
-                    style={{ border: "none" }}
-                    key={index + kw}
-                  >
-                    <td style={{ border: "none" }}>
-                      <div>
-                        <h5>{kw}</h5>
-                      </div>
-                    </td>
-                    <td className="text-right" style={{ border: "none" }}>
-                      <FontAwesomeIcon
-                        icon={["far", "trash-alt"]}
-                        size="lg"
-                        title="Delete"
-                        className="caution-color table-btn"
-                        onClick={() => props.delete(kw, props.deleteWsCall)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <>
+                {kw} &nbsp;&nbsp;
+                <FontAwesomeIcon
+                  icon={["far", "trash-alt"]}
+                  size="lg"
+                  title="Delete"
+                  className="caution-color"
+                  onClick={() => props.delete(kw, props.deleteWsCall)}
+                />
+                {index !== props.keywords.length - 1 && <>{","}&nbsp;</>}
+              </>
             );
           })}
       </>
@@ -104,7 +58,7 @@ const KeywordsOnExp = props => {
           centered
           show={showKWModal}
           onHide={() => {
-            setListKeywords();
+            props.setListKeywords();
             setShowKWModal(false);
           }}
         >
@@ -134,6 +88,7 @@ const KeywordsOnExp = props => {
         true,
         null,
         response => {
+          setOtherKW();
           setShowKWModal(false);
           props.getExperiment();
           setShowLoading(false);
@@ -173,8 +128,8 @@ const KeywordsOnExp = props => {
               <Form.Control as="select" name={"sortBy"} value={keyword} onChange={handleSelect} required={true}>
                 <option value="select">select</option>
 
-                {listkeywords &&
-                  listkeywords.map(kw => {
+                {props.listKeywords &&
+                  props.listKeywords.map(kw => {
                     return <option value={kw}>{kw}</option>;
                   })}
                 <option value="other">other</option>

@@ -102,10 +102,10 @@ const FORM_ERROR_MESSAGES = {
     NotFound_publicationId: "The publication ID could not be found."
   },
   grants: {
-    Duplicate_grant: "Another grant has the same grant number as this one. Use a different grant number if possible."
+    Duplicate_grant: "Another grant has the same grant number as this one. Use a different grant number."
   },
   keywords: {
-    Duplicate_keyword: "Dataset has this Keyword added already. Use a different keyword if possible."
+    Duplicate_keyword: "Dataset has this Keyword added already. Use a different keyword."
   },
   supplementaryfiles: {
     Toolarge_file: "Please keep the file size to a maximum of 1MB.",

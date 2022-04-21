@@ -79,10 +79,31 @@ const AddExperiment = props => {
         }),
       wsCallFail
     );
+
+    wsCall(
+      "listkeywords",
+      "GET",
+      null,
+      true,
+      null,
+      response => {
+        response.json().then(responseJson => {
+          let sortedList = responseJson.sort(function(a, b) {
+            return a.localeCompare(b, undefined, {
+              numeric: true,
+              sensitivity: "base"
+            });
+          });
+          setListKeywords(sortedList);
+        });
+      },
+      wsCallFail
+    );
   }
 
   // const [refreshPage, setRefreshPage] = useState(false);
   const [deleteData, setDeleteData] = useState();
+  const [listKeywords, setListKeywords] = useState();
   const history = useHistory();
   const [sampleList, setSampleList] = useState([]);
   const [validated, setValidated] = useState(false);
@@ -434,6 +455,8 @@ const AddExperiment = props => {
                       experimentId={experimentId}
                       getExperiment={getExperiment}
                       keywords={experiment.keywords}
+                      listKeywords={listKeywords}
+                      setListKeywords={setListKeywords}
                       addWsCall={"addkeyword"}
                       delete={deleteRow}
                       deleteWsCall={"deletekeyword"}

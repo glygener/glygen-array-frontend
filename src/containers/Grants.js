@@ -45,15 +45,8 @@ const Grants = props => {
           props.grants.map((grant, grantIndex) => {
             return (
               <Table hover style={{ border: "none" }}>
-                <tbody
-                  //  className="table-body"
-                  style={{ border: "none" }}
-                >
-                  <tr
-                    // className="table-row"
-                    style={{ border: "none" }}
-                    key={grantIndex}
-                  >
+                <tbody style={{ border: "none" }}>
+                  <tr style={{ border: "none" }} key={grantIndex}>
                     {grantsTable(grant, grantIndex)}
                   </tr>
                 </tbody>

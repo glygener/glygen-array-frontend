@@ -252,6 +252,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/deletefile";
     case "listkeywords":
       return ws_base_array + "/getallkeywords";
+    case "listfundingorganizations":
+      return ws_base_array + "/getallfundingorganizations";
     case "addkeyword":
       return ws_base_array + "/addKeyword";
     case "deletekeyword":

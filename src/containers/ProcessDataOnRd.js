@@ -141,7 +141,7 @@ const ProcessDataOnRd = props => {
 
   function handleSubmit(e) {
     setValidated(true);
-    debugger;
+
     uploadedDF.fileFormat = processData.supportedProcessedFF;
 
     if (e.currentTarget.checkValidity()) {
