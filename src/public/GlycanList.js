@@ -97,7 +97,7 @@ const GlycanList = (props) => {
                   {
                     Header: "Glycan ID",
                     accessor: "id",
-                    Cell: (row) => (
+                    Cell: row => (
                       <LineTooltip text="View Glycan Details">
                         <Link to={`/glycanDetail/${row.original.id}`}>{row.original.id}</Link>
                       </LineTooltip>
@@ -106,7 +106,7 @@ const GlycanList = (props) => {
                   {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
-                    Cell: (row) => (row.value ? row.value : ""),
+                    Cell: row => (row.value ? row.value : ""),
                   },
                   {
                     Header: "Structure Image",
@@ -116,18 +116,20 @@ const GlycanList = (props) => {
                     // Cell: (row) => (
                     //   <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
                     // ),
-                    Cell: (row) =>
+                    Cell: row =>
                       row.original.glycan.cartoon ? (
                         <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
                       ) : (
                         <StructureImage imgUrl={glygenNotFoundSmall}></StructureImage>
                       ),
+
+                    minWidth: 200,
                   },
                   {
                     Header: "Monoisotopic Mass (Da)",
                     accessor: "mass",
                     // // eslint-disable-next-line react/prop-types
-                    Cell: (row) => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : ""),
+                    Cell: row => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : ""),
                   },
                   {
                     Header: "Dataset Count",

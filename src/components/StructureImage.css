@@ -14,14 +14,13 @@
   z-index: -1000;
 }
 .structure-image {
-  max-width: 100%;
   width: auto;
   height: auto;
   -webkit-transform: scale(0.9);
   transform: scale(0.9);
   -webkit-transition: 0.3s ease-in-out;
   transition: 0.3s ease-in-out;
-  /* box-shadow: 10px 10px 5px #ddd; */
+  box-shadow: 10px 10px 5px #ddd;
 }
 
 .structure-image:hover,
