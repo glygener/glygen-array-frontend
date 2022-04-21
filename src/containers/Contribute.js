@@ -38,7 +38,8 @@ function StatisticsCard(props) {
 
   return (
     <Card
-      onClick={() => history.push(props.link)}
+      // onClick={() => history.push(props.link)}
+      onClick={() => window.scrollTo(0, history.push(props.link))}
       style={{
         height: "100%",
         cursor: "pointer",
@@ -84,7 +85,7 @@ function StatisticsCard(props) {
       </CardContent>
       <CardActions className="gg-align-center">
         <Button size="small" style={{ color: "var(--gg-blue)" }}>
-          Explore
+          Manage
         </Button>
       </CardActions>
     </Card>
