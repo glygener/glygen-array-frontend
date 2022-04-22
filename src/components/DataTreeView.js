@@ -33,7 +33,11 @@ const DataTreeView = props => {
     <>
       {/* Experiment */}
       <Tree
-        style={{ paddingTop: "35px" }}
+        style={{
+          paddingTop: "35px",
+          overflow: "scroll",
+          maxHeight: "580px"
+        }}
         content={
           <>
             <div style={{ marginTop: "-60px", marginLeft: "30px" }}>
