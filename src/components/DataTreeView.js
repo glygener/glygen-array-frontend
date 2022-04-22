@@ -73,6 +73,7 @@ const DataTreeView = props => {
           data.slides.map((slide, index) => {
             return (
               <Tree
+                open
                 style={{ paddingTop: "35px", marginLeft: "50px" }}
                 content={
                   <>
@@ -170,6 +171,7 @@ const DataTreeView = props => {
                   slide.images.map(img => {
                     return (
                       <Tree
+                        open
                         style={{ paddingTop: "35px", marginLeft: "60px" }}
                         content={
                           <>
@@ -280,6 +282,7 @@ const DataTreeView = props => {
 
                             return (
                               <Tree
+                                open
                                 style={{ paddingTop: "35px", marginLeft: "70px" }}
                                 content={
                                   <>
