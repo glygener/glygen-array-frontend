@@ -1,0 +1,15 @@
+{
+  "help_text": "Help",
+  "tooltip_text": "View additional information on wiki",
+  "glycan": {
+    "glycan_management": {
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Glycan#Glycan_management"
+    },
+    "add_glycan": {
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Glycan#Adding_glycans"
+    },
+    "add_multiple_glycans": {
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Glycan#Multiple_glycans"
+    }
+  }
+}

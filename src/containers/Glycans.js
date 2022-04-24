@@ -12,6 +12,9 @@ import { PageHeading } from "../components/FormControls";
 import { getToolTip } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const Glycans = props => {
   useEffect(props.authCheckAgent, []);
@@ -31,6 +34,15 @@ const Glycans = props => {
             repository. New glycans may be added, old glycans can be edited, and unused glycans can
             be removed."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.glycan.glycan_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.glycan.glycan_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
@@ -50,26 +62,26 @@ const Glycans = props => {
                     accessor: "id",
                     Cell: row => getToolTip(row.original.id),
                     style: {
-                      textAlign: "left"
-                    }
+                      textAlign: "left",
+                    },
                   },
                   {
                     Header: "Internal Id",
                     accessor: "internalId",
                     Cell: row => getToolTip(row.original.internalId),
                     style: {
-                      textAlign: "left"
-                    }
+                      textAlign: "left",
+                    },
                   },
                   {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
-                    Cell: row => getToolTip(row.original.glytoucanId)
+                    Cell: row => getToolTip(row.original.glytoucanId),
                   },
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name)
+                    Cell: row => getToolTip(row.original.name),
                   },
                   {
                     Header: "Structure Image",
@@ -77,14 +89,14 @@ const Glycans = props => {
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
                     Cell: row => <StructureImage base64={row.value}></StructureImage>,
-                    minWidth: 300
+                    minWidth: 300,
                   },
                   {
                     Header: "Mass",
                     accessor: "mass",
                     // eslint-disable-next-line react/prop-types
-                    Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
-                  }
+                    Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : ""),
+                  },
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"

@@ -990,7 +990,7 @@ const AddLinker = props => {
                   const stepProps = {};
                   const labelProps = {};
                   if (isStepSkipped(index)) {
-                    labelProps.optional = <Typography variant="caption">Unknown Linker</Typography>;
+                    labelProps.optional = <Typography variant="caption">Unknown Chemical/Linker</Typography>;
                     stepProps.completed = false;
                   }
                   return (

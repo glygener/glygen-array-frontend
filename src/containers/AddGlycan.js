@@ -22,6 +22,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 import moleculeExamples from "../appData/moleculeExamples";
 import ExampleSequenceControl from "../components/ExampleSequenceControl";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -60,7 +62,7 @@ const AddGlycan = props => {
     glytoucanId: "",
     sequence: "",
     glytoucanRegistration: true,
-    sequenceType: "GlycoCT"
+    sequenceType: "GlycoCT",
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -240,6 +242,14 @@ const AddGlycan = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title="Add Glycan to Repository" subTitle="Please provide the information for the new glycan." />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.glycan.add_glycan.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.glycan.add_glycan.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive5 text-center" activeStep={activeStep} alternativeLabel>
@@ -782,7 +792,7 @@ const AddGlycan = props => {
         name: userSelection.name,
         description: userSelection.comment,
         type: glycanType,
-        mass: userSelection.mass
+        mass: userSelection.mass,
       },
       addGlycanSuccess,
       addGlycanFailure

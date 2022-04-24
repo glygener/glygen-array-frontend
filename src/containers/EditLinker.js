@@ -134,7 +134,7 @@ const EditLinker = props => {
       case "SMALLMOLECULE":
         return "Linker";
       case "UNKNOWN_SMALLMOLECULE":
-        return "Unknown Linker";
+        return "Unknown Chemical/Linker";
       case "OTHER":
         return "Other";
 

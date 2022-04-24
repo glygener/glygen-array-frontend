@@ -13,6 +13,10 @@ import "../containers/AddMultipleGlycans.css";
 import Container from "@material-ui/core/Container";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { BlueCheckbox } from "../components/FormControls";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+
 
 const AddMultipleGlycans = props => {
   useEffect(() => {
@@ -107,6 +111,15 @@ const AddMultipleGlycans = props => {
             title={title}
             subTitle="Add glycans to your repository by uploading a file using one of the specified file formats."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.glycan.add_multiple_glycans.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.glycan.add_multiple_glycans.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               {showErrorSummary === true && (
@@ -151,7 +164,7 @@ const AddMultipleGlycans = props => {
                       history={history}
                       headerObject={{
                         Authorization: window.localStorage.getItem("token") || "",
-                        Accept: "*/*"
+                        Accept: "*/*",
                       }}
                       fileType={fileDetails.fileType}
                       uploadService={getWsUrl("upload")}
