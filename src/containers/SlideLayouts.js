@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import "./Contribute.css";
 import Helmet from "react-helmet";

@@ -226,7 +226,10 @@ export function fileDownloadSuccess(response) {
 
 export function fileExportSuccess(response, fileName) {
   response.json().then(respJson => {
-    const blob = new Blob([JSON.stringify(respJson)], { type: "application/json" });
+    const blob = new Blob(
+      [JSON.stringify(respJson)]
+      //  { type: "application/json" }
+    );
 
     let fileUrl = URL.createObjectURL(blob);
     let a = document.createElement("a");
@@ -234,7 +237,7 @@ export function fileExportSuccess(response, fileName) {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = fileUrl;
-    a.download = fileName;
+    a.download = `${fileName}.json`;
     a.click();
 
     window.URL.revokeObjectURL(fileUrl);

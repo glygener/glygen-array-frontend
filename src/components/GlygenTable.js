@@ -235,32 +235,30 @@ const GlygenTable = props => {
           {props.showDownload && (
             <>
               <LineTooltip text="Download">
-                <Link>
-                  <FontAwesomeIcon
-                    className={`table-btn download-btn ${
-                      row.original.file || (row.original.layout && row.original.layout.file) ? "" : "fa-disabled"
-                    }`}
-                    icon={["fas", "download"]}
-                    size="lg"
-                    title="Download"
-                    onClick={() => {
-                      let fileInfo =
-                        row.original && row.original.file
-                          ? row.original.file
-                          : row.original && row.original.layout && row.original.layout.file
-                          ? row.original.layout.file
-                          : "";
+                <FontAwesomeIcon
+                  className={`table-btn download-btn ${
+                    row.original.file || (row.original.layout && row.original.layout.file) ? "" : "fa-disabled"
+                  }`}
+                  icon={["fas", "download"]}
+                  size="lg"
+                  title="Download"
+                  onClick={() => {
+                    let fileInfo =
+                      row.original && row.original.file
+                        ? row.original.file
+                        : row.original && row.original.layout && row.original.layout.file
+                        ? row.original.layout.file
+                        : "";
 
-                      downloadFile(
-                        fileInfo,
-                        props.setPageErrorsJson,
-                        props.setPageErrorMessage,
-                        props.setShowErrorSummary,
-                        props.downloadApi
-                      );
-                    }}
-                  />
-                </Link>
+                    downloadFile(
+                      fileInfo,
+                      props.setPageErrorsJson,
+                      props.setPageErrorMessage,
+                      props.setShowErrorSummary,
+                      props.downloadApi
+                    );
+                  }}
+                />
               </LineTooltip>
             </>
           )}
@@ -268,27 +266,26 @@ const GlygenTable = props => {
           {props.showExport && (
             <>
               <LineTooltip text="Export">
-                <Link>
-                  <FontAwesomeIcon
-                    className={`table-btn download-btn ${
-                      (!row.original.file && !props.isPrintedSlide) ||
-                      (props.isPrintedSlide && row.original.layout && !row.original.layout.file)
-                        ? ""
-                        : "fa-disabled"
-                    }`}
-                    icon={["fas", "file-export"]}
-                    size="lg"
-                    title="Export"
-                    onClick={() =>
-                      props.handleExport(
-                        row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
-                        setPageErrorsJson,
-                        setPageErrorMessage,
-                        setShowErrorSummary
-                      )
-                    }
-                  />
-                </Link>
+                <FontAwesomeIcon
+                  className={`table-btn download-btn`}
+                  //  ${
+                  //   (!row.original.file && !props.isPrintedSlide) ||
+                  //   (props.isPrintedSlide && row.original.layout && !row.original.layout.file)
+                  //     ? ""
+                  //     : "fa-disabled"
+                  // }`}
+                  icon={["fas", "file-export"]}
+                  size="lg"
+                  title="Export"
+                  onClick={() =>
+                    props.handleExport(
+                      row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
+                      setPageErrorsJson,
+                      setPageErrorMessage,
+                      setShowErrorSummary
+                    )
+                  }
+                />
               </LineTooltip>
             </>
           )}
