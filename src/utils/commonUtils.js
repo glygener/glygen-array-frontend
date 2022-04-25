@@ -7,6 +7,7 @@ import React, { useContext } from "react";
 import { wsCall } from "../utils/wsUtils";
 import { includes } from "lodash";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Spinner } from "react-bootstrap";
 
 /**
  *
@@ -184,7 +185,15 @@ export function scrollToTopIcon() {
   );
 }
 
-export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, wscall) {
+export function downloadFile(
+  file,
+  setPageErrorsJson,
+  setPageErrorMessage,
+  setShowErrorSummary,
+  wscall,
+  setShowSpinner
+) {
+  setShowSpinner(true);
   wsCall(
     wscall,
     "GET",
@@ -195,8 +204,9 @@ export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setSh
     },
     true,
     undefined,
-    response => fileDownloadSuccess(response),
-    response => fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary),
+    response => fileDownloadSuccess(response, setShowSpinner),
+    response =>
+      fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner),
     {
       Accept: "*/*",
       "Content-Type": "application/json"
@@ -204,7 +214,7 @@ export function downloadFile(file, setPageErrorsJson, setPageErrorMessage, setSh
   );
 }
 
-export function fileDownloadSuccess(response) {
+export function fileDownloadSuccess(response, setShowSpinner) {
   response.headers.forEach(console.log);
 
   const contentDisposition = response.headers.get("content-disposition");
@@ -220,6 +230,8 @@ export function fileDownloadSuccess(response) {
     a.href = fileUrl;
     a.download = fileName;
     a.click();
+
+    setShowSpinner(false);
     window.URL.revokeObjectURL(fileUrl);
   });
 }
@@ -244,23 +256,40 @@ export function fileExportSuccess(response, fileName) {
   });
 }
 
-export function fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary) {
+export function fileDownloadFailure(
+  response,
+  setPageErrorsJson,
+  setPageErrorMessage,
+  setShowErrorSummary,
+  setShowSpinner
+) {
   response.json().then(responseJson => {
     setPageErrorsJson(responseJson);
     setPageErrorMessage("");
     setShowErrorSummary(true);
+    setShowSpinner(false);
   });
 }
 
-export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary) {
+export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner) {
+  setShowSpinner(true);
   wsCall(
     "exportslidelayout",
     "GET",
     { slidelayoutid: row.id, filename: "" },
     true,
     null,
-    response => fileDownloadSuccess(response),
-    response => fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary)
+    response => fileDownloadSuccess(response, setShowSpinner),
+    response =>
+      fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+  );
+}
+
+export function downloadSpinner() {
+  return (
+    <>
+      <Spinner animation="border" role="status" style={{ marginLeft: "100%" }} />
+    </>
   );
 }
 

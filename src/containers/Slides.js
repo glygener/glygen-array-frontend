@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import "./Contribute.css";
 import Helmet from "react-helmet";
@@ -10,10 +10,11 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
-import { exportFile } from "../utils/commonUtils";
+import { exportFile, downloadSpinner } from "../utils/commonUtils";
 
 const Slides = props => {
   useEffect(props.authCheckAgent, []);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   return (
     <>
@@ -54,6 +55,9 @@ const Slides = props => {
                 isPrintedSlide
                 downloadApi="filedownload"
                 handleExport={exportFile}
+                setShowSpinner={setShowSpinner}
+                downloadTitle={"Download user GAL file"}
+                exportTitle={"Export user GAL file"}
                 commentsRefColumn="description"
                 fetchWS="slidelist"
                 deleteWS="slidedelete"
@@ -65,6 +69,7 @@ const Slides = props => {
             </Card.Body>
           </Card>
         </div>
+        {showSpinner && downloadSpinner()}
       </Container>
     </>
   );

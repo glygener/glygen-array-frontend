@@ -234,9 +234,9 @@ const GlygenTable = props => {
 
           {props.showDownload && (
             <>
-              <LineTooltip text="Download">
+              <LineTooltip text={props.downloadTitle ? props.downloadTitle : "Download"}>
                 <FontAwesomeIcon
-                  className={`table-btn download-btn ${
+                  className={`gg-blue tbl-icon-btn download-btn ${
                     row.original.file || (row.original.layout && row.original.layout.file) ? "" : "fa-disabled"
                   }`}
                   icon={["fas", "download"]}
@@ -255,7 +255,8 @@ const GlygenTable = props => {
                       props.setPageErrorsJson,
                       props.setPageErrorMessage,
                       props.setShowErrorSummary,
-                      props.downloadApi
+                      props.downloadApi,
+                      props.setShowSpinner
                     );
                   }}
                 />
@@ -265,15 +266,9 @@ const GlygenTable = props => {
 
           {props.showExport && (
             <>
-              <LineTooltip text="Export">
+              <LineTooltip text={props.exportTitle ? props.exportTitle : "Export"}>
                 <FontAwesomeIcon
-                  className={`table-btn download-btn`}
-                  //  ${
-                  //   (!row.original.file && !props.isPrintedSlide) ||
-                  //   (props.isPrintedSlide && row.original.layout && !row.original.layout.file)
-                  //     ? ""
-                  //     : "fa-disabled"
-                  // }`}
+                  className={"gg-blue tbl-icon-btn"}
                   icon={["fas", "file-export"]}
                   size="lg"
                   title="Export"
@@ -282,7 +277,8 @@ const GlygenTable = props => {
                       row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
                       setPageErrorsJson,
                       setPageErrorMessage,
-                      setShowErrorSummary
+                      setShowErrorSummary,
+                      props.setShowSpinner
                     )
                   }
                 />
@@ -601,7 +597,6 @@ const GlygenTable = props => {
         tableElement.fireFetchData();
       } else {
         setCustomOffset(false);
-
         if (responseJson.rows) {
           setData(responseJson.rows);
           setRows(responseJson.total);
