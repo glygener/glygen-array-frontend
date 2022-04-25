@@ -235,31 +235,32 @@ const GlygenTable = props => {
           {props.showDownload && (
             <>
               <LineTooltip text={props.downloadTitle ? props.downloadTitle : "Download"}>
-                <FontAwesomeIcon
-                  className={`gg-blue tbl-icon-btn download-btn ${
-                    row.original.file || (row.original.layout && row.original.layout.file) ? "" : "fa-disabled"
-                  }`}
-                  icon={["fas", "download"]}
-                  size="lg"
-                  title="Download"
-                  onClick={() => {
-                    let fileInfo =
-                      row.original && row.original.file
-                        ? row.original.file
-                        : row.original && row.original.layout && row.original.layout.file
-                        ? row.original.layout.file
-                        : "";
+                <span>
+                  <FontAwesomeIcon
+                    className={`gg-blue tbl-icon-btn download-btn ${
+                      row.original.file || (row.original.layout && row.original.layout.file) ? "" : "fa-disabled"
+                    }`}
+                    icon={["fas", "download"]}
+                    size="lg"
+                    onClick={() => {
+                      let fileInfo =
+                        row.original && row.original.file
+                          ? row.original.file
+                          : row.original && row.original.layout && row.original.layout.file
+                          ? row.original.layout.file
+                          : "";
 
-                    downloadFile(
-                      fileInfo,
-                      props.setPageErrorsJson,
-                      props.setPageErrorMessage,
-                      props.setShowErrorSummary,
-                      props.downloadApi,
-                      props.setShowSpinner
-                    );
-                  }}
-                />
+                      downloadFile(
+                        fileInfo,
+                        props.setPageErrorsJson,
+                        props.setPageErrorMessage,
+                        props.setShowErrorSummary,
+                        props.downloadApi,
+                        props.setShowSpinner
+                      );
+                    }}
+                  />
+                </span>
               </LineTooltip>
             </>
           )}
@@ -267,21 +268,22 @@ const GlygenTable = props => {
           {props.showExport && (
             <>
               <LineTooltip text={props.exportTitle ? props.exportTitle : "Export"}>
-                <FontAwesomeIcon
-                  className={"gg-blue tbl-icon-btn"}
-                  icon={["fas", "file-export"]}
-                  size="lg"
-                  title="Export"
-                  onClick={() =>
-                    props.handleExport(
-                      row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
-                      setPageErrorsJson,
-                      setPageErrorMessage,
-                      setShowErrorSummary,
-                      props.setShowSpinner
-                    )
-                  }
-                />
+                <span>
+                  <FontAwesomeIcon
+                    className={"gg-blue tbl-icon-btn"}
+                    icon={["fas", "file-export"]}
+                    size="lg"
+                    onClick={() =>
+                      props.handleExport(
+                        row.original.file || !props.isPrintedSlide ? row.original : row.original.layout,
+                        setPageErrorsJson,
+                        setPageErrorMessage,
+                        setShowErrorSummary,
+                        props.setShowSpinner
+                      )
+                    }
+                  />
+                </span>
               </LineTooltip>
             </>
           )}
