@@ -263,7 +263,7 @@ const AddFeature = props => {
       "Select the Feature Type",
       "Select Molecule From the Table Below",
       `Add Generic Information (${moleculeType})`,
-      "Review and Add Molecule to Repository",
+      "Review and Add Molecule to Repository"
     ];
 
     switch (featureAddState.type) {
@@ -1108,34 +1108,36 @@ const AddFeature = props => {
         glycanObj = positionDetails.glycan;
       }
 
-      let glycans = {};
-      glycans.type = "LINKEDGLYCAN";
-      let reducingEndConfiguration = {};
+      if (glycanObj) {
+        let glycans = {};
+        glycans.type = "LINKEDGLYCAN";
+        let reducingEndConfiguration = {};
 
-      glycans.glycan = glycanObj;
-      glycans.urls = glycanObj.urls;
+        glycans.glycan = glycanObj;
+        glycans.urls = glycanObj.urls;
 
-      glycans.publications = glycanObj.papers;
+        glycans.publications = glycanObj.papers;
 
-      reducingEndConfiguration.type = glycanObj.opensRing;
-      reducingEndConfiguration.comment = glycanObj.opensRing === 4 ? glycanObj.equilibriumComment : "";
-      glycans.reducingEndConfiguration = reducingEndConfiguration;
+        reducingEndConfiguration.type = glycanObj.opensRing;
+        reducingEndConfiguration.comment = glycanObj.opensRing === 4 ? glycanObj.equilibriumComment : "";
+        glycans.reducingEndConfiguration = reducingEndConfiguration;
 
-      glycans.source = glycanObj.source;
+        glycans.source = glycanObj.source;
 
-      if (featureAddState.rangeGlycans.length > 0) {
-        range = {
-          min: glycanObj.min,
-          max: glycanObj.max
-        };
+        if (featureAddState.rangeGlycans.length > 0) {
+          range = {
+            min: glycanObj.min,
+            max: glycanObj.max
+          };
+        }
+
+        glycansList.push({
+          glycans: [glycans],
+          linker: positionDetails.linker,
+          range: range,
+          type: "LINKEDGLYCAN"
+        });
       }
-
-      glycansList.push({
-        glycans: [glycans],
-        linker: glycanObj.linker,
-        range: range,
-        type: "LINKEDGLYCAN"
-      });
     });
 
     featureObj = {
@@ -1156,7 +1158,7 @@ const AddFeature = props => {
 
       metadata: metadataToSubmit()
     };
-    
+
     return featureObj;
   }
 
