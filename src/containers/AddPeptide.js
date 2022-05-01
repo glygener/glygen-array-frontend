@@ -30,6 +30,8 @@ import { Link } from "react-router-dom";
 import ExampleExploreControl from "../components/ExampleExploreControl";
 import moleculeExamples from "../appData/moleculeExamples";
 import { Table } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddPeptide = props => {
   useEffect(props.authCheckAgent, []);
@@ -222,6 +224,48 @@ const AddPeptide = props => {
         return "Review and Add Peptide to Repository";
       default:
         return "Unknown stepIndex";
+    }
+  }
+
+  function getStepHelpTitle(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.peptide.add_peptide_type.title}`;
+      case 1:
+        return `${getMoleculeType(peptide.selectedPeptide)}`;
+      case 2:
+        return `${getMoleculeType(peptide.selectedPeptide)} (${
+          wikiHelpTooltip.peptide.add_peptide_type.generic_info.title
+        })`;
+      case 3:
+        return `${wikiHelpTooltip.peptide.common_information.title}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getStepHelpURL(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.peptide.add_peptide_type.url}`;
+      case 1:
+        return `${getMoleculeTypeURL(peptide.selectedPeptide)}`;
+      case 2:
+        return `${getMoleculeTypeURL(peptide.selectedPeptide)}`;
+      // return `${wikiHelpTooltip.peptide.add_peptide_type.generic_info.url}`;
+      case 3:
+        return `${wikiHelpTooltip.peptide.common_information.url}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getMoleculeTypeURL(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${wikiHelpTooltip.peptide.add_peptide_type.sequence_defined.url}`;
+      case "Unknown":
+        return `${wikiHelpTooltip.peptide.add_peptide_type.unknown.url}`;
+      default:
+        return "Unknown typeIndex";
     }
   }
 
@@ -766,6 +810,15 @@ const AddPeptide = props => {
             title="Add Peptide to Repository"
             subTitle="Please provide the information for the new peptide."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={getStepHelpTitle(activeStep)}
+              text={wikiHelpTooltip.tooltip_text}
+              url={getStepHelpURL(activeStep)}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>

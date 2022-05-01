@@ -11,6 +11,9 @@ import { getToolTip } from "../utils/commonUtils";
 import { PageHeading } from "../components/FormControls";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const Peptides = props => {
   useEffect(() => {
@@ -32,6 +35,15 @@ const Peptides = props => {
             title="Your Peptides"
             subTitle="The table below displays a list of all peptides that have been uploaded to your repository. New peptides may be added, old peptides can be edited, and unused peptides can be removed."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.peptide.peptide_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.peptide.peptide_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
