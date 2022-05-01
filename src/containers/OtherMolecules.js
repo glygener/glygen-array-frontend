@@ -11,6 +11,9 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const OtherMolecules = props => {
   useEffect(props.authCheckAgent, []);
@@ -27,6 +30,15 @@ const OtherMolecules = props => {
             title="Other Molecules"
             subTitle="The table below displays a list of all lipids that have been uploaded to your repository. New lipids may be added, old lipids can be edited, and unused lipids can be removed."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.other_molecules.other_molecules_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.other_molecules.other_molecules_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
@@ -40,8 +52,8 @@ const OtherMolecules = props => {
                       to={{
                         pathname: "/otherMolecules/uploadMolecules",
                         state: {
-                          type: "OTHER"
-                        }
+                          type: "OTHER",
+                        },
                       }}
                     >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Other Molecules</Button>
@@ -55,8 +67,8 @@ const OtherMolecules = props => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name)
-                  }
+                    Cell: row => getToolTip(row.original.name),
+                  },
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"

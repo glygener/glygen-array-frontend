@@ -25,6 +25,9 @@ import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
 import { Table } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddOtherMolecule = props => {
   useEffect(props.authCheckAgent, []);
@@ -472,6 +475,15 @@ const AddOtherMolecule = props => {
             title="Add Other Molecule to Repository"
             subTitle="Please provide the information for other molecule."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.other_molecules.generic_info.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.other_molecules.generic_info.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               {showErrorSummary === true && (

@@ -146,5 +146,18 @@
     "add_multiple_linkers": {
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Chemical#Multiple_chemicals"
     }
+  },
+  "other_molecules": {
+    "other_molecules_management": {
+      "title": "Other Molecules Management",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Other_Molecules#Other_molecules_management"
+    },
+    "generic_info": {
+      "title": "Other Molecules",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Other_Molecules#Generic_information"
+    },
+    "add_multiple_other_molecules": {
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Other_Molecules#other_molecules"
+    }
   }
 }
