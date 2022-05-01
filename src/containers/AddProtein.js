@@ -30,6 +30,8 @@ import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
 import { Table } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddProtein = props => {
   useEffect(props.authCheckAgent, []);
@@ -233,6 +235,48 @@ const AddProtein = props => {
         return "Review and Add Protein to Repository";
       default:
         return "Unknown stepIndex";
+    }
+  }
+
+  function getStepHelpTitle(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.protein.add_protein_type.title}`;
+      case 1:
+        return `${getMoleculeType(protein.selectedProtein)}`;
+      case 2:
+        return `${getMoleculeType(protein.selectedProtein)} (${
+          wikiHelpTooltip.protein.add_protein_type.generic_info.title
+        })`;
+      case 3:
+        return `${wikiHelpTooltip.protein.common_information.title}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getStepHelpURL(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.protein.add_protein_type.url}`;
+      case 1:
+        return `${getMoleculeTypeURL(protein.selectedProtein)}`;
+      case 2:
+        return `${getMoleculeTypeURL(protein.selectedProtein)}`;
+      // return `${wikiHelpTooltip.peptide.add_peptide_type.generic_info.url}`;
+      case 3:
+        return `${wikiHelpTooltip.protein.common_information.url}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getMoleculeTypeURL(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${wikiHelpTooltip.protein.add_protein_type.sequence_defined.url}`;
+      case "Unknown":
+        return `${wikiHelpTooltip.protein.add_protein_type.unknown.url}`;
+      default:
+        return "Unknown typeIndex";
     }
   }
 
@@ -834,6 +878,15 @@ const AddProtein = props => {
             title="Add Protein to Repository"
             subTitle="Please provide the information for the new protein."
           />
+         <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={getStepHelpTitle(activeStep)}
+              text={wikiHelpTooltip.tooltip_text}
+              url={getStepHelpURL(activeStep)}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>

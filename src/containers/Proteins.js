@@ -11,6 +11,9 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const Proteins = props => {
   useEffect(() => {
@@ -31,6 +34,15 @@ const Proteins = props => {
             title="Your Proteins"
             subTitle="The table below displays a list of all proteins that have been uploaded to your repository. New proteins may be added, old proteins can be edited, and unused proteins can be removed."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.protein.protein_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.protein.protein_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
