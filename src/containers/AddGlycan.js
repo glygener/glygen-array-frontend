@@ -245,10 +245,7 @@ const AddGlycan = props => {
           <Typography className="text-right" gutterBottom>
             <HelpToolTip
               title={getStepHelpTitle(activeStep)}
-              // title={getGlycanType(userSelection.selectedGlycan)}
-              // title={wikiHelpTooltip.glycan.add_glycan_type.title}
               text={wikiHelpTooltip.tooltip_text}
-              // url={wikiHelpTooltip.glycan.add_glycan_type.url}
               url={getStepHelpURL(activeStep)}
             />
             {wikiHelpTooltip.help_text}
@@ -333,14 +330,14 @@ const AddGlycan = props => {
       case 0:
         return `${wikiHelpTooltip.glycan.add_glycan_type.url}`;
       case 1:
-        return `${getGlycanTypeURL(userSelection.selectedGlycan)}`;
+        return `${getMoleculeTypeURL(userSelection.selectedGlycan)}`;
       case 2:
         return `${wikiHelpTooltip.glycan.common_information.url}`;
       default:
         return "Unknown stepIndex";
     }
   }
-  function getGlycanTypeURL(typeIndex) {
+  function getMoleculeTypeURL(typeIndex) {
     switch (typeIndex) {
       case "SequenceDefined":
         return `${wikiHelpTooltip.glycan.add_glycan_type.sequence_defined.url}`;
