@@ -13,6 +13,9 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const Lipids = props => {
   useEffect(() => {
@@ -33,6 +36,15 @@ const Lipids = props => {
             title="Your Lipids"
             subTitle="The table below displays a list of all lipids that have been uploaded to your repository. New lipids may be added, old lipids can be edited, and unused lipids can be removed."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.lipid.lipid_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.lipid.lipid_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
@@ -45,8 +57,8 @@ const Lipids = props => {
                       to={{
                         pathname: "/lipids/uploadMolecules",
                         state: {
-                          type: "LIPID"
-                        }
+                          type: "LIPID",
+                        },
                       }}
                     >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Lipids</Button>
@@ -60,13 +72,13 @@ const Lipids = props => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name)
+                    Cell: row => getToolTip(row.original.name),
                     // minWidth: 50,
                   },
                   {
                     Header: "PubChem ID",
                     accessor: "pubChemId",
-                    Cell: row => getToolTip(row.original.pubChemId)
+                    Cell: row => getToolTip(row.original.pubChemId),
                     // minWidth: 70,
                   },
                   {
@@ -75,8 +87,8 @@ const Lipids = props => {
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
                     Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
-                    minWidth: 150
-                  }
+                    minWidth: 150,
+                  },
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"

@@ -27,6 +27,8 @@ import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
 import { Table } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddLipid = props => {
   useEffect(props.authCheckAgent, []);
@@ -248,6 +250,47 @@ const AddLipid = props => {
         return "Unknown stepIndex";
     }
   }
+
+  function getStepHelpTitle(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.lipid.add_lipid_type.title}`;
+      case 1:
+        return `${getMoleculeType(lipid.selectedLipid)}`;
+      case 2:
+        return `${getMoleculeType(lipid.selectedLipid)} (${wikiHelpTooltip.lipid.add_lipid_type.generic_info.title})`;
+      case 3:
+        return `${wikiHelpTooltip.lipid.common_information.title}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getStepHelpURL(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.lipid.add_lipid_type.url}`;
+      case 1:
+        return `${getMoleculeTypeURL(lipid.selectedLipid)}`;
+      case 2:
+        return `${getMoleculeTypeURL(lipid.selectedLipid)}`;
+      // return `${wikiHelpTooltip.peptide.add_peptide_type.generic_info.url}`;
+      case 3:
+        return `${wikiHelpTooltip.lipid.common_information.url}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getMoleculeTypeURL(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${wikiHelpTooltip.lipid.add_lipid_type.sequence_defined.url}`;
+      case "Unknown":
+        return `${wikiHelpTooltip.lipid.add_lipid_type.unknown.url}`;
+      default:
+        return "Unknown typeIndex";
+    }
+  }
+
   function populateLinkerDetails(pubChemId) {
     setShowLoading(true);
     setIsWscalldone(false);
@@ -975,6 +1018,16 @@ const AddLipid = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title="Add Lipid to Repository" subTitle="Please provide the information for the new lipid." />
+
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={getStepHelpTitle(activeStep)}
+              text={wikiHelpTooltip.tooltip_text}
+              url={getStepHelpURL(activeStep)}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
