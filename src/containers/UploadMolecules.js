@@ -10,6 +10,9 @@ import "../containers/AddMultiSlideLayout.css";
 import "../containers/AddMultipleGlycans.css";
 import { getPath } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const UploadMolecules = props => {
   useEffect(() => {
@@ -29,7 +32,7 @@ const UploadMolecules = props => {
 
   const fileDetails = {
     fileType: defaultFileType,
-    glytoucanRegistration: false
+    glytoucanRegistration: false,
   };
 
   const [uploadDetails, setUploadDetails] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
@@ -50,7 +53,7 @@ const UploadMolecules = props => {
       "POST",
       {
         filetype: encodeURIComponent(defaultFileType),
-        type: encodeURIComponent(props.moleculeUploadType)
+        type: encodeURIComponent(props.moleculeUploadType),
         // uploadDetails.fileType
       },
       true,
@@ -58,7 +61,7 @@ const UploadMolecules = props => {
         identifier: uploadedFile.identifier,
         originalName: uploadedFile.originalName,
         fileFolder: uploadedFile.fileFolder,
-        fileFormat: uploadedFile.fileFormat
+        fileFormat: uploadedFile.fileFormat,
       },
       moleculeUploadSucess,
       moleculeUploadError
@@ -76,8 +79,8 @@ const UploadMolecules = props => {
         pathname: `/${getPath(props.moleculeUploadType)}/uploadMoleculeDetails`,
         state: {
           uploadResponse: resp,
-          type: props.moleculeUploadType
-        }
+          type: props.moleculeUploadType,
+        },
       });
     });
   }
@@ -93,6 +96,23 @@ const UploadMolecules = props => {
     });
   }
 
+  function getMoleculeTypeURL(typeIndex) {
+    switch (typeIndex) {
+      case "PEPTIDE":
+        return `${wikiHelpTooltip.peptide.add_multiple_peptides.url}`;
+      case "PROTEIN":
+        return `${wikiHelpTooltip.protein.add_multiple_proteins.url}`;
+      case "LIPID":
+        return `${wikiHelpTooltip.lipid.add_multiple_lipids.url}`;
+      case "LINKER":
+        return `${wikiHelpTooltip.linker.add_multiple_linkers.url}`;
+      case "OTHER":
+        return `${wikiHelpTooltip.other.add_multiple_others.url}`;
+      default:
+        return "Unknown typeIndex";
+    }
+  }
+
   return (
     <>
       <Container maxWidth="xl">
@@ -101,6 +121,16 @@ const UploadMolecules = props => {
             title={title}
             subTitle="Add molecules to your repository by uploading a file using one of the specified file formats."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={title}
+              text={wikiHelpTooltip.tooltip_text}
+              // url={getMoleculeTypeURL}
+              url={wikiHelpTooltip.peptide.add_multiple_peptides.url}
+            />
+            {/* <Link to={`/${getPath(props.moleculeUploadType)}`}></Link> */}
+            {wikiHelpTooltip.help_text}
+          </Typography>
           <Card>
             <Card.Body>
               {showErrorSummary === true && (
@@ -139,7 +169,7 @@ const UploadMolecules = props => {
                       history={history}
                       headerObject={{
                         Authorization: window.localStorage.getItem("token") || "",
-                        Accept: "*/*"
+                        Accept: "*/*",
                       }}
                       fileType={fileDetails.fileType}
                       uploadService={getWsUrl("upload")}
