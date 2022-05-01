@@ -244,9 +244,12 @@ const AddGlycan = props => {
           <PageHeading title="Add Glycan to Repository" subTitle="Please provide the information for the new glycan." />
           <Typography className="text-right" gutterBottom>
             <HelpToolTip
-              title={wikiHelpTooltip.glycan.add_glycan.title}
+              title={getStepHelpTitle(activeStep)}
+              // title={getGlycanType(userSelection.selectedGlycan)}
+              // title={wikiHelpTooltip.glycan.add_glycan_type.title}
               text={wikiHelpTooltip.tooltip_text}
-              url={wikiHelpTooltip.glycan.add_glycan.url}
+              // url={wikiHelpTooltip.glycan.add_glycan_type.url}
+              url={getStepHelpURL(activeStep)}
             />
             {wikiHelpTooltip.help_text}
           </Typography>
@@ -311,6 +314,50 @@ const AddGlycan = props => {
         return "Review and Add Glycan to Repository";
       default:
         return "Unknown stepIndex";
+    }
+  }
+  function getStepHelpTitle(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.glycan.add_glycan_type.title}`;
+      case 1:
+        return `${getGlycanType(userSelection.selectedGlycan)} ${wikiHelpTooltip.glycan.add_glycan_type.title}`;
+      case 2:
+        return `${wikiHelpTooltip.glycan.common_information.title}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getStepHelpURL(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.glycan.add_glycan_type.url}`;
+      case 1:
+        return `${getGlycanTypeURL(userSelection.selectedGlycan)}`;
+      case 2:
+        return `${wikiHelpTooltip.glycan.common_information.url}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getGlycanTypeURL(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${wikiHelpTooltip.glycan.add_glycan_type.sequence_defined.url}`;
+      case "MassDefined":
+        return `${wikiHelpTooltip.glycan.add_glycan_type.mass_defined.url}`;
+      case "CompositionBased":
+        return `${wikiHelpTooltip.glycan.add_glycan_type.composition_based.url}`;
+      case "ClassificationBased":
+        return `${wikiHelpTooltip.glycan.add_glycan_type.classification_based.url}`;
+      case "FragmentOnly":
+        return `${wikiHelpTooltip.glycan.add_glycan_type.fragment_only.url}`;
+      case "Unknown":
+        return `${wikiHelpTooltip.glycan.add_glycan_type.unknown.url}`;
+      case "Other":
+        return `${wikiHelpTooltip.glycan.add_glycan_type.other.url}`;
+      default:
+        return "Unknown typeIndex";
     }
   }
 
