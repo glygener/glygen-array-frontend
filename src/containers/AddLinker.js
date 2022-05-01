@@ -27,6 +27,8 @@ import { BlueRadio } from "../components/FormControls";
 import { Image } from "react-bootstrap";
 import plusIcon from "../images/icons/plus.svg";
 import { Table } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -247,6 +249,48 @@ const AddLinker = props => {
         return "Review and Add Chemical/Linker to Repository";
       default:
         return "Unknown stepIndex";
+    }
+  }
+
+  function getStepHelpTitle(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.linker.add_linker_type.title}`;
+      case 1:
+        return `${getMoleculeType(linker.selectedLinker)}`;
+      case 2:
+        return `${getMoleculeType(linker.selectedLinker)} (${
+          wikiHelpTooltip.linker.add_linker_type.generic_info.title
+        })`;
+      case 3:
+        return `${wikiHelpTooltip.linker.common_information.title}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getStepHelpURL(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return `${wikiHelpTooltip.linker.add_linker_type.url}`;
+      case 1:
+        return `${getMoleculeTypeURL(linker.selectedLinker)}`;
+      case 2:
+        return `${getMoleculeTypeURL(linker.selectedLinker)}`;
+      // return `${wikiHelpTooltip.peptide.add_peptide_type.generic_info.url}`;
+      case 3:
+        return `${wikiHelpTooltip.linker.common_information.url}`;
+      default:
+        return "Unknown stepIndex";
+    }
+  }
+  function getMoleculeTypeURL(typeIndex) {
+    switch (typeIndex) {
+      case "SequenceDefined":
+        return `${wikiHelpTooltip.linker.add_linker_type.sequence_defined.url}`;
+      case "Unknown":
+        return `${wikiHelpTooltip.linker.add_linker_type.unknown.url}`;
+      default:
+        return "Unknown typeIndex";
     }
   }
 
@@ -983,6 +1027,15 @@ const AddLinker = props => {
             title="Add Chemical/Linker to Repository"
             subTitle="Please provide the information for the new chemical/linker."
           />
+        <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={getStepHelpTitle(activeStep)}
+              text={wikiHelpTooltip.tooltip_text}
+              url={getStepHelpURL(activeStep)}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
