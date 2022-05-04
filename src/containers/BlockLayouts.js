@@ -10,6 +10,9 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const BlockLayouts = props => {
   useEffect(props.authCheckAgent, []);
@@ -26,6 +29,16 @@ const BlockLayouts = props => {
             title="Your Block Layouts"
             subTitle="The table below displays a list of all block layouts that have been uploaded to your repository. New block layouts may be added, old block layouts can be edited, and unused block layouts can be removed."
           />
+
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.block_layout.block_layout_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.block_layout.block_layout_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
@@ -38,16 +51,16 @@ const BlockLayouts = props => {
                 columns={[
                   {
                     Header: "Name",
-                    accessor: "name"
+                    accessor: "name",
                   },
                   {
                     Header: "Rows",
-                    accessor: "height"
+                    accessor: "height",
                   },
                   {
                     Header: "Columns",
-                    accessor: "width"
-                  }
+                    accessor: "width",
+                  },
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="name"

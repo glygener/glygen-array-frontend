@@ -20,6 +20,8 @@ import MetadataKeyPairs from "../public/MetadataKeyPairs";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddBlockLayout = props => {
   let { blockLayoutId } = useParams();
