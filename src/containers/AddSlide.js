@@ -12,6 +12,9 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Link } from "react-router-dom";
 import { Loading } from "../components/Loading";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddSlide = props => {
   let { slideId } = useParams();
@@ -231,6 +234,15 @@ const AddSlide = props => {
         <Container maxWidth="xl">
           <div className="page-container">
             <PageHeading title={title} subTitle={subTitle} />
+
+            <Typography className="text-right" gutterBottom>
+              <HelpToolTip
+                title={wikiHelpTooltip.slide.generic_information.title}
+                text={wikiHelpTooltip.tooltip_text}
+                url={wikiHelpTooltip.slide.generic_information.url}
+              />
+              {wikiHelpTooltip.help_text}
+            </Typography>
             <Card>
               <Card.Body>
                 {showErrorSummary === true && (
@@ -317,7 +329,9 @@ const AddSlide = props => {
                   })}
                   <div className="text-center mb-2">
                     <Link to="/slides">
-                      <Button className={`${slideId ? "gg-btn-outline mt-2 gg-mr-20" : "gg-btn-outline mt-2 gg-mr-20"}`}>
+                      <Button
+                        className={`${slideId ? "gg-btn-outline mt-2 gg-mr-20" : "gg-btn-outline mt-2 gg-mr-20"}`}
+                      >
                         {slideId ? "Cancel" : "Back to Slides"}
                       </Button>
                     </Link>

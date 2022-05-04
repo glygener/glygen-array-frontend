@@ -261,5 +261,15 @@
       "title": "Add Multiple Slide Layouts",
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Slide_Layout#Multiple_slide_layouts"
     }
+  },
+  "slide": {
+    "slide_management": {
+      "title": "Slide Management",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Slide#Slide_management"
+    },
+    "generic_information": {
+      "title": "Generic Information",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Slide#Generic_information"
+    }
   }
 }
