@@ -18,6 +18,9 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { BlueRadio } from "../components/FormControls";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const MAX_ERROR_LIMIT = 10;
 
@@ -495,6 +498,15 @@ const AddMultiSlideLayout = props => {
             title="Add Slide Layouts From File to Repository"
             subTitle="Please provide the information for the new slide layout and upload a GAL/XML file wih Slide Layouts."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.slide_layout.add_multiple_slide_layouts.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.slide_layout.add_multiple_slide_layouts.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               {getGalErrorDisplay()}
@@ -636,7 +648,7 @@ const AddMultiSlideLayout = props => {
                           history={history}
                           headerObject={{
                             Authorization: window.localStorage.getItem("token") || "",
-                            Accept: "*/*"
+                            Accept: "*/*",
                           }}
                           fileType={fileDetails.fileType}
                           uploadService={getWsUrl("upload")}

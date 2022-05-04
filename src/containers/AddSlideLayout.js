@@ -17,6 +17,9 @@ import "../containers/AddSlideLayout.css";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const AddSlideLayout = props => {
   let { slideLayoutId } = useParams();
@@ -328,7 +331,7 @@ const AddSlideLayout = props => {
           Cancel
         </Button>
         <Button disabled={!enableUpdateButton} type="submit" className="gg-btn-blue mt-2 gg-ml-20">
-        Submit
+          Submit
         </Button>
       </div>
     );
@@ -344,6 +347,15 @@ const AddSlideLayout = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title={title} subTitle={subTitle} />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.slide_layout.generic_information.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.slide_layout.generic_information.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               {showErrorSummary === true && (

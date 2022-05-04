@@ -11,6 +11,9 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 import { exportFile, downloadSpinner } from "../utils/commonUtils";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const SlideLayouts = props => {
   useEffect(props.authCheckAgent, []);
@@ -29,6 +32,15 @@ const SlideLayouts = props => {
             title="Your Slide Layouts"
             subTitle="The table below displays a list of all slide layouts that have been uploaded to your repository. New slide layouts may be added, old slide layouts can be edited, and unused slide layouts can be removed."
           />
+           <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.slide_layout.slide_layout_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.slide_layout.slide_layout_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
