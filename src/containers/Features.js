@@ -12,6 +12,9 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import { Typography } from "@material-ui/core";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);
@@ -28,6 +31,15 @@ const Features = props => {
             title="Your Features"
             subTitle="The table below displays a list of all features that have been uploaded to your repository. New features may be added, old features can be edited, and unused features can be removed."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={wikiHelpTooltip.feature.feature_management.title}
+              text={wikiHelpTooltip.tooltip_text}
+              url={wikiHelpTooltip.feature.feature_management.url}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
+
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
@@ -41,8 +53,8 @@ const Features = props => {
                       to={{
                         pathname: "/features/uploadFeatures",
                         state: {
-                          type: "FEATURE"
-                        }
+                          type: "FEATURE",
+                        },
                       }}
                     >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Features</Button>
@@ -57,17 +69,17 @@ const Features = props => {
                     Header: "Name",
                     accessor: "name",
                     // eslint-disable-next-line react/display-name
-                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.name ? row.name : row.id)}</div>
+                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.name ? row.name : row.id)}</div>,
                   },
                   {
                     Header: "Feature ID",
                     accessor: "internalId",
-                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.internalId)}</div>
+                    Cell: ({ row }, index) => <div key={index}>{getToolTip(row.internalId)}</div>,
                   },
                   {
                     Header: "Type",
                     accessor: "type",
-                    Cell: row => getToolTip(displayNames.feature[row.value])
+                    Cell: row => getToolTip(displayNames.feature[row.value]),
                   },
                   {
                     Header: "Linker",
@@ -80,7 +92,7 @@ const Features = props => {
                         </Link>
                       ) : (
                         ""
-                      )
+                      ),
                   },
                   {
                     Header: "Linker Type",
@@ -97,7 +109,7 @@ const Features = props => {
                       ) : (
                         ""
                       );
-                    }
+                    },
                   },
                   {
                     Header: "Glycans",
@@ -118,8 +130,8 @@ const Features = props => {
                             )
                           : ""}
                       </div>
-                    )
-                  }
+                    ),
+                  },
                 ]}
                 defaultPageSize={10}
                 showDeleteButton

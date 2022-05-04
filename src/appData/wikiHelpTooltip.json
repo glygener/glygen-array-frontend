@@ -159,5 +159,47 @@
     "add_multiple_other_molecules": {
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Other_Molecules#other_molecules"
     }
+  },
+  "feature": {
+    "feature_management": {
+      "title": "Feature Management",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Feature_management"
+    },
+    "add_feature_type": {
+      "title": "Feature Type",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Feature_type",
+      "linked_glycan": {
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Linked_glycan"
+      },
+      "glyco_lipid": {
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repositoryFeaturen#GlycoLipid"
+      },
+      "glyco_peptide": {
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#GlycoPeptide"
+      },
+      "glyco_protein": {
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#GlycoProtein"
+      },
+      "glyco_protein_linked_glyco_peptide": {
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#GlycoProtein_linked_GlycoPeptide"
+      },
+      "control": {
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Control"
+      },
+      "landing_light": {
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Landing_light"
+      }
+    },
+    "generic_information": {
+      "title": "Common Information",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Generic_information"
+    },
+    "common_information": {
+      "title": "Common Information",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Common_information"
+    },
+    "add_multiple_features": {
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Multiple_features"
+    }
   }
 }
