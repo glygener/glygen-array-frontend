@@ -96,23 +96,6 @@ const UploadMolecules = props => {
     });
   }
 
-  function getMoleculeTypeURL(typeIndex) {
-    switch (typeIndex) {
-      case "PEPTIDE":
-        return `${wikiHelpTooltip.peptide.add_multiple_peptides.url}`;
-      case "PROTEIN":
-        return `${wikiHelpTooltip.protein.add_multiple_proteins.url}`;
-      case "LIPID":
-        return `${wikiHelpTooltip.lipid.add_multiple_lipids.url}`;
-      case "LINKER":
-        return `${wikiHelpTooltip.linker.add_multiple_linkers.url}`;
-      case "OTHER":
-        return `${wikiHelpTooltip.other.add_multiple_others.url}`;
-      default:
-        return "Unknown typeIndex";
-    }
-  }
-
   return (
     <>
       <Container maxWidth="xl">
@@ -122,13 +105,7 @@ const UploadMolecules = props => {
             subTitle="Add molecules to your repository by uploading a file using one of the specified file formats."
           />
           <Typography className="text-right" gutterBottom>
-            <HelpToolTip
-              title={title}
-              text={wikiHelpTooltip.tooltip_text}
-              // url={getMoleculeTypeURL}
-              url={wikiHelpTooltip.peptide.add_multiple_peptides.url}
-            />
-            {/* <Link to={`/${getPath(props.moleculeUploadType)}`}></Link> */}
+            <HelpToolTip title={title} text={wikiHelpTooltip.tooltip_text} url={props.wikiUrl} />
             {wikiHelpTooltip.help_text}
           </Typography>
           <Card>
