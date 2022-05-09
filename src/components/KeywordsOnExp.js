@@ -28,13 +28,15 @@ const KeywordsOnExp = props => {
             return (
               <>
                 {kw} &nbsp;&nbsp;
-                <FontAwesomeIcon
-                  icon={["far", "trash-alt"]}
-                  size="lg"
-                  title="Delete"
-                  className="caution-color"
-                  onClick={() => props.delete(kw, props.deleteWsCall)}
-                />
+                {!props.isPublic && (
+                  <FontAwesomeIcon
+                    icon={["far", "trash-alt"]}
+                    size="lg"
+                    title="Delete"
+                    className="caution-color"
+                    onClick={() => props.delete(kw, props.deleteWsCall)}
+                  />
+                )}
                 {index !== props.keywords.length - 1 && <>{","}&nbsp;</>}
               </>
             );
@@ -187,39 +189,47 @@ const KeywordsOnExp = props => {
 
   return (
     <>
-      <Accordion defaultActiveKey={0} className="mb-4">
-        <Card>
-          <Card.Header>
-            <Row>
-              <Col className="font-awesome-color">
-                <span className="descriptor-header">Keywords</span>
-              </Col>
+      {!props.isPublic ? (
+        <Accordion defaultActiveKey={0} className="mb-4">
+          <Card>
+            <Card.Header>
+              <Row>
+                <Col className="font-awesome-color">
+                  <span className="descriptor-header">Keywords</span>
+                </Col>
 
-              <Col style={{ textAlign: "right" }}>
-                <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
-              </Col>
-            </Row>
-          </Card.Header>
-          <Accordion.Collapse eventKey={0}>
-            <Card.Body>
-              <div className="text-center mt-2 mb-4">
-                <Button
-                  className="gg-btn-blue"
-                  onClick={() => {
-                    setKeyword();
-                    setShowErrorSummary(false);
-                    setShowKWModal(true);
-                  }}
-                >
-                  Add Keyword
-                </Button>
-              </div>
-              {getListKeywords()}
-              {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
-            </Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      </Accordion>
+                <Col style={{ textAlign: "right" }}>
+                  <ContextAwareToggle eventKey={0} classname={"font-awesome-color"} />
+                </Col>
+              </Row>
+            </Card.Header>
+            <Accordion.Collapse eventKey={0}>
+              <Card.Body>
+                {!props.isPublic && (
+                  <div className="text-center mt-2 mb-4">
+                    <Button
+                      className="gg-btn-blue"
+                      onClick={() => {
+                        setKeyword();
+                        setShowErrorSummary(false);
+                        setShowKWModal(true);
+                      }}
+                    >
+                      Add Keyword
+                    </Button>
+                  </div>
+                )}
+
+                {getListKeywords()}
+
+                {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        </Accordion>
+      ) : (
+        getListKeywords()
+      )}
 
       {showKWModal && getKeywordsModal()}
     </>

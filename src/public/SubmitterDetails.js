@@ -46,26 +46,43 @@ const SubmitterDetails = props => {
         errorMessage={pageErrorMessage}
       />
       <CardLoader pageLoading={showloading} />
+
+      {/* Username
+    Name (First name, Last name) + Have a website icon that links to the user website
+
+Group name (if provided)
+
+Department (if provided)
+
+Organization/Institution */}
+
       {submitterinfo ? (
         <>
           <div style={{ textAlign: "left", marginLeft: "15px" }}>
+            <span className={"dataset-subheadings"}>Username</span>
+            <div>{submitterinfo.username}</div>
+            <br />
+
             <span className={"dataset-subheadings"}>Name</span>
             <div
               style={{
                 textTransform: "uppercase"
               }}
             >
-              {submitterinfo.firstName}&nbsp;{submitterinfo.lastName}
+              {`${submitterinfo.firstName}, ${submitterinfo.lastName}`}
             </div>
             <br />
-            <span className={"dataset-subheadings"}>Email</span>
-            <div>{submitterinfo.email}</div>
+
+            <span className={"dataset-subheadings"}>Group name</span>
+            <div>{submitterinfo.groupName}</div>
             <br />
+
+            <span className={"dataset-subheadings"}>Department</span>
+            <div>{submitterinfo.department}</div>
+            <br />
+
             <span className={"dataset-subheadings"}>Institution</span>
             <div>{submitterinfo.affiliation}</div>
-            <br />
-            <span className={"dataset-subheadings"}>User Type</span>
-            <div>{submitterinfo.userType}</div>
             <br />
           </div>
         </>

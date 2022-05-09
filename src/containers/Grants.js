@@ -47,7 +47,7 @@ const Grants = props => {
               <Table hover style={{ border: "none" }}>
                 <tbody style={{ border: "none" }}>
                   <tr style={{ border: "none" }} key={grantIndex}>
-                    {grantsTable(grant, grantIndex)}
+                    {props.isPublic ? grantsPublicTable(grant, grantIndex) : grantsTable(grant, grantIndex)}
                   </tr>
                 </tbody>
               </Table>
@@ -76,6 +76,7 @@ const Grants = props => {
             </Row>
           </div>
         </td>
+
         <td className="text-right" style={{ border: "none" }}>
           <FontAwesomeIcon
             icon={["far", "trash-alt"]}
@@ -89,20 +90,49 @@ const Grants = props => {
     );
   };
 
+  const grantsPublicTable = (grant, grantIndex) => {
+    return (
+      <>
+        <div style={{ border: "none" }}>
+          <h5>{grant.fundingOrganization}</h5>
+        </div>
+
+        <div>
+          <Row>
+            <Col md={3}>
+              <a href={grant.url} target={"_blank"}>
+                <strong>{grant.title}</strong>
+              </a>
+            </Col>
+          </Row>
+        </div>
+
+        <div>
+          <Row>
+            <Col>{grant.identifier}</Col>
+          </Row>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
-      <div className="text-center mt-2 mb-4">
-        <Button
-          className="gg-btn-blue"
-          onClick={() => {
-            setShowModal(true);
-          }}
-        >
-          Add Grant
-        </Button>
-      </div>
-
-      {showModal && getGrantModal()}
+      {!props.isPublic && (
+        <>
+          <div className="text-center mt-2 mb-4">
+            <Button
+              className="gg-btn-blue"
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              Add Grant
+            </Button>
+          </div>
+          {showModal && getGrantModal()}
+        </>
+      )}
 
       {getGrantTable()}
 

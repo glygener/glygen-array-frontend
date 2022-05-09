@@ -382,6 +382,10 @@ export function getWsUrl(ws) {
       return ws_base_public_search + "/listDatasetsForSearch";
     case "exportslidelayout":
       return ws_base_array + "/downloadSlideLayout";
+    case "checkbatchupload":
+      return ws_base_array + "/checkbatchupload";
+    case "updatebatchupload":
+      return ws_base_array + "/updatebatchupload";
 
     default:
       return ws_base_user;

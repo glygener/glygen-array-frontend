@@ -8,6 +8,7 @@ import { wsCall } from "../utils/wsUtils";
 import { includes } from "lodash";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { Spinner } from "react-bootstrap";
+import { DeviceLocationDisabled } from "material-ui/svg-icons";
 
 /**
  *
@@ -452,4 +453,31 @@ export function getPath(type) {
     default:
       return "linkers";
   }
+}
+
+export function batchupload(wscall, methodType, uploadtype, moleculetype) {
+  debugger;
+
+  wsCall(
+    wscall,
+    methodType,
+    { uploadtype: uploadtype, moleculetype: moleculetype },
+    true,
+    null,
+    response => {
+      // response.headers
+      // response.text().then(resp => {
+      //   debugger;
+      // });
+
+      response.json().then(resp => {
+        debugger;
+      });
+    },
+    response => {
+      response.json.then(resp => {
+        debugger;
+      });
+    }
+  );
 }

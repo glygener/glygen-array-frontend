@@ -13,6 +13,11 @@ import SubmitterDetails from "./SubmitterDetails";
 import PublicMetadata from "./PublicMetadata";
 import MetadataKeyPairs from "../public/MetadataKeyPairs";
 import { Title } from "../components/FormControls";
+import { DataTreeView, DataView } from "../components/DataTreeView";
+import { FilesOnExp } from "../components/FilesOnExp";
+import { KeywordsOnExp } from "../components/KeywordsOnExp";
+import { GrantsOnExp } from "../components/GrantsOnExp";
+import { PubOnExp } from "../components/PubOnExp";
 
 // const Files = React.lazy(() => import("./Files"));
 // const SubmitterDetails = React.lazy(() => import("./SubmitterDetails"));
@@ -30,6 +35,7 @@ const PublicDataset = () => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const [selectedTreeData, setSelectedTreeData] = useState(false);
   // const [pageLoading, setPageLoading] = useState(true);
   // let count = 0;
 
@@ -42,6 +48,7 @@ const PublicDataset = () => {
       null,
       response =>
         response.json().then(responseJson => {
+          debugger;
           setDataset(responseJson);
         }),
       errorWscall
@@ -85,6 +92,11 @@ const PublicDataset = () => {
           <span className={"dataset-subheadings"}>Release Date</span>
           <br />
           {dataset.dateAddedToLibrary && <div>{getDateCreated(dataset.dateAddedToLibrary)}</div>}
+
+          <br />
+          <span className={"dataset-subheadings"}>Keywords</span>
+          <KeywordsOnExp keywords={dataset.keywords} isPublic={true} />
+
           <br />
         </div>
       </>
@@ -148,6 +160,12 @@ const PublicDataset = () => {
                     <MetadataKeyPairs metadataId={dataset.sample.id} wsCall={"getpublicsample"} />
                   ) : null}
                 </Card>
+                <br />
+                <Card>
+                  <Title title={"Grants"} />
+                  {/* Grants */}
+                  <GrantsOnExp grants={dataset.grants} isPublic={true} />
+                </Card>
               </Col>
             </Row>
             &nbsp;
@@ -162,7 +180,32 @@ const PublicDataset = () => {
                     setPageErrorMessage={setPageErrorMessage}
                     setShowErrorSummary={setShowErrorSummary}
                   /> */}
+                  <Row>
+                    <div
+                      style={{
+                        width: "70%"
+                      }}
+                    >
+                      <DataTreeView
+                        data={dataset}
+                        experimentId={dataset.id}
+                        isPublic={true}
+                        setSelectedTreeData={setSelectedTreeData}
+                      />
+                    </div>
+                    <div>{selectedTreeData && <DataView data={selectedTreeData} />}</div>
+                  </Row>
                 </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={8}>
+                <FilesOnExp files={dataset.files} isPublic={true} />
+              </Col>
+            </Row>
+            <Row>
+              <Col md={8}>
+                <PubOnExp publications={dataset.publications} isPublic={true} />
               </Col>
             </Row>
             <br />

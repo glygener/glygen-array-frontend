@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import displayNames from "../appData/displayNames";
-import { getToolTip } from "../utils/commonUtils";
+import { getToolTip, batchupload } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
@@ -16,12 +16,17 @@ import { Button } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import property from "../appData/properties";
 
 const Linkers = props => {
+  let linkerProperty = property["linker"];
+
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
     }
+
+    batchupload("checkbatchupload", "GET", linkerProperty.batch_linker, linkerProperty.moleculeType.linker);
   }, []);
 
   return (
@@ -59,8 +64,8 @@ const Linkers = props => {
                       to={{
                         pathname: "/linkers/uploadMolecules",
                         state: {
-                          type: "SMALLMOLECULE",
-                        },
+                          type: "SMALLMOLECULE"
+                        }
                       }}
                     >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Linkers</Button>
@@ -74,13 +79,13 @@ const Linkers = props => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name),
+                    Cell: row => getToolTip(row.original.name)
                     // minWidth: 50,
                   },
                   {
                     Header: displayNames.linker.PUBCHEM_ID,
                     accessor: "pubChemId",
-                    Cell: row => getToolTip(row.original.pubChemId),
+                    Cell: row => getToolTip(row.original.pubChemId)
                     // minWidth: 70,
                   },
                   {
@@ -88,8 +93,8 @@ const Linkers = props => {
                     accessor: "imageURL",
                     // eslint-disable-next-line react/prop-types
                     Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
-                    minWidth: 150,
-                  },
+                    minWidth: 150
+                  }
                 ]}
                 defaultPageSize={10}
                 showCommentsButton

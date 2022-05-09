@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import "./Contribute.css";
 import Helmet from "react-helmet";
@@ -9,15 +9,21 @@ import { Button } from "react-bootstrap";
 import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import { PageHeading } from "../components/FormControls";
-import { getToolTip } from "../utils/commonUtils";
+import { getToolTip, batchupload } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import property from "../appData/properties";
 
 const Glycans = props => {
   useEffect(props.authCheckAgent, []);
+  useEffect(() => {
+    batchupload("checkbatchupload", "GET", property["glycan"].batch_glycan);
+  }, []);
+
+  const [errorsFromBatchUpload, setErrorsFromBatchUpload] = useState();
 
   return (
     <>
@@ -62,26 +68,26 @@ const Glycans = props => {
                     accessor: "id",
                     Cell: row => getToolTip(row.original.id),
                     style: {
-                      textAlign: "left",
-                    },
+                      textAlign: "left"
+                    }
                   },
                   {
                     Header: "Internal Id",
                     accessor: "internalId",
                     Cell: row => getToolTip(row.original.internalId),
                     style: {
-                      textAlign: "left",
-                    },
+                      textAlign: "left"
+                    }
                   },
                   {
                     Header: "GlyTouCan ID",
                     accessor: "glytoucanId",
-                    Cell: row => getToolTip(row.original.glytoucanId),
+                    Cell: row => getToolTip(row.original.glytoucanId)
                   },
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name),
+                    Cell: row => getToolTip(row.original.name)
                   },
                   {
                     Header: "Structure Image",
@@ -89,14 +95,14 @@ const Glycans = props => {
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
                     Cell: row => <StructureImage base64={row.value}></StructureImage>,
-                    minWidth: 300,
+                    minWidth: 300
                   },
                   {
                     Header: "Mass",
                     accessor: "mass",
                     // eslint-disable-next-line react/prop-types
-                    Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : ""),
-                  },
+                    Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
+                  }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"

@@ -1,0 +1,14 @@
+{
+  "glycan": { "batch_glycan": "batch_glycan_job" },
+  "linker": {
+    "batch_linker": "batch_linker_job",
+    "moleculeType": {
+      "linker": "SMALLMOLECULE",
+      "lipid": "LIPID",
+      "peptide": "PEPTIDE",
+      "protein": "PROTEIN",
+      "other": "OTHER"
+    }
+  },
+  "feature": { "batch_feature": "batch_feature_job" }
+}

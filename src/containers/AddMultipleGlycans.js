@@ -17,7 +17,6 @@ import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
-
 const AddMultipleGlycans = props => {
   useEffect(() => {
     props.authCheckAgent();
@@ -81,19 +80,18 @@ const AddMultipleGlycans = props => {
     response.json().then(resp => {
       setShowErrorSummary(false);
       setShowLoading(false);
+      history.push("/glycans");
 
-      history.push({
-        pathname: "/glycans/addMultipleGlycanDetails",
-        state: { uploadResponse: resp }
-      });
+      // history.push({
+      //   pathname: "/glycans/addMultipleGlycanDetails",
+      //   state: { uploadResponse: resp }
+      // });
     });
   }
   function glycanUploadError(response) {
     response.json().then(resp => {
-      setTitle("Glycan File Upload Details");
-      resp.error
-        ? setPageErrorMessage("The file is invalid. Please verify the file and format selection before re-uploading.")
-        : setPageErrorsJson(resp);
+      // setPageErrorMessage("The file is invalid. Please verify the file and format selection before re-uploading.");
+      setPageErrorsJson(resp);
       setShowErrorSummary(true);
       setShowLoading(false);
     });
@@ -164,7 +162,7 @@ const AddMultipleGlycans = props => {
                       history={history}
                       headerObject={{
                         Authorization: window.localStorage.getItem("token") || "",
-                        Accept: "*/*",
+                        Accept: "*/*"
                       }}
                       fileType={fileDetails.fileType}
                       uploadService={getWsUrl("upload")}

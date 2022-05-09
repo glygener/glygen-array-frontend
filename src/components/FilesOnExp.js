@@ -235,55 +235,59 @@ const FilesOnExp = props => {
                 );
               }
             },
-            {
-              Header: "Actions",
-              Cell: (row, index) => {
-                return (
-                  <>
-                    <div style={{ textAlign: "center" }}>
-                      <LineTooltip text="Delete File">
-                        <span>
-                          <FontAwesomeIcon
-                            key={"delete" + index}
-                            icon={["far", "trash-alt"]}
-                            size="lg"
-                            title="Delete"
-                            className="caution-color table-btn"
-                            onClick={() => props.delete(row.original.identifier, props.deleteWsCall)}
-                          />
-                        </span>
-                      </LineTooltip>
+            ...(!props.isPublic
+              ? [
+                  {
+                    Header: "Actions",
+                    Cell: (row, index) => {
+                      return (
+                        <>
+                          <div style={{ textAlign: "center" }}>
+                            <LineTooltip text="Delete File">
+                              <span>
+                                <FontAwesomeIcon
+                                  key={"delete" + index}
+                                  icon={["far", "trash-alt"]}
+                                  size="lg"
+                                  title="Delete"
+                                  className="caution-color table-btn"
+                                  onClick={() => props.delete(row.original.identifier, props.deleteWsCall)}
+                                />
+                              </span>
+                            </LineTooltip>
 
-                      {row.original && row.original.originalName && (
-                        <LineTooltip text="Download Metadata">
-                          <span>
-                            <FontAwesomeIcon
-                              className="tbl-icon-btn download-btn"
-                              icon={["fas", "download"]}
-                              size="lg"
-                              onClick={() => {
-                                downloadFile(
-                                  {
-                                    fileFolder: row.original.fileFolder,
-                                    originalName: row.original.originalName,
-                                    identifier: row.original.identifier
-                                  },
-                                  props.setPageErrorsJson,
-                                  props.setPageErrorMessage,
-                                  props.setShowErrorSummary,
-                                  "filedownload"
-                                );
-                              }}
-                            />
-                          </span>
-                        </LineTooltip>
-                      )}
-                    </div>
-                  </>
-                );
-              },
-              minWidth: 60
-            }
+                            {row.original && row.original.originalName && (
+                              <LineTooltip text="Download Metadata">
+                                <span>
+                                  <FontAwesomeIcon
+                                    className="tbl-icon-btn download-btn"
+                                    icon={["fas", "download"]}
+                                    size="lg"
+                                    onClick={() => {
+                                      downloadFile(
+                                        {
+                                          fileFolder: row.original.fileFolder,
+                                          originalName: row.original.originalName,
+                                          identifier: row.original.identifier
+                                        },
+                                        props.setPageErrorsJson,
+                                        props.setPageErrorMessage,
+                                        props.setShowErrorSummary,
+                                        "filedownload"
+                                      );
+                                    }}
+                                  />
+                                </span>
+                              </LineTooltip>
+                            )}
+                          </div>
+                        </>
+                      );
+                    },
+                    minWidth: 60
+                  }
+                ]
+              : [])
           ]}
           className={"-striped -highlight MyReactTableClass"}
           defaultPageSize={5}
@@ -318,18 +322,22 @@ const FilesOnExp = props => {
           </Card.Header>
           <Accordion.Collapse eventKey={0}>
             <Card.Body>
-              <div className="text-center mt-2 mb-4">
-                <Button
-                  className="gg-btn-blue"
-                  onClick={() => {
-                    setFile(fileDetails);
-                    setShowFileModal(true);
-                  }}
-                >
-                  Add File
-                </Button>
-              </div>
+              {!props.isPublic && (
+                <div className="text-center mt-2 mb-4">
+                  <Button
+                    className="gg-btn-blue"
+                    onClick={() => {
+                      setFile(fileDetails);
+                      setShowFileModal(true);
+                    }}
+                  >
+                    Add File
+                  </Button>
+                </div>
+              )}
+
               {fileTableOnExp()}
+
               {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
             </Card.Body>
           </Accordion.Collapse>
