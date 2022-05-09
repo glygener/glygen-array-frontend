@@ -169,29 +169,64 @@
       "title": "Feature Type",
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Feature_type",
       "linked_glycan": {
+        "title": "Linked Glycan",
         "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Linked_glycan"
       },
       "glyco_lipid": {
-        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repositoryFeaturen#GlycoLipid"
+        "title": "Glycolipid",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repositoryFeaturen#Glycolipid"
       },
       "glyco_peptide": {
-        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#GlycoPeptide"
+        "title": "Glycopeptide",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Glycopeptide"
       },
       "glyco_protein": {
-        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#GlycoProtein"
+        "title": "Glycoprotein",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Glycoprotein"
       },
       "glyco_protein_linked_glyco_peptide": {
-        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#GlycoProtein_linked_GlycoPeptide"
+        "title": "Glycoprotein Linked Glycopeptide",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Glycoprotein_linked_Glycopeptide"
       },
       "control": {
+        "title": "Control",
         "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Control"
       },
       "landing_light": {
+        "title": "Landing Light",
         "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Landing_light"
       }
     },
+    "molecule_selection": {
+      "title": "Molecule Selection",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Molecule_selection",
+      "select_linker": {
+        "title": "Select Linker",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Select_linker"
+      },
+      "select_lipid": {
+        "title": "Select Lipid",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Select_lipid"
+      },
+      "select_peptide": {
+        "title": "Select Peptide",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Select_peptide"
+      },
+      "select_protein": {
+        "title": "Select Protein",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Select_protein"
+      },
+      "select_glycan": {
+        "title": "Select Glycan",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Select_glycan"
+      },
+      "select_molecule": {
+        "title": "Select Molecule",
+        "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Select_molecule"
+      }
+    },
     "generic_information": {
-      "title": "Common Information",
+      "title": "Generic Information",
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Feature#Generic_information"
     },
     "common_information": {

@@ -35,6 +35,8 @@ import { PageHeading } from "../components/FormControls";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip.json";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -46,12 +48,12 @@ const AddFeature = props => {
     GLYCO_PROTEIN: "GlycoProtein",
     GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE: "GlycoProtein linked GlycoPeptide",
     CONTROL: "Control",
-    LANDING_LIGHT: "Landing Light"
+    LANDING_LIGHT: "Landing Light",
   };
 
   const glycoLipidOptionsPage1 = {
     YES: "Yes",
-    NO: "No"
+    NO: "No",
   };
 
   const controlAndLandingOptions = {
@@ -60,12 +62,12 @@ const AddFeature = props => {
     PROTEIN: "Protein",
     LIPID: "Lipid",
     Linker: "Linker",
-    OTHER: "Other"
+    OTHER: "Other",
   };
 
   const negativeControlOptions = {
     ...controlAndLandingOptions,
-    NEGATIVE_CONTROL: "Negative Control"
+    NEGATIVE_CONTROL: "Negative Control",
   };
 
   const featureAddInitState = {
@@ -83,8 +85,8 @@ const AddFeature = props => {
     controlSubType: "Peptide",
     positionDetails: {
       isPosition: false,
-      number: ""
-    }
+      number: "",
+    },
   };
 
   const history = useHistory();
@@ -122,7 +124,7 @@ const AddFeature = props => {
 
   const [featureAddState, setFeatureAddState] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
     ...featureAddInitState,
-    ...{ type: "LINKED_GLYCAN" }
+    ...{ type: "LINKED_GLYCAN" },
   });
 
   const [onlyMyglycans, setOnlyMyglycans] = useState(false);
@@ -130,44 +132,253 @@ const AddFeature = props => {
   var [rowSelected, setRowSelected] = useState([]);
   var [currentGlycanSelection, setCurrentGlycanSelection] = useState();
 
-  const generalSteps = ["Feature Type", "Select Linker", "Select Glycan", "Generic Information", "Review and Add"];
+  const generalSteps = [
+    {
+      stepTitle: "Feature Type",
+      helpSection: {
+        title: wikiHelpTooltip.feature.add_feature_type.title,
+        url: wikiHelpTooltip.feature.add_feature_type.url,
+      },
+    },
+    {
+      stepTitle: "Select Linker",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_linker.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_linker.url,
+      },
+    },
+    {
+      stepTitle: "Select Glycan",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_glycan.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_glycan.url,
+      },
+    },
+    {
+      stepTitle: "Generic Information",
+      helpSection: {
+        title: wikiHelpTooltip.feature.generic_information.title,
+        url: wikiHelpTooltip.feature.generic_information.url,
+      },
+    },
+    {
+      stepTitle: "Review and Add",
+      helpSection: {
+        title: wikiHelpTooltip.feature.common_information.title,
+        url: wikiHelpTooltip.feature.common_information.url,
+      },
+    },
+  ];
 
-  const controlAndLandingSteps = ["Feature Type", "Select Molecule", "Generic Information", "Review and Add"];
+  const controlAndLandingSteps = [
+    {
+      stepTitle: "Feature Type",
+      helpSection: {
+        title: wikiHelpTooltip.feature.add_feature_type.title,
+        url: wikiHelpTooltip.feature.add_feature_type.url,
+      },
+    },
+    {
+      stepTitle: "Select Molecule",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_molecule.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_molecule.url,
+      },
+    },
+    {
+      stepTitle: "Generic Information",
+      helpSection: {
+        title: wikiHelpTooltip.feature.generic_information.title,
+        url: wikiHelpTooltip.feature.generic_information.url,
+      },
+    },
+    {
+      stepTitle: "Review and Add",
+      helpSection: {
+        title: wikiHelpTooltip.feature.common_information.title,
+        url: wikiHelpTooltip.feature.common_information.url,
+      },
+    },
+  ];
 
   const glycoLipidSteps = [
-    "Select Feature Type",
-    "Select Linker",
-    "Select Lipid",
-    "Select Glycan",
-    "Generic Information",
-    "Review and Add"
+    {
+      stepTitle: "Feature Type",
+      helpSection: {
+        title: wikiHelpTooltip.feature.add_feature_type.title,
+        url: wikiHelpTooltip.feature.add_feature_type.url,
+      },
+    },
+    {
+      stepTitle: "Select Linker",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_linker.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_linker.url,
+      },
+    },
+    {
+      stepTitle: "Select Lipid",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_lipid.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_lipid.url,
+      },
+    },
+    {
+      stepTitle: "Select Glycan",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_glycan.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_glycan.url,
+      },
+    },
+    {
+      stepTitle: "Generic Information",
+      helpSection: {
+        title: wikiHelpTooltip.feature.generic_information.title,
+        url: wikiHelpTooltip.feature.generic_information.url,
+      },
+    },
+    {
+      stepTitle: "Review and Add",
+      helpSection: {
+        title: wikiHelpTooltip.feature.common_information.title,
+        url: wikiHelpTooltip.feature.common_information.url,
+      },
+    },
   ];
 
   const glycoPeptideSteps = [
-    "Feature Type",
-    "Select Linker",
-    "Select Peptide",
-    "Select Glycan",
-    "Generic Information",
-    "Review and Add"
+    {
+      stepTitle: "Feature Type",
+      helpSection: {
+        title: wikiHelpTooltip.feature.add_feature_type.title,
+        url: wikiHelpTooltip.feature.add_feature_type.url,
+      },
+    },
+    {
+      stepTitle: "Select Linker",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_linker.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_linker.url,
+      },
+    },
+    {
+      stepTitle: "Select Peptide",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_peptide.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_peptide.url,
+      },
+    },
+    {
+      stepTitle: "Select Glycan",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_glycan.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_glycan.url,
+      },
+    },
+    {
+      stepTitle: "Generic Information",
+      helpSection: {
+        title: wikiHelpTooltip.feature.generic_information.title,
+        url: wikiHelpTooltip.feature.generic_information.url,
+      },
+    },
+    {
+      stepTitle: "Review and Add",
+      helpSection: {
+        title: wikiHelpTooltip.feature.common_information.title,
+        url: wikiHelpTooltip.feature.common_information.url,
+      },
+    },
   ];
 
   const glycoProteinSteps = [
-    "Feature Type",
-    "Select Linker",
-    "Select Protein",
-    "Select Glycan",
-    "Generic Information",
-    "Review and Add"
+    {
+      stepTitle: "Feature Type",
+      helpSection: {
+        title: wikiHelpTooltip.feature.add_feature_type.title,
+        url: wikiHelpTooltip.feature.add_feature_type.url,
+      },
+    },
+    {
+      stepTitle: "Select Linker",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_linker.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_linker.url,
+      },
+    },
+    {
+      stepTitle: "Select Protein",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_protein.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_protein.url,
+      },
+    },
+    {
+      stepTitle: "Select Glycan",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_glycan.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_glycan.url,
+      },
+    },
+    {
+      stepTitle: "Generic Information",
+      helpSection: {
+        title: wikiHelpTooltip.feature.generic_information.title,
+        url: wikiHelpTooltip.feature.generic_information.url,
+      },
+    },
+    {
+      stepTitle: "Review and Add",
+      helpSection: {
+        title: wikiHelpTooltip.feature.common_information.title,
+        url: wikiHelpTooltip.feature.common_information.url,
+      },
+    },
   ];
 
   const glycoProteinLinkedGlycoPeptideSteps = [
-    "Feature Type",
-    "Select Linker",
-    "Select Protein",
-    "Select Glycan",
-    "Generic Information",
-    "Review and Add"
+    {
+      stepTitle: "Feature Type",
+      helpSection: {
+        title: wikiHelpTooltip.feature.add_feature_type.title,
+        url: wikiHelpTooltip.feature.add_feature_type.url,
+      },
+    },
+    {
+      stepTitle: "Select Linker",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_linker.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_linker.url,
+      },
+    },
+    {
+      stepTitle: "Select Protein",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_protein.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_protein.url,
+      },
+    },
+    {
+      stepTitle: "Select Glycan",
+      helpSection: {
+        title: wikiHelpTooltip.feature.molecule_selection.select_glycan.title,
+        url: wikiHelpTooltip.feature.molecule_selection.select_glycan.url,
+      },
+    },
+    {
+      stepTitle: "Generic Information",
+      helpSection: {
+        title: wikiHelpTooltip.feature.generic_information.title,
+        url: wikiHelpTooltip.feature.generic_information.url,
+      },
+    },
+    {
+      stepTitle: "Review and Add",
+      helpSection: {
+        title: wikiHelpTooltip.feature.common_information.title,
+        url: wikiHelpTooltip.feature.common_information.url,
+      },
+    },
   ];
 
   function getSteps(type) {
@@ -220,7 +431,7 @@ const AddFeature = props => {
       `Select Linker From the Table Below (${moleculeType})`,
       `Select Glycan From the Table Below (${moleculeType})`,
       `Add Generic Information (${moleculeType})`,
-      "Review and Add Molecule to Repository"
+      "Review and Add Molecule to Repository",
     ];
 
     const glycoLipidStepLabels = [
@@ -229,7 +440,7 @@ const AddFeature = props => {
       `Select Lipid From the Table Below (${moleculeType})`,
       `Select Glycan From the Table Below (${moleculeType})`,
       `Add Generic Information (${moleculeType})`,
-      "Review and Add Molecule to Repository"
+      "Review and Add Molecule to Repository",
     ];
 
     const glycoPeptideStepLabels = [
@@ -238,7 +449,7 @@ const AddFeature = props => {
       `Select Peptide From the Table Below (${moleculeType})`,
       `Select Glycan From the Table Below (${moleculeType})`,
       `Add Generic Information (${moleculeType})`,
-      "Review and Add Molecule to Repository"
+      "Review and Add Molecule to Repository",
     ];
 
     const glycoProteinStepLabels = [
@@ -247,7 +458,7 @@ const AddFeature = props => {
       `Select Protein From the Table Below (${moleculeType})`,
       `Select Glycan From the Table Below (${moleculeType})`,
       `Add Generic Information (${moleculeType})`,
-      "Review and Add Molecule to Repository"
+      "Review and Add Molecule to Repository",
     ];
 
     const glycoProteinLinkedGlycoPeptideStepLabels = [
@@ -256,14 +467,14 @@ const AddFeature = props => {
       `Select Protein From the Table Below (${moleculeType})`,
       `Select Glycan From the Table Below (${moleculeType})`,
       `Add Generic Information (${moleculeType})`,
-      "Review and Add Molecule to Repository"
+      "Review and Add Molecule to Repository",
     ];
 
     const controlAndLandingStepLabels = [
       "Select the Feature Type",
       "Select Molecule From the Table Below",
       `Add Generic Information (${moleculeType})`,
-      "Review and Add Molecule to Repository"
+      "Review and Add Molecule to Repository",
     ];
 
     switch (featureAddState.type) {
@@ -598,7 +809,7 @@ const AddFeature = props => {
       window.scrollTo({
         top: 0,
         left: 0,
-        behavior: "smooth"
+        behavior: "smooth",
       });
 
       setValidLinker(true);
@@ -671,7 +882,7 @@ const AddFeature = props => {
         name="molecule-type-a"
         onChange={e => {
           setFeatureAddState({
-            isLipidLinkedToSurfaceUsingLinker: e.target.value
+            isLipidLinkedToSurfaceUsingLinker: e.target.value,
           });
           setLinkerValidated(false);
         }}
@@ -699,8 +910,8 @@ const AddFeature = props => {
             ...featureAddInitState,
             ...{
               type: featureAddState.type,
-              controlSubType: e.target.value
-            }
+              controlSubType: e.target.value,
+            },
           });
           setLinkerValidated(false);
         }}
@@ -728,8 +939,8 @@ const AddFeature = props => {
             ...featureAddInitState,
             ...{
               type: featureAddState.type,
-              controlSubType: e.target.value
-            }
+              controlSubType: e.target.value,
+            },
           });
           setLinkerValidated(false);
         }}
@@ -999,12 +1210,12 @@ const AddFeature = props => {
     let objectToBeSaved = {
       name: featureAddState.name,
       user: {
-        name: window.localStorage.getItem("loggedinuser")
+        name: window.localStorage.getItem("loggedinuser"),
       },
       template: "Default Feature",
       descriptors: descriptors,
       descriptorGroups: descriptorGroups,
-      id: ""
+      id: "",
     };
 
     return objectToBeSaved;
@@ -1043,7 +1254,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit()
+      metadata: metadataToSubmit(),
     };
     return featureObj;
   }
@@ -1084,7 +1295,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit()
+      metadata: metadataToSubmit(),
     };
 
     return featureObj;
@@ -1127,7 +1338,7 @@ const AddFeature = props => {
         if (featureAddState.rangeGlycans.length > 0) {
           range = {
             min: glycanObj.min,
-            max: glycanObj.max
+            max: glycanObj.max,
           };
         }
 
@@ -1135,7 +1346,7 @@ const AddFeature = props => {
           glycans: [glycans],
           linker: positionDetails.linker,
           range: range,
-          type: "LINKEDGLYCAN"
+          type: "LINKEDGLYCAN",
         });
       }
     });
@@ -1156,7 +1367,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit()
+      metadata: metadataToSubmit(),
     };
 
     return featureObj;
@@ -1181,7 +1392,7 @@ const AddFeature = props => {
       if (featureAddState.rangeGlycoPeptides.length > 0) {
         range = {
           min: glycoPeptideObj.minRange,
-          max: glycoPeptideObj.maxRange
+          max: glycoPeptideObj.maxRange,
         };
 
         glycoPeptideObj.range = range;
@@ -1212,7 +1423,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit()
+      metadata: metadataToSubmit(),
     };
 
     return featureObj;
@@ -1251,7 +1462,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit()
+      metadata: metadataToSubmit(),
     };
 
     return featureObj;
@@ -1297,27 +1508,27 @@ const AddFeature = props => {
           columns={[
             {
               Header: "Internal Id",
-              accessor: "internalId"
+              accessor: "internalId",
             },
             {
               Header: "Glytoucan Id",
-              accessor: "glytoucanId"
+              accessor: "glytoucanId",
             },
             {
               Header: "Name",
-              accessor: "name"
+              accessor: "name",
             },
             {
               Header: "Structure Image",
               accessor: "cartoon",
               Cell: row => <StructureImage base64={row.value} />,
-              minWidth: 200
+              minWidth: 200,
             },
             {
               Header: "Mass",
               accessor: "mass",
-              Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
-            }
+              Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : ""),
+            },
           ]}
           defaultPageSize={10}
           fetchWS={onlyMyglycans ? "listallglycans" : "glycanlist"}
@@ -1458,7 +1669,12 @@ const AddFeature = props => {
     const value = e.target.value;
 
     let glycoFeatureData = [...glycoProteinPepTideListStep4];
-    glycoFeatureData.push({ position: value, glycan: {}, linker: {}, ranger: {} });
+    glycoFeatureData.push({
+      position: value,
+      glycan: {},
+      linker: {},
+      ranger: {},
+    });
     setGlycoProteinPepTideListStep4(glycoFeatureData);
   }
 
@@ -1656,12 +1872,12 @@ const AddFeature = props => {
               ? [
                   {
                     Header: "Position",
-                    accessor: "position"
+                    accessor: "position",
                   },
                   {
                     Header: "Amino Acid",
-                    accessor: "aminoAcid"
-                  }
+                    accessor: "aminoAcid",
+                  },
                 ]
               : []),
             {
@@ -1680,7 +1896,7 @@ const AddFeature = props => {
                 ) : (
                   "No Glycan Selected"
                 ),
-              minWidth: 130
+              minWidth: 130,
             },
             ...(featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN"
               ? [
@@ -1721,8 +1937,8 @@ const AddFeature = props => {
                         </Button>
                       );
                     },
-                    minWidth: 130
-                  }
+                    minWidth: 130,
+                  },
                 ]
               : []),
             {
@@ -1775,7 +1991,9 @@ const AddFeature = props => {
                         positionSelected.number = row.original.position;
                         positionSelected.isPosition = true;
 
-                        setFeatureAddState({ positionDetails: positionSelected });
+                        setFeatureAddState({
+                          positionDetails: positionSelected,
+                        });
                       }}
                       // value="Pick Glycan"
                       disabled={featureAddState.rangeGlycans.length > 0}
@@ -1786,8 +2004,8 @@ const AddFeature = props => {
                   </>
                 );
               },
-              minWidth: 130
-            }
+              minWidth: 130,
+            },
           ]}
           data={featureAddState.glycans}
           defaultPageSize={featureAddState.glycans.length}
@@ -1816,12 +2034,12 @@ const AddFeature = props => {
               ? [
                   {
                     Header: "Position",
-                    accessor: "position"
+                    accessor: "position",
                   },
                   {
                     Header: "Amino Acid",
-                    accessor: "aminoAcid"
-                  }
+                    accessor: "aminoAcid",
+                  },
                 ]
               : []),
             {
@@ -1840,7 +2058,7 @@ const AddFeature = props => {
                 ) : (
                   "No GlycoPeptide Selected"
                 ),
-              minWidth: 150
+              minWidth: 150,
             },
             {
               Header: "Linker",
@@ -1867,7 +2085,7 @@ const AddFeature = props => {
                   "No Linker Selected"
                 );
               },
-              minWidth: 100
+              minWidth: 100,
             },
             {
               Header: "",
@@ -1903,7 +2121,9 @@ const AddFeature = props => {
                         selectedPosition.glycoPeptide = undefined;
                         selectedPosition.linker = undefined;
                         glycoPeptidesList[positionIndex] = selectedPosition;
-                        setFeatureAddState({ glycoPeptides: glycoPeptidesList });
+                        setFeatureAddState({
+                          glycoPeptides: glycoPeptidesList,
+                        });
                       }}
                     />
                   </>
@@ -1919,7 +2139,9 @@ const AddFeature = props => {
                         positionSelected.number = row.original.position;
                         positionSelected.isPosition = true;
 
-                        setFeatureAddState({ positionDetails: positionSelected });
+                        setFeatureAddState({
+                          positionDetails: positionSelected,
+                        });
                       }}
                       disabled={featureAddState.rangeGlycoPeptides.length > 0}
                     >
@@ -1929,8 +2151,8 @@ const AddFeature = props => {
                   </>
                 );
               },
-              minWidth: 150
-            }
+              minWidth: 150,
+            },
           ]}
           data={featureAddState.glycoPeptides}
           defaultPageSize={featureAddState.glycoPeptides.length}
@@ -2040,12 +2262,12 @@ const AddFeature = props => {
                     ? [
                         {
                           Header: "Position",
-                          accessor: "position"
+                          accessor: "position",
                         },
                         {
                           Header: "Amino Acid",
-                          accessor: "aminoAcid"
-                        }
+                          accessor: "aminoAcid",
+                        },
                       ]
                     : []),
                   {
@@ -2062,7 +2284,7 @@ const AddFeature = props => {
                       ) : (
                         "No Glycan Selected"
                       ),
-                    minWidth: 200
+                    minWidth: 200,
                   },
                   {
                     Header: "",
@@ -2073,8 +2295,8 @@ const AddFeature = props => {
                         Select Glycan
                       </Button>
                     ),
-                    minWidth: 130
-                  }
+                    minWidth: 130,
+                  },
                 ]}
                 data={featureAddState.glycans}
                 defaultPageSize={featureAddState.glycans.length}
@@ -2476,7 +2698,7 @@ const AddFeature = props => {
                   return a > b ? 1 : -1;
                 }
                 return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
-              }
+              },
             },
             {
               Header: "Structure Image",
@@ -2485,7 +2707,7 @@ const AddFeature = props => {
                 return row.value ? <StructureImage base64={row.value} /> : "";
               },
               sortable: false,
-              minWidth: 200
+              minWidth: 200,
             },
             {
               Header: "Source",
@@ -2504,7 +2726,7 @@ const AddFeature = props => {
                   return a > b ? 1 : -1;
                 }
                 return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
-              }
+              },
             },
             {
               Header: "Reducing end state",
@@ -2517,7 +2739,7 @@ const AddFeature = props => {
                   return a > b ? 1 : -1;
                 }
                 return a.length > b.length ? 1 : -1;
-              }
+              },
             },
 
             ...(featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN"
@@ -2535,8 +2757,8 @@ const AddFeature = props => {
                         return a > b ? 1 : -1;
                       }
                       return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
-                    }
-                  }
+                    },
+                  },
                 ]
               : []),
 
@@ -2584,8 +2806,8 @@ const AddFeature = props => {
                       }
                       return (a !== null && a.length) > (b !== null && b.length) ? 1 : -1;
                     },
-                    minWidth: 150
-                  }
+                    minWidth: 150,
+                  },
                 ]
               : []),
             {
@@ -2619,8 +2841,8 @@ const AddFeature = props => {
                   </>
                 );
               },
-              minWidth: 130
-            }
+              minWidth: 130,
+            },
           ]}
           data={
             featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN"
@@ -2691,6 +2913,14 @@ const AddFeature = props => {
     );
   };
 
+  const getStepHelpTitle = activeStep => {
+    return getSteps(featureAddState.type)[activeStep].helpSection.title;
+  };
+
+  const getStepHelpURL = activeStep => {
+    return getSteps(featureAddState.type)[activeStep].helpSection.url;
+  };
+
   return (
     <>
       <Helmet>
@@ -2703,10 +2933,18 @@ const AddFeature = props => {
             title="Add Feature to Repository"
             subTitle="Please provide the information for the new feature."
           />
+          <Typography className="text-right" gutterBottom>
+            <HelpToolTip
+              title={getStepHelpTitle(activeStep)}
+              text={wikiHelpTooltip.tooltip_text}
+              url={getStepHelpURL(activeStep)}
+            />
+            {wikiHelpTooltip.help_text}
+          </Typography>
           <Card>
             <Card.Body>
               <Stepper className="steper-responsive text-center" activeStep={activeStep} alternativeLabel>
-                {getSteps(featureAddState.type).map((label, index) => {
+                {getSteps(featureAddState.type).map((step, index) => {
                   const stepProps = {};
                   const labelProps = {};
 
@@ -2715,8 +2953,8 @@ const AddFeature = props => {
                     stepProps.completed = false;
                   }
                   return (
-                    <Step key={label} {...stepProps}>
-                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    <Step key={index} {...stepProps}>
+                      <StepLabel {...labelProps}>{step.stepTitle}</StepLabel>
                     </Step>
                   );
                 })}
@@ -2793,7 +3031,7 @@ const AddFeature = props => {
       <Loading show={showLoading} />
     </>
   );
-};
+};;
 
 AddFeature.propTypes = {
   authCheckAgent: PropTypes.func
