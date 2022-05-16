@@ -456,8 +456,6 @@ export function getPath(type) {
 }
 
 export function batchupload(wscall, methodType, uploadtype, moleculetype) {
-  debugger;
-
   wsCall(
     wscall,
     methodType,
@@ -470,14 +468,10 @@ export function batchupload(wscall, methodType, uploadtype, moleculetype) {
       //   debugger;
       // });
 
-      response.json().then(resp => {
-        debugger;
-      });
+      response.json().then(resp => {});
     },
     response => {
-      response.json.then(resp => {
-        debugger;
-      });
+      response.json.then(resp => {});
     }
   );
 }

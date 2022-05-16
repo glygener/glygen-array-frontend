@@ -196,13 +196,13 @@ const DataTreeView = props => {
                                   <Row className={"row_headline"}>
                                     <Col>
                                       <strong>Image:</strong>{" "}
-                                      {img.file.originalName && titleExpansion === img.file.originalName ? (
+                                      {img.file && img.file.originalName && titleExpansion === img.file.originalName ? (
                                         <>
                                           <span onClick={() => setTitleExpansion()}>{img.file.originalName}</span>
                                         </>
                                       ) : (
                                         <>
-                                          {img.file.originalName.slice(0, 20)}
+                                          {img.file && img.file.originalName.slice(0, 20)}
                                           <span onClick={() => setTitleExpansion(img.file.originalName)}>{"..."}</span>
                                         </>
                                       )}

@@ -448,7 +448,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     }
   } catch (error) {
     console.log(error);
-    alert("Network issue detected. Please try again.");
+    // alert("Network issue detected. Please try again.");
   }
 }
 
