@@ -621,7 +621,6 @@ const DataTreeView = props => {
 };
 
 const DataView = props => {
-  debugger;
   return (
     <>
       {/* <Form.Group as={Row} controlId={"slide"} className="gg-align-center mb-3"> */}

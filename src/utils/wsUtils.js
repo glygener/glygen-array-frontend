@@ -422,25 +422,29 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     headers["Authorization"] = window.localStorage.getItem("token") || "";
   }
 
-  var response =
-    url.includes("public") || url.includes("getuserdetails") || url.includes("list")
-      ? // || url.includes("download")
-        await fetch(url, {
-          // mode: "no-cors", // 'cors' by default
-          method: httpMethod,
-          headers: headers,
-          body: body
-        })
-      : await trackPromise(
-          fetch(url, {
+  try {
+    var response =
+      url.includes("public") || url.includes("getuserdetails") || url.includes("list")
+        ? // || url.includes("download")
+          await fetch(url, {
             // mode: "no-cors", // 'cors' by default
             method: httpMethod,
             headers: headers,
             body: body
           })
-        );
+        : await trackPromise(
+            fetch(url, {
+              // mode: "no-cors", // 'cors' by default
+              method: httpMethod,
+              headers: headers,
+              body: body
+            })
+          );
 
-  try {
+    if (!response.ok) {
+      throw new Error(`Error! status: ${response.status}`);
+    }
+
     if (response.ok) {
       successFunction(response);
     } else {

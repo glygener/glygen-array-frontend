@@ -48,7 +48,6 @@ const PublicDataset = () => {
       null,
       response =>
         response.json().then(responseJson => {
-          debugger;
           setDataset(responseJson);
         }),
       errorWscall

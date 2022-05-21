@@ -8,7 +8,6 @@ import { wsCall } from "../utils/wsUtils";
 import { includes } from "lodash";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { Spinner } from "react-bootstrap";
-import { DeviceLocationDisabled } from "material-ui/svg-icons";
 
 /**
  *
@@ -463,15 +462,18 @@ export function batchupload(wscall, methodType, uploadtype, moleculetype) {
     true,
     null,
     response => {
-      // response.headers
-      // response.text().then(resp => {
-      //   debugger;
-      // });
-
       response.json().then(resp => {});
     },
     response => {
-      response.json.then(resp => {});
+      if (response.status === 404) {
+        response.text().then(resp => {
+          console.log(JSON.parse(resp));
+        });
+      } else {
+        response.json().then(resp => {
+          console.log(resp);
+        });
+      }
     }
   );
 }

@@ -3,18 +3,16 @@ import PropTypes from "prop-types";
 import "./GlygenGrid.css";
 
 const GlygenGrid = props => {
-  let { gridParams } = props;
-
   const gridui = () => {
     var grid = [];
     var gridHeader = [];
 
-    for (let i = 0; i <= gridParams.rows; i++) {
+    for (let i = 0; i <= props.gridParams.rows; i++) {
       let columns = [];
 
       if (i === 0) {
         let colHeader = [];
-        for (let j = 0; j <= gridParams.cols; j++) {
+        for (let j = 0; j <= props.gridParams.cols; j++) {
           if (j === 1 || (j % 10 === 0 && j !== 0)) {
             colHeader.push(
               <th key={j} className="grid-horizonatal-index">
@@ -33,7 +31,7 @@ const GlygenGrid = props => {
         gridHeader.push(<tr key={i}>{colHeader}</tr>);
       }
 
-      for (let j = 0; j <= gridParams.cols; j++) {
+      for (let j = 0; j <= props.gridParams.cols; j++) {
         if (i !== 0 && j === 0) {
           if (i === 1 || i % 10 === 0) {
             columns.push(

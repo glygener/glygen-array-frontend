@@ -60,7 +60,7 @@ Organization/Institution */}
         <>
           <div style={{ textAlign: "left", marginLeft: "15px" }}>
             <span className={"dataset-subheadings"}>Username</span>
-            <div>{submitterinfo.username}</div>
+            <div>{submitterinfo.userName}</div>
             <br />
 
             <span className={"dataset-subheadings"}>Name</span>
