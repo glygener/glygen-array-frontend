@@ -42,16 +42,17 @@ const Linkers = props => {
             title="Your Chemicals/Linkers"
             subTitle="The table below displays a list of all chemicals/linkers that have been uploaded to your repository. New chemicals/linkers may be added, old chemicals/linkers can be edited, and unused chemicals/linkers can be removed."
           />
-          <Typography className="text-right" gutterBottom>
-            <HelpToolTip
-              title={wikiHelpTooltip.linker.linker_management.title}
-              text={wikiHelpTooltip.tooltip_text}
-              url={wikiHelpTooltip.linker.linker_management.url}
-            />
-            {wikiHelpTooltip.help_text}
-          </Typography>
-
-          <Card>
+          {!props.disableTooltip && (
+            <Typography className="text-right" gutterBottom>
+              <HelpToolTip
+                title={wikiHelpTooltip.linker.linker_management.title}
+                text={wikiHelpTooltip.tooltip_text}
+                url={wikiHelpTooltip.linker.linker_management.url}
+              />
+              {wikiHelpTooltip.help_text}
+            </Typography>
+          )}
+          <Card style={props.cardStyle}>
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
@@ -64,8 +65,8 @@ const Linkers = props => {
                       to={{
                         pathname: "/linkers/uploadMolecules",
                         state: {
-                          type: "SMALLMOLECULE"
-                        }
+                          type: "SMALLMOLECULE",
+                        },
                       }}
                     >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Linkers</Button>
@@ -79,13 +80,13 @@ const Linkers = props => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name)
+                    Cell: row => getToolTip(row.original.name),
                     // minWidth: 50,
                   },
                   {
                     Header: displayNames.linker.PUBCHEM_ID,
                     accessor: "pubChemId",
-                    Cell: row => getToolTip(row.original.pubChemId)
+                    Cell: row => getToolTip(row.original.pubChemId),
                     // minWidth: 70,
                   },
                   {
@@ -93,8 +94,8 @@ const Linkers = props => {
                     accessor: "imageURL",
                     // eslint-disable-next-line react/prop-types
                     Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
-                    minWidth: 150
-                  }
+                    minWidth: 150,
+                  },
                 ]}
                 defaultPageSize={10}
                 showCommentsButton
@@ -135,7 +136,9 @@ const Linkers = props => {
 };
 
 Linkers.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
+  disableTooltip: PropTypes.bool,
+  cardStyle: PropTypes.object,
 };
 
 export { Linkers };

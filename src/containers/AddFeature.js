@@ -999,6 +999,8 @@ const AddFeature = props => {
           isImported
           selectButtonHandler={handleLinkerSelect}
           linkerType={type}
+          disableTooltip
+          cardStyle={{ borderWidth: 0 }}
         />
       </>
     );
@@ -1035,6 +1037,8 @@ const AddFeature = props => {
           onlyMyLinkersGlycans={onlyMyLinkers}
           onlyMyLinkersGlycansCheckBoxLabel={"Show all available peptides"}
           isImported
+          disableTooltip
+          cardStyle={{ borderWidth: 0 }}
         />
       </>
     );
@@ -1071,6 +1075,8 @@ const AddFeature = props => {
           onlyMyLinkersGlycans={onlyMyLinkers}
           onlyMyLinkersGlycansCheckBoxLabel={"Show all available proteins"}
           isImported
+          disableTooltip
+          cardStyle={{ borderWidth: 0 }}
         />
       </>
     );
@@ -1126,6 +1132,8 @@ const AddFeature = props => {
           onlyMyLinkersGlycans={onlyMyLinkers}
           onlyMyLinkersGlycansCheckBoxLabel={"Show all available lipids"}
           isImported
+          disableTooltip
+          cardStyle={{ borderWidth: 0 }}
         />
       </>
     );

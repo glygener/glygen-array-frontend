@@ -35,16 +35,18 @@ const Peptides = props => {
             title="Your Peptides"
             subTitle="The table below displays a list of all peptides that have been uploaded to your repository. New peptides may be added, old peptides can be edited, and unused peptides can be removed."
           />
-          <Typography className="text-right" gutterBottom>
-            <HelpToolTip
-              title={wikiHelpTooltip.peptide.peptide_management.title}
-              text={wikiHelpTooltip.tooltip_text}
-              url={wikiHelpTooltip.peptide.peptide_management.url}
-            />
-            {wikiHelpTooltip.help_text}
-          </Typography>
+          {!props.disableTooltip && (
+            <Typography className="text-right" gutterBottom>
+              <HelpToolTip
+                title={wikiHelpTooltip.peptide.peptide_management.title}
+                text={wikiHelpTooltip.tooltip_text}
+                url={wikiHelpTooltip.peptide.peptide_management.url}
+              />
+              {wikiHelpTooltip.help_text}
+            </Typography>
+          )}
 
-          <Card>
+          <Card style={props.cardStyle}>
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
@@ -57,8 +59,8 @@ const Peptides = props => {
                       to={{
                         pathname: "/peptides/uploadMolecules",
                         state: {
-                          type: "PEPTIDE"
-                        }
+                          type: "PEPTIDE",
+                        },
                       }}
                     >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Peptides</Button>
@@ -72,13 +74,13 @@ const Peptides = props => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name)
+                    Cell: row => getToolTip(row.original.name),
                   },
                   {
                     Header: "Sequence",
                     accessor: "sequence",
-                    Cell: row => getToolTip(row.original.sequence)
-                  }
+                    Cell: row => getToolTip(row.original.sequence),
+                  },
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -120,7 +122,9 @@ const Peptides = props => {
 };
 
 Peptides.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
+  disableTooltip: PropTypes.bool,
+  cardStyle: PropTypes.object,
 };
 
 export { Peptides };

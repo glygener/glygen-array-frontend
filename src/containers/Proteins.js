@@ -34,16 +34,18 @@ const Proteins = props => {
             title="Your Proteins"
             subTitle="The table below displays a list of all proteins that have been uploaded to your repository. New proteins may be added, old proteins can be edited, and unused proteins can be removed."
           />
-          <Typography className="text-right" gutterBottom>
-            <HelpToolTip
-              title={wikiHelpTooltip.protein.protein_management.title}
-              text={wikiHelpTooltip.tooltip_text}
-              url={wikiHelpTooltip.protein.protein_management.url}
-            />
-            {wikiHelpTooltip.help_text}
-          </Typography>
+          {!props.disableTooltip && (
+            <Typography className="text-right" gutterBottom>
+              <HelpToolTip
+                title={wikiHelpTooltip.protein.protein_management.title}
+                text={wikiHelpTooltip.tooltip_text}
+                url={wikiHelpTooltip.protein.protein_management.url}
+              />
+              {wikiHelpTooltip.help_text}
+            </Typography>
+          )}
 
-          <Card>
+          <Card style={props.cardStyle}>
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
@@ -55,8 +57,8 @@ const Proteins = props => {
                       to={{
                         pathname: "/proteins/uploadMolecules",
                         state: {
-                          type: "PROTEIN"
-                        }
+                          type: "PROTEIN",
+                        },
                       }}
                     >
                       <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Proteins</Button>
@@ -70,13 +72,13 @@ const Proteins = props => {
                   {
                     Header: "Name",
                     accessor: "name",
-                    Cell: row => getToolTip(row.original.name)
+                    Cell: row => getToolTip(row.original.name),
                   },
                   {
                     Header: "UniProtID",
                     accessor: "uniProtId",
-                    Cell: row => getToolTip(row.original.uniProtId)
-                  }
+                    Cell: row => getToolTip(row.original.uniProtId),
+                  },
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
@@ -118,7 +120,9 @@ const Proteins = props => {
 };
 
 Proteins.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
+  disableTooltip: PropTypes.bool,
+  cardStyle: PropTypes.object,
 };
 
 export { Proteins };

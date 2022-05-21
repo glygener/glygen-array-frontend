@@ -36,16 +36,17 @@ const Lipids = props => {
             title="Your Lipids"
             subTitle="The table below displays a list of all lipids that have been uploaded to your repository. New lipids may be added, old lipids can be edited, and unused lipids can be removed."
           />
-          <Typography className="text-right" gutterBottom>
-            <HelpToolTip
-              title={wikiHelpTooltip.lipid.lipid_management.title}
-              text={wikiHelpTooltip.tooltip_text}
-              url={wikiHelpTooltip.lipid.lipid_management.url}
-            />
-            {wikiHelpTooltip.help_text}
-          </Typography>
-
-          <Card>
+          {!props.disableTooltip && (
+            <Typography className="text-right" gutterBottom>
+              <HelpToolTip
+                title={wikiHelpTooltip.lipid.lipid_management.title}
+                text={wikiHelpTooltip.tooltip_text}
+                url={wikiHelpTooltip.lipid.lipid_management.url}
+              />
+              {wikiHelpTooltip.help_text}
+            </Typography>
+          )}
+          <Card style={props.cardStyle}>
             <Card.Body>
               <div className="text-center mb-4">
                 {!props.isImported && (
@@ -130,7 +131,9 @@ const Lipids = props => {
 };
 
 Lipids.propTypes = {
-  authCheckAgent: PropTypes.func
+  authCheckAgent: PropTypes.func,
+  disableTooltip: PropTypes.bool,
+  cardStyle: PropTypes.object,
 };
 
 export { Lipids };
