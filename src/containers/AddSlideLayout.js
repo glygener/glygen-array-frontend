@@ -349,9 +349,17 @@ const AddSlideLayout = props => {
           <PageHeading title={title} subTitle={subTitle} />
           <Typography className="text-right" gutterBottom>
             <HelpToolTip
-              title={wikiHelpTooltip.slide_layout.generic_information.title}
+              title={
+                !addBlocks
+                  ? wikiHelpTooltip.slide_layout.generic_information.title
+                  : wikiHelpTooltip.slide_layout.adding_block.title
+              }
               text={wikiHelpTooltip.tooltip_text}
-              url={wikiHelpTooltip.slide_layout.generic_information.url}
+              url={
+                !addBlocks
+                  ? wikiHelpTooltip.slide_layout.generic_information.url
+                  : wikiHelpTooltip.slide_layout.adding_block.url
+              }
             />
             {wikiHelpTooltip.help_text}
           </Typography>
