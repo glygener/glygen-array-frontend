@@ -378,36 +378,40 @@ const GlygenTable = props => {
       {props.showRowsInfo && (
         <>
           <Row>
-            <Col style={{ textAlign: "right", marginBottom: "1em" }}>
+            <Col>
+              {/* <Col style={{ textAlign: "right", marginBottom: "1em" }}> */}
               {props.exportData && (
-                <>
-                  <LineTooltip text="Download">
-                    <Link>
-                      <div
-                        onClick={() => {
-                          wsCall(
-                            props.exportWsCall,
-                            "GET",
-                            props.moleculeType ? { type: props.moleculeType } : "",
-                            true,
-                            null,
-                            response => fileExportSuccess(response, props.fileName),
-                            response =>
-                              fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary)
-                          );
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          className="table-btn download-btn"
-                          icon={["fas", "download"]}
-                          size="lg"
-                          title="Download"
-                        />
-                        {"DOWNLOAD"}
-                      </div>
-                    </Link>
-                  </LineTooltip>
-                </>
+                <div className="text-right mb-3">
+                  {/* <LineTooltip text="Download"> */}
+                  <Link>
+                    <button
+                      type="button"
+                      alt="Download results"
+                      className="btn btn-link gg-download-btn"
+                      onClick={() => {
+                        wsCall(
+                          props.exportWsCall,
+                          "GET",
+                          props.moleculeType ? { type: props.moleculeType } : "",
+                          true,
+                          null,
+                          response => fileExportSuccess(response, props.fileName),
+                          response =>
+                            fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary)
+                        );
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        className="table-btn download-btn"
+                        icon={["fas", "download"]}
+                        size="lg"
+                        title="Download"
+                      />
+                      DOWNLOAD
+                    </button>
+                  </Link>
+                  {/* </LineTooltip> */}
+                </div>
               )}
             </Col>
           </Row>
@@ -428,7 +432,7 @@ const GlygenTable = props => {
               <Col
                 style={{
                   marginTop: "10px",
-                  marginLeft: "40px"
+                  marginLeft: "40px",
                 }}
               >
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -518,8 +522,8 @@ const GlygenTable = props => {
                   loadAll: false, //only useful for features, blocks and slides
                   filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
                   type: props.paramTypeValue,
-                  ...props.qsParams
-                }
+                  ...props.qsParams,
+                },
               },
               // {
               //   offset: state.page * state.pageSize,

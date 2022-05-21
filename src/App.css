@@ -629,6 +629,14 @@ input[type="check" i] {
   color: var(--gg-blue) !important;
 }
 
+.gg-download-btn {
+  text-decoration: none !important;
+  color: var(--gg-blue) !important;
+  /* margin-left: 55px !important; */
+}
+.gg-download-btn:hover {
+  color: var(--gg-dark-hover) !important;
+}
 /* ========================================
               Footer
   ==========================================*/
