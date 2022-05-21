@@ -250,17 +250,17 @@
       "title": "Block Geometry",
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Block_Layout#Block_geometry"
     },
-    "adding_feature": {
-      "title": "Adding Feature",
-      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Block_Layout#Adding_feature"
+    "select_feature": {
+      "title": "Select Feature",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Block_Layout#Select_feature"
     },
-    "adding_feature_ratio": {
-      "title": "Adding Feature Ratio",
-      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Block_Layout#Adding_feature_ratio"
+    "add_feature_ratio": {
+      "title": "Add Feature Ratio",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Block_Layout#Add_feature_ratio"
     },
-    "adding_spot_concentrations": {
-      "title": "Adding Spot Concentrations",
-      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Block_Layout#Adding_spot_concentrations"
+    "add_spot_concentrations": {
+      "title": "Add Spot Concentrations",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Block_Layout#Add_spot_concentrations"
     },
     "spot_metadata": {
       "title": "Spot Metadata",

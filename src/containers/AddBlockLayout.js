@@ -20,11 +20,36 @@ import MetadataKeyPairs from "../public/MetadataKeyPairs";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import { Typography } from "@material-ui/core";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
+const stepsHelpTooltipData = [
+  {
+    title: wikiHelpTooltip.block_layout.select_feature.title,
+    url: wikiHelpTooltip.block_layout.select_feature.url,
+  },
+  {
+    title: wikiHelpTooltip.block_layout.add_feature_ratio.title,
+    url: wikiHelpTooltip.block_layout.add_feature_ratio.url,
+  },
+  {
+    title: wikiHelpTooltip.block_layout.add_spot_concentrations.title,
+    url: wikiHelpTooltip.block_layout.add_spot_concentrations.url,
+  },
+  {
+    title: wikiHelpTooltip.block_layout.spot_metadata.title,
+    url: wikiHelpTooltip.block_layout.spot_metadata.url,
+  },
+  {
+    title: wikiHelpTooltip.block_layout.common_information.title,
+    url: wikiHelpTooltip.block_layout.common_information.url,
+  },
+];
+
 const AddBlockLayout = props => {
   let { blockLayoutId } = useParams();
+  const [activeStep, setActiveStep] = useState(0);
   // var count = 0;
 
   useEffect(() => {
@@ -84,14 +109,14 @@ const AddBlockLayout = props => {
     cols: "",
     rows: "",
     name: "",
-    description: " "
+    description: " ",
   };
 
   const gridSizeUpdated = {
     cols: "",
     rows: "",
     name: "",
-    description: " "
+    description: " ",
   };
 
   const [gridParams, setGridParams] = useReducer((state, newState) => ({ ...state, ...newState }), gridSize);
@@ -291,7 +316,7 @@ const AddBlockLayout = props => {
       selectedFeatures: [],
       selectedConcentration: {},
       groupAssigned: 0,
-      color: "" //background color of a spot is updated using this property
+      color: "", //background color of a spot is updated using this property
     });
     return spots;
   };
@@ -529,6 +554,29 @@ const AddBlockLayout = props => {
               </Helmet>
 
               <PageHeading title={title} subTitle={subTitle} />
+              {addFeatures ? (
+                <>
+                  <Typography className="text-right" gutterBottom>
+                    <HelpToolTip
+                      title={stepsHelpTooltipData[activeStep].title}
+                      text={wikiHelpTooltip.tooltip_text}
+                      url={stepsHelpTooltipData[activeStep].url}
+                    />
+                    {wikiHelpTooltip.help_text}
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography className="text-right" gutterBottom>
+                    <HelpToolTip
+                      title={wikiHelpTooltip.block_layout.generic_information.title}
+                      text={wikiHelpTooltip.tooltip_text}
+                      url={wikiHelpTooltip.block_layout.generic_information.url}
+                    />
+                    {wikiHelpTooltip.help_text}
+                  </Typography>
+                </>
+              )}
 
               {showErrorSummary === true && (
                 <ErrorSummary
@@ -573,7 +621,7 @@ const AddBlockLayout = props => {
                           <div
                             className="grid-table"
                             style={{
-                              height: gridParams.rows > 30 ? "600px" : "fit-content"
+                              height: gridParams.rows > 30 ? "600px" : "fit-content",
                             }}
                           >
                             {createGrid()}
@@ -599,7 +647,7 @@ const AddBlockLayout = props => {
                               <div
                                 style={{
                                   border: "1px solid rgba(0, 0, 0, 0.1)",
-                                  borderRadius: "8px"
+                                  borderRadius: "8px",
                                 }}
                               >
                                 <div className={"summary-border"}>
@@ -631,6 +679,7 @@ const AddBlockLayout = props => {
                   setGroupCounter={setGroupCounter}
                   spotMetadata={selectedSpotMetadata}
                   spotMetadataList={listSpots}
+                  onChangeStep={_activeStep => setActiveStep(_activeStep)}
                 />
               )}
 
@@ -664,7 +713,7 @@ const AddBlockLayout = props => {
         {
           id: blockLayoutId,
           name: gridParams.name,
-          description: gridParams.description
+          description: gridParams.description,
         },
         updateBlockLayoutSuccess,
         updateBlockLayoutFailure
@@ -683,7 +732,7 @@ const AddBlockLayout = props => {
             description: gridParams.description,
             width: updatedGridParams.cols,
             height: updatedGridParams.rows,
-            spots: spotsData
+            spots: spotsData,
           },
           addBlockLayoutSuccess,
           addBlockLayoutFailure
@@ -709,7 +758,7 @@ const AddBlockLayout = props => {
           group: element.groupAssigned,
           // concentration: element.selectedConcentration,
           ratioConcentrationMap: getFeatureToRatioConcentrationMap(element.selectedFeatures),
-          metadata: element.metadata
+          metadata: element.metadata,
         });
       }
     });
@@ -730,9 +779,9 @@ const AddBlockLayout = props => {
             ratio: ratioConcentration.ratio,
             concentration: {
               concentration: ratioConcentration.concentration,
-              levelUnit: ratioConcentration.unitlevel
-            }
-          }
+              levelUnit: ratioConcentration.unitlevel,
+            },
+          },
         });
     });
     return featureToRatioConcentrationMap;
@@ -816,8 +865,8 @@ const AddBlockLayout = props => {
           concentrationInfo: {
             concentration: concen && concen.concentration.concentration,
             unitlevel: concen && concen.concentration.levelUnit,
-            ratio: concen && concen.ratio
-          }
+            ratio: concen && concen.ratio,
+          },
         };
         spot.selectedFeatures.push(featureSelected);
       });

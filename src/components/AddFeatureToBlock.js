@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import "../containers/AddGlycan.css";
 import PropTypes from "prop-types";
 import { GlygenTable } from "../components/GlygenTable";
@@ -18,15 +18,15 @@ import { isValidNumber } from "../utils/commonUtils";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "90%"
+    width: "90%",
   },
   backButton: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   instructions: {
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 const AddFeatureToBlock = props => {
@@ -45,6 +45,11 @@ const AddFeatureToBlock = props => {
   const [metadataId, setMetadataId] = useState(props.spotMetadata.id);
   const [importSpotchange, setImportSpotchange] = useState(false);
 
+  useEffect(() => {
+    props.onChangeStep && props.onChangeStep(activeStep);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeStep]);
+
   const featuresToBlock = {
     featureSelected: [
       {
@@ -53,10 +58,10 @@ const AddFeatureToBlock = props => {
           concentration: "",
           unitlevel: "FMOL",
           notReported: false,
-          ratio: ""
-        }
-      }
-    ]
+          ratio: "",
+        },
+      },
+    ],
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -130,7 +135,7 @@ const AddFeatureToBlock = props => {
             spot.selectedFeatures.push({
               feature: element.feature,
               ratio: element.concentrationInfo && element.concentrationInfo.ratio,
-              concentrationInfo: element.concentrationInfo
+              concentrationInfo: element.concentrationInfo,
             });
           });
           // spot.selectedConcentration = feature.concentrationInfo;
@@ -170,7 +175,7 @@ const AddFeatureToBlock = props => {
       concentration: "",
       unitlevel: "FMOL",
       notReported: false,
-      ratio: ""
+      ratio: "",
     };
 
     let rowUpdated = [...featuresSelected.featureSelected];
@@ -489,7 +494,7 @@ const AddFeatureToBlock = props => {
           columns={[
             {
               Header: "Name",
-              accessor: "feature.name"
+              accessor: "feature.name",
             },
             {
               Header: "Ratio",
@@ -506,7 +511,7 @@ const AddFeatureToBlock = props => {
                       <span
                         key={index}
                         style={{
-                          marginLeft: "65px"
+                          marginLeft: "65px",
                         }}
                       >
                         {row.original.concentrationInfo.ratio}
@@ -517,7 +522,7 @@ const AddFeatureToBlock = props => {
                     )}
                   </Col>
                 </>
-              )
+              ),
             },
             {
               Header: "Linker",
@@ -526,7 +531,7 @@ const AddFeatureToBlock = props => {
                 <input
                   style={{
                     textAlign: "center",
-                    border: "none"
+                    border: "none",
                   }}
                   name="linker"
                   key={index}
@@ -537,7 +542,7 @@ const AddFeatureToBlock = props => {
                   }
                   disabled
                 />
-              )
+              ),
             },
             {
               Header: "Sequence",
@@ -549,14 +554,14 @@ const AddFeatureToBlock = props => {
                         base64={element.glycan ? element.glycan.cartoon : element.cartoon}
                         style={{
                           maxWidth: "100px",
-                          overflow: "scroll"
+                          overflow: "scroll",
                         }}
                       />
                     ))
                   : "";
               },
-              minWidth: 250
-            }
+              minWidth: 250,
+            },
           ]}
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
@@ -630,7 +635,7 @@ const AddFeatureToBlock = props => {
       case 1:
         label = "Specify Ratio\n";
         subLabel = (
-          <h6 className={'summary-panel pt-1"'}>
+          <h6 className={"summary-panel pt-1"}>
             {"Ratio can be specified in the format 1:10:0.1\n"}
             {"For unknown ratio leave fields empty"}
           </h6>
@@ -672,12 +677,12 @@ const AddFeatureToBlock = props => {
               columns={[
                 {
                   Header: "Name",
-                  accessor: "name"
+                  accessor: "name",
                 },
                 {
                   Header: "Feature ID",
-                  accessor: "internalId"
-                }
+                  accessor: "internalId",
+                },
               ]}
               defaultPageSize={10}
               defaultSortColumn="id"
@@ -753,7 +758,8 @@ AddFeatureToBlock.propTypes = {
   groupCounter: PropTypes.number,
   setGroupCounter: PropTypes.func,
   spotMetadata: PropTypes.object,
-  spotMetadataList: PropTypes.array
+  spotMetadataList: PropTypes.array,
+  onChangeStep: PropTypes.func,
 };
 
 export { AddFeatureToBlock };
