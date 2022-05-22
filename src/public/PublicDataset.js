@@ -94,7 +94,7 @@ const PublicDataset = () => {
 
           <br />
           <span className={"dataset-subheadings"}>Keywords</span>
-          <KeywordsOnExp keywords={dataset.keywords} isPublic={true} />
+          <KeywordsOnExp keywords={dataset.keywords} fromPublicDatasetPage={true} />
 
           <br />
         </div>
@@ -163,7 +163,7 @@ const PublicDataset = () => {
                 <Card>
                   <Title title={"Grants"} />
                   {/* Grants */}
-                  <GrantsOnExp grants={dataset.grants} isPublic={true} />
+                  <GrantsOnExp grants={dataset.grants} fromPublicDatasetPage={true} />
                 </Card>
               </Col>
             </Row>
@@ -188,7 +188,7 @@ const PublicDataset = () => {
                       <DataTreeView
                         data={dataset}
                         experimentId={dataset.id}
-                        isPublic={true}
+                        fromPublicDatasetPage={true}
                         setSelectedTreeData={setSelectedTreeData}
                       />
                     </div>
@@ -199,12 +199,12 @@ const PublicDataset = () => {
             </Row>
             <Row>
               <Col md={8}>
-                <FilesOnExp files={dataset.files} isPublic={true} />
+                <FilesOnExp files={dataset.files} fromPublicDatasetPage={true} />
               </Col>
             </Row>
             <Row>
               <Col md={8}>
-                <PubOnExp publications={dataset.publications} isPublic={true} />
+                <PubOnExp publications={dataset.publications} fromPublicDatasetPage={true} />
               </Col>
             </Row>
             <br />

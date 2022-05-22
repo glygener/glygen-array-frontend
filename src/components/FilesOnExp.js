@@ -235,7 +235,7 @@ const FilesOnExp = props => {
                 );
               }
             },
-            ...(!props.isPublic
+            ...(!props.fromPublicDatasetPage
               ? [
                   {
                     Header: "Actions",
@@ -322,7 +322,7 @@ const FilesOnExp = props => {
           </Card.Header>
           <Accordion.Collapse eventKey={0}>
             <Card.Body>
-              {!props.isPublic && (
+              {!props.fromPublicDatasetPage && (
                 <div className="text-center mt-2 mb-4">
                   <Button
                     className="gg-btn-blue"

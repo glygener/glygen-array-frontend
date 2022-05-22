@@ -28,7 +28,7 @@ const KeywordsOnExp = props => {
             return (
               <>
                 {kw} &nbsp;&nbsp;
-                {!props.isPublic && (
+                {!props.fromPublicDatasetPage && (
                   <FontAwesomeIcon
                     icon={["far", "trash-alt"]}
                     size="lg"
@@ -189,7 +189,7 @@ const KeywordsOnExp = props => {
 
   return (
     <>
-      {!props.isPublic ? (
+      {!props.fromPublicDatasetPage ? (
         <Accordion defaultActiveKey={0} className="mb-4">
           <Card>
             <Card.Header>
@@ -205,7 +205,7 @@ const KeywordsOnExp = props => {
             </Card.Header>
             <Accordion.Collapse eventKey={0}>
               <Card.Body>
-                {!props.isPublic && (
+                {!props.fromPublicDatasetPage && (
                   <div className="text-center mt-2 mb-4">
                     <Button
                       className="gg-btn-blue"

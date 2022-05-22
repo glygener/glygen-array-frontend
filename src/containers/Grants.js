@@ -47,7 +47,9 @@ const Grants = props => {
               <Table hover style={{ border: "none" }}>
                 <tbody style={{ border: "none" }}>
                   <tr style={{ border: "none" }} key={grantIndex}>
-                    {props.isPublic ? grantsPublicTable(grant, grantIndex) : grantsTable(grant, grantIndex)}
+                    {props.fromPublicDatasetPage
+                      ? grantsPublicTable(grant, grantIndex)
+                      : grantsTable(grant, grantIndex)}
                   </tr>
                 </tbody>
               </Table>
@@ -118,7 +120,7 @@ const Grants = props => {
 
   return (
     <>
-      {!props.isPublic && (
+      {!props.fromPublicDatasetPage && (
         <>
           <div className="text-center mt-2 mb-4">
             <Button

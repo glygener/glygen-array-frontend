@@ -8,11 +8,12 @@ import { ImageOnSlideExp } from "../containers/ImageOnSlideExp";
 import { RawdataOnImage } from "../containers/RawdataOnImage";
 import { ProcessDataOnRd } from "../containers/ProcessDataOnRd";
 import "../components/DataTreeView.css";
-import { Col, Row, Modal, Button, Form, FormLabel } from "react-bootstrap";
+import { Col, Row, Modal, Button, Form } from "react-bootstrap";
 import { ErrorPage } from "./ErrorPage";
 
 const DataTreeView = props => {
-  let { data, experimentId, isPublic } = props;
+  debugger;
+  let { data, experimentId, fromPublicDatasetPage } = props;
 
   const [enableSlideModal, setEnableSlideModal] = useState(false);
   const [enableImageOnSlide, setEnableImageOnSlide] = useState(false);
@@ -48,7 +49,7 @@ const DataTreeView = props => {
                       <strong>Experiment</strong>
                     </Col>
 
-                    {!isPublic && (
+                    {!fromPublicDatasetPage && !data.isPublic && (
                       <Col style={{ textAlign: "right" }}>
                         <LineTooltip text="Add Slide">
                           <span>
@@ -86,7 +87,7 @@ const DataTreeView = props => {
                   <>
                     <div
                       style={{ marginTop: "-60px", marginLeft: "30px" }}
-                      onClick={() => (isPublic ? props.setSelectedTreeData(slide) : "")}
+                      onClick={() => (fromPublicDatasetPage ? props.setSelectedTreeData(slide) : "")}
                     >
                       <div className="rst__rowWrapper">
                         <div className="rst__row">
@@ -94,7 +95,7 @@ const DataTreeView = props => {
                             <Col>
                               <strong>Slide:</strong> {slide.printedSlide.name}
                             </Col>
-                            {!isPublic && (
+                            {!fromPublicDatasetPage && !data.isPublic && (
                               <Col style={{ textAlign: "right" }}>
                                 <LineTooltip text="Add Image">
                                   <span>
@@ -189,7 +190,7 @@ const DataTreeView = props => {
                           <>
                             <div
                               style={{ marginTop: "-60px", marginLeft: "30px" }}
-                              onClick={() => (isPublic ? props.setSelectedTreeData(img) : "")}
+                              onClick={() => (fromPublicDatasetPage ? props.setSelectedTreeData(img) : "")}
                             >
                               <div className={"rst__rowWrapper"}>
                                 <div className={"rst__row"}>
@@ -208,7 +209,7 @@ const DataTreeView = props => {
                                       )}
                                     </Col>
 
-                                    {!isPublic && (
+                                    {!fromPublicDatasetPage && !data.isPublic && (
                                       <>
                                         <Col style={{ textAlign: "right" }}>
                                           <LineTooltip text="Add Raw Data">
@@ -307,7 +308,7 @@ const DataTreeView = props => {
                                   <>
                                     <div
                                       style={{ marginTop: "-60px", marginLeft: "30px" }}
-                                      onClick={() => (isPublic ? props.setSelectedTreeData(rawData) : "")}
+                                      onClick={() => (fromPublicDatasetPage ? props.setSelectedTreeData(rawData) : "")}
                                     >
                                       <div className={"rst__rowWrapper"}>
                                         <div className={"rst__row"}>
@@ -351,7 +352,7 @@ const DataTreeView = props => {
                                               </span>
                                             </Col>
 
-                                            {!isPublic && (
+                                            {!fromPublicDatasetPage && !data.isPublic && (
                                               <>
                                                 <Col style={{ textAlign: "right" }}>
                                                   {rawData.status === "DONE" && (
@@ -449,7 +450,9 @@ const DataTreeView = props => {
                                           <>
                                             <div
                                               style={{ marginTop: "-60px", marginLeft: "30px" }}
-                                              onClick={() => (isPublic ? props.setSelectedTreeData(pd) : "")}
+                                              onClick={() =>
+                                                fromPublicDatasetPage ? props.setSelectedTreeData(pd) : ""
+                                              }
                                             >
                                               <div className={"rst__rowWrapper"}>
                                                 <div className={"rst__row"}>
@@ -459,7 +462,7 @@ const DataTreeView = props => {
                                                       <span style={{ marginLeft: "20px" }}>{pd.metadata.name}</span>
                                                     </Col>
 
-                                                    {!isPublic && (
+                                                    {!fromPublicDatasetPage && !data.isPublic && (
                                                       <Col style={{ textAlign: "right" }}>
                                                         {pd.id && (
                                                           <>

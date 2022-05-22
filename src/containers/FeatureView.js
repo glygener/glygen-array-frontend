@@ -889,12 +889,16 @@ const FeatureView = props => {
                           (featureDetails.metadata.descriptors && featureDetails.metadata.descriptors.length > 0)) &&
                         featureMetadata()}
 
-                    {getGlycansTable()}
+                    {props.type !== "CONTROL" && props.type !== "LANDING_LIGHT" && getGlycansTable()}
 
                     <div className="text-center mb-4 mt-4">
                       {featureDetails && featureDetails.type && (
                         <Link to="/features">
-                          <Button className={`${editFeature ? "gg-btn-outline mt-2 gg-mr-20" : "gg-btn-blue mt-2 gg-mr-20"}`}>{editFeature ? "Cancel" : "Back"}</Button>
+                          <Button
+                            className={`${editFeature ? "gg-btn-outline mt-2 gg-mr-20" : "gg-btn-blue mt-2 gg-mr-20"}`}
+                          >
+                            {editFeature ? "Cancel" : "Back"}
+                          </Button>
                         </Link>
                       )}
 

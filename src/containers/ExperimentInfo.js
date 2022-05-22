@@ -97,15 +97,21 @@ const ExperimentInfo = props => {
                     required={true}
                     disabled={experiment.isPublic || experimentId}
                   >
-                    <option value="">Select Sample</option>
-                    {sampleList.rows &&
-                      sampleList.rows.map((element, index) => {
-                        return (
-                          <option key={index} value={element.name}>
-                            {element.name}
-                          </option>
-                        );
-                      })}
+                    {experiment.isPublic || experimentId ? (
+                      <option value={experiment.sample}>{experiment.sample}</option>
+                    ) : (
+                      <>
+                        <option value="">Select Sample</option>
+                        {sampleList.rows &&
+                          sampleList.rows.map((element, index) => {
+                            return (
+                              <option key={index} value={element.name}>
+                                {element.name}
+                              </option>
+                            );
+                          })}
+                      </>
+                    )}
                   </Form.Control>
                   <Feedback message="Sample is required"></Feedback>
                 </Col>

@@ -6,7 +6,7 @@ import { Grants } from "../containers/Grants";
 const GrantsOnExp = props => {
   return (
     <>
-      {!props.isPublic ? (
+      {!props.fromPublicDatasetPage ? (
         <Accordion defaultActiveKey={0} className="mb-4">
           <Card>
             <Card.Header>
@@ -34,7 +34,7 @@ const GrantsOnExp = props => {
           </Card>
         </Accordion>
       ) : (
-        <Grants grants={props.grants} isPublic={props.isPublic} />
+        <Grants grants={props.grants} fromPublicDatasetPage={props.fromPublicDatasetPage} />
       )}
     </>
   );

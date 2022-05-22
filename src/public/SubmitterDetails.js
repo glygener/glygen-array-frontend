@@ -35,7 +35,7 @@ const SubmitterDetails = props => {
         setShowloading(false);
       });
     }
-  }, [props.username]);
+  }, [props.username, props.wsCall]);
 
   return (
     <>
@@ -46,15 +46,6 @@ const SubmitterDetails = props => {
         errorMessage={pageErrorMessage}
       />
       <CardLoader pageLoading={showloading} />
-
-      {/* Username
-    Name (First name, Last name) + Have a website icon that links to the user website
-
-Group name (if provided)
-
-Department (if provided)
-
-Organization/Institution */}
 
       {submitterinfo ? (
         <>

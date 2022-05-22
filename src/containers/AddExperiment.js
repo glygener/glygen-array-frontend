@@ -394,6 +394,7 @@ const AddExperiment = props => {
                           <Card.Body>
                             <DataTreeView
                               data={experiment}
+                              isPublic={experiment.isPublic}
                               experimentId={experimentId}
                               getExperiment={getExperiment}
                               deleteRow={deleteRow}

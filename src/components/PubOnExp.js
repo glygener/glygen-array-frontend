@@ -26,7 +26,7 @@ const PubOnExp = props => {
             </Card.Header>
             <Accordion.Collapse eventKey={0}>
               <Card.Body>
-                {!props.isPublic ? (
+                {!props.fromPublicDatasetPage ? (
                   <>
                     <Form.Group as={Row} controlId="publications" className="mt-2 mb-3">
                       <Col xs={12} lg={9}>
