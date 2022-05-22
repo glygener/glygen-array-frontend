@@ -93,7 +93,7 @@ const DataTreeView = props => {
                         <div className="rst__row">
                           <Row className="row_headline">
                             <Col>
-                              <strong>Slide:</strong> {slide.printedSlide.name}
+                              <strong>Slide:</strong> {slide.printedSlide && slide.printedSlide.name}
                             </Col>
                             {!fromPublicDatasetPage && !data.isPublic && (
                               <Col style={{ textAlign: "right" }}>
@@ -316,7 +316,7 @@ const DataTreeView = props => {
                                             <Col>
                                               <strong>Raw Data</strong>{" "}
                                               <span style={{ marginLeft: "20px" }}>
-                                                <strong>{rawData.metadata.name}</strong>
+                                                <strong>{rawData.metadata && rawData.metadata.name}</strong>
                                               </span>
                                               <span style={{ marginLeft: "20px" }}>
                                                 <strong>Status:</strong>
@@ -459,7 +459,9 @@ const DataTreeView = props => {
                                                   <Row className={"row_headline"}>
                                                     <Col>
                                                       <strong>Process Data</strong>{" "}
-                                                      <span style={{ marginLeft: "20px" }}>{pd.metadata.name}</span>
+                                                      <span style={{ marginLeft: "20px" }}>
+                                                        {pd.metadata && pd.metadata.name}
+                                                      </span>
                                                     </Col>
 
                                                     {!fromPublicDatasetPage && !data.isPublic && (
