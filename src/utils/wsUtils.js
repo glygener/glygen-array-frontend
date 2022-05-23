@@ -441,9 +441,9 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
             })
           );
 
-    if (!response.ok) {
-      throw new Error(`Error! status: ${response.status}`);
-    }
+    // if (!response.ok) {
+    //   throw new Error(`Error! status: ${response.status}`);
+    // }
 
     if (response.ok) {
       successFunction(response);

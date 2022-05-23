@@ -81,17 +81,14 @@ const AddMultipleGlycans = props => {
       setShowErrorSummary(false);
       setShowLoading(false);
       history.push("/glycans");
-
-      // history.push({
-      //   pathname: "/glycans/addMultipleGlycanDetails",
-      //   state: { uploadResponse: resp }
-      // });
     });
   }
   function glycanUploadError(response) {
     response.json().then(resp => {
-      // setPageErrorMessage("The file is invalid. Please verify the file and format selection before re-uploading.");
-      setPageErrorsJson(resp);
+      pageErrorMessage === "" && resp.errors.filter(e => e.objectName.includes("file")).length > 0
+        ? setPageErrorMessage("The file is invalid. Please verify the file and format selection before re-uploading.")
+        : setPageErrorsJson(resp);
+
       setShowErrorSummary(true);
       setShowLoading(false);
     });
@@ -103,6 +100,7 @@ const AddMultipleGlycans = props => {
         <title>{head.addMultiSlideLayout.title}</title>
         {getMeta(head.addMultiSlideLayout)}
       </Helmet>
+
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
@@ -123,10 +121,10 @@ const AddMultipleGlycans = props => {
               {showErrorSummary === true && (
                 <ErrorSummary
                   show={showErrorSummary}
-                  form="glycans"
+                  form={"glycans"}
                   errorJson={pageErrorsJson}
                   errorMessage={pageErrorMessage}
-                ></ErrorSummary>
+                />
               )}
 
               <Form noValidate onSubmit={e => handleSubmit(e)} className="mt-4 mb-4">
