@@ -161,7 +161,7 @@ const PublicMetadata = props => {
     return (
       <div
         style={{
-          marginRight: "15px"
+          marginRight: "15px",
         }}
       >
         <ReactTable
@@ -169,19 +169,19 @@ const PublicMetadata = props => {
           columns={[
             {
               Header: "Block Id",
-              accessor: "id"
+              accessor: "id",
             },
             {
               Header: "Row",
-              accessor: "row"
+              accessor: "row",
             },
             {
               Header: "Column",
-              accessor: "column"
+              accessor: "column",
             },
             {
               Header: "Spots",
-              accessor: "blockLayout.spots.length"
+              accessor: "blockLayout.spots.length",
             },
             {
               Header: "Blocklayout",
@@ -195,12 +195,21 @@ const PublicMetadata = props => {
                 >
                   {row.original.blockLayout.id}
                 </div>
-              )
-            }
+              ),
+            },
           ]}
           data={blocks}
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
+          minRows={0}
+          className="MyReactTableClass"
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available</strong>
+              </p>
+            ) : null
+          }
           showPaginationTop
           sortable={true}
         />

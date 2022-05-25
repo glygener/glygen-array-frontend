@@ -89,11 +89,7 @@ const ArraydatasetTables = props => {
           className={"-striped -highlight"}
           SubComponent={row => {
             return (
-              <div
-              // style={{
-              //   textIndent: "25px"
-              // }}
-              >
+              <div>
                 <ReactTable
                   data={[row.original.rawData]}
                   columns={[
@@ -163,7 +159,15 @@ const ArraydatasetTables = props => {
                   ]}
                   showPagination={false}
                   defaultPageSize={[row.original.rawData].length}
-                  className={"-striped -highlight"}
+                  minRows={0}
+                  NoDataComponent={({ state, ...rest }) =>
+                    !state?.loading ? (
+                      <p className="pt-2 text-center">
+                        <strong>No data available</strong>
+                      </p>
+                    ) : null
+                  }
+                  className={"-striped -highlight MyReactTableClass"}
                   SubComponent={row => getProcessedData(row.original.processedDataList)}
                 />
               </div>
@@ -280,6 +284,15 @@ const ArraydatasetTables = props => {
           },
         ]}
         defaultPageSize={data.length}
+        minRows={0}
+        className="MyReactTableClass"
+        NoDataComponent={({ state, ...rest }) =>
+          !state?.loading ? (
+            <p className="pt-2 text-center">
+              <strong>No data available</strong>
+            </p>
+          ) : null
+        }
         showPagination={false}
       />
     );
@@ -368,7 +381,7 @@ const ArraydatasetTables = props => {
               minWidth: 60,
             },
           ]}
-          className={"-striped -highlight"}
+          className={"-striped -highlight MyReactTableClass"}
           // pivotBy={["id"]}
           SubComponent={row => {
             return getSubComponent(row.original, true);

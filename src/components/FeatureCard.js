@@ -101,23 +101,23 @@ const FeatureCard = props => {
                   ? [
                       {
                         Header: "Position",
-                        accessor: "position"
+                        accessor: "position",
                       },
                       {
                         Header: "Amino Acid",
-                        accessor: "aminoAcid"
-                      }
+                        accessor: "aminoAcid",
+                      },
                     ]
                   : []),
                 {
                   Header: "Glytoucan Id",
                   accessor: "glycan",
-                  Cell: row => (row.value ? row.value.glytoucanId : "")
+                  Cell: row => (row.value ? row.value.glytoucanId : ""),
                 },
                 {
                   Header: "Name",
                   accessor: "glycan",
-                  Cell: row => (row.value ? row.value.name : "")
+                  Cell: row => (row.value ? row.value.name : ""),
                 },
                 {
                   Header: "Glycan",
@@ -133,11 +133,20 @@ const FeatureCard = props => {
                     ) : (
                       "No Glycan Selected"
                     ),
-                  minWidth: 150
-                }
+                  minWidth: 150,
+                },
               ]}
               data={feature.glycans}
               defaultPageSize={feature.glycans.length}
+              minRows={0}
+              className="MyReactTableClass"
+              NoDataComponent={({ state, ...rest }) =>
+                !state?.loading ? (
+                  <p className="pt-2 text-center">
+                    <strong>No data available</strong>
+                  </p>
+                ) : null
+              }
               showPagination={false}
             />
           )}

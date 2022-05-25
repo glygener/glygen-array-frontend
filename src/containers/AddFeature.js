@@ -2016,10 +2016,19 @@ const AddFeature = props => {
             },
           ]}
           data={featureAddState.glycans}
+          minRows={0}
+          className="MyReactTableClass"
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available</strong>
+              </p>
+            ) : null
+          }
           defaultPageSize={featureAddState.glycans.length}
           showPagination={false}
           showSearchBox
-        />
+       />
       </>
     );
   };
@@ -2163,6 +2172,15 @@ const AddFeature = props => {
             },
           ]}
           data={featureAddState.glycoPeptides}
+          minRows={0}
+          className="MyReactTableClass"
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available</strong>
+              </p>
+            ) : null
+          }
           defaultPageSize={featureAddState.glycoPeptides.length}
           showPagination={false}
           showSearchBox
@@ -2307,6 +2325,15 @@ const AddFeature = props => {
                   },
                 ]}
                 data={featureAddState.glycans}
+                minRows={0}
+                className="MyReactTableClass"
+                NoDataComponent={({ state, ...rest }) =>
+                  !state?.loading ? (
+                    <p className="pt-2 text-center">
+                      <strong>No data available</strong>
+                    </p>
+                  ) : null
+                }
                 defaultPageSize={featureAddState.glycans.length}
                 showPagination={false}
                 showSearchBox
@@ -2856,6 +2883,15 @@ const AddFeature = props => {
             featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN"
               ? featureAddState.glycans
               : featureAddState.rangeGlycans
+          }
+          minRows={0}
+          className="MyReactTableClass"
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available</strong>
+              </p>
+            ) : null
           }
           defaultPageSize={5}
           // showDeleteButton

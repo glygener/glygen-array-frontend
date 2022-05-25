@@ -43,19 +43,19 @@ const Files = props => {
               Header: () => <div className={"table-header"}>{"Data Type"}</div>,
               Cell: row => {
                 return row.original.file && getFileDataType(row, row.index);
-              }
+              },
             },
             {
               Header: () => <div className={"table-header"}>{"Name"}</div>,
-              Cell: row => row.original.file && row.original.file.originalName
+              Cell: row => row.original.file && row.original.file.originalName,
             },
             {
               Header: () => <div className={"table-header"}>{"Type"}</div>,
-              Cell: row => row.original.file && row.original.file.identifier
+              Cell: row => row.original.file && row.original.file.identifier,
             },
             {
               Header: () => <div className={"table-header"}>{"Size"}</div>,
-              Cell: row => row.original.file && row.original.file.fileSize
+              Cell: row => row.original.file && row.original.file.fileSize,
             },
             {
               Header: () => <div className={"table-header"}>{"Download"}</div>,
@@ -76,7 +76,7 @@ const Files = props => {
                       );
                     }}
                   />
-                )
+                ),
             },
             {
               Header: () => <div className={"table-header"}>{"Metadata"}</div>,
@@ -91,10 +91,19 @@ const Files = props => {
                     props.setEnableMetadata(true);
                   }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           defaultPageSize={listFiles.length}
+          minRows={0}
+          className="MyReactTableClass"
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available</strong>
+              </p>
+            ) : null
+          }
           loading={listFiles.length < 1 ? true : false}
           // loadingText={<CardLoader pageLoading={listFiles.length < 1} />}
           showPaginationTop={true}

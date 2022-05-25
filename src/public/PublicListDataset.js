@@ -117,8 +117,7 @@ const PublicListDataset = () => {
                 Cell: (row, index) => (
                   <div key={index} style={{ textAlign: "left", margin: "20px" }}>
                     <div>
-                      <strong>ID:</strong>{" "}
-                      <Link to={`/data/dataset/${row.original.id}`}>{row.original.id}</Link>
+                      <strong>ID:</strong> <Link to={`/data/dataset/${row.original.id}`}>{row.original.id}</Link>
                     </div>
                     <div>
                       <strong>Dataset Name: </strong>
@@ -156,8 +155,16 @@ const PublicListDataset = () => {
             pageSizeOptions={[5, 10, 25]}
             // defaultPageSize={listDataSet.length < 5 ? 5 : 15}
             defaultPageSize={listDataSet.length < 5 ? 5 : 1}
+            minRows={0}
+            className="-striped -highlight MyReactTableClass"
+            NoDataComponent={({ state, ...rest }) =>
+              !state?.loading ? (
+                <p className="pt-2 text-center">
+                  <strong>No data available</strong>
+                </p>
+              ) : null
+            }
             showPaginationTop
-            className={"-striped -highlight"}
             sortable={true}
           />
         </div>

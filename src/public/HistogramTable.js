@@ -108,7 +108,7 @@ const HistogramTable = props => {
                       : row.original.feature.glycans[0].glycan.id}
                   </div>
                 );
-              }
+              },
             },
             {
               Header: () => <div className={"table-header"}>{"Linker Name"}</div>,
@@ -148,12 +148,12 @@ const HistogramTable = props => {
                   </>
                 ) : (
                   <div key={index}></div>
-                )
+                ),
               // minWidth: 80
             },
             {
               Header: () => <div className={"table-header"}>{"Intensity RFU"}</div>,
-              accessor: "intensity.rfu"
+              accessor: "intensity.rfu",
             },
             {
               Header: () => <div className={"table-header"}>{"Structure Image"}</div>,
@@ -163,11 +163,20 @@ const HistogramTable = props => {
                   <StructureImage base64={row.original.feature.glycans[0].glycan.cartoon} />
                 </div>
               ),
-              minWidth: 300
-            }
+              minWidth: 300,
+            },
           ]}
           // className={"-striped -highlight"}
           defaultPageSize={5}
+          minRows={0}
+          className="MyReactTableClass"
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available</strong>
+              </p>
+            ) : null
+          }
           loading={listIntensity.length <= 1 ? true : false}
           loadingText={"loading..."}
           showPaginationTop={true}

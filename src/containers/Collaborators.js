@@ -14,19 +14,19 @@ const Collaborators = props => {
         columns={[
           {
             Header: "Username",
-            accessor: "name"
+            accessor: "name",
           },
           {
             Header: "FirstName",
-            accessor: "firstName"
+            accessor: "firstName",
           },
           {
             Header: "LastName",
-            accessor: "lastName"
+            accessor: "lastName",
           },
           {
             Header: "Organization",
-            accessor: "affiliation"
+            accessor: "affiliation",
           },
           {
             Header: "Actions",
@@ -46,10 +46,10 @@ const Collaborators = props => {
                 </LineTooltip>
               </div>
             ),
-            minWidth: 60
-          }
+            minWidth: 60,
+          },
         ]}
-        className={"-striped -highlight"}
+        className={"-striped -highlight MyReactTableClass"}
         defaultPageSize={5}
         // showPagination={false}
         minRows={0}

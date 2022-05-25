@@ -60,6 +60,15 @@ const AddMultipleGlycanDetails = props => {
             pageSizeOptions={[5, 10, 25]}
             defaultPageSize={5}
             pageSize={5}
+            minRows={0}
+            className="MyReactTableClass"
+            NoDataComponent={({ state, ...rest }) =>
+              !state?.loading ? (
+                <p className="pt-2 text-center">
+                  <strong>No data available</strong>
+                </p>
+              ) : null
+            }
             //loading={loading}
             keyColumn="id"
             showPaginationTop

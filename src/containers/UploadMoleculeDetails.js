@@ -31,13 +31,13 @@ const UploadMoleculeDetails = props => {
                     {
                       Header: "Name",
                       accessor: "name",
-                      Cell: row => getToolTip(row.original.name)
+                      Cell: row => getToolTip(row.original.name),
                       // minWidth: 50,
                     },
                     {
                       Header: displayNames.linker.PUBCHEM_ID,
                       accessor: "pubChemId",
-                      Cell: row => getToolTip(row.original.pubChemId)
+                      Cell: row => getToolTip(row.original.pubChemId),
                       // minWidth: 70,
                     },
                     {
@@ -45,13 +45,22 @@ const UploadMoleculeDetails = props => {
                       accessor: "imageURL",
                       // eslint-disable-next-line react/prop-types
                       Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
-                      minWidth: 150
-                    }
+                      minWidth: 150,
+                    },
                   ]
             }
             pageSizeOptions={[5, 10, 25]}
             defaultPageSize={5}
             pageSize={5}
+            minRows={0}
+            className="MyReactTableClass"
+            NoDataComponent={({ state, ...rest }) =>
+              !state?.loading ? (
+                <p className="pt-2 text-center">
+                  <strong>No data available</strong>
+                </p>
+              ) : null
+            }
             //loading={loading}
             keyColumn="id"
             showPaginationTop

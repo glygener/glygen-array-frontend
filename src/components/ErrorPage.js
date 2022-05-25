@@ -96,6 +96,15 @@ const ErrorPage = props => {
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
           pageSize={errorMessage.errors.length > 5 ? 5 : errorMessage.errors.length}
+          minRows={0}
+          className="MyReactTableClass"
+          NoDataComponent={({ state, ...rest }) =>
+            !state?.loading ? (
+              <p className="pt-2 text-center">
+                <strong>No data available</strong>
+              </p>
+            ) : null
+          }
           keyColumn="id"
           showPaginationTop
           sortable={true}
