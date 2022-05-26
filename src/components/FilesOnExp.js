@@ -201,7 +201,7 @@ const FilesOnExp = props => {
           data={props.files}
           columns={[
             {
-              Header: "File name",
+              Header: "File Name",
               accessor: "originalName",
               Cell: (row, index) => {
                 return getToolTip(row.original.originalName);
@@ -209,7 +209,7 @@ const FilesOnExp = props => {
               sortable: true
             },
             {
-              Header: "File type",
+              Header: "File Type",
               accessor: "fileFormat",
               Cell: (row, index) => {
                 return getToolTip(row.original.fileFormat);
@@ -217,7 +217,7 @@ const FilesOnExp = props => {
               sortable: true
             },
             {
-              Header: "File size in kB",
+              Header: "File Size in KB",
               accessor: "fileSize",
               sortable: true,
               Cell: (row, index) => {

@@ -8,6 +8,7 @@ import { OverlayTrigger, Popover, Row, Col, Form } from "react-bootstrap";
 import CardLoader from "../components/CardLoader";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Title, FormLabel } from "../components/FormControls";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const HistogramTable = props => {
   let { dataset } = props;
@@ -98,7 +99,13 @@ const HistogramTable = props => {
           data={listIntensity.rows}
           columns={[
             {
-              Header: () => <div className={"table-header"}>{"GlycanId / GlytoucanId"}</div>,
+              Header: row => (
+              <div className="table-header">
+                <LineTooltip text="Glycan ID/Glytoucan ID">
+                  <span>Glycan ID/Glytoucan ID</span>
+                </LineTooltip>
+              </div>
+              ),
               accessor: "feature.glycans[0].glycan.id",
               Cell: (row, index) => {
                 return (
@@ -111,7 +118,14 @@ const HistogramTable = props => {
               },
             },
             {
-              Header: () => <div className={"table-header"}>{"Linker Name"}</div>,
+              // Header: () => <div className={"table-header"}>{"Linker Name"}</div>,
+              Header: row => (
+                <div className="table-header">
+                  <LineTooltip text="Linker Name">
+                    <span>Linker Name</span>
+                  </LineTooltip>
+                </div>
+                ),
               // accessor: "feature.linker.name",
               Cell: (row, index) =>
                 row.original.feature.linker ? (
@@ -152,11 +166,25 @@ const HistogramTable = props => {
               // minWidth: 80
             },
             {
-              Header: () => <div className={"table-header"}>{"Intensity RFU"}</div>,
+              // Header: () => <div className={"table-header"}>{"Intensity RFU"}</div>,
+              Header: row => (
+                <div className="table-header">
+                  <LineTooltip text="Intensity RFU">
+                    <span>Intensity RFU</span>
+                  </LineTooltip>
+                </div>
+                ),
               accessor: "intensity.rfu",
             },
             {
-              Header: () => <div className={"table-header"}>{"Structure Image"}</div>,
+              // Header: () => <div className={"table-header"}>{"Structure Image"}</div>,
+              Header: row => (
+                <div className="table-header">
+                  <LineTooltip text="Structure Image">
+                    <span>Structure Image</span>
+                  </LineTooltip>
+                </div>
+                ),
               accessor: "cartoon",
               Cell: row => (
                 <div style={{ height: "100px" }}>

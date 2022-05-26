@@ -7,6 +7,7 @@ import { PageHeading } from "../components/FormControls";
 import Container from "@material-ui/core/Container";
 import { Card, Button } from "react-bootstrap";
 import { addCommas } from "../utils/commonUtils";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const AddMultipleGlycanDetails = props => {
   const history = useHistory();
@@ -28,19 +29,39 @@ const AddMultipleGlycanDetails = props => {
                 ? columns
                 : [
                     {
-                      Header: "Internal ID",
+                      // Header: "Internal ID",
+                      Header: row => (
+                        <LineTooltip text="Internal ID">
+                          <span>Internal ID</span>
+                        </LineTooltip>
+                      ),
                       accessor: "internalId"
                     },
                     {
-                      Header: "GlyTouCan ID",
+                      // Header: "GlyTouCan ID",
+                      Header: row => (
+                        <LineTooltip text="GlyTouCan ID">
+                          <span>GlyTouCan ID</span>
+                        </LineTooltip>
+                      ),
                       accessor: "glytoucanId"
                     },
                     {
-                      Header: "Glycan Name",
+                      // Header: "Glycan Name",
+                      Header: row => (
+                        <LineTooltip text="Glycan Name">
+                          <span>Glycan Name</span>
+                        </LineTooltip>
+                      ),
                       accessor: "name"
                     },
                     {
-                      Header: "Structure Image",
+                      // Header: "Structure Image",
+                      Header: row => (
+                        <LineTooltip text="Structure Image">
+                          <span>Structure Image</span>
+                        </LineTooltip>
+                      ),
                       accessor: "cartoon",
                       sortable: false,
                       // eslint-disable-next-line react/prop-types
@@ -48,7 +69,12 @@ const AddMultipleGlycanDetails = props => {
                       minWidth: 200
                     },
                     {
-                      Header: "Monoisotopic Mass (Da)",
+                      // Header: "Monoisotopic Mass (Da)",
+                      Header: row => (
+                        <LineTooltip text="Monoisotopic Mass (Da)">
+                          <span>Monoisotopic Mass (Da)</span>
+                        </LineTooltip>
+                      ),
                       accessor: "mass",
                       headerStyle: { whiteSpace: "pre-wrap" },
 

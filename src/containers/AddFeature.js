@@ -2725,7 +2725,12 @@ const AddFeature = props => {
         <ReactTable
           columns={[
             {
-              Header: "Name",
+              // Header: "Name",
+              Header: row => (
+                <LineTooltip text="Name">
+                  <span>Name</span>
+                </LineTooltip>
+              ),
               accessor: "name",
               Cell: row => getToolTip(row.original.name),
               sortMethod: (a, b) => {
@@ -2736,7 +2741,12 @@ const AddFeature = props => {
               },
             },
             {
-              Header: "Structure Image",
+              // Header: "Structure Image",
+              Header: row => (
+                <LineTooltip text="Structure Image">
+                  <span>Structure Image</span>
+                </LineTooltip>
+              ),
               accessor: "cartoon",
               Cell: row => {
                 return row.value ? <StructureImage base64={row.value} /> : "";
@@ -2745,7 +2755,12 @@ const AddFeature = props => {
               minWidth: 200,
             },
             {
-              Header: "Source",
+              // Header: "Source",
+              Header: row => (
+                <LineTooltip text="Source">
+                  <span>Source</span>
+                </LineTooltip>
+              ),
               accessor: "source.type",
               Cell: row => {
                 return row.original && row.original.source
@@ -2764,7 +2779,12 @@ const AddFeature = props => {
               },
             },
             {
-              Header: "Reducing end state",
+              // Header: "Reducing End State",
+              Header: row => (
+                <LineTooltip text="Reducing End State">
+                  <span>Reducing End State</span>
+                </LineTooltip>
+              ),
               accessor: "opensRing",
               Cell: row => {
                 return getToolTip(getReducingEndState(row.value));
@@ -2780,7 +2800,12 @@ const AddFeature = props => {
             ...(featureAddState.type === "GLYCO_PEPTIDE" || featureAddState.type === "GLYCO_PROTEIN"
               ? [
                   {
-                    Header: "Range",
+                    // Header: "Range",
+                    Header: row => (
+                      <LineTooltip text="Range">
+                        <span>Range</span>
+                      </LineTooltip>
+                    ),
                     accessor: "range",
                     Cell: row => {
                       return row.original && row.original.min && row.original.max
@@ -2802,7 +2827,12 @@ const AddFeature = props => {
             featureAddState.type === "GLYCO_PROTEIN"
               ? [
                   {
-                    Header: "Linker",
+                    // Header: "Linker",
+                    Header: row => (
+                      <LineTooltip text="Linker">
+                        <span>Linker</span>
+                      </LineTooltip>
+                    ),
                     accessor: "linker",
                     Cell: (row, index) => {
                       return row.original.linker ? (
@@ -2846,7 +2876,12 @@ const AddFeature = props => {
                 ]
               : []),
             {
-              Header: "Actions",
+              // Header: "Actions",
+              Header: row => (
+                <LineTooltip text="Actions">
+                  <span>Actions</span>
+                </LineTooltip>
+              ),
               Cell: (row, index) => {
                 return (
                   <>

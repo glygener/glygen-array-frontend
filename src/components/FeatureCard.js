@@ -110,7 +110,7 @@ const FeatureCard = props => {
                     ]
                   : []),
                 {
-                  Header: "Glytoucan Id",
+                  Header: "Glytoucan ID",
                   accessor: "glycan",
                   Cell: row => (row.value ? row.value.glytoucanId : ""),
                 },

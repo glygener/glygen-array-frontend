@@ -107,8 +107,7 @@ const GlycanList = (props) => {
         <Loading show={showLoading} />
         <div className="content-box-md text-center horizontal-heading">
           <h1 className="page-heading">
-            <span>Details for Glycan </span>{" "}
-            <strong>{glycanData && glycanData.id && <> {glycanData.id}</>}</strong>
+            <span>Details for Glycan </span> <strong>{glycanData && glycanData.id && <> {glycanData.id}</>}</strong>
           </h1>
         </div>
 
@@ -132,12 +131,7 @@ const GlycanList = (props) => {
           />
         )}
         {/*  general */}
-        <Accordion
-          id="General"
-          defaultActiveKey="0"
-          className="panel-width"
-          style={{ padding: "20px 0" }}
-        >
+        <Accordion id="General" defaultActiveKey="0" className="panel-width" style={{ padding: "20px 0" }}>
           <Card>
             <Card.Header className="panelHeadBgr">
               <h4 className="gg-green d-inline">General</h4>
@@ -156,16 +150,10 @@ const GlycanList = (props) => {
                 {/* image */}
                 {glycanData && glycanData.cartoon ? (
                   // <div className="mb-1">
-                  <StructureImage
-                    style={{ maxWidth: "30%" }}
-                    base64={glycanData.cartoon}
-                  ></StructureImage>
+                  <StructureImage style={{ maxWidth: "30%" }} base64={glycanData.cartoon}></StructureImage>
                 ) : (
                   // </div>
-                  <StructureImage
-                    style={{ minWidth: "20%" }}
-                    imgUrl={glygenNotFoundSmall}
-                  ></StructureImage>
+                  <StructureImage style={{ minWidth: "20%" }} imgUrl={glygenNotFoundSmall}></StructureImage>
                 )}
                 {/* glycanID */}
                 {glycanData && glycanData.id && (
@@ -224,43 +212,68 @@ const GlycanList = (props) => {
               <GlygenTable
                 columns={[
                   {
-                    Header: "Dataset ID",
+                    // Header: "Dataset ID",
+                   Header: row => (
+                      <LineTooltip text="Dataset ID">
+                        <span>Dataset ID</span>
+                      </LineTooltip>
+                    ),
                     accessor: "id",
-                    Cell: (row) => (
+                    Cell: row => (
                       <LineTooltip text="View Dataset Details">
                         <Link to={"/data/dataset/" + row.original.id}>{row.original.id}</Link>
                       </LineTooltip>
                     ),
                   },
                   {
-                    Header: "Dataset Name",
+                    // Header: "Dataset Name",
+                    Header: row => (
+                      <LineTooltip text="Dataset Name">
+                        <span>Dataset Name</span>
+                      </LineTooltip>
+                    ),
                     accessor: "name",
                     minWidth: 150,
-                    Cell: (row) => (
+                    Cell: row => (
                       <LineTooltip text={row.original.name}>
                         <span>{row.original.name}</span>
                       </LineTooltip>
                     ),
                   },
                   {
-                    Header: "Sample",
+                    // Header: "Sample",
+                    Header: row => (
+                      <LineTooltip text="Sample">
+                        <span>Sample</span>
+                      </LineTooltip>
+                    ),
                     accessor: "sample.name",
                     minWidth: 300,
-                    Cell: (row) => (
+                    Cell: row => (
                       <LineTooltip text={row.original.sample.name}>
                         <span>{row.original.sample.name}</span>
                       </LineTooltip>
                     ),
                   },
                   {
-                    Header: "Owner",
+                    // Header: "Owner",
+                    Header: row => (
+                      <LineTooltip text="Owner">
+                        <span>Owner</span>
+                      </LineTooltip>
+                    ),
                     accessor: "user.name",
                   },
                   {
-                    Header: "Date Published",
+                    // Header: "Date Published",
+                    Header: row => (
+                      <LineTooltip text="Date Published">
+                        <span>Date Published</span>
+                      </LineTooltip>
+                    ),
                     accessor: "dateCreated",
                     minWidth: 150,
-                    Cell: (row) => <>{getDateTime(row.original.dateCreated)}</>,
+                    Cell: row => <>{getDateTime(row.original.dateCreated)}</>,
                   },
                 ]}
                 defaultPageSize={10}

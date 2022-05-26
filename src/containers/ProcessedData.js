@@ -121,7 +121,7 @@ const ProcessedData = props => {
         data={props.data}
         columns={[
           {
-            Header: "Id",
+            Header: "ID",
             accessor: "id"
           },
           {

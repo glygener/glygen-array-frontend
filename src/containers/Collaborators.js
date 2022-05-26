@@ -13,23 +13,48 @@ const Collaborators = props => {
         data={props.listCollaborators}
         columns={[
           {
-            Header: "Username",
+            // Header: "Username",
+            Header: row => (
+              <LineTooltip text="Username">
+                <span>Username</span>
+              </LineTooltip>
+            ),
             accessor: "name",
           },
           {
-            Header: "FirstName",
+            // Header: "FirstName",
+            Header: row => (
+              <LineTooltip text="FirstName">
+                <span>FirstName</span>
+              </LineTooltip>
+            ),
             accessor: "firstName",
           },
           {
-            Header: "LastName",
+            // Header: "LastName",
+            Header: row => (
+              <LineTooltip text="LastName">
+                <span>LastName</span>
+              </LineTooltip>
+            ),
             accessor: "lastName",
           },
           {
-            Header: "Organization",
+            // Header: "Organization",
+            Header: row => (
+              <LineTooltip text="Organization">
+                <span>Organization</span>
+              </LineTooltip>
+            ),
             accessor: "affiliation",
           },
           {
-            Header: "Actions",
+            // Header: "Actions",
+            Header: row => (
+              <LineTooltip text="Actions">
+                <span>Status</span>
+              </LineTooltip>
+            ),
             Cell: (row, index) => (
               <div style={{ textAlign: "center" }}>
                 <LineTooltip text="Delete Collaborator">

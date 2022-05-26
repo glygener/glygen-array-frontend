@@ -9,6 +9,7 @@ import { AddBlockLayout } from "../containers/AddBlockLayout";
 import { Row, Col, Button, Spinner, Accordion, Card } from "react-bootstrap";
 import { ContextAwareToggle } from "../utils/commonUtils";
 import { scrollToTopIcon } from "../utils/commonUtils";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const PublicMetadata = props => {
   // const [openSlide, setOpenSlide] = useState("");
@@ -168,23 +169,48 @@ const PublicMetadata = props => {
           style={{ textAlign: "center" }}
           columns={[
             {
-              Header: "Block Id",
+              // Header: "Block ID",
+              Header: row => (
+                <LineTooltip text="Block ID">
+                  <span>Block ID</span>
+                </LineTooltip>
+              ),
               accessor: "id",
             },
             {
-              Header: "Row",
+              // Header: "Row",
+              Header: row => (
+                <LineTooltip text="Row">
+                  <span>Row</span>
+                </LineTooltip>
+              ),
               accessor: "row",
             },
             {
-              Header: "Column",
+              // Header: "Column",
+              Header: row => (
+                <LineTooltip text="Column">
+                  <span>Column</span>
+                </LineTooltip>
+              ),
               accessor: "column",
             },
             {
-              Header: "Spots",
+              // Header: "Spots",
+              Header: row => (
+                <LineTooltip text="Spots">
+                  <span>Spots</span>
+                </LineTooltip>
+              ),
               accessor: "blockLayout.spots.length",
             },
             {
-              Header: "Blocklayout",
+              // Header: "Blocklayout",
+              Header: row => (
+                <LineTooltip text="Blocklayout">
+                  <span>Blocklayout</span>
+                </LineTooltip>
+              ),
               // accessor: "blockLayout.id"
               // eslint-disable-next-line react/display-name
               Cell: (row, index) => (

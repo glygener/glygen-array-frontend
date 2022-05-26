@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { downloadFile } from "../utils/commonUtils";
 import "../containers/ArraydatasetTable.css";
 // import CardLoader from "../components/CardLoader";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const ArraydatasetTables = props => {
   const history = useHistory();
@@ -334,14 +335,24 @@ const ArraydatasetTables = props => {
           data={props.dataset.slides}
           columns={[
             {
-              Header: "Type",
+              // Header: "Type",
+              Header: row => (
+                <LineTooltip text="Type">
+                  <span>Type</span>
+                </LineTooltip>
+              ),
               accessor: d => d.id,
               id: "id",
               Cell: () => "Slide",
               minWidth: 80,
             },
             {
-              Header: "Name / FileName",
+              // Header: "Name / FileName",
+              Header: row => (
+                <LineTooltip text="Name/FileName">
+                  <span>Name/FileName</span>
+                </LineTooltip>
+              ),
               accessor: "metadata.file.originalName",
               minWidth: 100,
               Cell: row =>
@@ -352,12 +363,22 @@ const ArraydatasetTables = props => {
                 ),
             },
             {
-              Header: "Status",
+              // Header: "Status",
+              Header: row => (
+                <LineTooltip text="Status">
+                  <span>Status</span>
+                </LineTooltip>
+              ),
               accessor: "status",
               minWidth: 60,
             },
             {
-              Header: "Comment",
+              // Header: "Comment",
+              Header: row => (
+                <LineTooltip text="Comment">
+                  <span>Comment</span>
+                </LineTooltip>
+              ),
               accessor: "comment",
               Cell: (row, index) => {
                 getComments(row.original.printedSlide.name, row.original.printedSlide.id, index);
@@ -365,7 +386,12 @@ const ArraydatasetTables = props => {
               minWidth: 60,
             },
             {
-              Header: "Actions",
+              // Header: "Actions",
+              Header: row => (
+                <LineTooltip text="Action">
+                  <span>Action</span>
+                </LineTooltip>
+              ),
               Cell: (row, index) => (
                 <div style={{ textAlign: "center" }}>
                   <FontAwesomeIcon
