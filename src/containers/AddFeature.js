@@ -1220,7 +1220,7 @@ const AddFeature = props => {
       user: {
         name: window.localStorage.getItem("loggedinuser"),
       },
-      template: "Feature Feature",
+      template: "Default Feature",
       descriptors: descriptors,
       descriptorGroups: descriptorGroups,
       id: "",

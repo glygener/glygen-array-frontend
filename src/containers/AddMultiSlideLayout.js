@@ -336,7 +336,7 @@ const AddMultiSlideLayout = props => {
           fileFolder: uploadedFile.fileFolder,
           fileFormat: uploadedFile.fileFormat
         },
-        slideLayouts: rowSelected
+        slideLayout: rowSelected[0]
       },
       importSlideLayoutsFromLibrarySuccess,
       importSlideLayoutsFromLibraryError
