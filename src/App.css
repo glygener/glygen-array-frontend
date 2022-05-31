@@ -47,7 +47,7 @@ hr {
 .page-heading {
   color: var(--gg-blue);
   text-align: center;
-  font-weight: 700;
+  /* font-weight: 700; */
 }
 .horizontal-heading h1 {
   font-size: 38px;

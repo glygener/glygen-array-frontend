@@ -86,11 +86,7 @@ const Title = (props) => {
   Title.propTypes = {
     title: PropTypes.string.isRequired,
   };
-  return (
-    <div className="content-box-md">
-      <h1 className="page-heading">{props.title}</h1>
-    </div>
-  );
+  return <h2 className="page-heading">{props.title}</h2>;
 };
 
 const PageHeading = (props) => {

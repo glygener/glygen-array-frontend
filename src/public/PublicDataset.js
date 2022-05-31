@@ -65,39 +65,35 @@ const PublicDataset = () => {
   const getDetails = () => {
     return (
       <>
-        <div style={{ textAlign: "left", marginLeft: "15px" }}>
-          <span className={"dataset-subheadings"}>Title</span>
-          <br />
-          {dataset.name && <div>{dataset.name}</div>}
-          <br />
-
-          <span className={"dataset-subheadings"}>Description</span>
-          <br />
-          {dataset.description && (
-            <div className={"description"}>
-              {getDescription(dataset.description)}
-              <button className={"more-less"} onClick={() => setDescOpen(!descOpen)}>
-                {dataset.description.length > 150 && !descOpen ? `more` : descOpen ? `less` : ``}
-              </button>
-            </div>
-          )}
-          <br />
-
-          <span className={"dataset-subheadings"}>Submission Date</span>
-          <br />
-          {dataset.dateCreated && <div>{getDateCreated(dataset.dateCreated)}</div>}
-          <br />
-
-          <span className={"dataset-subheadings"}>Release Date</span>
-          <br />
-          {dataset.dateAddedToLibrary && <div>{getDateCreated(dataset.dateAddedToLibrary)}</div>}
-
-          <br />
-          <span className={"dataset-subheadings"}>Keywords</span>
-          <KeywordsOnExp keywords={dataset.keywords} fromPublicDatasetPage={true} />
-
-          <br />
+        <div>
+          <strong>Dataset Name: </strong>
+          {dataset.name}
         </div>
+        <div>
+          <strong>Submission Date: </strong>
+          {getDateCreated(dataset.dateCreated)}
+        </div>
+        <div>
+          <strong>Release Date: </strong>
+          {getDateCreated(dataset.dateAddedToLibrary)}
+        </div>
+        {!dataset.keywords ? (
+          <div>
+            <strong>Keywords: </strong>
+            <KeywordsOnExp keywords={dataset.keywords} fromPublicDatasetPage={true} />
+          </div>
+        ) : (
+          ""
+        )}
+        {dataset.description && (
+          <div>
+            <strong>Description: </strong>
+            {getDescription(dataset.description)}
+            <button className={"more-less"} onClick={() => setDescOpen(!descOpen)}>
+              {dataset.description.length > 150 && !descOpen ? `more` : descOpen ? `less` : ``}
+            </button>
+          </div>
+        )}
       </>
     );
   };
@@ -122,99 +118,99 @@ const PublicDataset = () => {
         />
       )}
 
-      <div
-        style={{
-          margin: "0 20px 25px"
-        }}
-      >
+      <div className="ml-4 mr-3 mt-3 mb-3">
         {!enableMetadata && dataset ? (
           <>
             <Row>
-              <Col md={8}>
-                <Card>
-                  <Title title={"Summary"} />
-                  {getDetails()}
+              <Col md={6}>
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Title title="Summary" />
+                    {getDetails()}
+                  </Card.Body>
                 </Card>
-              </Col>
-              <Col md={4}>
-                <Card>
-                  <Title title={"Submitter"} />
-                  {dataset.user && dataset.user.name ? (
-                    <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
-                  ) : null}
-                </Card>
-              </Col>
-            </Row>
-            &nbsp;
-            <Row>
-              <Col md={8}>
-                <Card>
-                  <HistogramTable dataset={dataset} />
-                </Card>
-              </Col>
-              <Col>
-                <Card>
-                  <Title title={"Samples"} />
-                  {dataset.sample && dataset.sample.id ? (
-                    <MetadataKeyPairs metadataId={dataset.sample.id} wsCall={"getpublicsample"} />
-                  ) : null}
-                </Card>
-                <br />
-                <Card>
-                  <Title title={"Grants"} />
-                  {/* Grants */}
-                  <GrantsOnExp grants={dataset.grants} fromPublicDatasetPage={true} />
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Title title="Samples" />
+                    {dataset.sample && dataset.sample.id ? (
+                      <MetadataKeyPairs metadataId={dataset.sample.id} wsCall={"getpublicsample"} />
+                    ) : null}
+                  </Card.Body>
                 </Card>
               </Col>
             </Row>
-            &nbsp;
-            <Row>
-              <Col md={8}>
-                <Card>
-                  <Title title={"Files"} />
-                  {/* <Files
+            <Card className="mb-3">
+              <Card.Body>
+                <HistogramTable dataset={dataset} />
+              </Card.Body>
+            </Card>
+            <Card className="mb-3">
+              <Card.Body>
+                <Title title="Files" />
+                {/* <Files
                     dataset={dataset}
                     setEnableMetadata={setEnableMetadata}
                     setPageErrorsJson={setPageErrorsJson}
                     setPageErrorMessage={setPageErrorMessage}
                     setShowErrorSummary={setShowErrorSummary}
                   /> */}
-                  <Row>
-                    <div
-                      style={{
-                        width: "70%"
-                      }}
-                    >
-                      <DataTreeView
-                        data={dataset}
-                        experimentId={dataset.id}
-                        fromPublicDatasetPage={true}
-                        setSelectedTreeData={setSelectedTreeData}
-                      />
-                    </div>
-                    <div>{selectedTreeData && <DataView data={selectedTreeData} />}</div>
-                  </Row>
-                </Card>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={8}>
-                <FilesOnExp files={dataset.files} fromPublicDatasetPage={true} />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={8}>
-                <PubOnExp publications={dataset.publications} fromPublicDatasetPage={true} />
-              </Col>
-            </Row>
-            <br />
-            <Row>
-              <Col md={{ span: 2, offset: 5 }}>
-                <Button style={{ width: "60%" }} onClick={() => history.push("/data")}>
-                  Back
-                </Button>
-              </Col>
-            </Row>
+                <Row>
+                  <Col md={8}>
+                    <DataTreeView
+                      data={dataset}
+                      experimentId={dataset.id}
+                      fromPublicDatasetPage={true}
+                      setSelectedTreeData={setSelectedTreeData}
+                    />
+                  </Col>
+                  <Col>{selectedTreeData && <DataView data={selectedTreeData} />}</Col>
+                </Row>
+              </Card.Body>
+            </Card>
+            <Card className="mb-3">
+              <Card.Body>
+                <Title title="Supplementary Files" />
+                {!dataset.files ? (
+                  <FilesOnExp files={dataset.files} fromPublicDatasetPage={true} />
+                ) : (
+                  <span>No data available</span>
+                )}
+              </Card.Body>
+            </Card>
+            <Card className="mb-3">
+              <Card.Body>
+                <Title title="Publications" />
+                {!dataset.publications ? (
+                  <PubOnExp publications={dataset.publications} fromPublicDatasetPage={true} />
+                ) : (
+                  <span>No data available</span>
+                )}
+              </Card.Body>
+            </Card>
+            <Card className="mb-3">
+              <Card.Body>
+                <Title title="Submitter" />
+                {dataset.user && dataset.user.name ? (
+                  <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
+                ) : null}
+              </Card.Body>
+            </Card>
+
+            <Card className="mb-3">
+              <Card.Body>
+                <Title title="Grants" />
+                {!dataset.grants ? (
+                  <GrantsOnExp grants={dataset.grants} fromPublicDatasetPage={true} />
+                ) : (
+                  <span>No data available</span>
+                )}
+              </Card.Body>
+            </Card>
+            <div className="text-center mb-2 mt-2">
+              <Button className="gg-btn-blue" onClick={() => history.push("/data")}>
+                Back
+              </Button>
+            </div>
           </>
         ) : (
           enableMetadata && <PublicMetadata dataset={dataset} setEnableMetadata={setEnableMetadata} />

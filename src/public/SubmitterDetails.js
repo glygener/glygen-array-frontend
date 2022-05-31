@@ -49,36 +49,37 @@ const SubmitterDetails = props => {
 
       {submitterinfo ? (
         <>
-          <div style={{ textAlign: "left", marginLeft: "15px" }}>
-            <span className={"dataset-subheadings"}>Username</span>
-            <div>{submitterinfo.userName}</div>
-            <br />
-
-            <span className={"dataset-subheadings"}>Name</span>
-            <div
-              style={{
-                textTransform: "uppercase"
-              }}
-            >
-              {`${submitterinfo.firstName}, ${submitterinfo.lastName}`}
-            </div>
-            <br />
-
-            <span className={"dataset-subheadings"}>Group name</span>
-            <div>{submitterinfo.groupName}</div>
-            <br />
-
-            <span className={"dataset-subheadings"}>Department</span>
-            <div>{submitterinfo.department}</div>
-            <br />
-
-            <span className={"dataset-subheadings"}>Institution</span>
-            <div>{submitterinfo.affiliation}</div>
-            <br />
+          <div>
+            <strong>Username: </strong>
+            {submitterinfo.userName}
           </div>
+          <div>
+            <strong>Full Name: </strong>
+            <span
+              style={{ textTransform: "capitalize" }}
+            >{`${submitterinfo.firstName} ${submitterinfo.lastName}`}</span>
+          </div>
+          {submitterinfo.groupName && (
+            <div>
+              <strong>Group Name: </strong>
+              {submitterinfo.groupName}
+            </div>
+          )}
+          {submitterinfo.department && (
+            <div>
+              <strong>Department: </strong>
+              {submitterinfo.department}
+            </div>
+          )}
+          {submitterinfo.affiliation && (
+            <div>
+              <strong>Institution: </strong>
+              {submitterinfo.affiliation}
+            </div>
+          )}
         </>
       ) : (
-        <h4 style={{ paddingTop: "50px" }}>No Data Available</h4>
+        <span>No data available</span>
       )}
     </>
   );

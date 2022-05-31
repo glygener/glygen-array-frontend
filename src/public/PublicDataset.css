@@ -57,7 +57,7 @@
 .description {
   text-align: justify;
   margin-right: 20px;
-  font-size: larger;
+  /* font-size: larger; */
   /*  textIndent: "50px" */
 }
 

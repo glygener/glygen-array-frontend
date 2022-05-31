@@ -79,7 +79,7 @@ const MetadataKeyPairs = props => {
                   color: "steelblue",
                   fontWeight: "bold",
                   // backgroundColor: "aliceblue",
-                  fontSize: "x-large"
+                  fontSize: "x-large",
                 }}
               >
                 {descriptor.key.name.toUpperCase()}
@@ -97,7 +97,7 @@ const MetadataKeyPairs = props => {
                       fontWeight: "bold",
                       // backgroundColor: "aliceblue",
                       fontSize: "x-large",
-                      textIndent: "50px"
+                      textIndent: "50px",
                     }}
                   >
                     {subdesc.key.name.toUpperCase()}
@@ -122,7 +122,7 @@ const MetadataKeyPairs = props => {
 
     metadataPairs = simpleDescKeyValues.concat(groupDescKeyValues);
 
-    return metadataPairs.length > 1 ? metadataPairs : <h4 style={{ paddingTop: "50px" }}>No Data Available</h4>;
+    return metadataPairs.length > 1 ? metadataPairs : <span>No data available</span>;
   };
 
   const getPairTable = (name, value) => {
@@ -154,7 +154,7 @@ const MetadataKeyPairs = props => {
   return (
     <>
       <CardLoader pageLoading={showloading} />
-      <div style={{ marginLeft: "15px", marginRight: "15px" }}>{metadata && getMetadataDetails(metadata)}</div>
+      <div>{metadata && getMetadataDetails(metadata)}</div>
     </>
   );
 };
