@@ -76,6 +76,8 @@ import { PrintRun } from "./containers/PrintRun";
 import { UploadMolecules } from "./containers/UploadMolecules";
 import { UploadMoleculeDetails } from "./containers/UploadMoleculeDetails";
 import wikiHelpTooltip from "./appData/wikiHelpTooltip";
+import "./containers/Contribute.css";
+import { Col, Row } from "react-bootstrap";
 
 const Routes = props => {
   const routes = [
@@ -781,13 +783,15 @@ const Routes = props => {
     <>
       <Switch>
         {routes.map((element, index) => {
-          return <Route key={index} path={element.path} exact={element.exact} render={element.sidebar} />;
-        })}
-      </Switch>
-
-      <Switch>
-        {routes.map((element, index) => {
-          return <Route key={index} path={element.path} exact={element.exact} render={element.main} />;
+          return <Route key={index} path={element.path} exact={element.exact} render={() => 
+            <>
+          {element.sidebar() !== "" && <Row>
+            <Col sm={12} md={12} lg={12} xl={2}>{element.sidebar()}</Col>
+            <Col sm={12} md={12} lg={12} xl={10}>{element.main()}</Col>
+          </Row>}
+          {element.sidebar() === "" && (element.main())}
+          </>
+        } />;
         })}
       </Switch>
       {/* <Switch>

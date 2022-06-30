@@ -32,8 +32,8 @@ export default function Footer() {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <div className="gg-blue-bg gg-align-center gg-footer">
-        <Container maxWidth="xl" className="justify-content-center">
+      <div className="gg-blue-bg gg-align-center gg-footer align-right-header">
+        <Container maxWidth="xl" className="justify-content-center align-right-header">
           <Row className="text-center justify-content-center">
             <Col md={"auto"}>
               <Navbar.Brand>
@@ -42,7 +42,7 @@ export default function Footer() {
                 </Link>
               </Navbar.Brand>
             </Col>
-            <Box display="flex" alignItems="center" className="box-footer">
+            <Box display="flex" alignItems="center" className="box-footer align-right-header">
               <Col md={"auto"}>
                 <Navbar.Text className={classes.navbarText}>
                   GlyGen is supported and funded by the{" "}
