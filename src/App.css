@@ -538,6 +538,18 @@ input[type]:not(:-ms-input-placeholder) + label {
   height: 75px;
 }
 
+.download-spinner {
+  position: fixed;
+  bottom: 5.0rem;
+  right: 0.5rem;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.download-spinner-image {
+  width: 40px;
+  height: 40px;
+}
 @media (min-width: 600px) {
   .MuiContainer-root {
     padding-left: 24px;

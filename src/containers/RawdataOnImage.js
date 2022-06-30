@@ -13,6 +13,10 @@ import "../components/SpotInformation.css";
 import Container from "@material-ui/core/Container";
 import { Loading } from "../components/Loading";
 import "./AddRawData.css";
+import { downloadFile } from "../utils/commonUtils";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Spacing from "material-ui/styles/spacing";
 
 const RawdataOnImage = props => {
   let { experimentId } = useParams();
@@ -218,69 +222,155 @@ const RawdataOnImage = props => {
 
   const getRawDataView = () => {
     return (
-      <>
+      <div>
+      <div style={{
+          overflow: "auto",
+          height: "350px",
+          width: "100%"
+        }}>
         <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Raw Data File Format"} className="required-asterik" />
-            <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file.fileFormat} readOnly plaintext />
+            <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file ? rawDataView.file.fileFormat : "No data available"} readOnly plaintext />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Raw Data"} className="required-asterik" />
-            <Form.Control type="text" name={"rawdata"} value={rawDataView.file.originalName} readOnly plaintext />
+            <Form.Control type="text" name={"rawdata"} value={rawDataView.file ? rawDataView.file.originalName : "No data available"} readOnly plaintext />
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"imageAnalysis"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Image Analysis"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={rawDataView.metadata.name} readOnly plaintext />
+            <Form.Control type="text" name={"metadata"} value={rawDataView.metadata ? rawDataView.metadata.name : "No data available"} readOnly plaintext />
           </Col>
         </Form.Group>
 
-        {rawDataView.powerLevel && (
-          <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
-            <Col xs={12} lg={9}>
-              <FormLabel label={"Power Level"} className="required-asterik" />
-              <Form.Control type="text" name={"powerLevel"} value={rawDataView.powerLevel} readOnly plaintext />
-            </Col>
-          </Form.Group>
-        )}
+        <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Power Level"} className="required-asterik" />
+            <Form.Control type="text" name={"powerLevel"} value={rawDataView.powerLevel ? rawDataView.powerLevel : "No data available"} readOnly plaintext />
+          </Col>
+        </Form.Group>
 
-        {rawDataView.channel && (
-          <>
-            <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
-              <Col xs={12} lg={9}>
-                <FormLabel label={"Channel Usage Type"} className="required-asterik" />
-                <Form.Control
-                  type="text"
-                  name={"channelUsageType"}
-                  value={rawDataView.channel.usage}
-                  readOnly
-                  plaintext
-                />
-              </Col>
-            </Form.Group>
+        <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Channel Usage Type"} className="required-asterik" />
+            <Form.Control
+              type="text"
+              name={"channelUsageType"}
+              value={rawDataView.channel ? rawDataView.channel.usage : "No data available"}
+              readOnly
+              plaintext
+            />
+          </Col>
+        </Form.Group>
 
-            {rawDataView.channel.wavelength && (
-              <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
-                <Col xs={12} lg={9}>
-                  <FormLabel label={"Wave Length"} className="required-asterik" />
-                  <Form.Control
-                    type="text"
-                    name={"wavelength"}
-                    value={rawDataView.channel.wavelength}
-                    readOnly
-                    plaintext
+        <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Wave Length"} className="required-asterik" />
+            <Form.Control
+              type="text"
+              name={"wavelength"}
+              value={rawDataView.channel ? rawDataView.channel.wavelength : "No data available"}
+              readOnly
+              plaintext
+            />
+          </Col>
+        </Form.Group>
+        </div>
+
+        <Row style={{ textAlign: "center" }} className="mt-3">            
+          {!props.fromPublicDatasetPage && !props.isPublic && (<>
+              {rawDataView.status !== "DONE" && <Col style={{ textAlign: "center" }}>
+              <span>
+                {rawDataView.status &&
+                rawDataView.status === "ERROR" &&
+                rawDataView.error &&
+                rawDataView.error.errors.length > 0 ? (
+                  <>
+                    <Button className="gg-btn-outline mt-2 gg-mr-20"
+                      onClick={() => {
+                        props.setErrorMessage(rawDataView.error);
+                        // props.resetEnableModal();
+                        props.setEnableErrorView(true);
+                      }}
+                    >Show Error Details
+                    &nbsp;&nbsp;
+                    <FontAwesomeIcon
+                      key={"error"}
+                      icon={["fas", "exclamation-triangle"]}
+                      size="xs"
+                      className={"caution-color table-btn"}
+                      style={{
+                        paddingTop: "9px"
+                      }}
+                    />
+                    </Button>
+                  </>
+                ) : (
+                  <span>
+                  <strong>Status:</strong>&nbsp;{rawDataView.status}
+                  &nbsp;&nbsp;
+                  <FontAwesomeIcon
+                    key={"error"}
+                    icon={["fas", "exclamation-triangle"]}
+                    size="xs"
+                    className={"warning-color table-btn"}
+                    style={{
+                      paddingTop: "9px"
+                    }}
                   />
+                  </span>
+                )}
+              </span>
+            </Col>}
+
+            {rawDataView.status === "DONE" && <Col style={{ textAlign: "center" }}>
+            <Button className="gg-btn-outline mt-2 gg-mr-20"
+              onClick={() => {
+                props.setRawdataSelected(rawDataView.id);
+                //props.resetEnableModal();
+                props.setEnableProcessRawdata(true);
+              }}
+            >Add Process Data</Button>
+            </Col>}
+            {rawDataView.id && (
+              <>
+                <Col style={{ textAlign: "center" }}>
+                <Button className="gg-btn-outline mt-2 gg-mr-20"
+                  onClick={() => {
+                    props.deleteRow(rawDataView.id, "deleterawdata");
+                    props.setDeleteMessage(
+                      "This will remove all processed data that belongs to this raw data. Do you want to continue?"
+                    );
+                    props.setShowDeleteModal(true);
+                  }}
+                >Delete Raw Data</Button>
                 </Col>
-              </Form.Group>
+                </>)}
+            </>)}
+            {rawDataView.file && (
+              <Col style={{ textAlign: "center" }}>
+              <Button className="gg-btn-outline mt-2 gg-mr-20"
+                onClick={() => {
+                  downloadFile(
+                    rawDataView.file,
+                    props.setPageErrorsJson,
+                    props.setPageErrorMessage,
+                    props.setShowErrorSummary,
+                    "filedownload",
+                    props.setShowSpinner
+                  );
+                }}
+              >Download Raw Data</Button>
+              </Col>
             )}
-          </>
-        )}
-      </>
+        </Row>
+      </div>
     );
   };
 
@@ -293,7 +383,7 @@ const RawdataOnImage = props => {
     return (
       <>
         <Modal
-          show={enableRawdataOnImage}
+          show={enableRawdataOnImage && !rawDataView}
           onHide={() => {
             setRawDataView();
             setEnableRawdataOnImage(false);
@@ -477,6 +567,9 @@ const RawdataOnImage = props => {
           )}
           <Loading show={showLoading} />
         </Modal>
+        <div>
+      {rawDataView && getRawDataView()}
+      </div>
       </>
     );
   };

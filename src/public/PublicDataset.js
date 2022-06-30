@@ -155,7 +155,7 @@ const PublicDataset = () => {
                     setShowErrorSummary={setShowErrorSummary}
                   /> */}
                 <Row>
-                  <Col md={8}>
+                  <Col md={12}>
                     <DataTreeView
                       data={dataset}
                       experimentId={dataset.id}

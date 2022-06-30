@@ -36,15 +36,15 @@ const ErrorPage = props => {
               Cell: row => {
                 return (
                   <>
-                    <Alert
+                    {/* <Alert
                       style={{
                         marginLeft: "35%",
                         width: "fit-content"
                       }}
                       variant={"danger"}
-                    >
-                      {row.original.defaultMessage.substring(0, row.original.defaultMessage.indexOf(":"))}
-                    </Alert>
+                    > */}
+                      {row.original.defaultMessage.substring(0, row.original.defaultMessage.indexOf("."))}
+                    {/* </Alert> */}
                   </>
                 );
               }

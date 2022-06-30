@@ -9,6 +9,10 @@ import { Loading } from "../components/Loading";
 import { GlygenTable } from "../components/GlygenTable";
 import { ErrorSummary } from "../components/ErrorSummary";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { downloadFile } from "../utils/commonUtils";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+
 const SlideOnExperiment = props => {
   let { experimentId } = useParams();
   let { slideView, setSlideView, setEnableSlideModal } = props;
@@ -305,10 +309,15 @@ const SlideOnExperiment = props => {
   const getSlideView = () => {
     return (
       <>
+      <div style={{
+          overflow: "auto",
+          height: "350px",
+          width: "100%"
+        }}>
         <Form.Group as={Row} controlId={"slide"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Slide"} className="required-asterik" />
-            <Form.Control type="text" name={"slide"} value={slideView.printedSlide.name} readOnly plaintext />
+            <Form.Control type="text" name={"slide"} value={slideView.printedSlide ? slideView.printedSlide.name : "No data available"} readOnly plaintext />
 
             {slideView.blocks && slideView.blocks.length > 0 && <div>{getBlocksSelectedPanel()}</div>}
           </Col>
@@ -316,9 +325,57 @@ const SlideOnExperiment = props => {
         <Form.Group as={Row} controlId={"metadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Assay Metadata"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={slideView.metadata.name} readOnly plaintext />
+            <Form.Control type="text" name={"metadata"} value={slideView.metadata ? slideView.metadata.name : "No data available"} readOnly plaintext />
           </Col>
         </Form.Group>
+        </div>
+
+        <Row st1yle={{ textAlign: "center" }}  className="mt-3">
+          {!props.fromPublicDatasetPage && !props.isPublic && (<>
+            <Col style={{ textAlign: "center" }}>
+            <Button className="gg-btn-outline mt-2 gg-mr-20"
+              onClick={() => {
+                props.setSlideSelected(slideView.id);
+                // props.resetEnableModal();
+                props.setEnableImageOnSlide(true);
+              }}
+            >
+              Add Image</Button>
+            </Col>
+            {slideView.id && (
+              <>
+                <Col style={{ textAlign: "center" }}>
+                  <Button className="gg-btn-outline mt-2 gg-mr-20"
+                    onClick={() => {
+                      props.deleteRow(slideView.id, "deleteslide");
+                      props.setDeleteMessage(
+                        "This will remove all images, raw data and processed data that belongs to this slide. Do you want to continue?"
+                      );
+                      props.setShowDeleteModal(true);
+                    }}>                                 
+                  Delete Slide</Button>
+                </Col>
+              </>
+            )}
+            </>
+          )}
+          {slideView.file && (
+            <Col style={{ textAlign: "center" }}>
+            <Button className="gg-btn-outline mt-2 gg-mr-20"
+              onClick={() => {
+                downloadFile(
+                  slideView.file,
+                  props.setPageErrorsJson,
+                  props.setPageErrorMessage,
+                  props.setShowErrorSummary,
+                  "filedownload",
+                  props.setShowSpinner
+                );
+              }}
+            >Download Metadata</Button>
+            </Col>
+            )}
+        </Row>
       </>
     );
   };
@@ -326,7 +383,7 @@ const SlideOnExperiment = props => {
   return (
     <>
       <Modal
-        show={props.enableSlideModal}
+        show={props.enableSlideModal && !slideView}
         onHide={() => {
           setSlideView();
           setEnableSlideModal(false);
@@ -462,6 +519,9 @@ const SlideOnExperiment = props => {
 
         <Loading show={showLoading} />
       </Modal>
+      <div>
+      {slideView && getSlideView()}
+      </div>
     </>
   );
 };

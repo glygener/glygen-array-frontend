@@ -8,6 +8,8 @@ import { wsCall } from "../utils/wsUtils";
 import { includes } from "lodash";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { Spinner } from "react-bootstrap";
+import { Button } from "@material-ui/core";
+import LoadingImage from "../images/page_loading.gif";
 
 /**
  *
@@ -193,7 +195,7 @@ export function downloadFile(
   wscall,
   setShowSpinner
 ) {
-  setShowSpinner(true);
+  setShowSpinner && setShowSpinner(true);
   wsCall(
     wscall,
     "GET",
@@ -231,7 +233,7 @@ export function fileDownloadSuccess(response, setShowSpinner) {
     a.download = fileName;
     a.click();
 
-    setShowSpinner(false);
+    setShowSpinner && setShowSpinner(false);
     window.URL.revokeObjectURL(fileUrl);
   });
 }
@@ -290,6 +292,16 @@ export function downloadSpinner() {
     <>
       <Spinner animation="border" role="status" style={{ marginLeft: "100%" }} />
     </>
+  );
+}
+
+export function downloadSpinnerBottomSide() {
+  return (
+    <div className="download-spinner">
+      <Button className="gg-btn-outline-reg">
+        <img src={LoadingImage} alt="loadingImage" className={"download-spinner-image"} />
+      </Button>
+    </div>
   );
 }
 

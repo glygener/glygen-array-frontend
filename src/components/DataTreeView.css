@@ -30,3 +30,12 @@
   border: none;
   background-color: white;
 }
+
+.row_headline:not(.disable):hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+.row_headline_act {
+  background-color: #e9ecef;
+}

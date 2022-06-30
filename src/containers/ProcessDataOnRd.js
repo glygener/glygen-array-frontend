@@ -13,6 +13,7 @@ import "../components/SpotInformation.css";
 import { Modal, Button } from "react-bootstrap";
 import { Loading } from "../components/Loading";
 import "./AddRawData.css";
+import { downloadFile } from "../utils/commonUtils";
 
 const ProcessDataOnRd = props => {
   let { experimentId } = useParams();
@@ -212,14 +213,18 @@ const ProcessDataOnRd = props => {
 
   const getProcessDataView = () => {
     return (
-      <>
-        <Form.Group as={Row} controlId={"processdata"} className="gg-align-center mb-3">
+      <div>
+      <div style={{
+          overflow: "auto",
+          height: "350px",
+          width: "100%"
+        }}>        <Form.Group as={Row} controlId={"processdata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Process Data"} className="required-asterik" />
             <Form.Control
               type="text"
               name={"processdata"}
-              value={processDataView.file.originalName}
+              value={processDataView.file ? processDataView.file.originalName : "No data available"}
               readOnly
               plaintext
             />
@@ -229,7 +234,7 @@ const ProcessDataOnRd = props => {
         <Form.Group as={Row} controlId={"dataProcessing"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Data Processing"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={processDataView.metadata.name} readOnly plaintext />
+            <Form.Control type="text" name={"metadata"} value={processDataView.metadata ? processDataView.metadata.name : "No data available"} readOnly plaintext />
           </Col>
         </Form.Group>
 
@@ -239,13 +244,52 @@ const ProcessDataOnRd = props => {
             <Form.Control
               type="text"
               name={"processDataFF"}
-              value={processDataView.file.fileFormat}
+              value={processDataView.file ? processDataView.file.fileFormat : "No data available"}
               readOnly
               plaintext
             />
           </Col>
         </Form.Group>
-      </>
+        </div>
+
+        <Row st1yle={{ textAlign: "center" }}  className="mt-3"  cla1ssName="gg-align-center mb-3" clas1sName={props.enableImageOnSlide ? "row_headline row_headline_act" : "row_headline"}>
+        {!props.fromPublicDatasetPage && !props.isPublic && (<>
+            {processDataView.id && (
+              <>
+                <Col style={{ textAlign: "center" }}>
+                  <Button className="gg-btn-outline mt-2 gg-mr-20"                      
+                      onClick={() => {
+                        props.deleteRow(processDataView.id, "deleteprocessdata");
+                        props.setDeleteMessage(
+                          "This will remove the selected processed data. Do you want to continue?"
+                        );
+                        props.setShowDeleteModal(true);
+                      }}>                                 
+                  Delete Process Data</Button>
+                </Col>
+              </>
+            )}
+          </>)}
+
+          {processDataView.file && (
+            <Col style={{ textAlign: "center" }}>
+              <Button className="gg-btn-outline mt-2 gg-mr-20"
+                onClick={() => {
+                  downloadFile(
+                    processDataView.file,
+                    props.setPageErrorsJson,
+                    props.setPageErrorMessage,
+                    props.setShowErrorSummary,
+                    "filedownload",
+                    props.setShowSpinner
+                  );
+                }}
+              >Download Process data</Button>
+            </Col>
+          )}
+
+        </Row>
+        </div>
     );
   };
 
@@ -258,7 +302,7 @@ const ProcessDataOnRd = props => {
     return (
       <>
         <Modal
-          show={enableProcessRawdata}
+          show={enableProcessRawdata && !processDataView}
           onHide={() => {
             setProcessDataView();
             setEnableProcessRawdata(false);
@@ -387,6 +431,9 @@ const ProcessDataOnRd = props => {
           )}
           <Loading show={showLoading} />
         </Modal>
+        <div>
+      {processDataView && getProcessDataView()}
+      </div>
       </>
     );
   };
