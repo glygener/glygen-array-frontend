@@ -324,8 +324,8 @@ const AddExperiment = props => {
             >
               {experimentId ? (
                 <Breadcrumb className="gg-breadcrumb-bg ">
-                  <Breadcrumb.Item href="`${process.env.REACT_APP_BASENAME}`/contribute">Contribute</Breadcrumb.Item>
-                  <Breadcrumb.Item href="`${process.env.REACT_APP_BASENAME}`/experiments">Experiments </Breadcrumb.Item>
+                  <Breadcrumb.Item href={`${process.env.REACT_APP_BASENAME}/contribute`}>Contribute</Breadcrumb.Item>
+                  <Breadcrumb.Item href={`${process.env.REACT_APP_BASENAME}/experiments`}>Experiments </Breadcrumb.Item>
                   <Breadcrumb.Item className="experimentId">{experimentId}</Breadcrumb.Item>
                 </Breadcrumb>
               ) : (
