@@ -1,5 +1,5 @@
 .rst__rowWrapper {
-  padding: 10px 10px 10px 0;
+  padding: 6px 6px 10px 0;
   height: 100%;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -13,7 +13,7 @@
 }
 
 .row_headline {
-  height: 75px;
+  height: 45px;
   width: 100%;
   border: solid #aaa 1px;
   -webkit-box-shadow: 0 2px 2px -2px;
@@ -29,4 +29,13 @@
 .btn-more-less {
   border: none;
   background-color: white;
+}
+
+.row_headline:not(.disable):hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+.row_headline_act {
+  background-color: #e9ecef;
 }

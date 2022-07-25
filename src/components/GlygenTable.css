@@ -32,6 +32,13 @@
 .caution-color {
   color: red;
 }
+.warning-color {
+  color: #eed202;
+}
+
+.success-color {
+  color: green;
+}
 .tbl-icon-btn {
   margin-right: 10px;
   margin-left: 10px;

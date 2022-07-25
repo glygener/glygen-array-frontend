@@ -123,7 +123,7 @@ const SideMenu = props => {
         </div>
       }
       className={classes.root}
-      style={{ backgroundColor: "#e6e6e6", color: "#4a4a4a" }}
+      style={{ backgroundColor: "#e6e6e6", color: "#4a4a4a", paddingBottom: "250px" }}
     >
       <ListItem button onClick={() => handleClick("molecules")} divider>
         <ListItemText primary="Molecules" style={{ textDecoration: "none" }} />

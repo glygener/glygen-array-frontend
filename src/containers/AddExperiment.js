@@ -62,6 +62,7 @@ const AddExperiment = props => {
           setExperiment({
             name: responseJson.name,
             sample: responseJson.sample.name,
+            sampleID: responseJson.sample.id,
             description: responseJson.description,
             collaborators: responseJson.collaborators,
             rawDataList: responseJson.rawDataList,
@@ -378,7 +379,7 @@ const AddExperiment = props => {
                   <>
                     {/* {experiment.slides && experiment.slides.length > 0 && ( */}
                     <Accordion defaultActiveKey={0} className="mb-4">
-                      <Card>
+                      <Card style={{ overflow: "visible" }}>
                         <Card.Header>
                           <Row>
                             <Col className="font-awesome-color">

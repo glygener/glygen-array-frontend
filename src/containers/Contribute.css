@@ -1,19 +1,20 @@
 .sidenav {
   height: 100%;
-  width: 14%;
-  position: fixed;
+  position: sticky !important;
   z-index: 1;
   top: 0;
-  left: 0;
+    /* left: 0; */
   background-color: #e6e6e6;
   overflow-x: hidden;
   transition: 0.5s;
-  padding-top: 10px;
-  margin-top: 72px;
+  /* padding-top: 10px; */
+    /* margin-top: 72px; */
+    /* margin-bottom: 50px !important; */
   text-align: center;
-  min-width: 250px !important;
-  padding-bottom: 150px;
-  overflow: auto;
+  /* min-width: 250px !important; */
+    /* padding-bottom: 150px; */
+    overflow-y: auto;
+    display: flex !important;
 }
 
 .sidenav a {
@@ -26,6 +27,12 @@
   color: #f1f1f1;
 }
 
+.page-container {
+  margin-bottom: 40px;
+  padding-left: 5%;
+  padding-right: 5%;
+  /* width: 90%; */
+}
 /* .MuiList-padding {
   padding-bottom: 80px !important;
 } */
@@ -37,42 +44,42 @@
 } */
 @media (min-width: 280px) and (max-width: 767px)  {
   .page-container {
-    padding-left: 30% !important;
-    margin-bottom: 40px;
+    /* padding-left: 30% !important; */
+      /* margin-bottom: 40px; */
     /* width: 0%; */
   }
 }
 @media screen and (min-width: 600px) {
   .page-container {
-    padding-left: 30% !important;
+    /* padding-left: 30% !important; */
     /* width: 0%; */
   }
 }
 @media screen and (min-width: 768px) {
   .page-container {
-    padding-left: 30% !important;
-    margin-bottom: 40px;
+    /* padding-left: 30% !important; */
+      /* margin-bottom: 40px; */
     /* width: 100%; */
   }
 }
 @media screen and (min-width: 992px) {
   .page-container {
-    padding-left: 30% !important;
-    margin-bottom: 40px;
+    /* padding-left: 30% !important; */
+      /* margin-bottom: 40px; */
     /* width: 90%; */
   }
 }
 @media screen and (min-width: 1024px) {
   .page-container {
-    padding-left: 25% !important;
-    margin-bottom: 40px;
+    /* padding-left: 25% !important; */
+      /* margin-bottom: 40px; */
     /* width: 90%; */
   }
 }
 @media screen and (min-width: 1200px) {
   .page-container {
-    padding-left: 20% !important;
-    width: 95%;
-    margin-bottom: 40px;
+    /* padding-left: 20% !important; */
+      /* width: 95%; */
+      /* margin-bottom: 40px; */
   }
 }

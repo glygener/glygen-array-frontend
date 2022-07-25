@@ -13,6 +13,12 @@ import "../components/SpotInformation.css";
 import Container from "@material-ui/core/Container";
 import { Loading } from "../components/Loading";
 import "./AddRawData.css";
+import { downloadFile } from "../utils/commonUtils";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Spacing from "material-ui/styles/spacing";
+import { DownloadButton } from "../components/DownloadButton";
+import { ViewDescriptor } from "../components/ViewDescriptor";
 
 const RawdataOnImage = props => {
   let { experimentId } = useParams();
@@ -29,6 +35,7 @@ const RawdataOnImage = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [listImageAnalysis, setListImageAnalysis] = useState([]);
   const [listSupportedRawFileFormat, setListSupportedRawFileFormat] = useState([]);
+  const [showDescriptos, setShowDescriptos] = useState(false);
 
   const [listChannelUsageTypes, setListChannelUsageTypes] = useState(["Data", "Alignment", "Data_and_Alignment"]);
 
@@ -51,8 +58,10 @@ const RawdataOnImage = props => {
       props.authCheckAgent();
     }
 
-    fetchList("listimagemetadata");
-    fetchList("supportedrawfileformats");
+    if (!props.fromPublicDatasetPage && !props.isPublic) {
+      fetchList("listimagemetadata");
+      fetchList("supportedrawfileformats");
+    }
   }, [experimentId]);
 
   const fetchList = (fetch, id) => {
@@ -217,70 +226,175 @@ const RawdataOnImage = props => {
   };
 
   const getRawDataView = () => {
+
+    function handleDownload(type) {
+      if (type === "download") {
+        downloadFile(
+          rawDataView.file,
+          props.setPageErrorsJson,
+          props.setPageErrorMessage,
+          props.setShowErrorSummary,
+          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner
+        );
+      }
+    }
+
     return (
-      <>
+      <div>
+        {showDescriptos && <ViewDescriptor metadataId={rawDataView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
+          wsCall={ !props.fromPublicDatasetPage ? "getimageanalysis" : "getpublicimageanalysis"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Image Analysis"}/>} 
+      <div style={{
+          overflow: "auto",
+          height: "350px",
+          width: "100%"
+        }}>
         <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Raw Data File Format"} className="required-asterik" />
-            <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file.fileFormat} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.file ? rawDataView.file.fileFormat : "No data available"}</span>
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Raw Data"} className="required-asterik" />
-            <Form.Control type="text" name={"rawdata"} value={rawDataView.file.originalName} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.file ? rawDataView.file.originalName : "No data available"}</span>
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"imageAnalysis"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Image Analysis"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={rawDataView.metadata.name} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            {rawDataView.metadata ? <LineTooltip text="View Details">
+                <Button 
+                    className={"lnk-btn"}
+                    variant="link"
+                    onClick={() => {
+                      setShowDescriptos(true);
+                    }}
+                  >
+                    {rawDataView.metadata.name}
+                </Button>
+              </LineTooltip> : 
+                <span>{"No data available"}</span>
+              }
           </Col>
         </Form.Group>
 
-        {rawDataView.powerLevel && (
-          <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
-            <Col xs={12} lg={9}>
-              <FormLabel label={"Power Level"} className="required-asterik" />
-              <Form.Control type="text" name={"powerLevel"} value={rawDataView.powerLevel} readOnly plaintext />
-            </Col>
-          </Form.Group>
-        )}
+        <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Power Level"} className="required-asterik" />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.powerLevel ? rawDataView.powerLevel : "No data available"}</span>
+          </Col>
+        </Form.Group>
 
-        {rawDataView.channel && (
-          <>
-            <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
-              <Col xs={12} lg={9}>
-                <FormLabel label={"Channel Usage Type"} className="required-asterik" />
-                <Form.Control
-                  type="text"
-                  name={"channelUsageType"}
-                  value={rawDataView.channel.usage}
-                  readOnly
-                  plaintext
+        <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Channel Usage Type"} className="required-asterik" />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.channel ? rawDataView.channel.usage : "No data available"}</span>
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Wave Length"} className="required-asterik" />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.channel ? rawDataView.channel.wavelength : "No data available"}</span>
+          </Col>
+        </Form.Group>
+        </div>
+
+        <Row style={{ textAlign: "center" }} className="mt-3">            
+          {!props.fromPublicDatasetPage && !props.isPublic && (<>
+              {rawDataView.status !== "DONE" && <Col style={{ textAlign: "center" }}>
+              <span>
+                {rawDataView.status &&
+                rawDataView.status === "ERROR" &&
+                rawDataView.error &&
+                rawDataView.error.errors.length > 0 ? (
+                  <>
+                    <Button className="gg-btn-outline mt-2 gg-mr-20"
+                      onClick={() => {
+                        props.setErrorMessage(rawDataView.error);
+                        props.setEnableErrorView(true);
+                      }}
+                    >Show Error Details
+                    &nbsp;&nbsp;
+                    <FontAwesomeIcon
+                      key={"error"}
+                      icon={["fas", "exclamation-triangle"]}
+                      size="xs"
+                      className={"caution-color table-btn"}
+                      style={{
+                        paddingTop: "9px"
+                      }}
+                    />
+                    </Button>
+                  </>
+                ) : (
+                  <span>
+                  <strong>Status:</strong>&nbsp;{rawDataView.status}
+                  &nbsp;&nbsp;
+                  <FontAwesomeIcon
+                    key={"error"}
+                    icon={["fas", "exclamation-triangle"]}
+                    size="xs"
+                    className={"warning-color table-btn"}
+                    style={{
+                      paddingTop: "9px"
+                    }}
+                  />
+                  </span>
+                )}
+              </span>
+            </Col>}
+
+            {rawDataView.status === "DONE" && <Col style={{ textAlign: "center" }}>
+            <Button className="gg-btn-outline mt-2 gg-mr-20"
+              onClick={() => {
+                props.setRawdataSelected(rawDataView.id);
+                props.setEnableProcessRawdata(true);
+              }}
+            >Add Process Data</Button>
+            </Col>}
+            {rawDataView.id && (
+              <>
+                <Col style={{ textAlign: "center" }}>
+                <Button className="gg-btn-outline mt-2 gg-mr-20"
+                  onClick={() => {
+                    props.deleteRow(rawDataView.id, "deleterawdata");
+                    props.setDeleteMessage(
+                      "This will remove all processed data that belongs to this raw data. Do you want to continue?"
+                    );
+                    props.setShowDeleteModal(true);
+                  }}
+                >Delete Raw Data</Button>
+                </Col>
+                </>)}
+            </>)}
+            {rawDataView.file && (
+              <Col style={{ textAlign: "center" }}>
+                <DownloadButton
+                  showExport={false}
+                  showDownload={rawDataView.file !== undefined}
+                  handleDownload={handleDownload}
                 />
               </Col>
-            </Form.Group>
-
-            {rawDataView.channel.wavelength && (
-              <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
-                <Col xs={12} lg={9}>
-                  <FormLabel label={"Wave Length"} className="required-asterik" />
-                  <Form.Control
-                    type="text"
-                    name={"wavelength"}
-                    value={rawDataView.channel.wavelength}
-                    readOnly
-                    plaintext
-                  />
-                </Col>
-              </Form.Group>
             )}
-          </>
-        )}
-      </>
+        </Row>
+      </div>
     );
   };
 
@@ -293,7 +407,7 @@ const RawdataOnImage = props => {
     return (
       <>
         <Modal
-          show={enableRawdataOnImage}
+          show={enableRawdataOnImage && !rawDataView}
           onHide={() => {
             setRawDataView();
             setEnableRawdataOnImage(false);
@@ -477,6 +591,9 @@ const RawdataOnImage = props => {
           )}
           <Loading show={showLoading} />
         </Modal>
+        <div>
+      {rawDataView && getRawDataView()}
+      </div>
       </>
     );
   };
