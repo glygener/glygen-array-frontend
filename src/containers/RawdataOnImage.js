@@ -17,6 +17,8 @@ import { downloadFile } from "../utils/commonUtils";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Spacing from "material-ui/styles/spacing";
+import { DownloadButton } from "../components/DownloadButton";
+import { ViewDescriptor } from "../components/ViewDescriptor";
 
 const RawdataOnImage = props => {
   let { experimentId } = useParams();
@@ -33,6 +35,7 @@ const RawdataOnImage = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [listImageAnalysis, setListImageAnalysis] = useState([]);
   const [listSupportedRawFileFormat, setListSupportedRawFileFormat] = useState([]);
+  const [showDescriptos, setShowDescriptos] = useState(false);
 
   const [listChannelUsageTypes, setListChannelUsageTypes] = useState(["Data", "Alignment", "Data_and_Alignment"]);
 
@@ -55,8 +58,10 @@ const RawdataOnImage = props => {
       props.authCheckAgent();
     }
 
-    fetchList("listimagemetadata");
-    fetchList("supportedrawfileformats");
+    if (!props.fromPublicDatasetPage && !props.isPublic) {
+      fetchList("listimagemetadata");
+      fetchList("supportedrawfileformats");
+    }
   }, [experimentId]);
 
   const fetchList = (fetch, id) => {
@@ -221,8 +226,24 @@ const RawdataOnImage = props => {
   };
 
   const getRawDataView = () => {
+
+    function handleDownload(type) {
+      if (type === "download") {
+        downloadFile(
+          rawDataView.file,
+          props.setPageErrorsJson,
+          props.setPageErrorMessage,
+          props.setShowErrorSummary,
+          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner
+        );
+      }
+    }
+
     return (
       <div>
+        {showDescriptos && <ViewDescriptor metadataId={rawDataView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
+          wsCall={ !props.fromPublicDatasetPage ? "getimageanalysis" : "getpublicimageanalysis"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Image Analysis"}/>} 
       <div style={{
           overflow: "auto",
           height: "350px",
@@ -231,54 +252,66 @@ const RawdataOnImage = props => {
         <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Raw Data File Format"} className="required-asterik" />
-            <Form.Control type="text" name={"rawDataFF"} value={rawDataView.file ? rawDataView.file.fileFormat : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.file ? rawDataView.file.fileFormat : "No data available"}</span>
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Raw Data"} className="required-asterik" />
-            <Form.Control type="text" name={"rawdata"} value={rawDataView.file ? rawDataView.file.originalName : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.file ? rawDataView.file.originalName : "No data available"}</span>
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"imageAnalysis"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Image Analysis"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={rawDataView.metadata ? rawDataView.metadata.name : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            {rawDataView.metadata ? <LineTooltip text="View Details">
+                <Button 
+                    className={"lnk-btn"}
+                    variant="link"
+                    onClick={() => {
+                      setShowDescriptos(true);
+                    }}
+                  >
+                    {rawDataView.metadata.name}
+                </Button>
+              </LineTooltip> : 
+                <span>{"No data available"}</span>
+              }
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Power Level"} className="required-asterik" />
-            <Form.Control type="text" name={"powerLevel"} value={rawDataView.powerLevel ? rawDataView.powerLevel : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.powerLevel ? rawDataView.powerLevel : "No data available"}</span>
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Channel Usage Type"} className="required-asterik" />
-            <Form.Control
-              type="text"
-              name={"channelUsageType"}
-              value={rawDataView.channel ? rawDataView.channel.usage : "No data available"}
-              readOnly
-              plaintext
-            />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.channel ? rawDataView.channel.usage : "No data available"}</span>
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Wave Length"} className="required-asterik" />
-            <Form.Control
-              type="text"
-              name={"wavelength"}
-              value={rawDataView.channel ? rawDataView.channel.wavelength : "No data available"}
-              readOnly
-              plaintext
-            />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.channel ? rawDataView.channel.wavelength : "No data available"}</span>
           </Col>
         </Form.Group>
         </div>
@@ -295,7 +328,6 @@ const RawdataOnImage = props => {
                     <Button className="gg-btn-outline mt-2 gg-mr-20"
                       onClick={() => {
                         props.setErrorMessage(rawDataView.error);
-                        // props.resetEnableModal();
                         props.setEnableErrorView(true);
                       }}
                     >Show Error Details
@@ -333,7 +365,6 @@ const RawdataOnImage = props => {
             <Button className="gg-btn-outline mt-2 gg-mr-20"
               onClick={() => {
                 props.setRawdataSelected(rawDataView.id);
-                //props.resetEnableModal();
                 props.setEnableProcessRawdata(true);
               }}
             >Add Process Data</Button>
@@ -355,18 +386,11 @@ const RawdataOnImage = props => {
             </>)}
             {rawDataView.file && (
               <Col style={{ textAlign: "center" }}>
-              <Button className="gg-btn-outline mt-2 gg-mr-20"
-                onClick={() => {
-                  downloadFile(
-                    rawDataView.file,
-                    props.setPageErrorsJson,
-                    props.setPageErrorMessage,
-                    props.setShowErrorSummary,
-                    "filedownload",
-                    props.setShowSpinner
-                  );
-                }}
-              >Download Raw Data</Button>
+                <DownloadButton
+                  showExport={false}
+                  showDownload={rawDataView.file !== undefined}
+                  handleDownload={handleDownload}
+                />
               </Col>
             )}
         </Row>

@@ -570,6 +570,28 @@ body > :not(.card) {
   color: var(--gg-blue);
 }
 
+.gg-dropdown-navbar .dropdown-menu {
+  background-color: var(--gg-blue) !important;
+}
+
+.gg-dropdown-navbar-active {
+  color: var(--white) !important;
+  border-bottom: 4px solid var(--gg-light-blue) !important;
+  padding-bottom: 0 !important;
+}
+
+.dropdown-item {
+  color: white !important;
+}
+
+.dropdown-item:hover {
+  color: var(--gg-dark-blue) !important;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: rgb(250, 250, 250, 0.25) !important;
+}
 .col-link-button {
   text-align: left;
   padding-left: 0px !important;

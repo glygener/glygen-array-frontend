@@ -10,8 +10,10 @@ import { GlygenTable } from "../components/GlygenTable";
 import { ErrorSummary } from "../components/ErrorSummary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { downloadFile } from "../utils/commonUtils";
+import { downloadFile, exportFile } from "../utils/commonUtils";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { DownloadButton } from "../components/DownloadButton";
+import { ViewDescriptor } from "../components/ViewDescriptor";
 
 const SlideOnExperiment = props => {
   let { experimentId } = useParams();
@@ -29,6 +31,7 @@ const SlideOnExperiment = props => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [listAssayMetas, setListAssayMetas] = useState([]);
   const [enablePrompt, setEnablePrompt] = useState(false);
+  const [showDescriptos, setShowDescriptos] = useState(false);
   const history = useHistory();
 
   const slide = {
@@ -84,8 +87,10 @@ const SlideOnExperiment = props => {
       props.authCheckAgent();
     }
 
-    fetchList("listallprintedslide");
-    fetchList("listassaymetadata");
+    if (!props.fromPublicDatasetPage && !props.isPublic) {
+      fetchList("listallprintedslide");
+      fetchList("listassaymetadata");
+    }
   }, [experimentId]);
 
   const fetchList = (fetch, id) => {
@@ -307,8 +312,33 @@ const SlideOnExperiment = props => {
   }
 
   const getSlideView = () => {
+
+    function handleDownload(type) {
+      if (type === "export") {
+        exportFile(
+          slideView.printedSlide && slideView.printedSlide.layout ? slideView.printedSlide.layout : slideView.id,
+          setPageErrorsJson,
+          setPageErrorMessage,
+          setShowErrorSummary,
+          props.setShowSpinner,
+          !props.fromPublicDatasetPage && !props.isPublic ? "exportslidelayout" : "publicexportslidelayout",
+        )
+      } else if (type === "download") {
+        downloadFile(
+          slideView.file,
+          props.setPageErrorsJson,
+          props.setPageErrorMessage,
+          props.setShowErrorSummary,
+          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner
+        );
+      }
+    }
+
     return (
-      <>
+      <div>
+        {showDescriptos && <ViewDescriptor metadataId={slideView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
+          wsCall={ !props.fromPublicDatasetPage ? "getassaymetadata" : "getpublicassay"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Assay Metadata"}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
@@ -317,15 +347,32 @@ const SlideOnExperiment = props => {
         <Form.Group as={Row} controlId={"slide"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Slide"} className="required-asterik" />
-            <Form.Control type="text" name={"slide"} value={slideView.printedSlide ? slideView.printedSlide.name : "No data available"} readOnly plaintext />
-
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{slideView.printedSlide ? slideView.printedSlide.name : "No data available"}</span>
+          </Col>
+          <Col xs={12} lg={9}>
             {slideView.blocks && slideView.blocks.length > 0 && <div>{getBlocksSelectedPanel()}</div>}
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId={"metadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Assay Metadata"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={slideView.metadata ? slideView.metadata.name : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            {slideView.metadata ? <LineTooltip text="View Details">
+              <Button 
+                  className={"lnk-btn"}
+                  variant="link"
+                  onClick={() => {
+                    setShowDescriptos(true);
+                  }}
+                >
+                  {slideView.metadata.name}
+              </Button>
+            </LineTooltip> : 
+              <span>{"No data available"}</span>
+            }
           </Col>
         </Form.Group>
         </div>
@@ -336,7 +383,6 @@ const SlideOnExperiment = props => {
             <Button className="gg-btn-outline mt-2 gg-mr-20"
               onClick={() => {
                 props.setSlideSelected(slideView.id);
-                // props.resetEnableModal();
                 props.setEnableImageOnSlide(true);
               }}
             >
@@ -359,24 +405,15 @@ const SlideOnExperiment = props => {
             )}
             </>
           )}
-          {slideView.file && (
-            <Col style={{ textAlign: "center" }}>
-            <Button className="gg-btn-outline mt-2 gg-mr-20"
-              onClick={() => {
-                downloadFile(
-                  slideView.file,
-                  props.setPageErrorsJson,
-                  props.setPageErrorMessage,
-                  props.setShowErrorSummary,
-                  "filedownload",
-                  props.setShowSpinner
-                );
-              }}
-            >Download Metadata</Button>
-            </Col>
-            )}
+          <Col style={{ textAlign: "center" }}>
+            <DownloadButton
+              showExport={true}
+              showDownload={slideView.file !== undefined}
+              handleDownload={handleDownload}
+            />
+          </Col>
         </Row>
-      </>
+      </div>
     );
   };
 

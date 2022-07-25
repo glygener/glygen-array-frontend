@@ -13,7 +13,11 @@ import "../components/SpotInformation.css";
 import { Modal, Button } from "react-bootstrap";
 import { Loading } from "../components/Loading";
 import "./AddRawData.css";
-import { downloadFile } from "../utils/commonUtils";
+import { downloadFile, exportFileProcessData } from "../utils/commonUtils";
+import { DownloadButton } from "../components/DownloadButton";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { ViewDescriptor } from "../components/ViewDescriptor";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ProcessDataOnRd = props => {
   let { experimentId } = useParams();
@@ -32,6 +36,7 @@ const ProcessDataOnRd = props => {
   const [listDataProcessing, setListDataProcessing] = useState([]);
   const [statisticalMethods, setStatisticalMethods] = useState([]);
   const [supportedProcessedFF, setSupportedProcessedFF] = useState([]);
+  const [showDescriptos, setShowDescriptos] = useState(false);
 
   const defaultFileType = "*/*";
 
@@ -53,9 +58,11 @@ const ProcessDataOnRd = props => {
       props.authCheckAgent();
     }
 
-    fetchList("statisticalmethods");
-    fetchList("listdataprocessing");
-    fetchList("supportedprocessedfileformats");
+    if (!props.fromPublicDatasetPage && !props.isPublic) {
+      fetchList("statisticalmethods");
+      fetchList("listdataprocessing");
+      fetchList("supportedprocessedfileformats");
+    }
   }, [experimentId]);
 
   const fetchList = (fetch, id) => {
@@ -168,6 +175,7 @@ const ProcessDataOnRd = props => {
         // eslint-disable-next-line no-unused-vars
         response => {
           setEnablePrompt(false);
+          props.setEnableProcessRawdata(false);
           // history.push("/experiments/editExperiment/" + experimentId);
           props.getExperiment();
         },
@@ -212,8 +220,33 @@ const ProcessDataOnRd = props => {
   };
 
   const getProcessDataView = () => {
+
+    function handleDownload(type) {
+      if (type === "export") {
+        exportFileProcessData(
+          processDataView,
+          setPageErrorsJson,
+          setPageErrorMessage,
+          setShowErrorSummary,
+          props.setShowSpinner,
+          !props.fromPublicDatasetPage && !props.isPublic ? "exportprocesseddata" : "publicexportprocesseddata",
+        )
+      } else if (type === "download") {
+        downloadFile(
+          processDataView.file,
+          props.setPageErrorsJson,
+          props.setPageErrorMessage,
+          props.setShowErrorSummary,
+          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner
+        );
+      }
+    }
+
     return (
       <div>
+        {showDescriptos && <ViewDescriptor metadataId={processDataView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
+          wsCall={ !props.fromPublicDatasetPage ? "getdataprocessing" : "getpublicdataprocessing"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Data Processing"}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
@@ -221,38 +254,86 @@ const ProcessDataOnRd = props => {
         }}>        <Form.Group as={Row} controlId={"processdata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Process Data"} className="required-asterik" />
-            <Form.Control
-              type="text"
-              name={"processdata"}
-              value={processDataView.file ? processDataView.file.originalName : "No data available"}
-              readOnly
-              plaintext
-            />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{processDataView.file ? processDataView.file.originalName : "No data available"}</span>
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"dataProcessing"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Data Processing"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={processDataView.metadata ? processDataView.metadata.name : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            {processDataView.metadata ? <LineTooltip text="View Details">
+              <Button 
+                  className={"lnk-btn"}
+                  variant="link"
+                  onClick={() => {
+                    setShowDescriptos(true);
+                  }}
+                >
+                  {processDataView.metadata.name}
+              </Button>
+            </LineTooltip> : 
+              <span>{"No data available"}</span>
+            }
           </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId={"processDataFF"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"ProcessData Fileformat"} className="required-asterik" />
-            <Form.Control
-              type="text"
-              name={"processDataFF"}
-              value={processDataView.file ? processDataView.file.fileFormat : "No data available"}
-              readOnly
-              plaintext
-            />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{processDataView.file ? processDataView.file.fileFormat : "No data available"}</span>
           </Col>
         </Form.Group>
         </div>
 
         <Row st1yle={{ textAlign: "center" }}  className="mt-3"  cla1ssName="gg-align-center mb-3" clas1sName={props.enableImageOnSlide ? "row_headline row_headline_act" : "row_headline"}>
+        {processDataView.status !== "DONE" && <Col style={{ textAlign: "center" }}>
+          <span>
+            {processDataView.status &&
+            processDataView.status === "ERROR" &&
+            processDataView.error &&
+            processDataView.error.errors.length > 0 ? (
+              <>
+                <Button className="gg-btn-outline mt-2 gg-mr-20"
+                  onClick={() => {
+                    props.setErrorMessage(processDataView.error);
+                    props.setEnableErrorView(true);
+                  }}
+                >Show Error Details
+                &nbsp;&nbsp;
+                <FontAwesomeIcon
+                  key={"error"}
+                  icon={["fas", "exclamation-triangle"]}
+                  size="xs"
+                  className={"caution-color table-btn"}
+                  style={{
+                    paddingTop: "9px"
+                  }}
+                />
+                </Button>
+              </>
+            ) : (
+              <span>
+              <strong>Status:</strong>&nbsp;{processDataView.status}
+              &nbsp;&nbsp;
+              <FontAwesomeIcon
+                key={"error"}
+                icon={["fas", "exclamation-triangle"]}
+                size="xs"
+                className={"warning-color table-btn"}
+                style={{
+                  paddingTop: "9px"
+                }}
+              />
+              </span>
+            )}
+          </span>
+        </Col>}
         {!props.fromPublicDatasetPage && !props.isPublic && (<>
             {processDataView.id && (
               <>
@@ -270,24 +351,13 @@ const ProcessDataOnRd = props => {
               </>
             )}
           </>)}
-
-          {processDataView.file && (
-            <Col style={{ textAlign: "center" }}>
-              <Button className="gg-btn-outline mt-2 gg-mr-20"
-                onClick={() => {
-                  downloadFile(
-                    processDataView.file,
-                    props.setPageErrorsJson,
-                    props.setPageErrorMessage,
-                    props.setShowErrorSummary,
-                    "filedownload",
-                    props.setShowSpinner
-                  );
-                }}
-              >Download Process data</Button>
-            </Col>
-          )}
-
+          <Col style={{ textAlign: "center" }}>
+            <DownloadButton
+              showExport={true}
+              showDownload={processDataView.file !== undefined}
+              handleDownload={handleDownload}
+            />
+          </Col>
         </Row>
         </div>
     );

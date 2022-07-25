@@ -270,15 +270,32 @@ export function fileDownloadFailure(
     setPageErrorMessage("");
     setShowErrorSummary(true);
     setShowSpinner(false);
-  });
+  })
+  .catch(()=>{
+    setShowSpinner(false);
+});
 }
 
-export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner) {
+export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportslidelayout") {
   setShowSpinner(true);
   wsCall(
-    "exportslidelayout",
+    wscall,
     "GET",
     { slidelayoutid: row.id, filename: "" },
+    true,
+    null,
+    response => fileDownloadSuccess(response, setShowSpinner),
+    response =>
+      fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+  );
+}
+
+export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportprocesseddata") {
+  setShowSpinner(true);
+  wsCall(
+    wscall,
+    "GET",
+    { processeddataid: row.id, filename: "" },
     true,
     null,
     response => fileDownloadSuccess(response, setShowSpinner),

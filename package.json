@@ -16,6 +16,7 @@
     "@welldone-software/why-did-you-render": "^6.1.4",
     "@wojtekmaj/react-datetimerange-picker": "^2.4.0",
     "bootstrap": "~4.3.1",
+    "cp-react-tree-table": "^1.0.0-beta.13",
     "env-cmd": "~10.1.0",
     "material-table": "~1.67.1",
     "material-ui": "^0.20.2",

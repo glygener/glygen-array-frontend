@@ -64,14 +64,14 @@ const DataTreeView = props => {
         xs={8} lg={8}>
       <Tree
         style={{
-          paddingTop: "35px",
+          paddingTop: "15px",
           overflow: "scroll",
           maxHeight: "580px",
           height: "550px"
         }}
         content={
           <>
-            <div style={{ marginTop: "-60px", marginLeft: "30px" }}
+            <div style={{ marginTop: "-40px", marginLeft: "30px" }}
               role="button" className={enableExperimentModal ? "button-act" : "button"}
               onClick={() =>  {
                 resetEnableModal();
@@ -100,12 +100,11 @@ const DataTreeView = props => {
             return (
               <Tree
                 open
-                style={{ paddingTop: "35px", marginLeft: "20px" }}
+                style={{ paddingTop: "15px", marginLeft: "20px" }}
                 content={
                   <>
-                    <div className="rst__rowWrapper">
                     <div
-                      style={{ marginTop: "-60px", marginLeft: "30px" }}
+                      style={{ marginTop: "-40px", marginLeft: "30px" }}
                       role="button" className={enableSlideModal ? "button-act" : "button"}
                       onClick={() =>  {
                          resetEnableModal();
@@ -114,6 +113,7 @@ const DataTreeView = props => {
                          setEnableSlideModal(true);                      
                       }}
                     >
+                      <div className="rst__rowWrapper">
                         <div className="rst__row">
                           <Row className={enableSlideModal  && slideView && slideView.id === slide.id ? "row_headline row_headline_act" : "row_headline"}>
                             <Col>
@@ -131,11 +131,11 @@ const DataTreeView = props => {
                     return (
                       <Tree
                         open
-                        style={{ paddingTop: "35px", marginLeft: "20px" }}
+                        style={{ paddingTop: "15px", marginLeft: "20px" }}
                         content={
                           <>
                             <div
-                              style={{ marginTop: "-60px", marginLeft: "30px" }}
+                              style={{ marginTop: "-40px", marginLeft: "30px" }}
                               role="button" className={enableSlideModal ? "button-act" : "button"}
                               onClick={() => {
                                 resetEnableModal();
@@ -175,11 +175,11 @@ const DataTreeView = props => {
                             return (
                               <Tree
                                 open
-                                style={{ paddingTop: "35px", marginLeft: "20px" }}
+                                style={{ paddingTop: "15px", marginLeft: "20px" }}
                                 content={
                                   <>
                                     <div
-                                      style={{ marginTop: "-60px", marginLeft: "30px" }}
+                                      style={{ marginTop: "-40px", marginLeft: "30px" }}
                                       role="button" className={enableRawdataOnImage ? "button-act" : "button"}
                                       onClick={() =>  {
                                         resetEnableModal();
@@ -209,7 +209,8 @@ const DataTreeView = props => {
                                                         size="lg"
                                                         className={"caution-color table-btn"}
                                                         style={{
-                                                          paddingTop: "9px"
+                                                          paddingTop: "6px",
+                                                          paddingBottome: "6px"
                                                         }}
                                                       />
                                                   </>
@@ -220,7 +221,8 @@ const DataTreeView = props => {
                                                   size="lg"
                                                   className={"warning-color table-btn"}
                                                   style={{
-                                                    paddingTop: "9px"
+                                                    paddingTop: "6px",
+                                                    paddingBottome: "6px"
                                                   }}
                                                 />
                                                 )}
@@ -237,11 +239,11 @@ const DataTreeView = props => {
                                     return (
                                       <Tree
                                         open
-                                        style={{ paddingTop: "35px", marginLeft: "20px" }}
+                                        style={{ paddingTop: "15px", marginLeft: "20px" }}
                                         content={
                                           <>
                                             <div
-                                              style={{ marginTop: "-60px", marginLeft: "30px" }}
+                                              style={{ marginTop: "-40px", marginLeft: "30px" }}
                                               role="button" className={enableProcessRawdata ? "button-act" : "button"}
                                               onClick={() =>  {
                                                 resetEnableModal();
@@ -258,6 +260,36 @@ const DataTreeView = props => {
                                                         {pd.metadata && pd.metadata.name}
                                                       </span>
                                                     </Col>
+                                                    {pd.status !== "DONE" && <Col style={{ textAlign: "right"}}>
+                                                      {pd.status &&
+                                                      pd.status === "ERROR" &&
+                                                      pd.error &&
+                                                      pd.error.errors.length > 0 ? (
+                                                        <>
+                                                            <FontAwesomeIcon
+                                                              key={"error" + index}
+                                                              icon={["fas", "exclamation-triangle"]}
+                                                              size="lg"
+                                                              className={"caution-color table-btn"}
+                                                              style={{
+                                                                paddingTop: "6px",
+                                                                paddingBottome: "6px"
+                                                              }}
+                                                            />
+                                                        </>
+                                                      ) : (
+                                                        <FontAwesomeIcon
+                                                        key={"error" + index}
+                                                        icon={["fas", "exclamation-triangle"]}
+                                                        size="lg"
+                                                        className={"warning-color table-btn"}
+                                                        style={{
+                                                          paddingTop: "6px",
+                                                          paddingBottome: "6px"
+                                                        }}
+                                                      />
+                                                      )}
+                                                  </Col>}
                                                   </Row>
                                                 </div>
                                               </div>

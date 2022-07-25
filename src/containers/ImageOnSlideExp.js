@@ -8,7 +8,10 @@ import { Loading } from "../components/Loading";
 import { ResumableUploader } from "../components/ResumableUploader";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { downloadFile } from "../utils/commonUtils";
-
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ViewDescriptor } from "../components/ViewDescriptor";
+import { DownloadButton } from "../components/DownloadButton";
 
 const ImageOnSlideExp = props => {
   let { experimentId } = useParams();
@@ -20,6 +23,8 @@ const ImageOnSlideExp = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [enablePrompt, setEnablePrompt] = useState(false);
+  const [showDescriptos, setShowDescriptos] = useState(false);
+
   const history = useHistory();
 
   const [listScannerMetas, setListScannerMetas] = useState([]);
@@ -78,7 +83,9 @@ const ImageOnSlideExp = props => {
       props.authCheckAgent();
     }
 
-    fetchList("listscanners");
+    if (!props.fromPublicDatasetPage && !props.isPublic) {
+      fetchList("listscanners");
+    }
   }, [experimentId]);
 
   const fetchList = (fetch, id) => {
@@ -220,9 +227,25 @@ const ImageOnSlideExp = props => {
   };
 
   const getImageView = () => {
+
+    function handleDownload(type) {
+      if (type === "download") {
+        downloadFile(
+          imageView.file,
+          props.setPageErrorsJson,
+          props.setPageErrorMessage,
+          props.setShowErrorSummary,
+          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner
+        );
+      }
+    }
+
     return (
       <div>
-      <div style={{
+       {showDescriptos && <ViewDescriptor metadataId={imageView.scanner.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
+          wsCall={ !props.fromPublicDatasetPage ? "getscanner" : "getpublicscanner"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Scanner Metadata"}/>}      
+        <div style={{
           overflow: "auto",
           height: "350px",
           width: "100%"
@@ -230,13 +253,29 @@ const ImageOnSlideExp = props => {
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Image"} className="required-asterik" />
-            <Form.Control type="text" name={"image"} value={imageView.file ? imageView.file.originalName : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{imageView.file ? imageView.file.originalName : "No data available"}</span>
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId={"scannermetadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Scanner Metadata"} className="required-asterik" />
-            <Form.Control type="text" name={"metadata"} value={imageView.scanner ? imageView.scanner.name : "No data available"} readOnly plaintext />
+          </Col>
+          <Col xs={12} lg={9}>
+          {imageView.scanner ? <LineTooltip text="View Details">
+              <Button 
+                  className={"lnk-btn"}
+                  variant="link"
+                  onClick={() => {
+                    setShowDescriptos(true);
+                  }}
+                >
+                  {imageView.scanner.name}
+              </Button>
+            </LineTooltip> : 
+              <span>{"No data available"}</span>
+            }
           </Col>
         </Form.Group>
         </div>
@@ -248,7 +287,6 @@ const ImageOnSlideExp = props => {
                   <Button className="gg-btn-outline mt-2 gg-mr-20"
                       onClick={() => {
                         props.setImageSelected(imageView.id);
-                        // resetEnableModal();
                         props.setEnableRawdataOnImage(true);
                       }}
                   >
@@ -272,22 +310,15 @@ const ImageOnSlideExp = props => {
                 )}
             </>
           )}
-          {imageView.file && (
+          {imageView.file && (<>
             <Col style={{ textAlign: "center" }}>
-            <Button className="gg-btn-outline mt-2 gg-mr-20"
-              onClick={() => {
-                downloadFile(
-                  imageView.file,
-                  props.setPageErrorsJson,
-                  props.setPageErrorMessage,
-                  props.setShowErrorSummary,
-                  "filedownload",
-                  props.setShowSpinner
-                );
-              }}
-            >Download Image data</Button>
+                <DownloadButton
+                  showExport={false}
+                  showDownload={imageView.file !== undefined}
+                  handleDownload={handleDownload}
+                />
             </Col>
-          )}
+          </>)}
         </Row>
         </div>
     );
