@@ -3,7 +3,7 @@ FROM node:12.14.1-alpine as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
-
+COPY package-lock.json /app/package-lock.json
 # install git
 RUN apk update && \
     apk upgrade && \
