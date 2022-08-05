@@ -187,7 +187,7 @@ const HistogramTable = props => {
                 ),
               accessor: "cartoon",
               Cell: row => (
-                <div style={{ height: "100px" }}>
+                <div style={{ height: "auto" }}>
                   <StructureImage base64={row.original.feature.glycans[0].glycan.cartoon} />
                 </div>
               ),

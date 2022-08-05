@@ -69,7 +69,7 @@ const ViewDescriptor = props =>  {
 
     function addDescriptor(descriptor) {
         let unit = descriptor.unit && descriptor.unit !== "" ? descriptor.unit : "";
-        let value = descriptor.notRecorded ? "Not Recorded" : descriptor.notApplicable ? "Not Applicable" : descriptor.value + " " + unit;
+        let value = descriptor.notRecorded ? "Not Recorded" : descriptor.notApplicable ? "Not Applicable" : descriptor.value === "" ? "Information Missing" : descriptor.value + " " + unit;
         let temp = {
           data: {
             name: descriptor.name,
@@ -145,8 +145,7 @@ const ViewDescriptor = props =>  {
     return (
       <div className="value-cell">{row.data.value}</div>
     );
-  }
-    
+  } 
     return (
         <>
         <Modal
@@ -157,15 +156,22 @@ const ViewDescriptor = props =>  {
           centered
           onHide={() => props.setShowModal(false)}
         >
-
+      <CardLoader pageLoading={showloading} />
       <div>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-          {metadata && (<>{props.name}: {metadata.name}</>)}
+            {props.name}: {metadata ? metadata.name : ""}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        {metadata && (<p>Descrption: {metadata.description}</p>)}
+        {showErrorSummary && (<ErrorSummary
+          show={showErrorSummary}
+          form="metadatakeypairs"
+          errorJson={pageErrorsJson}
+          errorMessage={pageErrorMessage}
+        />)}
+        {props.isSample && metadata && metadata.template && (<p>Template: <span className="text_modal">{metadata.template}</span></p>)}
+        {metadata && (<p>Description: <span className="text_modal">{metadata.description}</span></p>)}
     	<TreeTable
           value={treeValue}
           onChange={handleOnChange}>
@@ -191,22 +197,6 @@ const ViewDescriptor = props =>  {
     );
   //}
 
-  if (showErrorSummary) {
-    return (
-      <ErrorSummary
-        show={showErrorSummary}
-        form="metadatakeypairs"
-        errorJson={pageErrorsJson}
-        errorMessage={pageErrorMessage}
-      />
-    );
-  }
-
-  return (
-    <>
-      <CardLoader pageLoading={showloading} />
-    </>
-  );
 }
 
 function genData() {

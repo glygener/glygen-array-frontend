@@ -228,6 +228,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/deleteprintrunmetadata";
     case "getprintrun":
       return ws_base_array + "/getPrintRun";
+    case "getpublicprintrun":
+      return ws_base_array + "/getPrintRun";
     case "updateprintrun":
       return ws_base_array + "/updatePrintrun";
     case "ismiragecompliant":
@@ -409,7 +411,7 @@ export function getWsUrl(ws) {
  * @param {Function} errorFunction Callback to invoke on error
  * @param {Object} headers Headers object. If not passed, will set both Accept and Content-Type headers to application/json
  */
-export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFunction, errorFunction, headers) {
+export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFunction, errorFunction, headers, exceptionFunction) {
   var url = getWsUrl(ws) + getWsParamString(wsParams);
   if (!headers) {
     headers = {
@@ -458,6 +460,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     }
   } catch (error) {
     console.log(error);
+    exceptionFunction && exceptionFunction(error);
     // alert("Network issue detected. Please try again.");
   }
 }

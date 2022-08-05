@@ -175,11 +175,11 @@ const RawdataOnImage = props => {
             powerLevel: rawData.powerLevel
           },
           // eslint-disable-next-line no-unused-vars
-          response => {
+          response => response.text().then((body) => {
             setEnablePrompt(false);
             setEnableRawdataOnImage(false);
-            props.getExperiment();
-          },
+            props.getExperiment({slideID:props.parent.slideID, imageID:props.parent.imageID, rawDataID:body});
+          }),
           addRawDataFailure
         );
       } else {
@@ -225,17 +225,24 @@ const RawdataOnImage = props => {
         });
   };
 
+  function downloadFailure(response) {
+    props.setEnableErrorDialogue(true);
+    props.setErrorMessageDialogueText("");
+    props.setShowSpinner(false);
+  }
+
   const getRawDataView = () => {
 
     function handleDownload(type) {
       if (type === "download") {
         downloadFile(
           rawDataView.file,
-          props.setPageErrorsJson,
-          props.setPageErrorMessage,
-          props.setShowErrorSummary,
-          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
-          props.setShowSpinner
+          null,
+          null,
+          null,
+          !props.fromPublicDatasetPage ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner,
+          downloadFailure
         );
       }
     }
@@ -274,7 +281,7 @@ const RawdataOnImage = props => {
           <Col xs={12} lg={9}>
             {rawDataView.metadata ? <LineTooltip text="View Details">
                 <Button 
-                    className={"lnk-btn"}
+                    className={"lnk-btn lnk-btn-left"}
                     variant="link"
                     onClick={() => {
                       setShowDescriptos(true);
@@ -374,7 +381,7 @@ const RawdataOnImage = props => {
                 <Col style={{ textAlign: "center" }}>
                 <Button className="gg-btn-outline mt-2 gg-mr-20"
                   onClick={() => {
-                    props.deleteRow(rawDataView.id, "deleterawdata");
+                    props.deleteRow(rawDataView.id, "deleterawdata", {slideID:props.parent.slideID, imageID:props.parent.imageID});
                     props.setDeleteMessage(
                       "This will remove all processed data that belongs to this raw data. Do you want to continue?"
                     );
@@ -389,6 +396,7 @@ const RawdataOnImage = props => {
                 <DownloadButton
                   showExport={false}
                   showDownload={rawDataView.file !== undefined}
+                  defaultType="download"
                   handleDownload={handleDownload}
                 />
               </Col>
