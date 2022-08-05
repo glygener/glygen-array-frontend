@@ -335,7 +335,7 @@ const SlideOnExperiment = props => {
         )
       } else if (type === "download") {
         downloadFile(
-          slideView.file,
+          slideView.printedSlide.layout.file,
           null,
           null,
           null,
@@ -485,7 +485,7 @@ const SlideOnExperiment = props => {
           <Col style={{ textAlign: "center" }}>
             <DownloadButton
               showExport={true}
-              showDownload={slideView.file !== undefined}
+              showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== undefined}
               handleDownload={handleDownload}
             />
           </Col>
