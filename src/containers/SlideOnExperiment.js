@@ -31,7 +31,11 @@ const SlideOnExperiment = props => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [listAssayMetas, setListAssayMetas] = useState([]);
   const [enablePrompt, setEnablePrompt] = useState(false);
-  const [showDescriptos, setShowDescriptos] = useState(false);
+  const [showDescriptosMeta, setShowDescriptosMeta] = useState(false);
+  const [showDescriptosPrintRun, setShowDescriptosPrintRun] = useState(false);
+  const [showDescriptosPrinter, setShowDescriptosPrinter] = useState(false);
+  const [showDescriptosPrintedSlideMeta, setShowDescriptosPrintedSlideMeta] = useState(false);
+
   const history = useHistory();
 
   const slide = {
@@ -274,7 +278,6 @@ const SlideOnExperiment = props => {
 
   function handleSubmit(e) {
     setValidated(true);
-
     if (e.currentTarget.checkValidity()) {
       setShowLoading(true);
       getBlocksUsed();
@@ -290,12 +293,12 @@ const SlideOnExperiment = props => {
           metadata: { name: slideOnExp.assayMetadata },
           blocksUsed: blocksSelected
         },
-        response => {
+        response => response.text().then((body) => {
           setEnablePrompt(false);
           setShowLoading(false);
           setEnableSlideModal(false);
-          props.getExperiment();
-        },
+          props.getExperiment({slideID:body});
+        }),
         addSlideOnExpFailure
       );
     }
@@ -310,35 +313,49 @@ const SlideOnExperiment = props => {
       setShowLoading(false);
     });
   }
+  
+  function downloadFailure(response) {
+    props.setEnableErrorDialogue(true);
+    props.setErrorMessageDialogueText("");
+    props.setShowSpinner(false);
+  }
 
   const getSlideView = () => {
 
     function handleDownload(type) {
       if (type === "export") {
         exportFile(
-          slideView.printedSlide && slideView.printedSlide.layout ? slideView.printedSlide.layout : slideView.id,
-          setPageErrorsJson,
-          setPageErrorMessage,
-          setShowErrorSummary,
+          slideView.printedSlide && slideView.printedSlide.layout ? slideView.printedSlide.layout : slideView,
+          null,
+          null,
+          null,
           props.setShowSpinner,
-          !props.fromPublicDatasetPage && !props.isPublic ? "exportslidelayout" : "publicexportslidelayout",
+          !props.fromPublicDatasetPage ? "exportslidelayout" : "publicexportslidelayout",
+          downloadFailure
         )
       } else if (type === "download") {
         downloadFile(
           slideView.file,
-          props.setPageErrorsJson,
-          props.setPageErrorMessage,
-          props.setShowErrorSummary,
-          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
-          props.setShowSpinner
+          null,
+          null,
+          null,
+          !props.fromPublicDatasetPage ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner,
+          downloadFailure
         );
       }
     }
 
     return (
       <div>
-        {showDescriptos && <ViewDescriptor metadataId={slideView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
+        {showDescriptosMeta && <ViewDescriptor metadataId={slideView.metadata.id} showModal={showDescriptosMeta} setShowModal={setShowDescriptosMeta} 
           wsCall={ !props.fromPublicDatasetPage ? "getassaymetadata" : "getpublicassay"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Assay Metadata"}/>}
+        {showDescriptosPrintedSlideMeta && <ViewDescriptor metadataId={slideView.printedSlide.metadata.id} showModal={showDescriptosPrintedSlideMeta} setShowModal={setShowDescriptosPrintedSlideMeta} 
+        wsCall={ !props.fromPublicDatasetPage ? "getslidemeta" : "getslidemetadata"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Printed Slide Metadata"}/>}
+        {showDescriptosPrintRun && <ViewDescriptor metadataId={slideView.printedSlide.printRun.id} showModal={showDescriptosPrintRun} setShowModal={setShowDescriptosPrintRun} 
+        wsCall={ !props.fromPublicDatasetPage ? "getprintrun" : "getpublicprintrun"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Print Run"}/>}
+        {showDescriptosPrinter && <ViewDescriptor metadataId={slideView.printedSlide.printer.id} showModal={showDescriptosPrinter} setShowModal={setShowDescriptosPrinter} 
+        wsCall={ !props.fromPublicDatasetPage ? "getprinter" : "getpublicprinter"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Printer"}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
@@ -362,13 +379,73 @@ const SlideOnExperiment = props => {
           <Col xs={12} lg={9}>
             {slideView.metadata ? <LineTooltip text="View Details">
               <Button 
-                  className={"lnk-btn"}
+                  className={"lnk-btn lnk-btn-left"}
                   variant="link"
                   onClick={() => {
-                    setShowDescriptos(true);
+                    setShowDescriptosMeta(true);
                   }}
                 >
                   {slideView.metadata.name}
+              </Button>
+            </LineTooltip> : 
+              <span>{"No data available"}</span>
+            }
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId={"printedslidemetadata"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Printed Slide Metadata"} className="required-asterik" />
+          </Col>
+          <Col xs={12} lg={9}>
+            {slideView.printedSlide && slideView.printedSlide.metadata ? <LineTooltip text="View Details">
+              <Button 
+                  className={"lnk-btn lnk-btn-left"}
+                  variant="link"
+                  onClick={() => {
+                    setShowDescriptosPrintedSlideMeta(true);
+                  }}
+                >
+                  {slideView.printedSlide.metadata.name}
+              </Button>
+            </LineTooltip> : 
+              <span>{"No data available"}</span>
+            }
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId={"printrun"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Print Run"} className="required-asterik" />
+          </Col>
+          <Col xs={12} lg={9}>
+            {slideView.printedSlide && slideView.printedSlide.printRun ? <LineTooltip text="View Details">
+              <Button 
+                  className={"lnk-btn lnk-btn-left"}
+                  variant="link"
+                  onClick={() => {
+                    setShowDescriptosPrintRun(true);
+                  }}
+                >
+                  {slideView.printedSlide.printRun.name}
+              </Button>
+            </LineTooltip> : 
+              <span>{"No data available"}</span>
+            }
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId={"printer"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"Printer"} className="required-asterik" />
+          </Col>
+          <Col xs={12} lg={9}>
+            {slideView.printedSlide && slideView.printedSlide.printer ? <LineTooltip text="View Details">
+              <Button 
+                  className={"lnk-btn lnk-btn-left"}
+                  variant="link"
+                  onClick={() => {
+                    setShowDescriptosPrinter(true);
+                  }}
+                >
+                  {slideView.printedSlide.printer.name}
               </Button>
             </LineTooltip> : 
               <span>{"No data available"}</span>
@@ -393,7 +470,7 @@ const SlideOnExperiment = props => {
                 <Col style={{ textAlign: "center" }}>
                   <Button className="gg-btn-outline mt-2 gg-mr-20"
                     onClick={() => {
-                      props.deleteRow(slideView.id, "deleteslide");
+                      props.deleteRow(slideView.id, "deleteslide", {"experimentID": "experimentID"});
                       props.setDeleteMessage(
                         "This will remove all images, raw data and processed data that belongs to this slide. Do you want to continue?"
                       );

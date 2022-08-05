@@ -13,7 +13,7 @@ const ExperimentDetails = props => {
     return (
       <div>
         {showDescriptos && <ViewDescriptor metadataId={experiment.sampleID ? experiment.sampleID :experiment.sample.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
-          wsCall={ !props.fromPublicDatasetPage ? "getsample" : "getpublicsample"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Sample"}/>}
+          wsCall={ !props.fromPublicDatasetPage ? "getsample" : "getpublicsample"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Sample"}  isSample={true}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
@@ -34,7 +34,7 @@ const ExperimentDetails = props => {
           <Col xs={12} lg={9}>
             {experiment.sample ? <LineTooltip text="View Details">
               <Button 
-                  className={"lnk-btn"}
+                  className={"lnk-btn lnk-btn-left"}
                   variant="link"
                   onClick={() => {
                     setShowDescriptos(true);

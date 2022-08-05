@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Tree from "react-animated-tree";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
@@ -13,7 +13,7 @@ import { ErrorPage } from "./ErrorPage";
 import { ExperimentDetails } from "../containers/ExperimentDetails";
 
 const DataTreeView = props => {
-  let { data, experimentId, fromPublicDatasetPage } = props;
+  let { data, experimentId, fromPublicDatasetPage, selectedNode, setSelectedNode } = props;
 
   const [enableExperimentModal, setEnableExperimentModal] = useState(true);
   const [enableSlideModal, setEnableSlideModal] = useState(false);
@@ -23,6 +23,7 @@ const DataTreeView = props => {
   const [slideSelected, setSlideSelected] = useState();
   const [imageSelected, setImageSelected] = useState();
   const [rawdataSelected, setRawdataSelected] = useState();
+  const [parent, setParent] = useState();
   const [titleExpansion, setTitleExpansion] = useState();
   const [slideView, setSlideView] = useState();
   const [imageView, setImageView] = useState();
@@ -30,7 +31,59 @@ const DataTreeView = props => {
   const [processDataView, setProcessDataView] = useState();
   const [enableErrorView, setEnableErrorView] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
+  const [enableErrorDialogue, setEnableErrorDialogue] = useState();
+  const [errorMessageDialogueText, setErrorMessageDialogueText] = useState();
   const [showSpinner, setShowSpinner] = useState(false);
+
+  useEffect(() => {
+    if (selectedNode && selectedNode.slideID && data && data.slides) {
+      let sld = data.slides.find(sld => sld.id === selectedNode.slideID);
+      if (sld && sld.images && selectedNode.imageID) {
+        let img = sld.images.find(img => img.id === selectedNode.imageID);
+        if (img && img.rawDataList && selectedNode.rawDataID) {
+          let rdl = img.rawDataList.find(rdl => rdl.id === selectedNode.rawDataID);
+          if (rdl && rdl.processedDataList && selectedNode.processDataID) {
+            let pdl = rdl.processedDataList.find(pdl => pdl.id === selectedNode.processDataID);
+            if (pdl) {
+              resetEnableModal();
+              setProcessDataView(pdl);
+              setEnableProcessRawdata(true);      
+              setParent({slideID:sld.id, imageID:img.id, rawDataID:rdl.id, processDataID: pdl.id });  
+              setSelectedNode();
+            }
+
+          } else if (rdl) {
+            resetEnableModal();
+            setRawDataView(rdl);
+            setRawdataSelected(rdl.id);
+            setEnableRawdataOnImage(true);
+            setSelectedNode();
+            setParent({slideID:sld.id, imageID:img.id, rawDataID:rdl.id}); 
+          } 
+      } else if (img) {
+        resetEnableModal();
+        setImageSelected(img.id);
+        setImageView(img);
+        setEnableImageOnSlide(true);
+        setSelectedNode();
+        setParent({slideID:sld.id, imageID:img.id}); 
+      } 
+    } else if (sld) {
+      resetEnableModal();
+      setSlideView(sld);
+      setSlideSelected(sld.id);
+      setEnableSlideModal(true);
+      setSelectedNode();
+      setParent({slideID:sld.id});
+    } 
+  } else if (selectedNode && selectedNode.experimentID) {
+    resetEnableModal();
+    setEnableExperimentModal(true);
+    setSelectedNode();
+    setParent();
+  }
+
+  }, [data]);
 
 
   const resetEnableModal = () => {
@@ -45,10 +98,68 @@ const DataTreeView = props => {
     setProcessDataView();
   }
 
+  const errorMessageTable = props => {
+    return (
+      <>
+      <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={enableErrorView}
+        onHide={() => setEnableErrorView(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">Errors</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ErrorPage
+            experimentId={experimentId}
+            errorMessage={errorMessage}
+            setEnableErrorView={setEnableErrorView}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button className="gg-btn-blue-reg" onClick={() => setEnableErrorView(false)}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+    );
+  };
+
+  const errorMessageDialogue = props => {
+    return (
+      <>
+      <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={enableErrorDialogue}
+        onHide={() => setEnableErrorDialogue(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">Errors</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <span>{errorMessageDialogueText === undefined || errorMessageDialogueText === "" ? "An unidentified error has occurred. Please be patient while we investigate this." : errorMessageDialogueText}</span>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button className="gg-btn-blue-reg" onClick={() => setEnableErrorDialogue(false)}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+    );
+  };
 
   return (
     <>
       {showSpinner && downloadSpinnerBottomSide()}
+      {enableErrorView && errorMessageTable()}
+      {enableErrorDialogue && errorMessageDialogue()}
+
       {/* Experiment */}
       <Row     style={{
           // overflowY: "scroll",
@@ -75,7 +186,8 @@ const DataTreeView = props => {
               role="button" className={enableExperimentModal ? "button-act" : "button"}
               onClick={() =>  {
                 resetEnableModal();
-                setEnableExperimentModal(true);              
+                setEnableExperimentModal(true);  
+                setParent();            
               }}
             >
               <div className={"rst__rowWrapper"}>
@@ -110,7 +222,8 @@ const DataTreeView = props => {
                          resetEnableModal();
                          setSlideView(slide);
                          setSlideSelected(slide.id);
-                         setEnableSlideModal(true);                      
+                         setEnableSlideModal(true);
+                         setParent({slideID:slide.id});                      
                       }}
                     >
                       <div className="rst__rowWrapper">
@@ -142,6 +255,7 @@ const DataTreeView = props => {
                                 setImageSelected(img.id);
                                 setImageView(img);
                                 setEnableImageOnSlide(true);
+                                setParent({slideID:slide.id, imageID:img.id});
                               }}
                             >
                               <div className={"rst__rowWrapper"}>
@@ -185,7 +299,8 @@ const DataTreeView = props => {
                                         resetEnableModal();
                                         setRawDataView(rawData);
                                         setRawdataSelected(rawData.id);
-                                        setEnableRawdataOnImage(true);                                      
+                                        setEnableRawdataOnImage(true);         
+                                        setParent({slideID:slide.id, imageID:img.id, rawDataID:rawData.id });                            
                                       }}
                                     >
                                       <div className={"rst__rowWrapper"}>
@@ -248,7 +363,8 @@ const DataTreeView = props => {
                                               onClick={() =>  {
                                                 resetEnableModal();
                                                 setProcessDataView(pd);
-                                                setEnableProcessRawdata(true);                                              
+                                                setEnableProcessRawdata(true);      
+                                                setParent({slideID:slide.id, imageID:img.id, rawDataID:rawData.id, processDataID: pd.id});                                                                    
                                               }}
                                             >
                                               <div className={"rst__rowWrapper"}>
@@ -339,12 +455,16 @@ const DataTreeView = props => {
           experimentId={experimentId}
           enableSlideModal={enableSlideModal}
           setEnableSlideModal={setEnableSlideModal}
+          setEnableExperimentModal={setEnableExperimentModal}
+          setParent={setParent}
           deleteRow={props.deleteRow}
           setDeleteMessage={props.setDeleteMessage}
           setShowDeleteModal={props.setShowDeleteModal}
           setSlideSelected={setSlideSelected}
           resetEnableModal={resetEnableModal}
           setEnableImageOnSlide={setEnableImageOnSlide}
+          setErrorMessageDialogueText={setErrorMessageDialogueText}
+          setEnableErrorDialogue={setEnableErrorDialogue}
           fromPublicDatasetPage={fromPublicDatasetPage}
           isPublic={data.isPublic}
           setShowSpinner={setShowSpinner}
@@ -356,6 +476,13 @@ const DataTreeView = props => {
           experimentId={experimentId}
           getExperiment={props.getExperiment}
           slideId={slideSelected}
+          parent={parent}
+          setParent={setParent}
+          setSlideView={setSlideView}
+          setSlideSelected={setSlideSelected}
+          setEnableSlideModal={setEnableSlideModal}
+          setErrorMessageDialogueText={setErrorMessageDialogueText}
+          setEnableErrorDialogue={setEnableErrorDialogue}
           imageView={imageView}
           setImageView={setImageView}
           enableImageOnSlide={enableImageOnSlide}
@@ -378,12 +505,18 @@ const DataTreeView = props => {
           experimentId={experimentId}
           getExperiment={props.getExperiment}
           imageId={imageSelected}
+          parent={parent}
+          setParent={setParent}
+          setImageView={setImageView}
+          setEnableImageOnSlide={setEnableImageOnSlide}
+          setImageSelected={setImageSelected}
+          setErrorMessageDialogueText={setErrorMessageDialogueText}
+          setEnableErrorDialogue={setEnableErrorDialogue}
           rawDataView={rawDataView}
           setRawDataView={setRawDataView}
           enableRawdataOnImage={enableRawdataOnImage}
           setEnableRawdataOnImage={setEnableRawdataOnImage}
           setRawdataSelected={setRawdataSelected}
-          resetEnableModal={resetEnableModal}
           setEnableProcessRawdata={setEnableProcessRawdata}
           deleteRow={props.deleteRow}
           setDeleteMessage={props.setDeleteMessage}
@@ -401,6 +534,13 @@ const DataTreeView = props => {
           experimentId={experimentId}
           getExperiment={props.getExperiment}
           rawDataId={rawdataSelected}
+          parent={parent}
+          setParent={setParent}
+          setRawDataView={setRawDataView}
+          setEnableRawdataOnImage={setEnableRawdataOnImage}
+          setRawdataSelected={setRawdataSelected}
+          setErrorMessageDialogueText={setErrorMessageDialogueText}
+          setEnableErrorDialogue={setEnableErrorDialogue}
           processDataView={processDataView}
           setProcessDataView={setProcessDataView}
           enableProcessRawdata={enableProcessRawdata}
@@ -417,33 +557,6 @@ const DataTreeView = props => {
       )}
       </Col>
       </Row>
-      {
-        <>
-          <Modal
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            show={enableErrorView}
-            onHide={() => setEnableErrorView(false)}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">Errors</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <ErrorPage
-                experimentId={experimentId}
-                errorMessage={errorMessage}
-                setEnableErrorView={setEnableErrorView}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button className="gg-btn-blue-reg" onClick={() => setEnableErrorView(false)}>
-                OK
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </>
-      }
     </>
   );
 };

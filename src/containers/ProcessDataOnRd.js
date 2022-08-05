@@ -173,12 +173,12 @@ const ProcessDataOnRd = props => {
           fileSize: uploadedDF.fileSize
         },
         // eslint-disable-next-line no-unused-vars
-        response => {
+        response => response.text().then((body) => {
           setEnablePrompt(false);
           props.setEnableProcessRawdata(false);
           // history.push("/experiments/editExperiment/" + experimentId);
-          props.getExperiment();
-        },
+          props.getExperiment({slideID:props.parent.slideID, imageID:props.parent.imageID, rawDataID:props.parent.rawDataID, processDataID:body});
+        }),
         addRawDataFailure
       );
     }
@@ -219,26 +219,34 @@ const ProcessDataOnRd = props => {
         });
   };
 
+  function downloadFailure(response) {
+    props.setEnableErrorDialogue(true);
+    props.setErrorMessageDialogueText("");
+    props.setShowSpinner(false);
+  }
+
   const getProcessDataView = () => {
 
     function handleDownload(type) {
       if (type === "export") {
         exportFileProcessData(
           processDataView,
-          setPageErrorsJson,
-          setPageErrorMessage,
-          setShowErrorSummary,
+          null,
+          null,
+          null,
           props.setShowSpinner,
-          !props.fromPublicDatasetPage && !props.isPublic ? "exportprocesseddata" : "publicexportprocesseddata",
+          !props.fromPublicDatasetPage ? "exportprocesseddata" : "publicexportprocesseddata",
+          downloadFailure
         )
       } else if (type === "download") {
         downloadFile(
           processDataView.file,
-          props.setPageErrorsJson,
-          props.setPageErrorMessage,
-          props.setShowErrorSummary,
-          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
-          props.setShowSpinner
+          null,
+          null,
+          null,
+          !props.fromPublicDatasetPage ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner,
+          downloadFailure
         );
       }
     }
@@ -267,7 +275,7 @@ const ProcessDataOnRd = props => {
           <Col xs={12} lg={9}>
             {processDataView.metadata ? <LineTooltip text="View Details">
               <Button 
-                  className={"lnk-btn"}
+                  className={"lnk-btn lnk-btn-left"}
                   variant="link"
                   onClick={() => {
                     setShowDescriptos(true);
@@ -340,11 +348,11 @@ const ProcessDataOnRd = props => {
                 <Col style={{ textAlign: "center" }}>
                   <Button className="gg-btn-outline mt-2 gg-mr-20"                      
                       onClick={() => {
-                        props.deleteRow(processDataView.id, "deleteprocessdata");
+                        props.deleteRow(processDataView.id, "deleteprocessdata", {slideID:props.parent.slideID, imageID:props.parent.imageID, rawDataID:props.parent.rawDataID});
                         props.setDeleteMessage(
                           "This will remove the selected processed data. Do you want to continue?"
                         );
-                        props.setShowDeleteModal(true);
+                        props.setShowDeleteModal(true); 
                       }}>                                 
                   Delete Process Data</Button>
                 </Col>

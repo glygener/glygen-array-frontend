@@ -12,23 +12,11 @@ import { FormLabel, Feedback } from "../components/FormControls";
 
 
 export const DownloadButton = (props) => {
-  const { types, dataId, itemType = "glycan" } = props;
+  const { defaultType = "export" } = props;
 
-  const [itemTypeResolver] = useState(() => {
-    switch (itemType) {
-      case "glycan":
-        return null;
-      case "motif":
-        return null;
-      case "protein":
-        return null;
-      default:
-    }
-    return null;
-  });
 
   const [show, setShow] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("export");
+  const [selectedValue, setSelectedValue] = useState(defaultType);
 
   const clearForm = () => {
     setSelectedValue("Export");

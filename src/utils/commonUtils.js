@@ -193,7 +193,8 @@ export function downloadFile(
   setPageErrorMessage,
   setShowErrorSummary,
   wscall,
-  setShowSpinner
+  setShowSpinner,
+  downloadFailure
 ) {
   setShowSpinner && setShowSpinner(true);
   wsCall(
@@ -207,12 +208,14 @@ export function downloadFile(
     true,
     undefined,
     response => fileDownloadSuccess(response, setShowSpinner),
-    response =>
-      fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner),
+    response => {
+      downloadFailure ? downloadFailure(response) : fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    },
     {
       Accept: "*/*",
       "Content-Type": "application/json"
-    }
+    },
+    response => downloadFailure(response)
   );
 }
 
@@ -276,7 +279,7 @@ export function fileDownloadFailure(
 });
 }
 
-export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportslidelayout") {
+export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportslidelayout", downloadFailure) {
   setShowSpinner(true);
   wsCall(
     wscall,
@@ -285,12 +288,15 @@ export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowE
     true,
     null,
     response => fileDownloadSuccess(response, setShowSpinner),
-    response =>
-      fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    response => {
+      downloadFailure ? downloadFailure(response) : fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    },
+    null,
+    response => downloadFailure(response)
   );
 }
 
-export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportprocesseddata") {
+export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportprocesseddata", downloadFailure) {
   setShowSpinner(true);
   wsCall(
     wscall,
@@ -299,8 +305,11 @@ export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessag
     true,
     null,
     response => fileDownloadSuccess(response, setShowSpinner),
-    response =>
-      fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    response => {
+      downloadFailure ? downloadFailure(response) : fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    },
+    null,
+    response => downloadFailure(response)
   );
 }
 

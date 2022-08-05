@@ -22,6 +22,7 @@ import { ExperimentInfo } from "./ExperimentInfo";
 import { Link } from "react-router-dom";
 import { FilesOnExp } from "../components/FilesOnExp";
 import { KeywordsOnExp } from "../components/KeywordsOnExp";
+import { downloadSpinnerBottomSide } from "../utils/commonUtils";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -50,7 +51,7 @@ const AddExperiment = props => {
       );
   }, [experimentId]);
 
-  function getExperiment() {
+  function getExperiment(selectedNode) {
     wsCall(
       "getexperiment",
       "GET",
@@ -59,6 +60,7 @@ const AddExperiment = props => {
       null,
       response =>
         response.json().then(responseJson => {
+          setSelectedNode(selectedNode);
           setExperiment({
             name: responseJson.name,
             sample: responseJson.sample.name,
@@ -75,7 +77,6 @@ const AddExperiment = props => {
             files: responseJson.files,
             keywords: responseJson.keywords
           });
-
           // setRefreshPage(false);
         }),
       wsCallFail
@@ -104,6 +105,7 @@ const AddExperiment = props => {
 
   // const [refreshPage, setRefreshPage] = useState(false);
   const [deleteData, setDeleteData] = useState();
+  const [selectedNode, setSelectedNode] = useState();
   const [listKeywords, setListKeywords] = useState();
   const history = useHistory();
   const [sampleList, setSampleList] = useState([]);
@@ -115,6 +117,7 @@ const AddExperiment = props => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState();
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const experimentState = {
     name: "",
@@ -277,14 +280,14 @@ const AddExperiment = props => {
     );
   };
 
-  function deleteRow(id, wscall) {
-    setDeleteData({ id: id, wscall: wscall });
+  function deleteRow(id, wscall, selectedNode) {
+    setDeleteData({ id: id, wscall: wscall, selectedNode: selectedNode});
     setShowDeleteModal(true);
   }
 
   const confirmDelete = () => {
     setShowDeleteModal(false);
-
+    setShowSpinner(true);
     wsCall(
       deleteData.wscall,
       "DELETE",
@@ -292,15 +295,21 @@ const AddExperiment = props => {
       true,
       null,
       response => {
-        getExperiment();
-        console.log(response);
+        getExperiment(deleteData.selectedNode);
+        setShowSpinner(false);
       },
 
       response => {
         response.json().then(responseJson => {
           setPageErrorsJson(responseJson);
           setShowErrorSummary(true);
+          setShowSpinner(false);
         });
+      },
+      undefined,
+      (exception) => {
+        setShowSpinner(false);
+        setShowErrorSummary(true);
       }
     );
   };
@@ -312,7 +321,7 @@ const AddExperiment = props => {
           <title>{head.addExperiment.title}</title>
           {getMeta(head.addExperiment)}
         </Helmet>
-
+        {showSpinner && downloadSpinnerBottomSide()}
         <div className="page-container">
           <Row>
             <Col
@@ -395,6 +404,8 @@ const AddExperiment = props => {
                           <Card.Body>
                             <DataTreeView
                               data={experiment}
+                              selectedNode={selectedNode}
+                              setSelectedNode={setSelectedNode}
                               isPublic={experiment.isPublic}
                               experimentId={experimentId}
                               getExperiment={getExperiment}

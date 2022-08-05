@@ -24,22 +24,29 @@
     border-bottom: 1px solid rgba(55, 53, 47, 0.09);
 }
 
-/* Employees & Expenses */
-
 .cp_tree-table .cp_tree-table_header-cell>.t-right {
     width: 100%;
     text-align: right;
 }
 
+.text_modal {
+    font-size: 15px;
+    color: #040402;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
 /* Cells */
 
-.cp_tree-table .cp_tree-table_cell,
-.cp_tree-table .cp_tree-table_header-cell {
+.cp_tree-table .cp_tree-table,
+.cp_tree-table_header-cell {
     display: flex;
     align-items: center;
     padding: 0 10px;
 }
 
+.cp_tree-table_cell {
+    display: flex;
+    padding: 0 10px;
+}
 /* Editable cell */
 
 .cp_tree-table .cp_tree-table_cell>input {

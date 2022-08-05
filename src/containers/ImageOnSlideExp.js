@@ -161,12 +161,12 @@ const ImageOnSlideExp = props => {
           scanner: { name: imageOnSlide.scanner },
           file: imageUploaded
         },
-        response => {
+        response => response.text().then((body) => {
           setEnablePrompt(false);
           setShowLoading(false);
           setEnableImageOnSlide(false);
-          props.getExperiment();
-        },
+          props.getExperiment({slideID:props.parent.slideID, imageID:body});
+        }),
         addSlideOnExpFailure
       );
     }
@@ -226,17 +226,24 @@ const ImageOnSlideExp = props => {
     );
   };
 
+  function downloadFailure(response) {
+    props.setEnableErrorDialogue(true);
+    props.setErrorMessageDialogueText("");
+    props.setShowSpinner(false);
+  }
+
   const getImageView = () => {
 
     function handleDownload(type) {
       if (type === "download") {
         downloadFile(
           imageView.file,
-          props.setPageErrorsJson,
-          props.setPageErrorMessage,
-          props.setShowErrorSummary,
-          !props.fromPublicDatasetPage && !props.isPublic ? "filedownload" : "publicfiledownload",
-          props.setShowSpinner
+          null,
+          null,
+          null,
+          !props.fromPublicDatasetPage ? "filedownload" : "publicfiledownload",
+          props.setShowSpinner,
+          downloadFailure
         );
       }
     }
@@ -265,7 +272,7 @@ const ImageOnSlideExp = props => {
           <Col xs={12} lg={9}>
           {imageView.scanner ? <LineTooltip text="View Details">
               <Button 
-                  className={"lnk-btn"}
+                  className={"lnk-btn lnk-btn-left"}
                   variant="link"
                   onClick={() => {
                     setShowDescriptos(true);
@@ -298,7 +305,7 @@ const ImageOnSlideExp = props => {
                     <Col style={{ textAlign: "center" }}>
                       <Button className="gg-btn-outline mt-2 gg-mr-20"                      
                         onClick={() => {
-                          props.deleteRow(imageView.id, "deleteimage");
+                          props.deleteRow(imageView.id, "deleteimage", {slideID:props.parent.slideID});
                           props.setDeleteMessage(
                             "This will remove all raw data and processed data that belongs to this image. Do you want to continue?"
                           );
@@ -315,6 +322,7 @@ const ImageOnSlideExp = props => {
                 <DownloadButton
                   showExport={false}
                   showDownload={imageView.file !== undefined}
+                  defaultType="download"
                   handleDownload={handleDownload}
                 />
             </Col>

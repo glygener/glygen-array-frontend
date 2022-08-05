@@ -651,7 +651,10 @@ input[type="check" i] {
   font-size: inherit !important;
   vertical-align: inherit !important;
 }
-
+  
+.lnk-btn-left {
+  text-align: left !important;
+}
 .lnk-btn:hover {
   color: var(--gg-dark-hover) !important;
 }
