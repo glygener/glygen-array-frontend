@@ -485,7 +485,7 @@ const SlideOnExperiment = props => {
           <Col style={{ textAlign: "center" }}>
             <DownloadButton
               showExport={true}
-              showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== undefined}
+              showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== null}
               handleDownload={handleDownload}
             />
           </Col>
