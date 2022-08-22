@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@devexpress/dx-react-grid-material-ui": "^2.7.6",
     "@fontsource/roboto": "^4.5.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
@@ -16,7 +17,8 @@
     "@welldone-software/why-did-you-render": "^6.1.4",
     "@wojtekmaj/react-datetimerange-picker": "^2.4.0",
     "bootstrap": "~4.3.1",
-    "cp-react-tree-table": "^1.0.0-beta.13",
+    "devextreme": "22.1.4",
+    "devextreme-react": "22.1.4",
     "env-cmd": "~10.1.0",
     "material-ui": "^0.20.2",
     "moment": "^2.29.1",

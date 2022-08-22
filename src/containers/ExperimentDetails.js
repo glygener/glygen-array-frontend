@@ -13,7 +13,7 @@ const ExperimentDetails = props => {
     return (
       <div>
         {showDescriptos && <ViewDescriptor metadataId={experiment.sampleID ? experiment.sampleID :experiment.sample.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
-          wsCall={ !props.fromPublicDatasetPage ? "getsample" : "getpublicsample"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Sample"}  isSample={true}/>}
+          wsCall={ !props.fromPublicDatasetPage ? "getsample" : "getpublicsample"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Sample"}  isSample={true}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
@@ -29,7 +29,7 @@ const ExperimentDetails = props => {
         </Form.Group>
         <Form.Group as={Row} controlId={"metadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Samples"} className="required-asterik" />
+            <FormLabel label={"Sample"} className="required-asterik" />
           </Col>
           <Col xs={12} lg={9}>
             {experiment.sample ? <LineTooltip text="View Details">

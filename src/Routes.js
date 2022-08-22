@@ -52,6 +52,7 @@ import { Spots } from "./containers/Spots";
 import { ErrorPage } from "./components/ErrorPage";
 import { Switch, Route } from "react-router-dom";
 import { PublicData } from "./public/PublicData";
+import { PublicExperimentData } from "./public/PublicExperimentData";
 import { PublicDataset } from "./public/PublicDataset";
 import { AddGrant } from "./containers/AddGrant";
 import { AddMultipleGlycans } from "./containers/AddMultipleGlycans";
@@ -137,6 +138,11 @@ const Routes = props => {
       sidebar: () => "",
     },
     {
+      path: "/data/dataset/:datasetId/metadata",
+      main: () => <PublicExperimentData {...props} />,
+      sidebar: () => "",
+    },
+    {
       path: "/data/dataset/:datasetId",
       main: () => <PublicDataset {...props} />,
       sidebar: () => "",
@@ -147,7 +153,6 @@ const Routes = props => {
       main: () => <PublicData />,
       sidebar: () => "",
     },
-
     {
       path: "/login",
       sidebar: () => "",

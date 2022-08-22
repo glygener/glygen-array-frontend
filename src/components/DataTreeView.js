@@ -194,7 +194,7 @@ const DataTreeView = props => {
                 <div className={"rst__row"}>
                   <Row className={enableExperimentModal ? "row_headline row_headline_act" : "row_headline"}>
                     <Col>
-                      <strong>Experiment</strong>
+                      <strong>Dataset:</strong> {data.name ? data.name : ""}
                     </Col>
                   </Row>
                 </div>
