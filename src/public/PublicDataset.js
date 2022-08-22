@@ -18,6 +18,7 @@ import { FilesOnExp } from "../components/FilesOnExp";
 import { KeywordsOnExp } from "../components/KeywordsOnExp";
 import { GrantsOnExp } from "../components/GrantsOnExp";
 import { PubOnExp } from "../components/PubOnExp";
+import { Link } from "react-router-dom";
 
 // const Files = React.lazy(() => import("./Files"));
 // const SubmitterDetails = React.lazy(() => import("./SubmitterDetails"));
@@ -67,15 +68,15 @@ const PublicDataset = () => {
       <>
         <div>
           <strong>Dataset Name: </strong>
-          {dataset.name}
+          {dataset.name} (<Link to={`/data/dataset/${datasetId}/metadata`}>{"Dataset Metadata"}</Link>)
         </div>
         <div>
           <strong>Submission Date: </strong>
-          {getDateCreated(dataset.dateCreated)}
+          {getDateCreated(dataset.dateAddedToLibrary)}
         </div>
         <div>
           <strong>Release Date: </strong>
-          {getDateCreated(dataset.dateAddedToLibrary)}
+          {getDateCreated(dataset.dateCreated)}
         </div>
         {!dataset.keywords ? (
           <div>

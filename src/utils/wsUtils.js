@@ -229,7 +229,7 @@ export function getWsUrl(ws) {
     case "getprintrun":
       return ws_base_array + "/getPrintRun";
     case "getpublicprintrun":
-      return ws_base_array + "/getPrintRun";
+      return ws_base_public + "/getPrintrun";
     case "updateprintrun":
       return ws_base_array + "/updatePrintrun";
     case "ismiragecompliant":

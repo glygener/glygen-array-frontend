@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { TreeTable, TreeState, expandAll } from "cp-react-tree-table"
-import { Form, Row, Col, Modal, Button } from "react-bootstrap";
-import { ErrorSummary } from "../components/ErrorSummary";
-import CardLoader from "../components/CardLoader";
+import { ErrorSummary } from "./ErrorSummary";
+import CardLoader from "./CardLoader";
 import { wsCall } from "../utils/wsUtils";
 import  DescriptorTreeTable  from "./DescriptorTreeTable";
 
-
-const ViewDescriptor = props =>  {
-
+const CardDescriptor = (props) => {
   const [metadata, setMetadata] = useState();
   const [data, setData] = useState();
-  const [showloading, setShowloading] = useState(true);
+  const [showloading, setShowloading] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [descName, setDescName] = useState(props.name);
 
-
   useEffect(() => {
     if (props.metadataId) {
+      setShowloading(true);
       wsCall(
         props.wsCall,
         "GET",
         [props.metadataId],
         props.useToken,
         null,
-        response =>
-          response.json().then(responseJson => {
+        (response) =>
+          response.json().then((responseJson) => {
             setMetadata(responseJson);
 
             let name = props.name;
@@ -78,7 +74,7 @@ const ViewDescriptor = props =>  {
     }
 
     function errorWscall(response) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         setPageErrorsJson(responseJson);
         setPageErrorMessage("");
         setShowErrorSummary(true);
@@ -86,7 +82,6 @@ const ViewDescriptor = props =>  {
       });
     }
 
-    
     function addDescriptor(descriptor) {
       let unit =
         descriptor.unit && descriptor.unit !== "" ? descriptor.unit : "";
@@ -162,53 +157,40 @@ const ViewDescriptor = props =>  {
     }
   }, []);
 
-    return (
-        <>
-        <Modal
-          show={props.showModal}
-          animation={false}
-          size="xl"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          onHide={() => props.setShowModal(false)}
-        >
-      <CardLoader pageLoading={showloading} />
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {descName}: {metadata ? metadata.name : ""}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        {showErrorSummary && (<ErrorSummary
-          show={showErrorSummary}
-          form="metadatakeypairs"
-          errorJson={pageErrorsJson}
-          errorMessage={pageErrorMessage}
-        />)}
-        {metadata && metadata.description && (<div className="p-1"><span className="text_modal">{metadata.description}</span></div>)}
-        <div className="pt-1 pl-1" style={{maxHeight:"290px", overflow: "scroll"}}> 
-          {data && data.data && <DescriptorTreeTable data={data.data} rowCount={data.rowCount}/>} 
+  return (
+    <>
+      <div>
+        <CardLoader pageLoading={showloading} />
+
+        {showErrorSummary && (
+          <ErrorSummary
+            show={showErrorSummary}
+            form="metadatakeypairs"
+            errorJson={pageErrorsJson}
+            errorMessage={pageErrorMessage}
+          />
+        )}
+
+        <div className="p-1">
+          {descName}:{" "}
+          <span className="text_modal">{metadata && metadata.name ? metadata.name : ""}</span>
         </div>
-      </Modal.Body>
 
-      <Modal.Footer>
-        <Button className="gg-btn-blue-reg" onClick={() => props.setShowModal(false)}>
-          OK
-        </Button>
-      </Modal.Footer>
+        {metadata && metadata.description && (
+          <div className="p-1">
+            <span className="text_modal">{metadata.description}</span>
+          </div>
+        )}
 
-      </Modal>
+        {metadata && (
+          <div className="p-1">
+          </div>
+        )}
 
-      </>
-    );
-}
+        {props.metadataId && data ? <DescriptorTreeTable data={data.data} rowCount={data.rowCount}/> : <span className="p-1">{"No data available"}</span>}
+      </div>
+    </>
+  );
+};
 
-function genData() {
-	return [
-    {
-      data: { name: '', value: '' },
-    },
-  ];
-}
-
-export { ViewDescriptor };
+export { CardDescriptor };

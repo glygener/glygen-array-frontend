@@ -251,7 +251,7 @@ const ImageOnSlideExp = props => {
     return (
       <div>
        {showDescriptos && <ViewDescriptor metadataId={imageView.scanner.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
-          wsCall={ !props.fromPublicDatasetPage ? "getscanner" : "getpublicscanner"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Scanner Metadata"}/>}      
+          wsCall={ !props.fromPublicDatasetPage ? "getscanner" : "getpublicscanner"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Scanner Metadata"}/>}      
         <div style={{
           overflow: "auto",
           height: "350px",

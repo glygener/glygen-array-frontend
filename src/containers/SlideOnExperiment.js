@@ -349,13 +349,13 @@ const SlideOnExperiment = props => {
     return (
       <div>
         {showDescriptosMeta && <ViewDescriptor metadataId={slideView.metadata.id} showModal={showDescriptosMeta} setShowModal={setShowDescriptosMeta} 
-          wsCall={ !props.fromPublicDatasetPage ? "getassaymetadata" : "getpublicassay"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Assay Metadata"}/>}
+          wsCall={ !props.fromPublicDatasetPage ? "getassaymetadata" : "getpublicassay"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Assay Metadata"}/>}
         {showDescriptosPrintedSlideMeta && <ViewDescriptor metadataId={slideView.printedSlide.metadata.id} showModal={showDescriptosPrintedSlideMeta} setShowModal={setShowDescriptosPrintedSlideMeta} 
-        wsCall={ !props.fromPublicDatasetPage ? "getslidemeta" : "getslidemetadata"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Printed Slide Metadata"}/>}
+        wsCall={ !props.fromPublicDatasetPage ? "getslidemeta" : "getslidemetadata"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Printed Slide Metadata"}/>}
         {showDescriptosPrintRun && <ViewDescriptor metadataId={slideView.printedSlide.printRun.id} showModal={showDescriptosPrintRun} setShowModal={setShowDescriptosPrintRun} 
-        wsCall={ !props.fromPublicDatasetPage ? "getprintrun" : "getpublicprintrun"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Print Run"}/>}
+        wsCall={ !props.fromPublicDatasetPage ? "getprintrun" : "getpublicprintrun"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Print Run"}/>}
         {showDescriptosPrinter && <ViewDescriptor metadataId={slideView.printedSlide.printer.id} showModal={showDescriptosPrinter} setShowModal={setShowDescriptosPrinter} 
-        wsCall={ !props.fromPublicDatasetPage ? "getprinter" : "getpublicprinter"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Printer"}/>}
+        wsCall={ !props.fromPublicDatasetPage ? "getprinter" : "getpublicprinter"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Printer"}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
@@ -485,7 +485,7 @@ const SlideOnExperiment = props => {
           <Col style={{ textAlign: "center" }}>
             <DownloadButton
               showExport={true}
-              showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== undefined}
+              showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== null}
               handleDownload={handleDownload}
             />
           </Col>

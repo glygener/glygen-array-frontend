@@ -250,7 +250,7 @@ const RawdataOnImage = props => {
     return (
       <div>
         {showDescriptos && <ViewDescriptor metadataId={rawDataView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
-          wsCall={ !props.fromPublicDatasetPage ? "getimageanalysis" : "getpublicimageanalysis"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Image Analysis"}/>} 
+          wsCall={ !props.fromPublicDatasetPage ? "getimageanalysis" : "getpublicimageanalysis"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Image Analysis"}/>} 
       <div style={{
           overflow: "auto",
           height: "350px",

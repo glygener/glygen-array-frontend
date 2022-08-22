@@ -254,7 +254,7 @@ const ProcessDataOnRd = props => {
     return (
       <div>
         {showDescriptos && <ViewDescriptor metadataId={processDataView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
-          wsCall={ !props.fromPublicDatasetPage ? "getdataprocessing" : "getpublicdataprocessing"} useToken={ !props.fromPublicDatasetPage ? true : true} name={"Data Processing"}/>}
+          wsCall={ !props.fromPublicDatasetPage ? "getdataprocessing" : "getpublicdataprocessing"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Data Processing"}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
