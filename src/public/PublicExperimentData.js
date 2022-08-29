@@ -83,56 +83,56 @@ const PublicExperimentData = () => {
               </Card.Header>
               <Card.Body>
                 {dataset && <>
-                  <ol key={"ol" + 1} className="pl-3 mb-0">
+                  <ul style={{listStyleType: "disc"}} key={"ol" + 1} className="pl-3 mb-0">
                     <li key={"li" + 1}>
                       <span className="nowrap">
                         <a href={'#' + dataset.id}>{"Dataset"}: {dataset ? dataset.name : ""}</a>{" "}
                       </span>
                     </li>
-                    <ol key={"ol" + 2} className="pl-3">
+                    <ul style={{listStyleType: "disc"}} key={"ol" + 2} className="pl-3">
                     {dataset.slides && dataset.slides.map((slide, index) => (<>
                       <li key={"li" + index}>
                         <span className="nowrap">
-                          <a href={'#' + slide.id}>{"Slide"}: {slide ? slide.name : ""}</a>{" "}
+                          <a href={'#' + slide.id}>{"Slide"}: {slide.printedSlide && slide.printedSlide.metadata ? slide.printedSlide.metadata.name : ""}</a>{" "}
                         </span>
                       </li>
-                      <ol key={"ol" + index} className="pl-3">
+                      <ul style={{listStyleType: "disc"}} key={"ol" + index} className="pl-3">
                         {slide.images && slide.images.map((img, indImg) => 
                           <>
                             <li key={"li" + indImg}>
                               <span className="nowrap">
-                                <a href={'#' + img.id}>{"Image"}: {img && img.file ? img.file.name : ""}</a>{" "}
+                                <a href={'#' + img.id}>{"Image"}: {img && img.file ? img.file.originalName : "No Image Provided"}</a>{" "}
                               </span>
                             </li>
-                            <ol key={"ol" + indImg} className="pl-3">
+                            <ul style={{listStyleType: "disc"}} key={"ol" + indImg} className="pl-3">
                               {img.rawDataList && img.rawDataList.map((rawData, indRaw) => 
                               <>
                                 <li key={"li" + indRaw}>
                                   <span className="nowrap">
-                                    <a href={'#' + rawData.id}>{"Raw Data"}: {rawData && rawData.file ? rawData.file.name : ""}</a>{" "}
+                                    <a href={'#' + rawData.id}>{"Raw Data"}: {rawData && rawData.file ? rawData.file.originalName : "No Raw Data Provided"}</a>{" "}
                                   </span>
                                 </li>
-                                <ol key={"ol" + indRaw} className="pl-3">
+                                <ul style={{listStyleType: "disc"}} key={"ol" + indRaw} className="pl-3">
                                 {rawData.processedDataList && rawData.processedDataList.map((pd, indPd) => 
                                 <>
                                   <li key={"li" + indPd}>
                                     <span className="nowrap">
-                                      <a href={'#' + pd.id}>{"Process Data"}: {pd && pd.file ? pd.file.name : ""}</a>{" "}
+                                      <a href={'#' + pd.id}>{"Process Data"}: {pd && pd.file ? pd.file.originalName : ""}</a>{" "}
                                     </span>
                                   </li>
                                 </>
                               )}
-                              </ol>
+                              </ul>
                               </>
                               )}
-                            </ol>
+                            </ul>
                         </>
                         )}
-                        </ol>
+                        </ul>
                         </>
                       ))}
-                    </ol>
-                  </ol>
+                    </ul>
+                  </ul>
                 </>}
               </Card.Body>
           </Card>
@@ -157,7 +157,7 @@ const PublicExperimentData = () => {
                   <Card>
                     <Card.Header closeButton>
                         <Card.Title id="contained-modal-title-vcenter">
-                          {"Slide"}: {slide.metadata ? slide.metadata.name : ""}
+                          {"Slide"}: {slide.printedSlide && slide.printedSlide.metadata ? slide.printedSlide.metadata.name : ""}
                         </Card.Title>
                     </Card.Header>
                     <Card.Body>
@@ -184,7 +184,7 @@ const PublicExperimentData = () => {
                         <Card>
                           <Card.Header>
                               <Card.Title id="contained-modal-title-vcenter">
-                                {"Image"}: {img && img.file ? img.file.name : ""}
+                                {"Image"}: {img && img.file ? img.file.originalName : "No Image Provided"}
                               </Card.Title>
                           </Card.Header>
                           <Card.Body>
@@ -200,7 +200,7 @@ const PublicExperimentData = () => {
                                <Card>
                                 <Card.Header>
                                     <Card.Title id="contained-modal-title-vcenter">
-                                      {"Raw Data"}: {rawData && rawData.file ? rawData.file.name : ""}
+                                      {"Raw Data"}: {rawData && rawData.file ? rawData.file.originalName : "No Raw Data Provided"}
                                     </Card.Title>
                                 </Card.Header>
                                 <Card.Body>
@@ -216,7 +216,7 @@ const PublicExperimentData = () => {
                                       <Card>
                                         <Card.Header>
                                             <Card.Title id="contained-modal-title-vcenter">
-                                              {"Process Data"}: {pd && pd.file ? pd.file.name : ""}
+                                              {"Process Data"}: {pd && pd.file ? pd.file.originalName : ""}
                                             </Card.Title>
                                         </Card.Header>
                                         <Card.Body>
