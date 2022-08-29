@@ -248,8 +248,10 @@ const ImageOnSlideExp = props => {
       }
     }
 
-    return (
-      <div>
+    return (<>
+      <div style={{
+        overflow: "auto",
+      }}>
        {showDescriptos && <ViewDescriptor metadataId={imageView.scanner.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
           wsCall={ !props.fromPublicDatasetPage ? "getscanner" : "getpublicscanner"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Scanner Metadata"}/>}      
         <div style={{
@@ -287,10 +289,10 @@ const ImageOnSlideExp = props => {
         </Form.Group>
         </div>
 
-        <Row style={{ textAlign: "center" }}  className="mt-3">
+        <div style={{ textAlign: "center" }}  className="mt-3 mb-2">
           {!props.fromPublicDatasetPage && !props.isPublic && (
             <>
-                <Col style={{ textAlign: "center" }}>
+                <div style={{ textAlign: "center" }}>
                   <Button className="gg-btn-outline mt-2 gg-mr-20"
                       onClick={() => {
                         props.setImageSelected(imageView.id);
@@ -298,11 +300,11 @@ const ImageOnSlideExp = props => {
                       }}
                   >
                     Add Raw Data</Button>
-                </Col>
+                </div>
 
                 {imageView.id && (
                   <>
-                    <Col style={{ textAlign: "center" }}>
+                    <div style={{ textAlign: "center" }}>
                       <Button className="gg-btn-outline mt-2 gg-mr-20"                      
                         onClick={() => {
                           props.deleteRow(imageView.id, "deleteimage", {slideID:props.parent.slideID});
@@ -312,23 +314,24 @@ const ImageOnSlideExp = props => {
                           props.setShowDeleteModal(true);
                         }}>                                 
                       Delete Image</Button>
-                    </Col>
+                    </div>
                   </>
                 )}
             </>
           )}
-          {imageView.file && (<>
-            <Col style={{ textAlign: "center" }}>
+        </div>
+        </div>
+        {imageView.file && (<>
+            <div style={{ textAlign: "center" }}>
                 <DownloadButton
                   showExport={false}
                   showDownload={imageView.file !== undefined}
                   defaultType="download"
                   handleDownload={handleDownload}
                 />
-            </Col>
+            </div>
           </>)}
-        </Row>
-        </div>
+      </>
     );
   };
 

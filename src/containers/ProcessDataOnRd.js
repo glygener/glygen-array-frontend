@@ -251,15 +251,18 @@ const ProcessDataOnRd = props => {
       }
     }
 
-    return (
-      <div>
+    return (<>
+      <div style={{
+        overflow: "auto",
+      }}>
         {showDescriptos && <ViewDescriptor metadataId={processDataView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
           wsCall={ !props.fromPublicDatasetPage ? "getdataprocessing" : "getpublicdataprocessing"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Data Processing"}/>}
       <div style={{
           overflow: "auto",
           height: "350px",
           width: "100%"
-        }}>        <Form.Group as={Row} controlId={"processdata"} className="gg-align-center mb-3">
+        }}>        
+        <Form.Group as={Row} controlId={"processdata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label={"Process Data"} className="required-asterik" />
           </Col>
@@ -299,8 +302,8 @@ const ProcessDataOnRd = props => {
         </Form.Group>
         </div>
 
-        <Row st1yle={{ textAlign: "center" }}  className="mt-3"  cla1ssName="gg-align-center mb-3" clas1sName={props.enableImageOnSlide ? "row_headline row_headline_act" : "row_headline"}>
-        {processDataView.status !== "DONE" && <Col style={{ textAlign: "center" }}>
+        <div st1yle={{ textAlign: "center" }}  className="mt-3 mb-2"  cla1ssName="gg-align-center mb-3" clas1sName={props.enableImageOnSlide ? "row_headline row_headline_act" : "row_headline"}>
+        {processDataView.status !== "DONE" && <div style={{ textAlign: "center" }}>
           <span>
             {processDataView.status &&
             processDataView.status === "ERROR" &&
@@ -341,11 +344,11 @@ const ProcessDataOnRd = props => {
               </span>
             )}
           </span>
-        </Col>}
+        </div>}
         {!props.fromPublicDatasetPage && !props.isPublic && (<>
             {processDataView.id && (
               <>
-                <Col style={{ textAlign: "center" }}>
+                <div style={{ textAlign: "center" }}>
                   <Button className="gg-btn-outline mt-2 gg-mr-20"                      
                       onClick={() => {
                         props.deleteRow(processDataView.id, "deleteprocessdata", {slideID:props.parent.slideID, imageID:props.parent.imageID, rawDataID:props.parent.rawDataID});
@@ -355,19 +358,20 @@ const ProcessDataOnRd = props => {
                         props.setShowDeleteModal(true); 
                       }}>                                 
                   Delete Process Data</Button>
-                </Col>
+                </div>
               </>
             )}
           </>)}
-          <Col style={{ textAlign: "center" }}>
-            <DownloadButton
-              showExport={true}
-              showDownload={processDataView.file !== undefined}
-              handleDownload={handleDownload}
-            />
-          </Col>
-        </Row>
         </div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <DownloadButton
+            showExport={true}
+            showDownload={processDataView.file !== undefined}
+            handleDownload={handleDownload}
+          />
+        </div>
+        </>
     );
   };
 

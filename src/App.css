@@ -704,3 +704,9 @@ input[type="check" i] {
 .modal-backdrop {
   opacity: 0.9 !important;
 }
+
+.text_desc {
+  font-size: 14px;
+  color: #040402;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}

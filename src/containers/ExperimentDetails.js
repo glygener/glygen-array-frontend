@@ -11,7 +11,9 @@ const ExperimentDetails = props => {
 
   const getExperimentView = () => {
     return (
-      <div>
+      <div style={{
+        overflow: "auto",
+      }}>
         {showDescriptos && <ViewDescriptor metadataId={experiment.sampleID ? experiment.sampleID :experiment.sample.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
           wsCall={ !props.fromPublicDatasetPage ? "getsample" : "getpublicsample"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Sample"}  isSample={true}/>}
       <div style={{
@@ -48,19 +50,19 @@ const ExperimentDetails = props => {
           </Col>
         </Form.Group>
         </div>
-        <Row st1yle={{ textAlign: "center" }}  className="mt-3">
+        <div st1yle={{ textAlign: "center" }}  className="mt-3 mb-2">
           {!props.fromPublicDatasetPage && !props.isPublic && (<>
-            <Col style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center" }}>
               <Button className="gg-btn-outline mt-2 gg-mr-20"
                 onClick={() => {
                   props.setEnableSlideModal(true);
                 }}
               >
                 Add Slide</Button>
-            </Col>
+            </div>
             </>
           )}
-        </Row>
+        </div>
       </div>
     );
   };

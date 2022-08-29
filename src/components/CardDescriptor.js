@@ -172,13 +172,13 @@ const CardDescriptor = (props) => {
         )}
 
         <div className="p-1">
-          {descName}:{" "}
-          <span className="text_modal">{metadata && metadata.name ? metadata.name : ""}</span>
+          <strong>{descName}:</strong>{" "}
+          <span className="text_modal">{metadata && metadata.name ? metadata.name : "No data available"}</span>
         </div>
 
         {metadata && metadata.description && (
           <div className="p-1">
-            <span className="text_modal">{metadata.description}</span>
+            <span className="text_desc">{metadata.description}</span>
           </div>
         )}
 
@@ -187,7 +187,7 @@ const CardDescriptor = (props) => {
           </div>
         )}
 
-        {props.metadataId && data ? <DescriptorTreeTable data={data.data} rowCount={data.rowCount}/> : <span className="p-1">{"No data available"}</span>}
+        {props.metadataId && data && <DescriptorTreeTable data={data.data} rowCount={data.rowCount}/>}
       </div>
     </>
   );

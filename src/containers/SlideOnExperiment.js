@@ -346,8 +346,10 @@ const SlideOnExperiment = props => {
       }
     }
 
-    return (
-      <div>
+    return (<>
+      <div style={{
+        overflow: "auto",
+      }}>
         {showDescriptosMeta && <ViewDescriptor metadataId={slideView.metadata.id} showModal={showDescriptosMeta} setShowModal={setShowDescriptosMeta} 
           wsCall={ !props.fromPublicDatasetPage ? "getassaymetadata" : "getpublicassay"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Assay Metadata"}/>}
         {showDescriptosPrintedSlideMeta && <ViewDescriptor metadataId={slideView.printedSlide.metadata.id} showModal={showDescriptosPrintedSlideMeta} setShowModal={setShowDescriptosPrintedSlideMeta} 
@@ -454,9 +456,9 @@ const SlideOnExperiment = props => {
         </Form.Group>
         </div>
 
-        <Row st1yle={{ textAlign: "center" }}  className="mt-3">
+        <div style={{ textAlign: "center" }}  className="mt-3 mb-2">
           {!props.fromPublicDatasetPage && !props.isPublic && (<>
-            <Col style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center" }}>
             <Button className="gg-btn-outline mt-2 gg-mr-20"
               onClick={() => {
                 props.setSlideSelected(slideView.id);
@@ -464,10 +466,10 @@ const SlideOnExperiment = props => {
               }}
             >
               Add Image</Button>
-            </Col>
+            </div>
             {slideView.id && (
               <>
-                <Col style={{ textAlign: "center" }}>
+                <div style={{ textAlign: "center" }}>
                   <Button className="gg-btn-outline mt-2 gg-mr-20"
                     onClick={() => {
                       props.deleteRow(slideView.id, "deleteslide", {"experimentID": "experimentID"});
@@ -477,20 +479,21 @@ const SlideOnExperiment = props => {
                       props.setShowDeleteModal(true);
                     }}>                                 
                   Delete Slide</Button>
-                </Col>
+                </div>
               </>
             )}
             </>
           )}
-          <Col style={{ textAlign: "center" }}>
-            <DownloadButton
-              showExport={true}
-              showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== null}
-              handleDownload={handleDownload}
-            />
-          </Col>
-        </Row>
+        </div>
       </div>
+      <div style={{ textAlign: "center" }}>
+        <DownloadButton
+          showExport={true}
+          showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== null}
+          handleDownload={handleDownload}
+        />
+      </div>
+    </>
     );
   };
 

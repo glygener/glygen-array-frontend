@@ -163,7 +163,6 @@ const DataTreeView = props => {
       {/* Experiment */}
       <Row     style={{
           // overflowY: "scroll",
-          minWidth: "600px",
           height: "550px"
         }}>
         <Col 
@@ -193,7 +192,7 @@ const DataTreeView = props => {
               <div className={"rst__rowWrapper"}>
                 <div className={"rst__row"}>
                   <Row className={enableExperimentModal ? "row_headline row_headline_act" : "row_headline"}>
-                    <Col>
+                    <Col style={{ overflow: "hidden", flexBasis: "auto", maxWidth: "100%" }}>
                       <strong>Dataset:</strong> {data.name ? data.name : ""}
                     </Col>
                   </Row>
@@ -229,7 +228,7 @@ const DataTreeView = props => {
                       <div className="rst__rowWrapper">
                         <div className="rst__row">
                           <Row className={enableSlideModal  && slideView && slideView.id === slide.id ? "row_headline row_headline_act" : "row_headline"}>
-                            <Col>
+                            <Col style={{ overflow: "hidden", flexBasis: "auto", maxWidth: "100%" }}>
                               <strong>Slide:</strong> {slide.printedSlide && slide.printedSlide.name}
                             </Col>
                           </Row>
@@ -261,18 +260,9 @@ const DataTreeView = props => {
                               <div className={"rst__rowWrapper"}>
                                 <div className={"rst__row"}>
                                   <Row className={enableImageOnSlide  && imageView && imageView.id === img.id ? "row_headline row_headline_act" : "row_headline"}>
-                                    <Col>
+                                    <Col style={{ overflow: "hidden", flexBasis: "auto", maxWidth: "100%" }}>
                                       <strong>Image:</strong>{" "}
-                                      {img.file && img.file.originalName && titleExpansion === img.file.originalName ? (
-                                        <>
-                                          <span onClick={() => setTitleExpansion()}>{img.file.originalName}</span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          {img.file && img.file.originalName.slice(0, 20)}
-                                          <span onClick={() => setTitleExpansion(img.file.originalName)}>{"..."}</span>
-                                        </>
-                                      )}
+                                      {img.file && img.file.originalName ? img.file.originalName : "No Image Provided"}
                                     </Col>
                                   </Row>
                                 </div>
@@ -306,10 +296,10 @@ const DataTreeView = props => {
                                       <div className={"rst__rowWrapper"}>
                                         <div className={"rst__row"}>
                                           <Row className={enableRawdataOnImage && rawDataView && rawData.id === rawDataView.id ? "row_headline row_headline_act" : "row_headline"}>
-                                            <Col>
-                                              <strong>Raw Data</strong>{" "}
-                                              <span style={{ marginLeft: "20px" }}>
-                                                {rawData.metadata && rawData.metadata.name}
+                                            <Col style={{ overflow: "hidden", flexBasis: "auto", maxWidth: rawData.status !== "DONE" ? "80%" : "100%" }}>
+                                              <strong>Raw Data:</strong>{" "}
+                                              <span>
+                                                {rawData.file && rawData.file.originalName ? rawData.file.originalName : "No Raw Data Provided"}
                                               </span>
                                               </Col>
                                               {rawData.status !== "DONE" && <Col style={{ textAlign: "right"}}>
@@ -370,10 +360,10 @@ const DataTreeView = props => {
                                               <div className={"rst__rowWrapper"}>
                                                 <div className={"rst__row"}>
                                                   <Row className={enableProcessRawdata && processDataView && pd.id === processDataView.id ? "row_headline row_headline_act" : "row_headline"}>
-                                                    <Col>
-                                                      <strong>Process Data</strong>{" "}
-                                                      <span style={{ marginLeft: "20px" }}>
-                                                        {pd.metadata && pd.metadata.name}
+                                                    <Col style={{ overflow: "hidden", flexBasis: "auto", maxWidth: pd.status !== "DONE" ? "80%" : "100%" }}>
+                                                      <strong>Process Data:</strong>{" "}
+                                                      <span>
+                                                        {pd.file && pd.file.originalName ? pd.file.originalName : ""}
                                                       </span>
                                                     </Col>
                                                     {pd.status !== "DONE" && <Col style={{ textAlign: "right"}}>

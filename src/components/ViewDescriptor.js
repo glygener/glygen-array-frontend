@@ -184,7 +184,7 @@ const ViewDescriptor = props =>  {
           errorJson={pageErrorsJson}
           errorMessage={pageErrorMessage}
         />)}
-        {metadata && metadata.description && (<div className="p-1"><span className="text_modal">{metadata.description}</span></div>)}
+        {metadata && metadata.description && (<div className="p-1 pb-2"><span className="text_desc">{metadata.description}</span></div>)}
         <div className="pt-1 pl-1" style={{maxHeight:"290px", overflow: "scroll"}}> 
           {data && data.data && <DescriptorTreeTable data={data.data} rowCount={data.rowCount}/>} 
         </div>

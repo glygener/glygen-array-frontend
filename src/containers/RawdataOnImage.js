@@ -247,8 +247,10 @@ const RawdataOnImage = props => {
       }
     }
 
-    return (
-      <div>
+    return (<>
+      <div style={{
+        overflow: "auto",
+      }}>
         {showDescriptos && <ViewDescriptor metadataId={rawDataView.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
           wsCall={ !props.fromPublicDatasetPage ? "getimageanalysis" : "getpublicimageanalysis"} useToken={ !props.fromPublicDatasetPage ? true : false} name={"Image Analysis"}/>} 
       <div style={{
@@ -323,9 +325,9 @@ const RawdataOnImage = props => {
         </Form.Group>
         </div>
 
-        <Row style={{ textAlign: "center" }} className="mt-3">            
+        <div style={{ textAlign: "center" }} className="mt-3 mb-2">            
           {!props.fromPublicDatasetPage && !props.isPublic && (<>
-              {rawDataView.status !== "DONE" && <Col style={{ textAlign: "center" }}>
+              {rawDataView.status !== "DONE" && <div style={{ textAlign: "center" }}>
               <span>
                 {rawDataView.status &&
                 rawDataView.status === "ERROR" &&
@@ -366,19 +368,19 @@ const RawdataOnImage = props => {
                   </span>
                 )}
               </span>
-            </Col>}
+            </div>}
 
-            {rawDataView.status === "DONE" && <Col style={{ textAlign: "center" }}>
+            {rawDataView.status === "DONE" && <div style={{ textAlign: "center" }}>
             <Button className="gg-btn-outline mt-2 gg-mr-20"
               onClick={() => {
                 props.setRawdataSelected(rawDataView.id);
                 props.setEnableProcessRawdata(true);
               }}
             >Add Process Data</Button>
-            </Col>}
+            </div>}
             {rawDataView.id && (
               <>
-                <Col style={{ textAlign: "center" }}>
+                <div style={{ textAlign: "center" }}>
                 <Button className="gg-btn-outline mt-2 gg-mr-20"
                   onClick={() => {
                     props.deleteRow(rawDataView.id, "deleterawdata", {slideID:props.parent.slideID, imageID:props.parent.imageID});
@@ -388,21 +390,22 @@ const RawdataOnImage = props => {
                     props.setShowDeleteModal(true);
                   }}
                 >Delete Raw Data</Button>
-                </Col>
+                </div>
                 </>)}
             </>)}
-            {rawDataView.file && (
-              <Col style={{ textAlign: "center" }}>
-                <DownloadButton
-                  showExport={false}
-                  showDownload={rawDataView.file !== undefined}
-                  defaultType="download"
-                  handleDownload={handleDownload}
-                />
-              </Col>
-            )}
-        </Row>
+        </div>
       </div>
+      {rawDataView.file && (
+        <div style={{ textAlign: "center" }}>
+          <DownloadButton
+            showExport={false}
+            showDownload={rawDataView.file !== undefined}
+            defaultType="download"
+            handleDownload={handleDownload}
+          />
+        </div>
+      )}
+      </>
     );
   };
 

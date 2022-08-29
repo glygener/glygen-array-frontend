@@ -34,6 +34,11 @@
     color: #040402;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
 }
+.text_desc {
+    font-size: 12px !important;
+    color: #040402;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
 /* Cells */
 
 .cp_tree-table .cp_tree-table,
