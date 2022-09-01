@@ -730,8 +730,8 @@ const AddBlockLayout = props => {
           {
             name: gridParams.name,
             description: gridParams.description,
-            width: updatedGridParams.cols,
-            height: updatedGridParams.rows,
+            width: Number(updatedGridParams.cols),
+            height: Number(updatedGridParams.rows),
             spots: spotsData,
           },
           addBlockLayoutSuccess,
@@ -755,7 +755,7 @@ const AddBlockLayout = props => {
           row: element.selectedRow,
           column: element.selectedCol,
           features: element.selectedFeatures.map(e => e.feature),
-          group: element.groupAssigned,
+          group: element.groupAssigned.toString(),
           // concentration: element.selectedConcentration,
           ratioConcentrationMap: getFeatureToRatioConcentrationMap(element.selectedFeatures),
           metadata: element.metadata,
@@ -776,9 +776,9 @@ const AddBlockLayout = props => {
         !ratioConcentration.notReported &&
         Object.assign(featureToRatioConcentrationMap, {
           [element.feature.id]: {
-            ratio: ratioConcentration.ratio,
+            ratio: ratioConcentration.ratio === "" ? null : Number(ratioConcentration.ratio),
             concentration: {
-              concentration: ratioConcentration.concentration,
+              concentration: Number(ratioConcentration.concentration),
               levelUnit: ratioConcentration.unitlevel,
             },
           },
