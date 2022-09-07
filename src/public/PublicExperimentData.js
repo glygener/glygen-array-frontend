@@ -52,8 +52,8 @@ const PublicExperimentData = () => {
   return (
     <>
       <Helmet>
-        <title>{head.publicdatalist.title}</title>
-        {getMeta(head.publicdatalist)}
+        <title>{head.publicmetadata.title}</title>
+        {getMeta(head.publicmetadata)}
       </Helmet>
       <CardLoader pageLoading={showLoading} />
         <div className="page-container">
@@ -78,7 +78,7 @@ const PublicExperimentData = () => {
             <Card>
               <Card.Header>
                   <Card.Title id="contained-modal-title-vcenter">
-                    {"Table of Content"}
+                    {"Table of Contents"}
                   </Card.Title>
               </Card.Header>
               <Card.Body>

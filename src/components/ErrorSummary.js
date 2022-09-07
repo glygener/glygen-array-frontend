@@ -50,6 +50,21 @@ const ErrorSummary = props => {
 
   return (
     <div>
+      {props.showText ? 
+        <div>
+          {listAlerts.length > 0 ? (
+            <>
+              {listSummary}
+              <ul>
+                {listAlerts.map((line, index) => {
+                  return <li key={index}>{line}</li>;
+                })}
+              </ul>
+            </>
+          ) : (
+            summary
+        )}
+      </div> :
       <Alert variant="danger" show={props.show}>
         {listAlerts.length > 0 ? (
           <>
@@ -64,7 +79,8 @@ const ErrorSummary = props => {
           summary
         )}
       </Alert>
-    </div>
+    }
+  </div>
   );
 };
 

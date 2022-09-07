@@ -17,6 +17,15 @@
       }
     ]
   },
+  "publicmetadata": {
+    "title": "Glycan Array metadata",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
   "signup": {
     "title": "Signup",
     "meta": [

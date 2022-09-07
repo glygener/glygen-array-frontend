@@ -178,7 +178,7 @@ const CardDescriptor = (props) => {
 
         {metadata && metadata.description && (
           <div className="p-1">
-            <span className="text_desc">{metadata.description}</span>
+            <div className="text_desc">{metadata.description}</div>
           </div>
         )}
 
