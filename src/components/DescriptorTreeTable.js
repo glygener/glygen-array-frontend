@@ -14,10 +14,37 @@ import {
 
 const getChildRows = (row, rootRows) => (row ? row.children : rootRows);
 
+const CellHeader = (props) => {
+  return <TableHeaderRow.Cell {...props} 
+    className="MuiTableCell-Header"
+  />;
+};
+
+const CellName = (props) => {
+  return <TableTreeColumn.Cell {...props}
+    className="MuiTableCell-Name"
+  />
+;
+};
+
+const CellValue = (props) => {
+  return <Table.Cell {...props}
+    className="MuiTableCell-Value"
+  />
+;
+};
+
+const CellButton = (props) => {
+  return <TableTreeColumn.ExpandButton {...props}
+    className="MuiTableCell-Button"
+  />
+;
+};
+
 const DescriptorTreeTable  = props => {
   const [columns] = useState([
-    { name: 'name', title: 'Name'},
-    { name: 'value', title: 'Value', wordWrapEnabled: true },
+    { name: 'name', title: 'Name' },
+    { name: 'value', title: 'Value' },
   ]);
 
   const [data] = useState(props.data);
@@ -39,11 +66,16 @@ const DescriptorTreeTable  = props => {
           getChildRows={getChildRows}
         />
         <Table
+          cellComponent={CellValue}
           columnExtensions={tableColumnExtensions}
         />
-        <TableHeaderRow resizingEnabled={true}/>
+        <TableHeaderRow 
+          cellComponent={CellHeader} 
+          resizingEnabled={true}/>
         <TableTreeColumn
           for="name"
+          cellComponent={CellName} 
+          expandButtonComponent={CellButton}
         />
       </Grid>
     </Paper>

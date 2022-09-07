@@ -40,6 +40,7 @@ const GlygenTable = props => {
   const [showMakePublicModal, setShowMakePublicModal] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [customOffset, setCustomOffset] = useState(false);
+  const [curPage, setCurPage] = useState(0);
 
   var columnsToRender = Object.assign({}, props.columns);
 
@@ -76,6 +77,7 @@ const GlygenTable = props => {
   };
 
   const handleFilterChange = e => {
+    setCurPage(0);
     setSearchFilter(e.target.value);
   };
 
@@ -486,6 +488,8 @@ const GlygenTable = props => {
         defaultPageSize={props.defaultPageSize}
         data={props.data ? props.data : data}
         pages={pages}
+        page={curPage}
+        onPageChange={(pageNo) => setCurPage(pageNo)}
         loading={showLoading}
         loadingText={<CardLoader pageLoading={showLoading} />}
         multiSort={false}
