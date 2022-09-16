@@ -1,102 +1,20 @@
 /* eslint-disable react/display-name */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { wsCall } from "../utils/wsUtils";
 import ReactTable from "react-table";
 import { StructureImage } from "../components/StructureImage";
-import { OverlayTrigger, Popover, Row, Col, Form } from "react-bootstrap";
-import CardLoader from "../components/CardLoader";
-import { ErrorSummary } from "../components/ErrorSummary";
-import { Title, FormLabel } from "../components/FormControls";
+import { OverlayTrigger, Popover, Row, Col } from "react-bootstrap";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const HistogramTable = props => {
-  let { dataset } = props;
-  const [listIntensity, setListIntensity] = useState([]);
-  const [pageErrorsJson, setPageErrorsJson] = useState({});
-  const [pageErrorMessage, setPageErrorMessage] = useState("");
-  const [showErrorSummary, setShowErrorSummary] = useState(false);
-  const [selectProcessData, setSelectProcessData] = useState("");
-  const [showloading, setShowloading] = useState(true);
-  const [listPDs, setListPDS] = useState();
-
-  useEffect(() => {
-    let rdList;
-    let pdList = [];
-    let images;
-
-    dataset.slides.forEach(slide => {
-      images = slide.images.filter(i => i.rawDataList);
-      images.forEach(img => {
-        img.rawDataList.forEach(rd => {
-          rdList = rd.processedDataList.filter(e => e.id);
-          rdList.forEach(e => {
-            pdList.push(e);
-          });
-        });
-      });
-    });
-
-    if (pdList) {
-      setListPDS(pdList);
-      setSelectProcessData(pdList[0].id);
-    }
-
-    wsCall(
-      "getlistintensities",
-      "GET",
-      {
-        offset: "0",
-        processedDataId: pdList && pdList[0].id,
-        datasetId: dataset.id
-      },
-      false,
-      null,
-      response =>
-        response.json().then(responseJson => {
-          setListIntensity(responseJson);
-          setShowloading(false);
-        }),
-      errorWscall
-    );
-  }, []);
-
-  function errorWscall(response) {
-    response.json().then(responseJson => {
-      setPageErrorsJson(responseJson);
-      setPageErrorMessage("");
-      setShowloading(false);
-      setShowErrorSummary(false);
-    });
-  }
+  let { listIntensityTable } = props;
 
   const getIntensitiesTable = () => {
     return (
       <>
-        <Title title={"Data"} />
-        <Form.Group>
-          <Col xs={12} lg={9}>
-            <FormLabel label={"Process Data"} />
-            <Form.Control
-              as="select"
-              name="processData"
-              value={selectProcessData}
-              onChange={e => setSelectProcessData(e.target.options[e.target.value])}
-            >
-              {listPDs && listPDs.processedDataList && listPDs.processedDataList.length > 0 ? (
-                listPDs.processedDataList.map(pd => {
-                  return <option>{pd.id}</option>;
-                })
-              ) : (
-                <option>{selectProcessData}</option>
-              )}
-            </Form.Control>
-          </Col>
-        </Form.Group>
-
         <ReactTable
           style={{ minHeight: "355px" }}
-          data={listIntensity.rows}
+          data={listIntensityTable.rows}
           columns={[
             {
               Header: row => (
@@ -205,7 +123,7 @@ const HistogramTable = props => {
               </p>
             ) : null
           }
-          loading={listIntensity.length <= 1 ? true : false}
+          loading={listIntensityTable.length <= 1 ? true : false}
           loadingText={"loading..."}
           showPaginationTop={true}
           showPaginationBottom={false}
@@ -214,20 +132,9 @@ const HistogramTable = props => {
       </>
     );
   };
-  if (showErrorSummary) {
-    return (
-      <ErrorSummary
-        show={showErrorSummary}
-        form="histogramtable"
-        errorJson={pageErrorsJson}
-        errorMessage={pageErrorMessage}
-      />
-    );
-  }
 
   return (
     <>
-      <CardLoader pageLoading={showloading} />
       {getIntensitiesTable()}
     </>
   );

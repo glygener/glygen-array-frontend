@@ -154,12 +154,14 @@ const AddExperiment = props => {
   function getPublication() {
     let tempPubmedId = parseInt(newPubMedId);
     if (isNaN(tempPubmedId) || tempPubmedId === 0) {
+      setNewPubMedId("");
       return;
     }
 
     if (experiment && experiment.publications) {
       let duplicate = experiment.publications.filter(obj => obj.pubmedId === tempPubmedId);
       if (duplicate.length > 0) {
+        setNewPubMedId("");
         return;
       }
     }
