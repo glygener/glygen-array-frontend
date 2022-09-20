@@ -1,7 +1,8 @@
 import React, { useReducer, useState, useEffect } from "react";
 import { wsCall } from "../utils/wsUtils";
-import { Form, Row, Col, Breadcrumb, Accordion, Button } from "react-bootstrap";
+import { Form, Row, Col, Breadcrumb, Accordion, Button, Modal } from "react-bootstrap";
 import { ErrorSummary } from "../components/ErrorSummary";
+import { ErrorMessageDialogue } from "../components/ErrorMessageDialogue";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { useHistory, useParams } from "react-router-dom";
@@ -151,7 +152,21 @@ const AddExperiment = props => {
   }
 
   function getPublication() {
-    wsCall("getpublication", "GET", [newPubMedId], true, null, getPublicationSuccess, response => {
+    let tempPubmedId = parseInt(newPubMedId);
+    if (isNaN(tempPubmedId) || tempPubmedId === 0) {
+      setNewPubMedId("");
+      return;
+    }
+
+    if (experiment && experiment.publications) {
+      let duplicate = experiment.publications.filter(obj => obj.pubmedId === tempPubmedId);
+      if (duplicate.length > 0) {
+        setNewPubMedId("");
+        return;
+      }
+    }
+    
+    wsCall("getpublication", "GET", [tempPubmedId], true, null, getPublicationSuccess, response => {
       if (response.status === 404 || response.status === 400) {
         setPageErrorMessage("Pubmed Id Not Found");
         setShowErrorSummary(true);
@@ -244,6 +259,7 @@ const AddExperiment = props => {
           if (element.objectName === "name") {
             setValidated(false);
             setDuplicateName(true);
+            formError = true;
           }
         });
 
@@ -322,6 +338,14 @@ const AddExperiment = props => {
           {getMeta(head.addExperiment)}
         </Helmet>
         {showSpinner && downloadSpinnerBottomSide()}
+        {experimentId && showErrorSummary && <ErrorMessageDialogue
+            showErrorSummary={showErrorSummary}
+            setShowErrorSummary={setShowErrorSummary}
+            form="experiments"
+            pageErrorsJson={pageErrorsJson}
+            pageErrorMessage={pageErrorMessage}
+          />
+        }
         <div className="page-container">
           <Row>
             <Col
@@ -353,7 +377,7 @@ const AddExperiment = props => {
             />
             <Card>
               <Card.Body>
-                {showErrorSummary === true && (
+                {!experimentId && showErrorSummary === true && (
                   <ErrorSummary
                     show={showErrorSummary}
                     form="experiments"
@@ -377,6 +401,7 @@ const AddExperiment = props => {
                     duplicateName={duplicateName}
                     handleSelect={handleSelect}
                     sampleList={sampleList}
+                    deleteRow={deleteRow}
                     getPublication={getPublication}
                     getPublicationFormControl={getPublicationFormControl}
                     showErrorSummary={showErrorSummary}

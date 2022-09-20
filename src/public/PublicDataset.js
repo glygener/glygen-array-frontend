@@ -1,24 +1,28 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
+import "../css/Search.css";
 import "./PublicDataset.css";
 import { getDateCreated } from "../utils/commonUtils";
-import { Row, Col, Button, Card } from "react-bootstrap";
+import { Row, Col, Button, Card, Form } from "react-bootstrap";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { useParams, useHistory } from "react-router-dom";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import HistogramTable from "./HistogramTable";
+import HistogramChart from "./HistogramChart";
 import SubmitterDetails from "./SubmitterDetails";
 import PublicMetadata from "./PublicMetadata";
 import MetadataKeyPairs from "../public/MetadataKeyPairs";
-import { Title } from "../components/FormControls";
+import { Title, FormLabel } from "../components/FormControls";
 import { DataTreeView, DataView } from "../components/DataTreeView";
+import { Tab, Tabs, Container } from "react-bootstrap";
 import { FilesOnExp } from "../components/FilesOnExp";
 import { KeywordsOnExp } from "../components/KeywordsOnExp";
 import { GrantsOnExp } from "../components/GrantsOnExp";
 import { PubOnExp } from "../components/PubOnExp";
 import { Link } from "react-router-dom";
+import CardLoader from "../components/CardLoader";
 
 // const Files = React.lazy(() => import("./Files"));
 // const SubmitterDetails = React.lazy(() => import("./SubmitterDetails"));
@@ -37,6 +41,16 @@ const PublicDataset = () => {
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [selectedTreeData, setSelectedTreeData] = useState(false);
+  const [currentDataTab, setCurrentDataTab] = useState("histogram");
+
+  const [listIntensityTable, setListIntensityTable] = useState([]);
+  const [listIntensityChart, setListIntensityChart] = useState();
+  const [pageErrorsJsonData, setPageErrorsJsonData] = useState({});
+  const [pageErrorMessageData, setPageErrorMessageData] = useState("");
+  const [showErrorSummaryData, setShowErrorSummaryData] = useState(false);
+  const [selectProcessData, setSelectProcessData] = useState("");
+  const [showloadingData, setShowloadingData] = useState(false);
+  const [listPDs, setListPDS] = useState();
   // const [pageLoading, setPageLoading] = useState(true);
   // let count = 0;
 
@@ -50,6 +64,28 @@ const PublicDataset = () => {
       response =>
         response.json().then(responseJson => {
           setDataset(responseJson);
+
+          let rdList;
+          let pdList = [];
+          let images;
+      
+          responseJson.slides.forEach(slide => {
+            images = slide.images.filter(i => i.rawDataList);
+            images.forEach(img => {
+              img.rawDataList.forEach(rd => {
+                rdList = rd.processedDataList.filter(e => e.id);
+                rdList.forEach(e => {
+                  pdList.push(e);
+                });
+              });
+            });
+          });
+      
+          if (pdList) {
+            setListPDS(pdList);
+            setSelectProcessData(pdList[0].id);
+          }
+
         }),
       errorWscall
     );
@@ -60,6 +96,57 @@ const PublicDataset = () => {
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
       setShowErrorSummary(true);
+    });
+  }
+
+  useEffect(() => {
+
+    if (dataset === undefined) return;
+
+    wsCall(
+      "getlistintensities",
+      "GET",
+      {
+        offset: "0",
+        processedDataId: listPDs && selectProcessData,
+        datasetId: dataset.id
+      },
+      false,
+      null,
+      response =>
+        response.json().then(responseJson => {
+          responseJson.rows.sort((obj1, obj2) => obj2.intensity.rfu - obj1.intensity.rfu);
+          setListIntensityTable(responseJson);
+
+          let data = responseJson.rows.map((obj, ind) => { 
+
+            return {
+              'featureId' : obj.feature.id, 
+              'glycanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
+              'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
+              'linkerName' : obj.feature.linker.name,
+              'rfuBarValue' : obj.intensity.rfu <= 0 ? 0 : obj.intensity.rfu,
+              'rfu' : obj.intensity.rfu,
+              'stDev' : obj.intensity.stDev,
+              'errLow' : obj.intensity.rfu <= 0 ? 0 - obj.intensity.stDev : obj.intensity.rfu - obj.intensity.stDev,
+              'errHigh' : obj.intensity.rfu <= 0 ? 0 + obj.intensity.stDev : obj.intensity.rfu + obj.intensity.stDev,
+            } 
+          });
+          data.sort((obj1, obj2) => obj1.glycanId.localeCompare(obj2.glycanId));
+          setListIntensityChart(data);
+
+          setShowloadingData(false);
+        }),
+        errorWscallData
+    );
+  }, [selectProcessData]);
+
+  function errorWscallData(response) {
+    response.json().then(responseJson => {
+      setPageErrorsJsonData(responseJson);
+      setPageErrorMessageData("");
+      setShowloadingData(false);
+      setShowErrorSummaryData(false);
     });
   }
 
@@ -141,8 +228,60 @@ const PublicDataset = () => {
               </Col>
             </Row>
             <Card className="mb-3">
+              <CardLoader pageLoading={showloadingData} />
               <Card.Body>
-                <HistogramTable dataset={dataset} />
+                <Title title="Data" />
+                {showErrorSummaryData ? 
+                  <div className="pt-2">
+                    <ErrorSummary
+                      show={showErrorSummaryData}
+                      form="histogramtable"
+                      errorJson={pageErrorsJsonData}
+                      errorMessage={pageErrorMessageData}
+                    />
+                  </div>
+                :
+                <div className="pt-3">
+                  <Form.Group className="pb-3">
+                    <Col xs={6} lg={6}>
+                      <FormLabel label={"Process Data"} />
+                      <Form.Control
+                        as="select"
+                        name="processData"
+                        value={selectProcessData}
+                        onChange={e => setSelectProcessData(e.target.options[e.target.value])}
+                      >
+                        {listPDs && listPDs.processedDataList && listPDs.processedDataList.length > 0 ? (
+                          listPDs.processedDataList.map(pd => {
+                            return <option>{pd.id}</option>;
+                          })
+                        ) : (
+                          <option>{selectProcessData}</option>
+                        )}
+                      </Form.Control>
+                    </Col>
+                  </Form.Group>
+
+                  <Tabs
+                    defaultActiveKey="histogram"
+                    transition={false}
+                    activeKey={currentDataTab}
+                    mountOnEnter={true}
+                    unmountOnExit={false}
+                    onSelect={(key) => setCurrentDataTab(key)}
+                  >
+                    <Tab eventKey="histogram" className="tab-content-padding" title="Histogram">
+                      <div style={{margin:"20px"}}>
+                        <HistogramChart listIntensityChart={listIntensityChart} />
+                      </div>
+                    </Tab>
+                    <Tab eventKey="table" className="tab-content-padding" title="Table">
+                      <div style={{margin:"20px"}}>
+                        <HistogramTable listIntensityTable={listIntensityTable} />
+                      </div>
+                    </Tab>
+                  </Tabs>
+                </div>}
               </Card.Body>
             </Card>
             <Card className="mb-3">
