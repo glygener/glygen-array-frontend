@@ -59,6 +59,7 @@ const DatasetTable = props => {
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
       setShowErrorSummary(true);
+      setShowLoading(false);
     });
   }
 

@@ -66,6 +66,7 @@ const AddExperiment = props => {
             name: responseJson.name,
             sample: responseJson.sample.name,
             sampleID: responseJson.sample.id,
+            sampleTemplate: responseJson.sample.template,
             description: responseJson.description,
             collaborators: responseJson.collaborators,
             rawDataList: responseJson.rawDataList,

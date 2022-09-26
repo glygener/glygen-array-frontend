@@ -3,10 +3,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Chart, {
-  CommonSeriesSettings,
   Series,
   ValueErrorBar,
-  Pane,
   ArgumentAxis,
   ValueAxis,
   Export,
@@ -16,7 +14,7 @@ import Chart, {
   Tooltip,
   Grid,
   ZoomAndPan,
-  ScrollBar
+  ScrollBar,
 } from 'devextreme-react/chart';
 
 const HistogramChart = props => {
@@ -25,58 +23,49 @@ const HistogramChart = props => {
   const getIntensitiesChart = () => {
     return (
       <>
-      <Chart
-        id="chart"
-        dataSource={listIntensityChart}
-        defaultPane="bottom"
-      >
-        {/* <CommonSeriesSettings argumentField="featureId"/> */}
-        <Series
-          pane="bottom"
-          valueField="rfuBarValue"
-          type="bar"
-          // barWidth={5}
-          name="Glycans"
-          argumentField="featureId"
+        <Chart
+          id="histogram"
+          dataSource={listIntensityChart}
+          adjustOnZoom={false}
+          stickyHovering={false}
         >
-          <ValueErrorBar
-            lowValueField="errLow"
-            highValueField="errHigh"
-            lineWidth={0.5}
-            opacity={0.8}
+          <Series
+            valueField="rfuBarValue"
+            type="bar"
+            name="Glycans"
+            argumentField="featureId"
+            hoverStyle={{color:"#fac29a"}}
+            barWidth={10}
+          >
+            <ValueErrorBar
+              lowValueField="errLow"
+              highValueField="errHigh"
+              lineWidth={0.5}
+              opacity={0.8}
+            />
+          </Series>
+          <ArgumentAxis
+            discreteAxisDivisionMode="crossLabels"
+          >
+            <Label visible={false}/>
+          </ArgumentAxis>
+          <ValueAxis
+             showZero={true}
+          >
+            <Grid visible={false}/>
+            <Title text="Intensity (RFU)"/>
+          </ValueAxis>
+          <ScrollBar visible={true}/>
+          <ZoomAndPan argumentAxis="both"/>
+          <Legend visible={false}/>
+          <Export enabled={true}/>
+          <Tooltip
+            enabled={true}
+            contentRender={imageTooltip}
+            interactive={true}
+            location="edge"
           />
-        </Series>
-        <Pane name="bottom" />
-        <ArgumentAxis
-        discreteAxisDivisionMode="crossLabels"
-         tick={{shift:3, visible:true}}
-        >
-          <Label visible={false}/>
-        </ArgumentAxis>
-        <ValueAxis
-          tickInterval={50}
-          pane="bottom"
-        >
-          <Grid visible={false} />
-          <Title text="Intensity (RFU)" />
-        </ValueAxis>
-        <ScrollBar visible={true} />
-        <ZoomAndPan argumentAxis="both" />
-
-        <Legend
-          // verticalAlignment="bottom"
-          visible={false}
-          // horizontalAlignment="center"
-        />
-        <Tooltip
-          enabled={true}
-          contentRender={imageTooltip}
-          // contentComponent={ToolTipHistogramChart}
-          interactive={true}
-        />
-        {/* <Title text="Weather in Los Angeles, California" /> */}
-      </Chart>
-        
+        </Chart>
       </>
     );
   };
@@ -105,9 +94,9 @@ function imageTooltip(pointInfo) {
         <div>
         <strong>Std Dev: </strong>{pointInfo.point.data.stDev}&nbsp;
         </div>
-      {pointInfo.point.data.cartoon !== "" && <div>
-        <img src={"data:image/png;base64," + pointInfo.point.data.cartoon} alt="Glycan img" />
-      </div>}
+        {pointInfo.point.data.cartoon !== "" && <div style={{ height:  pointInfo.point.data.height + "px", width:  pointInfo.point.data.width + "px"}}>
+          <img src={"data:image/png;base64," + pointInfo.point.data.cartoon} alt="Glycan img" />
+        </div>}
     </div>
   );
 }
