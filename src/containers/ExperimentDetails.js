@@ -34,7 +34,7 @@ const ExperimentDetails = props => {
             <FormLabel label={"Sample"} className="required-asterik" />
           </Col>
           <Col xs={12} lg={9}>
-            {experiment.sample ? <LineTooltip text="View Details">
+            {experiment.sample ? <><LineTooltip text="View Details">
               <Button 
                   className={"lnk-btn lnk-btn-left"}
                   variant="link"
@@ -44,7 +44,13 @@ const ExperimentDetails = props => {
                 >
                   {experiment.sample.name ? experiment.sample.name :  experiment.sample}
               </Button>
-            </LineTooltip> : 
+            </LineTooltip>
+          <span>
+            {experiment.sample.template ? " (" + experiment.sample.template.replace("Sample", "").trim() + ")" :  " (" + (experiment.sampleTemplate 
+            ? experiment.sampleTemplate.replace("Sample", "").trim() : "") + ")"}
+          </span>
+            </>
+            : 
               <span>{"No data available"}</span>
             }
           </Col>

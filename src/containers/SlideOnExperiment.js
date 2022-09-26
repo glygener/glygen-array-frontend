@@ -216,7 +216,7 @@ const SlideOnExperiment = props => {
 
   function getBlocksUsed() {
     blocksSelected = blocksSelected.map(block => {
-      return block.blockLayout.id.toString();
+      return block.id.toString();
     });
 
     return blocksSelected;

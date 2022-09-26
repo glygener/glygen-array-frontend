@@ -193,7 +193,7 @@ const DataTreeView = props => {
                 <div className={"rst__row"}>
                   <Row className={enableExperimentModal ? "row_headline row_headline_act" : "row_headline"}>
                     <Col style={{ overflow: "hidden", flexBasis: "auto", maxWidth: "100%" }}>
-                      <strong>Dataset:</strong> {data.name ? data.name : ""}
+                      <strong>Dataset Name:</strong> {data.name ? data.name : ""}
                     </Col>
                   </Row>
                 </div>

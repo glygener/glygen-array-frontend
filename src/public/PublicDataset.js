@@ -1,24 +1,29 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
+import "../css/Search.css";
 import "./PublicDataset.css";
 import { getDateCreated } from "../utils/commonUtils";
-import { Row, Col, Button, Card } from "react-bootstrap";
+import { Row, Col, Button, Card, Form } from "react-bootstrap";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { useParams, useHistory } from "react-router-dom";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import HistogramTable from "./HistogramTable";
+import HistogramChart from "./HistogramChart";
 import SubmitterDetails from "./SubmitterDetails";
 import PublicMetadata from "./PublicMetadata";
-import MetadataKeyPairs from "../public/MetadataKeyPairs";
-import { Title } from "../components/FormControls";
+import MetadataKeyPairs from "./MetadataKeyPairs";
+import { Title, FormLabel } from "../components/FormControls";
 import { DataTreeView, DataView } from "../components/DataTreeView";
+import { Tab, Tabs } from "react-bootstrap";
 import { FilesOnExp } from "../components/FilesOnExp";
 import { KeywordsOnExp } from "../components/KeywordsOnExp";
 import { GrantsOnExp } from "../components/GrantsOnExp";
 import { PubOnExp } from "../components/PubOnExp";
 import { Link } from "react-router-dom";
+import CardLoader from "../components/CardLoader";
+import { ViewDescriptor } from "../components/ViewDescriptor";
 
 // const Files = React.lazy(() => import("./Files"));
 // const SubmitterDetails = React.lazy(() => import("./SubmitterDetails"));
@@ -37,6 +42,19 @@ const PublicDataset = () => {
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [selectedTreeData, setSelectedTreeData] = useState(false);
+  const [currentDataTab, setCurrentDataTab] = useState("histogram");
+
+  const [listIntensityTable, setListIntensityTable] = useState([]);
+  const [listIntensityChart, setListIntensityChart] = useState();
+  const [pageErrorsJsonData, setPageErrorsJsonData] = useState({});
+  const [pageErrorMessageData, setPageErrorMessageData] = useState("");
+  const [showErrorSummaryData, setShowErrorSummaryData] = useState(false);
+  const [selectProcessData, setSelectProcessData] = useState("");
+  const [showloadingData, setShowloadingData] = useState(false);
+  const [listPDs, setListPDS] = useState();
+  const [showDescriptos, setShowDescriptos] = useState(false);
+  let decode = require('image-decode')
+
   // const [pageLoading, setPageLoading] = useState(true);
   // let count = 0;
 
@@ -50,6 +68,27 @@ const PublicDataset = () => {
       response =>
         response.json().then(responseJson => {
           setDataset(responseJson);
+
+          let rdList;
+          let pdList = [];
+          let images;
+      
+          responseJson.slides.forEach(slide => {
+            images = slide.images.filter(i => i.rawDataList);
+            images.forEach(img => {
+              img.rawDataList.forEach(rd => {
+                rdList = rd.processedDataList.filter(e => e.id);
+                rdList.forEach(e => {
+                  pdList.push(e);
+                });
+              });
+            });
+          });
+      
+          if (pdList) {
+            setListPDS(pdList);
+            setSelectProcessData(pdList[0].id);
+          }
         }),
       errorWscall
     );
@@ -63,12 +102,92 @@ const PublicDataset = () => {
     });
   }
 
+  useEffect(() => {
+
+    if (dataset === undefined) return;
+    setShowloadingData(true);
+    wsCall(
+      "getlistintensities",
+      "GET",
+      {
+        offset: "0",
+        processedDataId: listPDs && selectProcessData,
+        datasetId: dataset.id
+      },
+      false,
+      null,
+      response =>
+        response.json().then(responseJson => {
+          responseJson.rows.sort((obj1, obj2) => obj2.intensity.rfu - obj1.intensity.rfu);
+          setListIntensityTable(responseJson);
+
+          let data = responseJson.rows.map((obj, ind) => { 
+            let tempWidth = 10;
+            let tempHeight = 10;
+            if (obj.feature.glycans[0].glycan.cartoon !== "") {
+              let img = decode("data:image/png;base64," + obj.feature.glycans[0].glycan.cartoon);
+              if (img) {
+                tempWidth = img.width;
+                tempHeight = img.height;
+              }
+            }
+
+            let stdDev = Math.round((obj.intensity.stDev +  Number.EPSILON) * 100) / 100;
+
+            return {
+              'featureId' : obj.feature.id, 
+              'glycanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
+              'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
+              'linkerName' : obj.feature.linker.name,
+              'rfuBarValue' : obj.intensity.rfu <= 0 ? 0 : obj.intensity.rfu,
+              'rfu' : obj.intensity.rfu,
+              'stDev' : stdDev,
+              'errLow' : obj.intensity.rfu <= 0 ? 0 - stdDev : obj.intensity.rfu - stdDev,
+              'errHigh' : obj.intensity.rfu <= 0 ? 0 + stdDev : obj.intensity.rfu + stdDev,
+              'width' : tempWidth,
+              'height' : tempHeight
+            } 
+          });
+          data.sort((obj1, obj2) => obj1.glycanId.localeCompare(obj2.glycanId));
+          setListIntensityChart(data);
+          setShowloadingData(false);
+        }),
+        errorWscallData
+    );
+  }, [selectProcessData]);
+
+  function errorWscallData(response) {
+    response.json().then(responseJson => {
+      setPageErrorsJsonData(responseJson);
+      setPageErrorMessageData("");
+      setShowloadingData(false);
+      setShowErrorSummaryData(false);
+    });
+  }
+
   const getDetails = () => {
     return (
       <>
+        {showDescriptos && <ViewDescriptor metadataId={dataset.sample.id} showModal={showDescriptos} setShowModal={setShowDescriptos} 
+        wsCall={ "getpublicsample"} useToken={false} name={"Sample"}  isSample={true}/>}
+        <div className="text-right">
+          <Link to={`/data/dataset/${datasetId}/metadata`}>{"Show all dataset metadata"}</Link>
+        </div>
         <div>
           <strong>Dataset Name: </strong>
-          {dataset.name} (<Link to={`/data/dataset/${datasetId}/metadata`}>{"Dataset Metadata"}</Link>)
+          {dataset.name}
+        </div>
+        <div>
+          <strong>Sample ({dataset && dataset.sample &&  dataset.sample.template ? dataset.sample.template.replace("Sample", "").trim() : ""}): </strong>
+          <Button 
+            className={"lnk-btn lnk-btn-left"}
+            variant="link"
+            onClick={() => {
+              setShowDescriptos(true);
+            }}
+          >
+            {dataset.sample.name}
+          </Button>
         </div>
         <div>
           <strong>Submission Date: </strong>
@@ -119,35 +238,97 @@ const PublicDataset = () => {
         />
       )}
 
-      <div className="ml-4 mr-3 mt-3 mb-3">
+      <div style={{margin: "30px"}}>
         {!enableMetadata && dataset ? (
           <>
-            <Row>
-              <Col md={6}>
-                <Card className="mb-3">
+            <Row style={{marginBottom: "30px"}}>
+              <Col md={8}>
+                <Card>
                   <Card.Body>
                     <Title title="Summary" />
                     {getDetails()}
                   </Card.Body>
                 </Card>
-                <Card className="mb-3">
+                {/* <Card className="mb-3">
                   <Card.Body>
                     <Title title="Samples" />
                     {dataset.sample && dataset.sample.id ? (
                       <MetadataKeyPairs metadataId={dataset.sample.id} wsCall={"getpublicsample"} />
                     ) : null}
                   </Card.Body>
-                </Card>
+                </Card> */}
               </Col>
-            </Row>
-            <Card className="mb-3">
+              <Col md={4} style={{display: "flex",  flexDirection: "column"}}>
+              <Card style={{height: "100%"}}>
               <Card.Body>
-                <HistogramTable dataset={dataset} />
+                <Title title="Submitter" />
+                {dataset.user && dataset.user.name ? (
+                  <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
+                ) : null}
               </Card.Body>
             </Card>
-            <Card className="mb-3">
+            </Col>
+            </Row>
+            <Card style={{marginBottom: "30px"}}>
+              <CardLoader pageLoading={showloadingData} />
               <Card.Body>
-                <Title title="Files" />
+                <Title title="Processed Data" />
+                {showErrorSummaryData ? 
+                  <div className="pt-2">
+                    <ErrorSummary
+                      show={showErrorSummaryData}
+                      form="histogramtable"
+                      errorJson={pageErrorsJsonData}
+                      errorMessage={pageErrorMessageData}
+                    />
+                  </div>
+                :
+                <div className="pt-2">
+                  <Form.Group className="pb-3">
+                    <Col xs={12} lg={12}>
+                      <FormLabel label={"Rendered Process Data"} />
+                      <Form.Control
+                        as="select"
+                        st1yle={{color: "white"}}
+                        name="renderedProcessData "
+                        value={selectProcessData}
+                        onChange={e => setSelectProcessData(e.target.value)}
+                      >
+                        {listPDs && listPDs.length > 0 ? (
+                          listPDs.map(pd => {
+                            return <option value={pd.id}>{pd.file.originalName + " (" + pd.id + ")"}</option>;
+                          })
+                        ) : (
+                          <option value={selectProcessData}>{selectProcessData}</option>
+                        )}
+                      </Form.Control>
+                    </Col>
+                  </Form.Group>
+                  <Tabs
+                    defaultActiveKey="histogram"
+                    transition={false}
+                    activeKey={currentDataTab}
+                    mountOnEnter={true}
+                    unmountOnExit={false}
+                    onSelect={(key) => setCurrentDataTab(key)}
+                  >
+                    <Tab eventKey="histogram" className="tab-content-padding" title="Histogram">
+                      <div style={{margin:"20px"}}>
+                        <HistogramChart listIntensityChart={listIntensityChart} />
+                      </div>
+                    </Tab>
+                    <Tab eventKey="table" className="tab-content-padding" title="Table">
+                      <div style={{margin:"20px"}}>
+                        <HistogramTable listIntensityTable={listIntensityTable} />
+                      </div>
+                    </Tab>
+                  </Tabs>
+                </div>}
+              </Card.Body>
+            </Card>
+            <Card style={{marginBottom: "30px"}}>
+              <Card.Body>
+                <Title title="Data" />
                 {/* <Files
                     dataset={dataset}
                     setEnableMetadata={setEnableMetadata}
@@ -168,7 +349,7 @@ const PublicDataset = () => {
                 </Row>
               </Card.Body>
             </Card>
-            <Card className="mb-3">
+            <Card style={{marginBottom: "30px"}}>
               <Card.Body>
                 <Title title="Supplementary Files" />
                 {!dataset.files ? (
@@ -178,7 +359,7 @@ const PublicDataset = () => {
                 )}
               </Card.Body>
             </Card>
-            <Card className="mb-3">
+            <Card style={{marginBottom: "30px"}}>
               <Card.Body>
                 <Title title="Publications" />
                 {!dataset.publications ? (
@@ -188,16 +369,8 @@ const PublicDataset = () => {
                 )}
               </Card.Body>
             </Card>
-            <Card className="mb-3">
-              <Card.Body>
-                <Title title="Submitter" />
-                {dataset.user && dataset.user.name ? (
-                  <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
-                ) : null}
-              </Card.Body>
-            </Card>
 
-            <Card className="mb-3">
+            <Card style={{marginBottom: "30px"}}>
               <Card.Body>
                 <Title title="Grants" />
                 {!dataset.grants ? (
@@ -207,7 +380,7 @@ const PublicDataset = () => {
                 )}
               </Card.Body>
             </Card>
-            <div className="text-center mb-2 mt-2">
+            <div className="text-center">
               <Button className="gg-btn-blue" onClick={() => history.push("/data")}>
                 Back
               </Button>

@@ -117,33 +117,6 @@ const ExperimentInfo = props => {
                 </Col>
               </Form.Group>
 
-              {!experimentId && (
-                <>
-                  <Form.Group as={Row} controlId="publications" className="gg-align-center mb-3">
-                    <Col xs={12} lg={9}>
-                      <FormLabel label="Publications" />
-                      {experiment.publications.map(pub => {
-                        return <PublicationCard key={pub.pubmedId} enableDelete {...pub} deletePublication={props.deleteRow}/>;
-                      })}
-                      <Row>
-                        <Col md={10}>{getPublicationFormControl()}</Col>
-                        {!experimentId && (
-                          <Col md={1}>
-                            <Button onClick={() => getPublication()} className="gg-btn-outline-reg">
-                              <LineTooltip text="Add Publication">
-                                <Link>
-                                  <Image src={plusIcon} alt="plus button" />
-                                </Link>
-                              </LineTooltip>
-                            </Button>
-                          </Col>
-                        )}
-                      </Row>
-                    </Col>
-                  </Form.Group>
-                </>
-              )}
-
               <div className="text-center mb-4 mt-4">
                 <Button className="gg-btn-blue mt-2" type="submit" disabled={showErrorSummary}>
                   {!experimentId ? "Submit" : "Update"}

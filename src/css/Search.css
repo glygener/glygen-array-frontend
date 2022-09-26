@@ -39,3 +39,9 @@
   padding-top: 30px;
   padding-bottom: 30px;
 }
+.card-header-tabs {
+  margin-right: 0rem !important;
+  margin-bottom: 0rem !important;
+  margin-left: 0rem !important;
+  border-bottom: 0 !important;
+}
