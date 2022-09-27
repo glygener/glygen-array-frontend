@@ -45,3 +45,7 @@
   margin-left: 0rem !important;
   border-bottom: 0 !important;
 }
+.tab-content-data {
+  margin: 0px !important;
+  padding: 30px;
+}
