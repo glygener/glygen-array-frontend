@@ -312,15 +312,11 @@ const PublicDataset = () => {
                     unmountOnExit={false}
                     onSelect={(key) => setCurrentDataTab(key)}
                   >
-                    <Tab eventKey="histogram" className="tab-content-padding" title="Histogram">
-                      <div style={{margin:"20px"}}>
-                        <HistogramChart listIntensityChart={listIntensityChart} />
-                      </div>
+                    <Tab eventKey="histogram" className="tab-content-data" title="Histogram">
+                      <HistogramChart listIntensityChart={listIntensityChart} />
                     </Tab>
-                    <Tab eventKey="table" className="tab-content-padding" title="Table">
-                      <div style={{margin:"20px"}}>
-                        <HistogramTable listIntensityTable={listIntensityTable} />
-                      </div>
+                    <Tab eventKey="table" className="tab-content-data" title="Table">
+                      <HistogramTable listIntensityTable={listIntensityTable} />
                     </Tab>
                   </Tabs>
                 </div>}
