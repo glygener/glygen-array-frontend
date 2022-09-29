@@ -14,7 +14,7 @@ const DatasetTable = props => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
-  const [orderBy, setOrderBy] = useState();
+  const [orderBy, setOrderBy] = useState(1);
   const [showLoading, setShowLoading] = useState(true);
 
   // const { data, onModifySearch } = props;
@@ -22,7 +22,7 @@ const DatasetTable = props => {
 
   const dataset = {
     pages: "",
-    sortBy: ""
+    sortBy: "id"
   };
   const [publicData, setPublicData] = useReducer((state, newState) => ({ ...state, ...newState }), dataset);
   useEffect(() => {
@@ -86,8 +86,7 @@ const DatasetTable = props => {
                 required={true}
               >
                 <option value="id">Accession</option>
-                <option value="label">Dataset Name</option>
-                <option value="dateAddedToLibrary">Submission Date</option>
+                <option value="name">Dataset Name</option>
                 <option value="dateCreated">Publication Date</option>
               </Form.Control>
             </Col>
@@ -141,22 +140,15 @@ const DatasetTable = props => {
                       <strong>Sample:</strong> {row.original.sample.name}
                     </div>
 
-                    <div>
+                    {row.original.description && <div style={{whiteSpace: "normal"}}>
                       <strong>Dataset Description:</strong> {row.original.description}
-                    </div>
+                    </div>}
 
                     <div>
                       <strong>Submitter:</strong> &nbsp;
-                      <Link
-                        to={""}
-                        style={{
-                          color: "dodgerblue",
-                          textDecoration: "underline",
-                          textTransform: "uppercase"
-                        }}
-                      >
+                      <span style={{ textTransform: "uppercase" }}>
                         {row.original.user.name}
-                      </Link>
+                      </span>
                     </div>
 
                     <div>
@@ -182,6 +174,7 @@ const DatasetTable = props => {
             showPaginationTop
             className={"-striped -highlight"}
             sortable={true}
+            resizable={false}
           />
         </div>
       </>
