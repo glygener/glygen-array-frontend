@@ -27,15 +27,18 @@ const KeywordsOnExp = props => {
           props.keywords.map((kw, index) => {
             return (
               <>
-                {kw} &nbsp;&nbsp;
+                {kw}
                 {!props.fromPublicDatasetPage && (
-                  <FontAwesomeIcon
-                    icon={["far", "trash-alt"]}
-                    size="lg"
-                    title="Delete"
-                    className="caution-color"
-                    onClick={() => props.delete(kw, props.deleteWsCall)}
-                  />
+                  <>
+                    &nbsp;&nbsp;
+                    <FontAwesomeIcon
+                      icon={["far", "trash-alt"]}
+                      size="lg"
+                      title="Delete"
+                      className="caution-color"
+                      onClick={() => props.delete(kw, props.deleteWsCall)}
+                    />
+                  </>
                 )}
                 {index !== props.keywords.length - 1 && <>{","}&nbsp;</>}
               </>
