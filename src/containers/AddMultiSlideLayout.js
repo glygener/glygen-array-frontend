@@ -373,17 +373,8 @@ const AddMultiSlideLayout = props => {
   };
 
   function importSlideLayoutsFromLibrarySuccess(response) {
-    if (uploadDetails.fileType === ".gal") {
-      response.text().then(responseJson => {
-        setShowLoading(false);
-        history.push("/slideLayouts");
-      });
-    } else {
-      response.json().then(responseJson => {
-        setTabs(responseJson);
-        setShowLoading(false);
-      });
-    }
+    setShowLoading(false);
+    history.push("/slideLayouts");
   }
 
   function importSlideLayoutsFromLibraryError(response) {
@@ -406,11 +397,11 @@ const AddMultiSlideLayout = props => {
         }
       } else if (uploadDetails.fileType === ".xml") {
         setPageErrorsJson(responseJson);
-        setTabs(responseJson);
+        setTabs(responseJson.errors);
         setShowErrorSummary(true);
       } else {
         setPageErrorsJson(responseJson);
-        setTabs(responseJson);
+        setTabs(responseJson.errors);
         setShowErrorSummary(true);
       }
       setShowLoading(false);
@@ -650,8 +641,30 @@ const AddMultiSlideLayout = props => {
                     </>
                   )}
 
-                  {uploadDetails.fileType !== defaultFileType && (
-                    <Form.Group as={Row} controlId="fileUploader" className="gg-align-center">
+                  {uploadDetails.fileType === ".gal" && (
+                    <Form.Group as={Row} controlId="fileUploaderGal" className="gg-align-center">
+                      <Col xs={12} lg={9}>
+                        <ResumableUploader
+                          history={history}
+                          headerObject={{
+                            Authorization: window.localStorage.getItem("token") || "",
+                            Accept: "*/*",
+                          }}
+                          fileType={fileDetails.fileType}
+                          uploadService={getWsUrl("upload")}
+                          maxFiles={1}
+                          onProcessFile={uploadDetails.fileType === ".gal" ? saveGALSlidelayout : processFile}
+                          enableSubmit
+                          filetypes={uploadDetails.fileType === ".gal" ? ["gal"] : ["xml"]}
+                          onCancel={() => history.push("/slideLayouts")}
+                          setUploadedFile={setUploadedFile}
+                        />
+                      </Col>
+                    </Form.Group>
+                  )}
+
+                  {uploadDetails.fileType === ".xml" && (
+                    <Form.Group as={Row} controlId="fileUploaderXml" className="gg-align-center">
                       <Col xs={12} lg={9}>
                         <ResumableUploader
                           history={history}

@@ -264,16 +264,25 @@ const ProcessDataOnRd = props => {
         }}>        
         <Form.Group as={Row} controlId={"processdata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Process Data"} className="required-asterik" />
+            <FormLabel label={"Processed Data File"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{processDataView.file ? processDataView.file.originalName : "No data available"}</span>
           </Col>
         </Form.Group>
 
+        <Form.Group as={Row} controlId={"processDataFF"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"File Format"} />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{processDataView.file ? processDataView.file.fileFormat : "No data available"}</span>
+          </Col>
+        </Form.Group>
+
         <Form.Group as={Row} controlId={"dataProcessing"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Data Processing"} className="required-asterik" />
+            <FormLabel label={"Data Processing Metadata"} />
           </Col>
           <Col xs={12} lg={9}>
             {processDataView.metadata ? <LineTooltip text="View Details">
@@ -289,15 +298,6 @@ const ProcessDataOnRd = props => {
             </LineTooltip> : 
               <span>{"No data available"}</span>
             }
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId={"processDataFF"} className="gg-align-center mb-3">
-          <Col xs={12} lg={9}>
-            <FormLabel label={"ProcessData Fileformat"} className="required-asterik" />
-          </Col>
-          <Col xs={12} lg={9}>
-            <span>{processDataView.file ? processDataView.file.fileFormat : "No data available"}</span>
           </Col>
         </Form.Group>
         </div>
@@ -367,6 +367,8 @@ const ProcessDataOnRd = props => {
         <div style={{ textAlign: "center" }}>
           <DownloadButton
             showExport={true}
+            exportName={"Export Processed Data"}
+            downloadName={"Original Processed Data File"}
             showDownload={processDataView.file !== undefined}
             handleDownload={handleDownload}
           />

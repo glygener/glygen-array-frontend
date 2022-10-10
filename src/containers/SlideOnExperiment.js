@@ -365,7 +365,7 @@ const SlideOnExperiment = props => {
         }}>
         <Form.Group as={Row} controlId={"slide"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Slide"} className="required-asterik" />
+            <FormLabel label={"Slide"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{slideView.printedSlide ? slideView.printedSlide.name : "No data available"}</span>
@@ -376,7 +376,7 @@ const SlideOnExperiment = props => {
         </Form.Group>
         <Form.Group as={Row} controlId={"metadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Assay Metadata"} className="required-asterik" />
+            <FormLabel label={"Assay Metadata"} />
           </Col>
           <Col xs={12} lg={9}>
             {slideView.metadata ? <LineTooltip text="View Details">
@@ -396,7 +396,7 @@ const SlideOnExperiment = props => {
         </Form.Group>
         <Form.Group as={Row} controlId={"printedslidemetadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Printed Slide Metadata"} className="required-asterik" />
+            <FormLabel label={"Printed Slide Metadata"} />
           </Col>
           <Col xs={12} lg={9}>
             {slideView.printedSlide && slideView.printedSlide.metadata ? <LineTooltip text="View Details">
@@ -416,7 +416,7 @@ const SlideOnExperiment = props => {
         </Form.Group>
         <Form.Group as={Row} controlId={"printrun"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Print Run"} className="required-asterik" />
+            <FormLabel label={"Print Run Metadata"} />
           </Col>
           <Col xs={12} lg={9}>
             {slideView.printedSlide && slideView.printedSlide.printRun ? <LineTooltip text="View Details">
@@ -436,7 +436,7 @@ const SlideOnExperiment = props => {
         </Form.Group>
         <Form.Group as={Row} controlId={"printer"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Printer"} className="required-asterik" />
+            <FormLabel label={"Printer Metadata"} />
           </Col>
           <Col xs={12} lg={9}>
             {slideView.printedSlide && slideView.printedSlide.printer ? <LineTooltip text="View Details">
@@ -489,6 +489,8 @@ const SlideOnExperiment = props => {
       <div style={{ textAlign: "center" }}>
         <DownloadButton
           showExport={true}
+          exportName={"Export Extended GAL File"}
+          downloadName={"Download"}
           showDownload={slideView.printedSlide && slideView.printedSlide.layout && slideView.printedSlide.layout.file !== null}
           handleDownload={handleDownload}
         />

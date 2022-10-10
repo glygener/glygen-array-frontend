@@ -19,7 +19,7 @@ export const DownloadButton = (props) => {
   const [selectedValue, setSelectedValue] = useState(defaultType);
 
   const clearForm = () => {
-    setSelectedValue("Export");
+    setSelectedValue("export");
   };
   const handleClickOutside = (event) => {
     setShow(false);
@@ -95,8 +95,8 @@ export const DownloadButton = (props) => {
                                 }}
                                 required={true}
                               >
-                                {props.showExport && <option value="export">Export</option>}
-                                {props.showDownload && <option value="download">Download</option>}
+                                {props.showExport && <option value="export">{props.exportName}</option>}
+                                {props.showDownload && <option value="download">{props.downloadName}</option>}
                               </Form.Control>
                             </Col>
                           </Form.Group>

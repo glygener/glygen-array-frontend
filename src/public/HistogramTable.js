@@ -14,26 +14,28 @@ const HistogramTable = props => {
       <>
         <ReactTable
           style={{ minHeight: "355px" }}
-          data={listIntensityTable.rows}
+          data={listIntensityTable}
           columns={[
             {
               Header: row => (
               <div className="table-header">
-                <LineTooltip text="Glycan ID/Glytoucan ID">
-                  <span>Glycan ID/Glytoucan ID</span>
+                <LineTooltip text="Glytoucan ID / Glycan ID">
+                  <span><span>Glytoucan ID / </span><span style={{ fontStyle: "italic" }}>Glycan ID</span></span>
                 </LineTooltip>
               </div>
               ),
-              accessor: "feature.glycans[0].glycan.id",
+              accessor: "id",
               Cell: (row, index) => {
                 return (
                   <div key={index}>
-                    {row.original.feature.glycans[0].glycan.glytoucanId
-                      ? row.original.feature.glycans[0].glycan.glytoucanId
-                      : row.original.feature.glycans[0].glycan.id}
+                    {row.original.glytoucanId === true
+                      ? <span>{row.original.id}</span>
+                      : <span style={{ fontStyle: "italic" }}>{row.original.id}</span>}
                   </div>
                 );
               },
+              minWidth: 130,
+              sortable: true
             },
             {
               // Header: () => <div className={"table-header"}>{"Linker Name"}</div>,
@@ -44,9 +46,9 @@ const HistogramTable = props => {
                   </LineTooltip>
                 </div>
                 ),
-              // accessor: "feature.linker.name",
+              accessor: "linkerName",
               Cell: (row, index) =>
-                row.original.feature.linker ? (
+                row.original.linkerName ? (
                   <>
                     <OverlayTrigger
                       key={index}
@@ -60,27 +62,28 @@ const HistogramTable = props => {
                             <>
                               <Row>
                                 <Col style={{ fontWeight: "bold" }}>Name</Col>
-                                <Col>{row.original.feature.linker.name}</Col>
+                                <Col>{row.original.linkerName}</Col>
                               </Row>
                               <Row>
                                 <Col style={{ fontWeight: "bold" }}>ID</Col>
-                                <Col>{row.original.feature.linker.id}</Col>
+                                <Col>{row.original.linkerId}</Col>
                               </Row>
                               <Row>
                                 <Col style={{ fontWeight: "bold" }}>Inchi Sequence</Col>
-                                <Col style={{ textAlign: "justify" }}>{row.original.feature.linker.inChiSequence}</Col>
+                                <Col style={{ textAlign: "justify" }}>{row.original.inChiSequence}</Col>
                               </Row>
                             </>
                           </Popover.Content>
                         </Popover>
                       }
                     >
-                      <div>{row.original.feature.linker.name}</div>
+                      <div>{row.original.linkerName}</div>
                     </OverlayTrigger>
                   </>
                 ) : (
                   <div key={index}></div>
                 ),
+              sortable: true
               // minWidth: 80
             },
             {
@@ -92,7 +95,8 @@ const HistogramTable = props => {
                   </LineTooltip>
                 </div>
                 ),
-              accessor: "intensity.rfu",
+              accessor: "rfu",
+              sortable: true
             },
             {
               // Header: () => <div className={"table-header"}>{"Structure Image"}</div>,
@@ -106,10 +110,11 @@ const HistogramTable = props => {
               accessor: "cartoon",
               Cell: row => (
                 <div style={{ height: "auto" }}>
-                  <StructureImage base64={row.original.feature.glycans[0].glycan.cartoon} />
+                  <StructureImage base64={row.original.cartoon} />
                 </div>
               ),
               minWidth: 300,
+              sortable: false
             },
           ]}
           // className={"-striped -highlight"}
