@@ -258,27 +258,28 @@ const RawdataOnImage = props => {
           height: "350px",
           width: "100%"
         }}>
-        <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
-          <Col xs={12} lg={9}>
-            <FormLabel label={"Raw Data File Format"} className="required-asterik" />
-          </Col>
-          <Col xs={12} lg={9}>
-            <span>{rawDataView.file ? rawDataView.file.fileFormat : "No data available"}</span>
-          </Col>
-        </Form.Group>
 
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Raw Data"} className="required-asterik" />
+            <FormLabel label={"Raw Data File"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{rawDataView.file ? rawDataView.file.originalName : "No data available"}</span>
           </Col>
         </Form.Group>
 
+        <Form.Group as={Row} controlId={"rawdataFF"} className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label={"File Format"} />
+          </Col>
+          <Col xs={12} lg={9}>
+            <span>{rawDataView.file ? rawDataView.file.fileFormat : "No data available"}</span>
+          </Col>
+        </Form.Group>
+
         <Form.Group as={Row} controlId={"imageAnalysis"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Image Analysis"} className="required-asterik" />
+            <FormLabel label={"Image Analysis Metadata"} />
           </Col>
           <Col xs={12} lg={9}>
             {rawDataView.metadata ? <LineTooltip text="View Details">
@@ -299,7 +300,7 @@ const RawdataOnImage = props => {
 
         <Form.Group as={Row} controlId={"powerLevel"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Power Level"} className="required-asterik" />
+            <FormLabel label={"Power Level"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{rawDataView.powerLevel ? rawDataView.powerLevel : "No data available"}</span>
@@ -308,7 +309,7 @@ const RawdataOnImage = props => {
 
         <Form.Group as={Row} controlId={"channelUsageType"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Channel Usage Type"} className="required-asterik" />
+            <FormLabel label={"Channel Usage Type"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{rawDataView.channel ? rawDataView.channel.usage : "No data available"}</span>
@@ -317,7 +318,7 @@ const RawdataOnImage = props => {
 
         <Form.Group as={Row} controlId={"wavelength"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Wave Length"} className="required-asterik" />
+            <FormLabel label={"Wave Length"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{rawDataView.channel ? rawDataView.channel.wavelength : "No data available"}</span>
@@ -399,6 +400,8 @@ const RawdataOnImage = props => {
         <div style={{ textAlign: "center" }}>
           <DownloadButton
             showExport={false}
+            exportName={"Export"}
+            downloadName={"Original Raw Data File"}
             showDownload={rawDataView.file !== undefined}
             defaultType="download"
             handleDownload={handleDownload}

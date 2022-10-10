@@ -51,7 +51,7 @@ const SlideLayouts = props => {
                   to="/slideLayouts/addMultiple"
                   // title="Upload a GAL/XML file wih Slide Layouts"
                 >
-                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Multiple Slide Layouts</Button>
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Slide Layout From File</Button>
                 </Link>
               </div>
 
@@ -60,6 +60,10 @@ const SlideLayouts = props => {
                   {
                     Header: "Name",
                     accessor: "name"
+                  },
+                  {
+                    Header: "Status",
+                    accessor: "status",
                   }
                 ]}
                 defaultPageSize={10}

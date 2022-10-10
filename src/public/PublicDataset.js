@@ -119,7 +119,19 @@ const PublicDataset = () => {
       response =>
         response.json().then(responseJson => {
           responseJson.rows.sort((obj1, obj2) => obj2.intensity.rfu - obj1.intensity.rfu);
-          setListIntensityTable(responseJson);
+
+          let dataTable = responseJson.rows.map((obj, ind) => { 
+            return {
+              'featureId' : obj.feature.id, 
+              'id' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
+              'glytoucanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? true : false, 
+              'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
+              'linkerName' : obj.feature.linker ? obj.feature.linker.name : "",
+              'linkerId' : obj.feature.linker ? obj.feature.linker.id : "",
+              'inChiSequence' : obj.feature.linker ? obj.feature.linker.inChiSequence : "",
+              'rfu' : obj.intensity.rfu,
+          }});
+          setListIntensityTable(dataTable);
 
           let data = responseJson.rows.map((obj, ind) => { 
             let tempWidth = 10;
@@ -133,17 +145,18 @@ const PublicDataset = () => {
             }
 
             let stdDev = Math.round((obj.intensity.stDev +  Number.EPSILON) * 100) / 100;
+            let rfu = Math.round((obj.intensity.rfu +  Number.EPSILON) * 100) / 100;
 
             return {
               'featureId' : obj.feature.id, 
               'glycanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
               'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
               'linkerName' : obj.feature.linker.name,
-              'rfuBarValue' : obj.intensity.rfu <= 0 ? 0 : obj.intensity.rfu,
-              'rfu' : obj.intensity.rfu,
-              'stDev' : stdDev,
-              'errLow' : obj.intensity.rfu <= 0 ? 0 - stdDev : obj.intensity.rfu - stdDev,
-              'errHigh' : obj.intensity.rfu <= 0 ? 0 + stdDev : obj.intensity.rfu + stdDev,
+              'rfuBarValue' : rfu <= 0 ? 0 : rfu,
+              'rfu' : Number(rfu).toLocaleString('en-US') ,
+              'stDev' : Number(stdDev).toLocaleString('en-US'),
+              'errLow' : rfu <= 0 ? 0 - stdDev : rfu - stdDev,
+              'errHigh' : rfu <= 0 ? 0 + stdDev : rfu + stdDev,
               'width' : tempWidth,
               'height' : tempHeight
             } 
@@ -197,7 +210,7 @@ const PublicDataset = () => {
           <strong>Release Date: </strong>
           {getDateCreated(dataset.dateCreated)}
         </div>
-        {!dataset.keywords ? (
+        {dataset.keywords && dataset.keywords.length > 0 ? (
           <div>
             <strong>Keywords: </strong>
             <KeywordsOnExp keywords={dataset.keywords} fromPublicDatasetPage={true} />
@@ -348,7 +361,7 @@ const PublicDataset = () => {
             <Card style={{marginBottom: "30px"}}>
               <Card.Body>
                 <Title title="Supplementary Files" />
-                {!dataset.files ? (
+                {dataset.files && dataset.files.length > 0  ? (
                   <FilesOnExp files={dataset.files} fromPublicDatasetPage={true} />
                 ) : (
                   <span>No data available</span>
@@ -358,7 +371,7 @@ const PublicDataset = () => {
             <Card style={{marginBottom: "30px"}}>
               <Card.Body>
                 <Title title="Publications" />
-                {!dataset.publications ? (
+                {dataset.publications && dataset.publications.length > 0 ? (
                   <PubOnExp publications={dataset.publications} fromPublicDatasetPage={true} />
                 ) : (
                   <span>No data available</span>
@@ -369,7 +382,7 @@ const PublicDataset = () => {
             <Card style={{marginBottom: "30px"}}>
               <Card.Body>
                 <Title title="Grants" />
-                {!dataset.grants ? (
+                {dataset.grants && dataset.grants.length > 0 ? (
                   <GrantsOnExp grants={dataset.grants} fromPublicDatasetPage={true} />
                 ) : (
                   <span>No data available</span>

@@ -361,7 +361,7 @@ const DataTreeView = props => {
                                                 <div className={"rst__row"}>
                                                   <Row className={enableProcessRawdata && processDataView && pd.id === processDataView.id ? "row_headline row_headline_act" : "row_headline"}>
                                                     <Col style={{ overflow: "hidden", flexBasis: "auto", maxWidth: pd.status !== "DONE" ? "80%" : "100%" }}>
-                                                      <strong>Process Data:</strong>{" "}
+                                                      <strong>Processed Data:</strong>{" "}
                                                       <span>
                                                         {pd.file && pd.file.originalName ? pd.file.originalName : ""}
                                                       </span>

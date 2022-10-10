@@ -23,7 +23,7 @@ const ExperimentDetails = props => {
         }}>
         <Form.Group as={Row} controlId={"slide"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Name"} className="required-asterik" />
+            <FormLabel label={"Name"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{experiment.name ? experiment.name : ""}</span>
@@ -31,7 +31,7 @@ const ExperimentDetails = props => {
         </Form.Group>
         <Form.Group as={Row} controlId={"metadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Sample"} className="required-asterik" />
+            <FormLabel label={"Sample"} />
           </Col>
           <Col xs={12} lg={9}>
             {experiment.sample ? <><LineTooltip text="View Details">

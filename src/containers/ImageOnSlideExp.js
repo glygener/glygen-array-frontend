@@ -261,7 +261,7 @@ const ImageOnSlideExp = props => {
         }}>
         <Form.Group as={Row} controlId={"image"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Image"} className="required-asterik" />
+            <FormLabel label={"Image"} />
           </Col>
           <Col xs={12} lg={9}>
             <span>{imageView.file ? imageView.file.originalName : "No data available"}</span>
@@ -269,7 +269,7 @@ const ImageOnSlideExp = props => {
         </Form.Group>
         <Form.Group as={Row} controlId={"scannermetadata"} className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
-            <FormLabel label={"Scanner Metadata"} className="required-asterik" />
+            <FormLabel label={"Scanner Metadata"} />
           </Col>
           <Col xs={12} lg={9}>
           {imageView.scanner ? <LineTooltip text="View Details">
@@ -325,6 +325,8 @@ const ImageOnSlideExp = props => {
             <div style={{ textAlign: "center" }}>
                 <DownloadButton
                   showExport={false}
+                  exportName={"Export"}
+                  downloadName={"Download"}
                   showDownload={imageView.file !== undefined}
                   defaultType="download"
                   handleDownload={handleDownload}
