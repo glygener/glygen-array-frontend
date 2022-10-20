@@ -57,7 +57,7 @@ const SourceForGlycanInFeature = props => {
     if (
       activeStep === 2 &&
       (props.featureAddState.type === "GLYCO_LIPID" ||
-        props.featureAddState.type === "LINKED_GLYCAN" ||
+        props.featureAddState.type === "GLYCAN" ||
         ((props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
           props.featureAddState.positionDetails.isPosition))
     ) {
@@ -87,7 +87,7 @@ const SourceForGlycanInFeature = props => {
 
     if (
       props.featureAddState.type === "GLYCO_LIPID" ||
-      props.featureAddState.type === "LINKED_GLYCAN" ||
+      props.featureAddState.type === "GLYCAN" ||
       ((props.featureAddState.type === "GLYCO_PEPTIDE" || props.featureAddState.type === "GLYCO_PROTEIN") &&
         props.featureAddState.positionDetails.isPosition)
     ) {
