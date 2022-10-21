@@ -493,10 +493,16 @@ export function getPath(type) {
 }
 
 export function batchupload(wscall, methodType, uploadtype, moleculetype) {
+  let jsobj = {}
+  if (moleculetype) {
+    jsobj = { uploadtype: uploadtype, moleculetype: moleculetype }
+  } else {
+    jsobj = { uploadtype: uploadtype }
+  }
   wsCall(
     wscall,
     methodType,
-    { uploadtype: uploadtype, moleculetype: moleculetype },
+    jsobj,
     true,
     null,
     response => {
