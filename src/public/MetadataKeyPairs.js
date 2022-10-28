@@ -86,7 +86,7 @@ const MetadataKeyPairs = props => {
               </Col>
             </Row>
           );
-        descriptor.descriptors.map(subdesc => {
+        descriptor.descriptors && descriptor.descriptors.map(subdesc => {
           if (subdesc.key && subdesc.key.name) {
             if (subdesc.group) {
               descSubGroupValues.push(
