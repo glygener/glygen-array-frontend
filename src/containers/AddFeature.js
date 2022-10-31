@@ -500,8 +500,7 @@ const AddFeature = props => {
   }
 
   const isStepSkipped = step => {
-    return featureAddState.type !== "1GLYCAN" &&
-      featureAddState.isLipidLinkedToSurfaceUsingLinker === "No" &&
+    return featureAddState.isLipidLinkedToSurfaceUsingLinker === "No" &&
       featureAddState.type !== "CONTROL" &&
       featureAddState.type !== "LANDING_LIGHT"
       ? step === 1 && activeStep === 2
@@ -738,7 +737,6 @@ const AddFeature = props => {
       setLinkerValidated(false);
     } else if (
       activeStep === 2 &&
-      featureAddState.type !== "1GLYCAN" &&
       featureAddState.type !== "CONTROL" &&
       featureAddState.type !== "LANDING_LIGHT" &&
       featureAddState.isLipidLinkedToSurfaceUsingLinker === "No"
