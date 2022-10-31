@@ -50,7 +50,7 @@ const AddGrant = props => {
       },
       listFOFail
     );
-  }, [listFundingOrganizations, otherFO]);
+  }, [otherFO]);
 
   function listFOFail(response) {
     response.json().then(responseJson => {
