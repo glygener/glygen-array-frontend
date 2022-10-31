@@ -60,15 +60,12 @@ const SlideLayouts = props => {
                   {
                     Header: "Name",
                     accessor: "name"
-                  },
-                  {
-                    Header: "Status",
-                    accessor: "status",
                   }
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
                 showCommentsButton
+                showStatus
                 showDeleteButton
                 showEditButton
                 showSearchBox

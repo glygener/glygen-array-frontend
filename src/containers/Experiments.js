@@ -49,14 +49,11 @@ const Experiments = props => {
                     Header: "Date Created",
                     accessor: "dateCreated",
                     Cell: row => new Intl.DateTimeFormat("en-US").format(new Date(row.original.dateCreated)),
-                  },
-                  {
-                    Header: "Status",
-                    accessor: "status",
-                  },
+                  }
                 ]}
                 defaultPageSize={5}
                 defaultSortColumn="id"
+                experimentStatus
                 showDeleteButton
                 showEditButton
                 showMakePublic
