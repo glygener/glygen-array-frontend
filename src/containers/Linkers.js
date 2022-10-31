@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import "./Contribute.css";
 import Helmet from "react-helmet";
@@ -17,6 +17,7 @@ import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import property from "../appData/properties";
+import { StatusMessage } from "../components/StatusMessage";
 
 const Linkers = props => {
   let linkerProperty = property["linker"];
@@ -25,9 +26,9 @@ const Linkers = props => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
     }
-
-    batchupload("checkbatchupload", "GET", linkerProperty.batch_linker, linkerProperty.moleculeType.linker);
   }, []);
+
+  const [batchUpload, setBatchUpload] = useState(false);
 
   return (
     <>
@@ -54,6 +55,13 @@ const Linkers = props => {
           )}
           <Card style={props.cardStyle}>
             <Card.Body>
+
+            <StatusMessage
+              moleculetype={linkerProperty.moleculeType.linker}
+              uploadtype={linkerProperty.batch_linker}
+              setBatchUpload={setBatchUpload}
+            />
+
               <div className="text-center mb-4">
                 {!props.isImported && (
                   <>
@@ -69,7 +77,7 @@ const Linkers = props => {
                         },
                       }}
                     >
-                      <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Linkers</Button>
+                      <Button disabled={batchUpload} className="gg-btn-blue mt-2 gg-ml-20">Upload Linkers</Button>
                     </Link>
                   </>
                 )}

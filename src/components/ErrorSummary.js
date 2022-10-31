@@ -8,14 +8,21 @@ const ErrorSummary = props => {
   const [summary, setSummary] = useState("");
   const [listAlerts, setListAlerts] = useState([]);
   const [listSummary, setListSummary] = useState();
+  const [defaultErrorSummary, setDefaultErrorSummary] = useState();
 
   useEffect(updateSummary, [props.errorJson], [props.errorMessage]);
 
   function updateSummary() {
     var aggregatedSummary = "";
+    var defaultError = "";
 
     if (props.errorJson && props.errorJson.errors && props.errorJson.errors.length > 1) {
       aggregatedSummary += "There have been multiple errors submitting the entry: \n";
+    }
+
+    if (props.errorJson && props.errorJson.errors && props.errorJson.statusCode >= 500 && props.customMessage) {
+      defaultError = getFormErrorMessage() + " \n";
+      setDefaultErrorSummary(defaultError);
     }
 
     if (props.show) {
@@ -52,6 +59,9 @@ const ErrorSummary = props => {
     <div>
       {props.showText ? 
         <div>
+          <div>
+            {defaultErrorSummary}
+          </div>
           {listAlerts.length > 0 ? (
             <>
               {listSummary}

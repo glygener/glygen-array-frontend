@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import "./Contribute.css";
 import Helmet from "react-helmet";
@@ -14,9 +14,15 @@ import { Button } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import { StatusMessage } from "../components/StatusMessage";
+import property from "../appData/properties";
 
 const OtherMolecules = props => {
+  let linkerProperty = property["linker"];
+
   useEffect(props.authCheckAgent, []);
+
+  const [batchUpload, setBatchUpload] = useState(false);
 
   return (
     <>
@@ -41,6 +47,13 @@ const OtherMolecules = props => {
 
           <Card>
             <Card.Body>
+
+              <StatusMessage
+                moleculetype={linkerProperty.moleculeType.other}
+                uploadtype={linkerProperty.batch_linker}
+                setBatchUpload={setBatchUpload}
+              />
+
               <div className="text-center mb-4">
                 {!props.isImported && (
                   <>
@@ -56,7 +69,7 @@ const OtherMolecules = props => {
                         },
                       }}
                     >
-                      <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Other Molecules</Button>
+                      <Button disabled={batchUpload} className="gg-btn-blue mt-2 gg-ml-20">Upload Other Molecules</Button>
                     </Link>
                   </>
                 )}

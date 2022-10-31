@@ -22,6 +22,7 @@ const ErrorMessageDialogue = props => {
           show={props.showErrorSummary}
           showText={true}
           form={props.form}
+          customMessage={props.customMessage}
           errorJson={props.pageErrorsJson}
           errorMessage={props.pageErrorMessage}
         />
