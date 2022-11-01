@@ -108,7 +108,7 @@ const ProcessDataOnRd = props => {
       label: "Process Data File",
       fileType: processData.fileType,
       setUploadedFile: setUploadedDF,
-      required: false,
+      required: true,
       maxFileSize: 20 * 1024 * 1024
     },
     {
@@ -154,16 +154,28 @@ const ProcessDataOnRd = props => {
 
     if (e.currentTarget.checkValidity()) {
       setShowErrorSummary(false);
-      wsCall(
-        "addprocessdatafromexcel",
-        "POST",
-        {
+      let wsObj;
+      if (uploadedExclusiveFile && uploadedExclusiveFile.identifier) {
+        wsObj = {
           arraydatasetId: experimentId,
           rawdataId: rawDataId,
           metadataId: processData.dataProcessing,
           methodName: processData.statisticalMethod,
           exclusionFile: uploadedExclusiveFile.identifier
-        },
+        };
+      } else {
+        wsObj = {
+          arraydatasetId: experimentId,
+          rawdataId: rawDataId,
+          metadataId: processData.dataProcessing,
+          methodName: processData.statisticalMethod
+        };
+      }
+
+      wsCall(
+        "addprocessdatafromexcel",
+        "POST",
+        wsObj,
         true,
         {
           identifier: uploadedDF.identifier,
@@ -302,7 +314,7 @@ const ProcessDataOnRd = props => {
         </Form.Group>
         </div>
 
-        <div st1yle={{ textAlign: "center" }}  className="mt-3 mb-2"  cla1ssName="gg-align-center mb-3" clas1sName={props.enableImageOnSlide ? "row_headline row_headline_act" : "row_headline"}>
+        <div st1yle={{ textAlign: "center" }}  className="mt-3 mb-2">
         {processDataView.status !== "DONE" && <div style={{ textAlign: "center" }}>
           <span>
             {processDataView.status &&
@@ -430,7 +442,7 @@ const ProcessDataOnRd = props => {
                           className="gg-align-center mt-0 pt-0"
                         >
                           <Col xs={12} lg={9}>
-                            <FormLabel label={data.label} className="required-asterik pb-0 mb-0" />
+                            <FormLabel label={data.label} className={data.required ? "required-asterik pb-0 mb-0" : "pb-0 mb-0" } />
                             <ResumableUploader
                               className="mt-0 pt-0"
                               history={history}

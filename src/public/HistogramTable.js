@@ -109,8 +109,8 @@ const HistogramTable = props => {
                 ),
               accessor: "cartoon",
               Cell: row => (
-                <div style={{ height: "auto" }}>
-                  <StructureImage base64={row.original.cartoon} />
+                <div style={{ height: "auto", overflowX: "scroll" }}>
+                  <img src={"data:image/png;base64," + row.original.cartoon} alt="Glycan img" />
                 </div>
               ),
               minWidth: 300,

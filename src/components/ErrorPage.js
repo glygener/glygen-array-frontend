@@ -13,9 +13,13 @@ const ErrorPage = props => {
   let errorMessage = "";
   const [copy, setCopy] = useState(false);
 
-  if (location && location.state) {
-    backLink = location.state.goBack;
-    errorMessage = location.state.errorMessage;
+  if (location && location.state ) {
+    if (props.errorMessageDia) {
+      errorMessage = props.errorMessage;
+    } else {
+      backLink = location.state.goBack;
+      errorMessage = location.state.errorMessage;
+    }
   } else {
     errorMessage = props.errorMessage;
   }

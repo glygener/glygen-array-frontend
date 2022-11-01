@@ -19,6 +19,7 @@ import { BlueRadio } from "../components/FormControls";
 import { downloadFile, fileDownloadFailure, fileExportSuccess } from "../utils/commonUtils";
 import { Tooltip } from "@material-ui/core";
 import "../css/HelpToolTip.css";
+import { ErrorMessageDialogue } from "../components/ErrorMessageDialogue";
 // import CommentIcon from "@material-ui/icons/Comment";
 // import EditIcon from "@material-ui/icons/Edit";
 
@@ -41,6 +42,9 @@ const GlygenTable = props => {
   const [showLoading, setShowLoading] = useState(false);
   const [customOffset, setCustomOffset] = useState(false);
   const [curPage, setCurPage] = useState(0);
+  const [pageDiaErrorsJson, setPageDiaErrorsJson] = useState({});
+  const [pageDiaErrorMessage, setPageDiaErrorMessage] = useState("");
+  const [showErrorDialogue, setShowErrorDialogue] = useState(false);
 
   var columnsToRender = Object.assign({}, props.columns);
 
@@ -80,6 +84,116 @@ const GlygenTable = props => {
     setCurPage(0);
     setSearchFilter(e.target.value);
   };
+
+  if (props.showStatus) {
+    columnsToRender["statusColumn"] = {
+      Header: "Status",
+      accessor: props.commentsRefColumn,
+      style: {
+        textAlign: "center"
+      },
+      // eslint-disable-next-line react/display-name
+      Cell: (row, index) => {
+        return (row.original.status && row.original.status !== "" && row.original.status !== "ERROR") ? (
+          <div key={index}>{row.original.status}</div>
+        ) : (row.original.status === "ERROR" && row.original.error &&
+             row.original.error.errors.length > 0 ) ? (
+              <>
+                {row.original.status}
+                &nbsp;&nbsp;
+                <LineTooltip text="Click to see error details.">
+                  <span
+                    onClick={() => {
+                      setPageDiaErrorsJson(row.original.error);
+                      setShowErrorDialogue(true);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      key={"error"}
+                      icon={["fas", "exclamation-triangle"]}
+                      size="xs"
+                      className={"caution-color table-btn"}
+                      style={{
+                        paddingTop: "9px"
+                      }}
+                    />
+                  </span>
+                </LineTooltip>
+              </>
+        ) : (
+          <div key={index}>{row.original.status}</div>
+        );
+      },
+      minWidth: 80
+    };
+  }
+
+  if (props.experimentStatus) {
+    columnsToRender["statusColumn"] = {
+      Header: "Status",
+      accessor: props.commentsRefColumn,
+      style: {
+        textAlign: "center"
+      },
+      // eslint-disable-next-line react/display-name
+      Cell: (row, index) => {
+        return (row.original.uploadStatus && row.original.uploadStatus !== "" && (row.original.uploadStatus === "ERROR" || row.original.uploadStatus === "PROCESSING")) ?
+        (row.original.uploadStatus === "ERROR" ? 
+          <>
+            <span key={index}>{"DATA ERROR"}</span>
+            &nbsp;&nbsp;
+            <LineTooltip text="Error in uploaded data files (eg Raw data, Processed Data). Click edit to verify.">
+              <span>
+                <FontAwesomeIcon
+                  key={"error"}
+                  icon={["fas", "exclamation-triangle"]}
+                  size="xs"
+                  className={"caution-color table-btn"}
+                  style={{
+                    paddingTop: "9px"
+                  }}
+                />
+              </span>
+            </LineTooltip>
+          </>
+          : (<div key={index}>{"DATA UPLOADING"}</div>)
+        ) 
+        : (row.original.status && row.original.status !== "" && row.original.status !== "ERROR") ? 
+        row.original.status === "PROCESSING" ? <div key={index}>{"PUBLISHING"}</div>
+        : row.original.isPublic ?  <div key={index}>{"PUBLIC"}</div> : <div key={index}>{"PRIVATE"}</div>
+        : (row.original.status === "ERROR" && row.original.error &&
+             row.original.error.errors.length > 0 ) ? (
+              <>
+                {row.original.status}
+                &nbsp;&nbsp;
+                <span
+                  onClick={() => {
+                    setPageDiaErrorsJson(row.original.error);
+                    setShowErrorDialogue(true);
+                  }}
+                >
+                <LineTooltip text="Click to see error details.">
+                  <span>
+                    <FontAwesomeIcon
+                      key={"error"}
+                      icon={["fas", "exclamation-triangle"]}
+                      size="xs"
+                      className={"caution-color table-btn"}
+                      style={{
+                        paddingTop: "9px"
+                      }}
+                    />
+                  </span>
+                </LineTooltip>
+              </span>
+            </>
+        ) : (
+          <div key={index}>{row.original.status}</div>
+        )
+      },
+      minWidth: 100
+    };
+  }
 
   if (props.showCommentsButton) {
     columnsToRender["commentsColumn"] = {
@@ -376,6 +490,16 @@ const GlygenTable = props => {
           errorMessage={pageErrorMessage}
         />
       )}
+
+      {showErrorDialogue && <ErrorMessageDialogue
+          showErrorSummary={showErrorDialogue}
+          setShowErrorSummary={setShowErrorDialogue}
+          form="glygentable"
+          customMessage={true}
+          pageErrorsJson={pageDiaErrorsJson}
+          pageErrorMessage={pageDiaErrorMessage}
+        />
+      }
 
       {props.showRowsInfo && (
         <>

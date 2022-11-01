@@ -231,7 +231,7 @@ const FeatureView = props => {
     );
 
     if (props.linker) {
-      if ((props.type !== "LINKED_GLYCAN" && props.linkerSeletion !== "No") || props.type === "LINKED_GLYCAN") {
+      if ((props.type !== "GLYCAN" && props.linkerSeletion !== "No") || props.type === "GLYCAN") {
         linkerDisplay.push(linkerDetails(props.linker, "case4"));
       }
     } else if (featureDetails.linker) {
@@ -722,7 +722,7 @@ const FeatureView = props => {
             data={
               (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") && props.rangeGlycans.length > 0
                 ? props.rangeGlycans
-                : props.type === "GLYCO_LIPID" || props.type === "LINKED_GLYCAN"
+                : props.type === "GLYCO_LIPID" || props.type === "GLYCAN"
                 ? props.glycans
                 : props.glycans.filter(e => e.glycan)
             }

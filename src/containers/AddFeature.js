@@ -42,7 +42,7 @@ const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
 
   const featureTypes = {
-    LINKED_GLYCAN: "Linked Glycan",
+    GLYCAN: "Glycan",
     GLYCO_LIPID: "GlycoLipid",
     GLYCO_PEPTIDE: "GlycoPeptide",
     GLYCO_PROTEIN: "GlycoProtein",
@@ -124,7 +124,7 @@ const AddFeature = props => {
 
   const [featureAddState, setFeatureAddState] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
     ...featureAddInitState,
-    ...{ type: "LINKED_GLYCAN" },
+    ...{ type: "GLYCAN" },
   });
 
   const [onlyMyglycans, setOnlyMyglycans] = useState(false);
@@ -383,7 +383,7 @@ const AddFeature = props => {
 
   function getSteps(type) {
     switch (type) {
-      case "LINKED_GLYCAN":
+      case "GLYCAN":
         return generalSteps;
 
       case "CONTROL":
@@ -405,8 +405,8 @@ const AddFeature = props => {
 
   function getMoleculeType(typeIndex) {
     switch (typeIndex) {
-      case "LINKED_GLYCAN":
-        return `${featureTypes.LINKED_GLYCAN}`;
+      case "GLYCAN":
+        return `${featureTypes.GLYCAN}`;
       case "GLYCO_LIPID":
         return `${featureTypes.GLYCO_LIPID}`;
       case "GLYCO_PEPTIDE":
@@ -478,7 +478,7 @@ const AddFeature = props => {
     ];
 
     switch (featureAddState.type) {
-      case "LINKED_GLYCAN":
+      case "GLYCAN":
         return generalStepLabels[stepIndex];
       case "CONTROL":
       case "LANDING_LIGHT":
@@ -500,8 +500,7 @@ const AddFeature = props => {
   }
 
   const isStepSkipped = step => {
-    return featureAddState.type !== "LINKED_GLYCAN" &&
-      featureAddState.isLipidLinkedToSurfaceUsingLinker === "No" &&
+    return featureAddState.isLipidLinkedToSurfaceUsingLinker === "No" &&
       featureAddState.type !== "CONTROL" &&
       featureAddState.type !== "LANDING_LIGHT"
       ? step === 1 && activeStep === 2
@@ -511,27 +510,30 @@ const AddFeature = props => {
           activeStep === 2;
   };
 
-  const handleNextLinkedGlycan = () => {
+  const handleNextGlycan = () => {
     var stepIncrement = 1;
 
     if (metaDataStep) {
       setMetaDataStep(false);
     }
-
-    if (activeStep === 1) {
-      setLinkerValidated(true);
-      if (featureAddState.type !== "LINKED_GLYCAN") {
-        stepIncrement += 1;
-      } else {
-        if (featureAddState.linker && featureAddState.linker.id) {
-          let isValidLinker = setupGlycanSelection(featureAddState.linker);
-          setValidLinker(isValidLinker);
-        } else {
-          return;
-        }
+    if (activeStep === 0 && featureAddState.isLipidLinkedToSurfaceUsingLinker === "No") {
+      stepIncrement = stepIncrement + 1;
+    } else if (activeStep === 1) {
+        if (featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") {
+          setLinkerValidated(true);
+          if (featureAddState.type !== "GLYCAN") {
+            stepIncrement += 1;
+          } else {
+            if (featureAddState.linker && featureAddState.linker.id) {
+              let isValidLinker = setupGlycanSelection(featureAddState.linker);
+              setValidLinker(isValidLinker);
+            } else {
+              return;
+            }
+          }
       }
     } else if (activeStep === 2) {
-      if (featureAddState.type === "LINKED_GLYCAN") {
+      if (featureAddState.type === "GLYCAN") {
         if (featureAddState.glycans.length < 1) {
           setPageErrorsJson({});
           setErrorMessage("Glycan selection is required.");
@@ -735,7 +737,6 @@ const AddFeature = props => {
       setLinkerValidated(false);
     } else if (
       activeStep === 2 &&
-      featureAddState.type !== "LINKED_GLYCAN" &&
       featureAddState.type !== "CONTROL" &&
       featureAddState.type !== "LANDING_LIGHT" &&
       featureAddState.isLipidLinkedToSurfaceUsingLinker === "No"
@@ -972,8 +973,8 @@ const AddFeature = props => {
           setMetadataforImportedPage={setFeatureMetadata}
           handleBack={handleBack}
           handleNext={
-            featureAddState.type === "LINKED_GLYCAN"
-              ? handleNextLinkedGlycan
+            featureAddState.type === "GLYCAN"
+              ? handleNextGlycan
               : featureAddState.type === "CONTROL" || featureAddState.type === "LANDING_LIGHT"
               ? handleNextLights
               : handleNextGlycoTypes
@@ -1178,8 +1179,8 @@ const AddFeature = props => {
   function addFeature() {
     let featureObj = {};
 
-    if (featureAddState.type === "LINKED_GLYCAN") {
-      featureObj = getLinkedGlycanData(featureObj);
+    if (featureAddState.type === "GLYCAN") {
+      featureObj = getGlycanData(featureObj);
     } else if (featureAddState.type === "GLYCO_LIPID") {
       featureObj = getGlycoLipidData(featureObj);
     } else if (featureAddState.type === "GLYCO_PEPTIDE") {
@@ -1229,7 +1230,7 @@ const AddFeature = props => {
     return objectToBeSaved;
   }
 
-  function getLinkedGlycanData(featureObj) {
+  function getGlycanData(featureObj) {
     featureObj = {
       type: "LINKEDGLYCAN",
 
@@ -1598,7 +1599,7 @@ const AddFeature = props => {
     );
   };
 
-  function getStepContentForLinkedGlycan(stepIndex) {
+  function getStepContentForGlycan(stepIndex) {
     switch (stepIndex) {
       case 0:
         return getCase0();
@@ -1688,8 +1689,8 @@ const AddFeature = props => {
 
   function getStepContent(type, activeStep) {
     switch (type) {
-      case "LINKED_GLYCAN":
-        return getStepContentForLinkedGlycan(activeStep);
+      case "GLYCAN":
+        return getStepContentForGlycan(activeStep);
 
       case "CONTROL":
       case "LANDING_LIGHT":
@@ -1719,6 +1720,10 @@ const AddFeature = props => {
                       {featureAddState.type === "GLYCO_LIPID" &&
                         featureTypes[key] === "GlycoLipid" &&
                         linkerSelectionDecision("lipid")}
+                        
+                      {featureAddState.type === "GLYCAN" &&
+                        featureTypes[key] === "Glycan" &&
+                        linkerSelectionDecision("glycan")}
 
                       {featureAddState.type === "GLYCO_PEPTIDE" &&
                         featureTypes[key] === "GlycoPeptide" &&
@@ -1775,7 +1780,7 @@ const AddFeature = props => {
       (featureAddState.type !== "CONTROL" &&
         featureAddState.type !== "LANDING_LIGHT" &&
         featureAddState.isLipidLinkedToSurfaceUsingLinker === "Yes") ||
-      featureAddState.type === "LINKED_GLYCAN" ||
+      featureAddState.type === "GLYCAN" ||
       (featureAddState.type === "CONTROL" && featureAddState.controlSubType === "LINKER") ||
       (featureAddState.type === "LANDING_LIGHT" && featureAddState.controlSubType === "LINKER")
     ) {
@@ -2277,10 +2282,10 @@ const AddFeature = props => {
   const getCase2 = () => {
     return (
       <>
-        {featureAddState.type === "LINKED_GLYCAN" && <>{getSelectedLinkerInformation()}</>}
+        {featureAddState.type === "GLYCAN" && <>{getSelectedLinkerInformation()}</>}
 
         <Form>
-          {featureAddState.type !== "LINKED_GLYCAN" && (
+          {featureAddState.type !== "GLYCAN" && (
             <>
               <ReactTable
                 columns={[
@@ -2392,7 +2397,7 @@ const AddFeature = props => {
           {((featureAddState.type === "GLYCO_LIPID" && featureAddState.glycans.length < 1) ||
             featureAddState.type === "GLYCO_PEPTIDE" ||
             featureAddState.type === "GLYCO_PROTEIN" ||
-            featureAddState.type === "LINKED_GLYCAN") && (
+            featureAddState.type === "GLYCAN") && (
             <Button
               className="gg-btn-blue"
               onClick={() => {
@@ -2693,7 +2698,7 @@ const AddFeature = props => {
     let selectedRow;
     let selectedRowIndex;
 
-    if (featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN") {
+    if (featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "GLYCAN") {
       selectedGlycans = [...featureAddState.glycans];
       selectedRow = selectedGlycans.find(e => e.id === deleteRow.id);
     } else if (
@@ -2708,7 +2713,7 @@ const AddFeature = props => {
     selectedRowIndex = selectedGlycans.indexOf(selectedRow);
     selectedGlycans.splice(selectedRowIndex, 1);
 
-    if (featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN") {
+    if (featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "GLYCAN") {
       setFeatureAddState({ glycans: selectedGlycans });
     } else if (
       featureAddState.type === "GLYCO_PEPTIDE" ||
@@ -2915,7 +2920,7 @@ const AddFeature = props => {
             },
           ]}
           data={
-            featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "LINKED_GLYCAN"
+            featureAddState.type === "GLYCO_LIPID" || featureAddState.type === "GLYCAN"
               ? featureAddState.glycans
               : featureAddState.rangeGlycans
           }
@@ -3056,8 +3061,8 @@ const AddFeature = props => {
                     onClick={
                       featureAddState.type === "CONTROL" || featureAddState.type === "LANDING_LIGHT"
                         ? handleNextLights
-                        : featureAddState.type === "LINKED_GLYCAN"
-                        ? handleNextLinkedGlycan
+                        : featureAddState.type === "GLYCAN"
+                        ? handleNextGlycan
                         : handleNextGlycoTypes
                     }
                     className="gg-btn-blue mt-2 gg-ml-20"
@@ -3093,8 +3098,8 @@ const AddFeature = props => {
                     onClick={
                       featureAddState.type === "CONTROL" || featureAddState.type === "LANDING_LIGHT"
                         ? handleNextLights
-                        : featureAddState.type === "LINKED_GLYCAN"
-                        ? handleNextLinkedGlycan
+                        : featureAddState.type === "GLYCAN"
+                        ? handleNextGlycan
                         : handleNextGlycoTypes
                     }
                     className="gg-btn-blue mt-2 gg-ml-20"

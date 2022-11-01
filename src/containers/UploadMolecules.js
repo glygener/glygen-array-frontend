@@ -76,7 +76,7 @@ const UploadMolecules = props => {
       setShowLoading(false);
 
       history.push({
-        pathname: `/${getPath(props.moleculeUploadType)}/uploadMoleculeDetails`,
+        pathname: props.moleculeUploadType === "FEATURE" ? '/features' : `/${getPath(props.moleculeUploadType)}/uploadMoleculeDetails`,
         state: {
           uploadResponse: resp,
           type: props.moleculeUploadType,

@@ -130,7 +130,11 @@ const AddSlide = props => {
   function listSuccess(response, fetch) {
     response.json().then(responseJson => {
       if (fetch === "slidelayoutlist") {
-        setListSlideLayouts(responseJson);
+        let slLayouts = responseJson;
+        if (responseJson && responseJson.rows) {
+          slLayouts.rows = responseJson.rows.filter(obj => obj.status === "DONE");
+        }
+        setListSlideLayouts(slLayouts);
       } else if (fetch === "listslidemeta") {
         setListSlideMetas(responseJson);
       } else if (fetch === "listprinters") {

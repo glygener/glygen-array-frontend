@@ -95,10 +95,6 @@ const Grants = props => {
   const grantsPublicTable = (grant, grantIndex) => {
     return (
       <>
-        <div style={{ border: "none" }}>
-          <h5>{grant.fundingOrganization}</h5>
-        </div>
-
         <div>
           <Row>
             <Col md={3}>
@@ -111,7 +107,7 @@ const Grants = props => {
 
         <div>
           <Row>
-            <Col>{grant.identifier}</Col>
+            <Col>{grant.fundingOrganization}-{grant.identifier}</Col>
           </Row>
         </div>
       </>

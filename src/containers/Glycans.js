@@ -16,14 +16,15 @@ import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import property from "../appData/properties";
+import { ErrorSummary } from "../components/ErrorSummary";
+import { StatusMessage } from "../components/StatusMessage";
+
 
 const Glycans = props => {
   useEffect(props.authCheckAgent, []);
-  useEffect(() => {
-    batchupload("checkbatchupload", "GET", property["glycan"].batch_glycan);
-  }, []);
 
-  const [errorsFromBatchUpload, setErrorsFromBatchUpload] = useState();
+  const [batchUpload, setBatchUpload] = useState(false);
+
 
   return (
     <>
@@ -51,13 +52,19 @@ const Glycans = props => {
 
           <Card>
             <Card.Body>
+              <StatusMessage
+                moleculetype={undefined}
+                uploadtype={property["glycan"].batch_glycan}
+                setBatchUpload={setBatchUpload}
+              />
+
               <div className="text-center mb-4">
                 <Link to="/glycans/addGlycan">
                   <Button className="gg-btn-blue mt-2 gg-mr-20">Add Glycan</Button>
                 </Link>
 
                 <Link to="/glycans/addMultipleGlycan">
-                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Multiple Glycans</Button>
+                  <Button disabled={batchUpload} className="gg-btn-blue mt-2 gg-ml-20">Add Multiple Glycans</Button>
                 </Link>
               </div>
 

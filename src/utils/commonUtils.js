@@ -492,25 +492,35 @@ export function getPath(type) {
   }
 }
 
-export function batchupload(wscall, methodType, uploadtype, moleculetype) {
+export function batchupload(wscall, methodType, uploadtype, moleculetype, setPageErrorsJson, setBatchUpload) {
+  let jsobj = {}
+  if (moleculetype) {
+    jsobj = { uploadtype: uploadtype, moleculetype: moleculetype }
+  } else {
+    jsobj = { uploadtype: uploadtype }
+  }
   wsCall(
     wscall,
     methodType,
-    { uploadtype: uploadtype, moleculetype: moleculetype },
+    jsobj,
     true,
     null,
     response => {
-      response.json().then(resp => {});
+      response && response.json().then(resp => {
+        setPageErrorsJson && setPageErrorsJson(resp);
+        setBatchUpload && setBatchUpload(true);
+      });
     },
     response => {
       if (response.status === 404) {
-        response.text().then(resp => {
+        response && response.text().then(resp => {
           console.log(JSON.parse(resp));
         });
       } else {
-        response.json().then(resp => {
-          console.log(resp);
-        });
+        if (response) {
+          setPageErrorsJson && setPageErrorsJson({status:"DEFAULT"});
+          console.log(response);
+        };
       }
     }
   );

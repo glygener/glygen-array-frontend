@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../containers/Features.css";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
@@ -7,7 +7,7 @@ import { head, getMeta } from "../utils/head";
 import { Link } from "react-router-dom";
 import { GlygenTable } from "../components/GlygenTable";
 import displayNames from "../appData/displayNames";
-import { getToolTip } from "../utils/commonUtils";
+import { getToolTip, batchupload } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
@@ -15,9 +15,13 @@ import { Button } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import property from "../appData/properties";
+import { StatusMessage } from "../components/StatusMessage";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);
+
+  const [batchUpload, setBatchUpload] = useState(false);
 
   return (
     <>
@@ -42,6 +46,12 @@ const Features = props => {
 
           <Card>
             <Card.Body>
+              <StatusMessage
+                moleculetype={undefined}
+                uploadtype={property["feature"].batch_feature}
+                setBatchUpload={setBatchUpload}
+              />
+
               <div className="text-center mb-4">
                 {!props.isImported && (
                   <>
@@ -57,7 +67,7 @@ const Features = props => {
                         },
                       }}
                     >
-                      <Button className="gg-btn-blue mt-2 gg-ml-20">Upload Features</Button>
+                      <Button disabled={batchUpload} className="gg-btn-blue mt-2 gg-ml-20">Upload Features</Button>
                     </Link>
                   </>
                 )}

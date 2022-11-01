@@ -66,7 +66,8 @@ const FORM_ERROR_MESSAGES = {
     Toolarge_file: "Please keep the file size to a maximum of 1MB.",
     Invalidextension_file: "Please select a GlycoWorkbench file(*.gws) or a text file (*.txt)",
     Notvalid_file:
-      "The uploaded file appears to be invalid. Please verify that it only contains valid glycoworkbench sequences separated by semi-colon."
+      "The uploaded file appears to be invalid. Please verify that it only contains valid glycoworkbench sequences separated by semi-colon.",
+    NotValid_moleculeType: "Molecule type is not in the list of accepted values."
   },
   bulkSlideLayouts: {
     Notvalid_file:
