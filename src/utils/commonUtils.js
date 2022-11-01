@@ -517,10 +517,10 @@ export function batchupload(wscall, methodType, uploadtype, moleculetype, setPag
           console.log(JSON.parse(resp));
         });
       } else {
-        response && response.json().then(resp => {
+        if (response) {
           setPageErrorsJson && setPageErrorsJson({status:"DEFAULT"});
-          console.log(resp);
-        });
+          console.log(response);
+        };
       }
     }
   );

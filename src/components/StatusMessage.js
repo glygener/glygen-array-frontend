@@ -12,7 +12,7 @@ const StatusMessage = props => {
   const [enableErrorView, setEnableErrorView] = useState(false);
   const [batchUploadResponse, setBatchUploadResponse] = useState();
 
-  const errorMessageTable = props => {
+  const errorMessageTable = (setBatchUpload) => {
     return (
       <>
       <Modal
@@ -26,17 +26,17 @@ const StatusMessage = props => {
           <Modal.Title id="contained-modal-title-vcenter">Errors</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ErrorPage
-            experimentId={"experimentId"}
+           <ErrorPage
             errorMessage={errorMessage}
-            setEnableErrorView={setEnableErrorView}
+            errorMessageDia={true}
           />
         </Modal.Body>
         <Modal.Footer>
           <Button className="gg-btn-blue-reg" onClick={() => {
-              setEnableErrorView(false);
+              setBatchUploadResponse();
               updateBatchUpload();
-              props.setBatchUpload(false);
+              setBatchUpload(false);
+              setEnableErrorView(false);
             }
           }>
             Mark Read
@@ -61,12 +61,12 @@ const StatusMessage = props => {
 
 
   const updateBatchUpload = () => {
-    batchupload("updatebatchupload", "GET", props.uploadtype);
+    batchupload("updatebatchupload", "GET", props.uploadtype, props.moleculetype);
   }
 
   return (
     <div>
-      {enableErrorView && errorMessageTable()}
+      {enableErrorView && errorMessageTable(props.setBatchUpload)}
 
       <div st1yle={{ textAlign: "center" }}  className="mt-3 mb-3">
         {batchUploadResponse && batchUploadResponse.status !== "DONE" ? (<div style={{ textAlign: "center" }}>
@@ -127,7 +127,7 @@ const StatusMessage = props => {
 };
 
 StatusMessage.propTypes = {
-  setBatchUpload: PropTypes.bool,
+  setBatchUpload: PropTypes.func,
   uploadtype: PropTypes.string,
   moleculetype: PropTypes.string,
 };
