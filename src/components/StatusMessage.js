@@ -61,7 +61,7 @@ const StatusMessage = props => {
 
 
   const updateBatchUpload = () => {
-    batchupload("updatebatchupload", "GET", props.uploadtype, props.moleculetype);
+    batchupload("updatebatchupload", "POST", props.uploadtype, props.moleculetype);
   }
 
   return (
