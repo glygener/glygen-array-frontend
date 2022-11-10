@@ -19,7 +19,7 @@ const PublicData = () => {
           // marginTop: window.innerHeight / 8
         }}
       >
-        <DatasetTable wsName="listpublicdataset" />
+        <DatasetTable wsName="listpublicdataset" showSearchBox="true"/>
         {/* <PublicListDataset /> */}
       </Card>
     </>

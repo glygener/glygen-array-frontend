@@ -56,7 +56,7 @@ const Home = () => {
                 <Grid container style={{ marginTop: "32px" }}>
                   <Grid item xs={12} sm={12} style={{ backgroundColor: "white" }}>
                     <Card>
-                      <DatasetTable wsName="listpublicdataset" />
+                      <DatasetTable wsName="listpublicdataset" showSearchBox="true"/>
                     </Card>
                   </Grid>
                 </Grid>

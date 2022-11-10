@@ -10,13 +10,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "../components/CardLoader";
 
 const DatasetTable = props => {
-  const [listDataSet, setListDataSet] = useState([]);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [orderBy, setOrderBy] = useState(1);
   const [showLoading, setShowLoading] = useState(true);
-
+  const [rows, setRows] = useState(0);
+  const [data, setData] = useState([]);
+  const [pages, setPages] = useState(0);
+  const [customOffset, setCustomOffset] = useState(false);
+  const [curPage, setCurPage] = useState(0);
+  const [tableElement, setTableElement] = useState({});
+  const [searchFilter, setSearchFilter] = useState("");
+  
   // const { data, onModifySearch } = props;
   // const {id, name, description}= data;
 
@@ -26,6 +32,9 @@ const DatasetTable = props => {
   };
   const [publicData, setPublicData] = useReducer((state, newState) => ({ ...state, ...newState }), dataset);
   useEffect(() => {
+    tableElement.state && tableElement.fireFetchData();
+  }, [searchFilter, props, orderBy, publicData.sortBy]);
+  /*useEffect(() => {
     setShowLoading(true);
 
     let params = {
@@ -53,20 +62,26 @@ const DatasetTable = props => {
       errorWscall
     );
   }, [orderBy, publicData.sortBy, props.wsName, props.qsParams]);
-
+*/
   function errorWscall(response) {
     response.json().then(responseJson => {
       setPageErrorsJson(responseJson);
       setPageErrorMessage("");
-      setShowErrorSummary(true);
-      setShowLoading(false);
     });
+    setShowErrorSummary(true);
+    setShowLoading(false);
   }
 
   const handleSelectSortBy = e => {
     const name = e.target.name;
     const selected = e.target.options[e.target.selectedIndex].value;
-    setPublicData({ [name]: selected });
+    setCurPage(0);
+    setPublicData({ [name]: selected }); 
+  };
+
+  const handleFilterChange = e => {
+    setCurPage(0);
+    setSearchFilter(e.target.value);
   };
 
   const getSortByOptions = () => {
@@ -104,7 +119,7 @@ const DatasetTable = props => {
             <Col className="pt-2 mb-3">
               {" "}
               List&nbsp;of&nbsp;Datasets&nbsp;{"("}
-              {listDataSet.length}
+              {rows}
               {")"}
             </Col>
             <Col className="pt-2 mb-3">
@@ -117,7 +132,18 @@ const DatasetTable = props => {
                 onClick={() => setOrderBy(!orderBy)}
               />
             </Col>
-            <Col md={6}>{getSortByOptions()}</Col>
+            <Col md={4}>{getSortByOptions()}</Col>
+            {props.showSearchBox && (
+              <Col md={2}>
+                <Form.Control
+                  type="text"
+                  name="search"
+                  placeholder="Search Table"
+                  value={searchFilter}
+                  onChange={handleFilterChange}
+                />
+              </Col>
+            )}
           </Row>
 
           <ReactTable
@@ -160,9 +186,9 @@ const DatasetTable = props => {
                 )
               }
             ]}
-            data={listDataSet}
-            pageSizeOptions={[5, 10, 25]}
-            defaultPageSize={listDataSet.length < 5 ? 5 : 1}
+            data={props.data ? props.data : data}
+            pageSizeOptions={[5, 10, 25, 50]}
+            defaultPageSize={data.length < 5 ? 5 : 1}
             minRows={0}
             NoDataComponent={({ state, ...rest }) =>
               !state?.loading ? (
@@ -173,8 +199,59 @@ const DatasetTable = props => {
             }
             showPaginationTop
             className={"-striped -highlight"}
-            sortable={true}
+            pages={pages}
+            page={curPage}
+            onPageChange={(pageNo) => setCurPage(pageNo)}
+            loading={showLoading}
+            loadingText={<CardLoader pageLoading={showLoading} />}
+            multiSort={false}
+            //sortable={true}
             resizable={false}
+            manual
+            ref={element => setTableElement(element)}
+            onFetchData={state => {
+              setShowLoading(true);
+
+              let params = {
+                offset: customOffset ? 0 : state.page * state.pageSize,
+                limit: state.pageSize,
+                loadAll: false,
+                sortBy: publicData.sortBy,
+                filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
+                order: orderBy ? 1 : 0
+              };
+
+              if (props.qsParams) {
+                params = { ...params, ...props.qsParams };
+              }
+
+              wsCall(
+                props.wsName,
+                "GET",
+                params,
+                false,
+                null,
+                response =>
+                  response.json().then(responseJson => {
+                    if (searchFilter !== "" && responseJson.total < 5 && !customOffset) {
+                      setCustomOffset(true);
+                      tableElement.fireFetchData();
+                    } else {
+                      setCustomOffset(false);
+                      if (responseJson.rows) {
+                        setData(responseJson.rows);
+                        setRows(responseJson.total);
+                      } else {
+                        setData(responseJson);
+                        setRows(responseJson.length);
+                      }
+                      setPages(Math.ceil(responseJson.total / state.pageSize));
+                      setShowLoading(false);
+                    }
+                  }),
+                errorWscall
+              );
+            }}
           />
         </div>
       </>
