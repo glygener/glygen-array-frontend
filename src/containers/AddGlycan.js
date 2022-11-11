@@ -24,6 +24,7 @@ import moleculeExamples from "../appData/moleculeExamples";
 import ExampleSequenceControl from "../components/ExampleSequenceControl";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import GlycoGlyph from "../components/search/GlycoGlyph";
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -52,6 +53,7 @@ const AddGlycan = props => {
   const [invalidMass, setInvalidMass] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const history = useHistory();
+  const [glycoGlyphDialog, setGlycoGlyphDialog] = useState(false);
 
   const initialState = {
     selectedGlycan: "SequenceDefined",
@@ -63,6 +65,7 @@ const AddGlycan = props => {
     sequence: "",
     glytoucanRegistration: true,
     sequenceType: "GlycoCT",
+    glycoGlyphName: ""
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -163,6 +166,11 @@ const AddGlycan = props => {
     }
   };
 
+  function handleSequenceChange(inputSequence) {
+    setUserSelection({ sequence: inputSequence, glycoGlyphName: "" });
+    setUserSelection({ sequenceType: "GlycoCT" });
+  }
+
   const handleClassSelect = e => {
     const select = e.target.options[e.target.selectedIndex].value;
     setUserSelection({ sequenceType: select });
@@ -239,6 +247,17 @@ const AddGlycan = props => {
         <title>{head.addGlycan.title}</title>
         {getMeta(head.addGlycan)}
       </Helmet>
+      <GlycoGlyph
+        show={glycoGlyphDialog}
+        glySequenceChange={handleSequenceChange}
+        glySequence={userSelection.sequence}
+        setInputValue={setUserSelection}
+        inputValue={userSelection}
+        title={"GlycoGlyph"}
+        setOpen={(input) => {
+          setGlycoGlyphDialog(input)
+        }}
+      />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title="Add Glycan to Repository" subTitle="Please provide the information for the new glycan." />
@@ -606,6 +625,12 @@ const AddGlycan = props => {
                         }
                         label="Register for GlyTouCan"
                       />
+                      <Button
+                        className="gg-btn-blue mr-4"
+                        onClick={() => setGlycoGlyphDialog(true)}
+                      >
+                        Draw Glycan
+                      </Button>
                     </Form.Group>
                   </Col>
                 </Form.Group>

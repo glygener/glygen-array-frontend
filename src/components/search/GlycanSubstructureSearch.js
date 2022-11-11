@@ -18,6 +18,7 @@ import { withStyles } from "@material-ui/core/styles";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import ExampleSequenceControl from "../ExampleSequenceControl";
 import { Loading } from "../Loading";
+import GlycoGlyph from "./GlycoGlyph";
 
 const BlueCheckbox = withStyles({
   root: {
@@ -38,11 +39,13 @@ export default function GlycanSubstructureSearch(props) {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState();
   const [showLoading, setShowLoading] = useState(false);
+  const [glycoGlyphDialog, setGlycoGlyphDialog] = useState(false);
 
   const [inputValue, setInputValue] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
     sequence: "",
     sequenceFormat: "",
     reducingEnd: false,
+    glycoGlyphName: "",
   });
 
   const [touched, setTouched] = React.useReducer((state, payload) => ({ ...state, ...payload }), {
@@ -71,6 +74,15 @@ export default function GlycanSubstructureSearch(props) {
       }
     },
   };
+
+  /**
+   * Function to set glycan sequence value.
+   * @param {string} inputGlySequence - input glycan sequence value.
+   **/
+  function glySequenceChange(inputGlySequence) {
+    setInputValue({ sequence: inputGlySequence, glycoGlyphName: "", sequenceFormat: "GlycoCT" });
+    setTouched({ sequence: true });
+  }
 
   React.useEffect(() => {
     validate.sequence();
@@ -132,6 +144,7 @@ export default function GlycanSubstructureSearch(props) {
       sequence: "",
       sequenceFormat: "",
       reducingEnd: false,
+      glycoGlyphName: "",
     });
     setTouched({
       sequence: false,
@@ -175,10 +188,24 @@ export default function GlycanSubstructureSearch(props) {
           errorMessage={pageErrorMessage}
         />
       )}
+      <GlycoGlyph
+        show={glycoGlyphDialog}
+        glySequenceChange={glySequenceChange}
+        glySequence={inputValue.sequence}
+        setInputValue={setInputValue}
+        inputValue={inputValue}
+        title={"GlycoGlyph"}
+        setOpen={(input) => {
+          setGlycoGlyphDialog(input)
+        }}
+      />
       <Grid container style={{ margin: "0  auto" }} spacing={3} justify="center">
         {/* Buttons Top */}
         <Grid item xs={12} sm={10}>
           <Row className="gg-align-center">
+            <Button className="gg-btn-blue mr-4" onClick={() => setGlycoGlyphDialog(true)}>
+              Draw Glycan
+            </Button>
             <Button className="gg-btn-outline gg-mr-40" onClick={clearStructure}>
               Clear Fields
             </Button>
