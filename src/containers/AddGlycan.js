@@ -572,7 +572,16 @@ const AddGlycan = props => {
                   }`}
                 >
                   <Col xs={12} lg={9}>
-                    <FormLabel label="Sequence" className="required-asterik" />
+                    <Row className="gg-align-center mb-3">
+                      <Col><FormLabel label="Sequence" className="required-asterik" /></Col>
+                      <Col xs="auto">
+                        <Button
+                          className="gg-btn-blue"
+                          onClick={() => setGlycoGlyphDialog(true)}>
+                          Draw with Glyco Glyph
+                        </Button>
+                      </Col>
+                    </Row>
                     <Form.Control
                       as="textarea"
                       rows="5"
@@ -625,12 +634,6 @@ const AddGlycan = props => {
                         }
                         label="Register for GlyTouCan"
                       />
-                      <Button
-                        className="gg-btn-blue mr-4"
-                        onClick={() => setGlycoGlyphDialog(true)}
-                      >
-                        Draw Glycan
-                      </Button>
                     </Form.Group>
                   </Col>
                 </Form.Group>

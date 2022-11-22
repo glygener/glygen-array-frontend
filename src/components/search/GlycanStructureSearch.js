@@ -186,7 +186,7 @@ export default function GlycanStructureSearch(props) {
         <Grid item xs={12} sm={10}>
           <Row className="gg-align-center">
             <Button className="gg-btn-blue mr-4" onClick={() => setGlycoGlyphDialog(true)}>
-              Draw Glycan
+              Draw with Glyco Glyph
             </Button>
             <Button className="gg-btn-outline gg-mr-40" onClick={clearStructure}>
               Clear Fields
