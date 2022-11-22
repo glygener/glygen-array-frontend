@@ -439,6 +439,9 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
             method: httpMethod,
             headers: headers,
             body: body
+          }).catch((error) => {
+            console.log(error);
+            exceptionFunction && exceptionFunction(error);
           })
         : await trackPromise(
             fetch(url, {
@@ -446,6 +449,9 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
               method: httpMethod,
               headers: headers,
               body: body
+            }).catch((error) => {
+              console.log(error);
+              exceptionFunction && exceptionFunction(error);
             })
           );
 

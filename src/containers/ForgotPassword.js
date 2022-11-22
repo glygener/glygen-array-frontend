@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { wsCall } from "../utils/wsUtils";
 import "./Login.css";
 import { Feedback, Title } from "../components/FormControls";
@@ -18,6 +18,7 @@ const ForgotPassword = () => {
   const [validated, setValidated] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState("");
   const history = useHistory();
 
   const handleChange = (e) => {
@@ -43,6 +44,12 @@ const ForgotPassword = () => {
               form="passwordRecovery"
               errorJson={pageErrorsJson}
             />
+          )}
+
+          {showSuccessMessage && (
+            <Alert variant="success" style={{ textAlign: "justify" }}>
+              {showSuccessMessage}
+            </Alert>
           )}
 
           <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
@@ -98,7 +105,10 @@ const ForgotPassword = () => {
   }
 
   function passwordRecoverySuccess() {
-    history.push("login");
+    setShowSuccessMessage(
+      `Your password is reset and a new password was sent to the email address of this account. If you do not receive the email in the next few minutes please also check your Junk mail folder.`
+    );
+    //history.push("login");
   }
 
   function passwordRecoveryError(response) {
