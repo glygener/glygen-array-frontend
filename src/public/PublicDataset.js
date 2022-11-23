@@ -121,6 +121,7 @@ const PublicDataset = () => {
           responseJson.rows.sort((obj1, obj2) => obj2.intensity.rfu - obj1.intensity.rfu);
 
           let dataTable = responseJson.rows.map((obj, ind) => { 
+            let rfu = Math.round((obj.intensity.rfu + Number.EPSILON) * 100) / 100;
             return {
               'featureId' : obj.feature.id, 
               'id' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
@@ -129,7 +130,7 @@ const PublicDataset = () => {
               'linkerName' : obj.feature.linker ? obj.feature.linker.name : "",
               'linkerId' : obj.feature.linker ? obj.feature.linker.id : "",
               'inChiSequence' : obj.feature.linker ? obj.feature.linker.inChiSequence : "",
-              'rfu' : obj.intensity.rfu,
+              'rfu': Number(rfu).toLocaleString('en-US'),
           }});
           setListIntensityTable(dataTable);
 

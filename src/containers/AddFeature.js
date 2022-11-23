@@ -1536,7 +1536,7 @@ const AddFeature = props => {
             {
               Header: "Mass",
               accessor: "mass",
-              Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : ""),
+              Cell: row => (row.value ? Number(parseFloat(row.value).toFixed(2)).toLocaleString('en-US') : ""),
             },
           ]}
           defaultPageSize={10}

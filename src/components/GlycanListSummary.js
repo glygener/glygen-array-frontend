@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { addCommas } from "../utils/commonUtils";
 
 function getDateTime() {
   var now = new Date();
@@ -70,7 +69,7 @@ const GlycanListSummary = (props) => {
                 Monoisotopic Mass:
               </Col>
               <Col align="left" xs={6} sm={6} md={6} lg={6}>
-                {addCommas(minMass.toFixed(0))}&#8209;{addCommas(maxMass.toFixed(0))} Da
+                {Number(minMass.toFixed(0)).toLocaleString('en-US')}&#8209;{Number(maxMass.toFixed(0)).toLocaleString('en-US')} Da
               </Col>
             </Row>
           )}

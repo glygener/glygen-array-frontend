@@ -134,7 +134,7 @@ const GlycanInFeatureInfoView = props => {
         <Form.Group as={Row} controlId="mass" className="gg-align-center mb-3">
           <Col xs={12} lg={9}>
             <FormLabel label="Monoisotopic Mass" />
-            <Form.Control type="text" readOnly value={parseFloat(glycanDetails.glycan.mass).toFixed(2)} />
+            <Form.Control type="text" readOnly value={Number(parseFloat(glycanDetails.glycan.mass).toFixed(2)).toLocaleString('en-US')} />
           </Col>
         </Form.Group>
       )}

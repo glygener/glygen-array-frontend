@@ -453,7 +453,7 @@ export function sortByOrder(a, b) {
 // function capitalizeFirstLetter(string) {
 //   return string.charAt(0).toUpperCase() + string.slice(1);
 // }
-export function addCommas(nStr) {
+/*export function addCommas(nStr) {
   nStr += "";
   var x = nStr.split(".");
   var x1 = x[0];
@@ -464,7 +464,7 @@ export function addCommas(nStr) {
     x1 = x1.replace(rgx, "$1" + "," + "$2");
   }
   return x1 + x2;
-}
+}*/
 
 export function getToolTip(displayValue) {
   return (

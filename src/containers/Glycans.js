@@ -108,7 +108,7 @@ const Glycans = props => {
                     Header: "Mass",
                     accessor: "mass",
                     // eslint-disable-next-line react/prop-types
-                    Cell: row => (row.value ? parseFloat(row.value).toFixed(2) : "")
+                    Cell: row => (row.value ? Number(parseFloat(row.value).toFixed(2)).toLocaleString('en-US') : "")
                   }
                 ]}
                 defaultPageSize={10}

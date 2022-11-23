@@ -37,7 +37,8 @@ const FORM_ERROR_MESSAGES = {
       "The name of another glycan in your collection is the same as this one. Please use a different name.",
     NotValid_sequence:
       "The sequence string appears to be unrecognizable or incompatible with the format specified. Please double-check for accuracy.",
-    NotValid_glytoucanId: "GlyTouCan does not recognize that GlyTouCan ID. Please try once more.",
+    NotValid_glytoucanId: "GlyTouCan does not recognize that GlyTouCan ID. Please make sure you enter the correct one.",
+    NoMatch_glytoucanId: "GlyTouCan ID entered does not match with the sequence! Either leave it empty or enter the correct GlyTouCan ID.",
     Invalid_structure: "Provided Glycan does not specify the GlyTouCan ID.",
     NotValid_file: "The file is invalid. Please verify the file and format selection before re-uploading.",
     InUse_glycan: "Cannot delete selected glycan. It is used in an experiment."

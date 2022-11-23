@@ -49,39 +49,42 @@ const ForgotPassword = () => {
           {showSuccessMessage && (
             <Alert variant="success" style={{ textAlign: "justify" }}>
               {showSuccessMessage}
+              <div className="text-center"><Link to="/login">Return To Log In</Link></div>
             </Alert>
           )}
 
-          <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
-            <Form.Group as={Row} controlId="username">
-              <Col>
-                <Form.Control
-                  type="text"
-                  name="username"
-                  placeholder=" "
-                  value={userInput.username}
-                  onChange={handleChange}
-                  required
-                  className={"custom-text-fields"}
-                />
-                <Form.Label className={"label required-asterik"}>Username</Form.Label>
-                <Feedback message="Please enter your username." />
-              </Col>
-            </Form.Group>
-            <br />
-            <div className="text-center">
-              <Button type="submit" className="gg-btn-blue">
-                Submit
-              </Button>
-              <hr />
-              <div>
-                <Link to="/login">Return To Log In</Link>
+          {showSuccessMessage === "" && (
+            <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
+              <Form.Group as={Row} controlId="username">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    name="username"
+                    placeholder=" "
+                    value={userInput.username}
+                    onChange={handleChange}
+                    required
+                    className={"custom-text-fields"}
+                  />
+                  <Form.Label className={"label required-asterik"}>Username</Form.Label>
+                  <Feedback message="Please enter your username." />
+                </Col>
+              </Form.Group>
+              <br />
+              <div className="text-center">
+                <Button type="submit" className="gg-btn-blue">
+                  Submit
+                </Button>
+                <hr />
+                <div>
+                  <Link to="/login">Return To Log In</Link>
+                </div>
+                <div>
+                  <Link to="/forgotUsername">Forgot username</Link>
+                </div>
               </div>
-              <div>
-                <Link to="/forgotUsername">Forgot username</Link>
-              </div>
-            </div>
-          </Form>
+            </Form>
+          )}
         </div>
       </Container>
     </>

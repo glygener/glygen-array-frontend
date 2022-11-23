@@ -325,7 +325,7 @@ const EditLinker = props => {
                         readOnly
                         disabled
                         // value={linkerDetails.mass}
-                        value={addCommas(parseInt(linkerDetails.mass).toFixed(2)) + " Da"}
+                        value={Number(parseFloat(linkerDetails.mass).toFixed(2)).toLocaleString('en-US') + " Da"}
                       />
                     </Col>
                   </Form.Group>
