@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useReducer } from "react";
 import { Row, Col, Accordion, Card, Button, Modal, Form } from "react-bootstrap";
-import { ContextAwareToggle, getToolTip } from "../utils/commonUtils";
+import { ContextAwareToggle, getToolTip, downloadSpinnerBottomSide } from "../utils/commonUtils";
 import { useHistory, useParams } from "react-router-dom";
 import { LineTooltip } from "./tooltip/LineTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +25,7 @@ const FilesOnExp = props => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [showFileModal, setShowFileModal] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const history = useHistory();
 
@@ -34,6 +35,12 @@ const FilesOnExp = props => {
   };
 
   const [file, setFile] = useReducer((state, newState) => ({ ...state, ...newState }), fileDetails);
+
+  function downloadFailure(response) {
+    props.setEnableErrorDialogue(true);
+    props.setErrorMessageDialogueText("");
+    props.setShowSpinner(false);
+  }
 
   const getFileBody = () => {
     function handleSubmit(e) {
@@ -197,6 +204,7 @@ const FilesOnExp = props => {
   const fileTableOnExp = () => {
     return (
       <>
+        {showSpinner && downloadSpinnerBottomSide()}
         <ReactTable
           data={props.files}
           columns={[
@@ -255,7 +263,7 @@ const FilesOnExp = props => {
                       </LineTooltip>}
 
                       {row.original && row.original.originalName && (
-                        <LineTooltip text="Download Metadata">
+                        <LineTooltip text="Download File">
                           <span>
                             <FontAwesomeIcon
                               className="tbl-icon-btn download-btn"
@@ -271,7 +279,9 @@ const FilesOnExp = props => {
                                   props.setPageErrorsJson,
                                   props.setPageErrorMessage,
                                   props.setShowErrorSummary,
-                                  "filedownload"
+                                  "filedownload",
+                                  setShowSpinner,
+                                  downloadFailure
                                 );
                               }}
                             />

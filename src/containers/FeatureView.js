@@ -131,8 +131,8 @@ const FeatureView = props => {
               accessor: "opensRing",
               Cell: row => {
                 return featureDetails.type === "LINKEDGLYCAN"
-                  ? getToolTip(row.original.reducingEndConfiguration.type)
-                  : getToolTip(row.original.glycans[0].reducingEndConfiguration.type);
+                  ? row.original.reducingEndConfiguration && getToolTip(row.original.reducingEndConfiguration.type)
+                  : row.original.glycans[0].reducingEndConfiguration && getToolTip(row.original.glycans[0].reducingEndConfiguration.type);
               }
             },
             ...(featureDetails.type === "GLYCOLIPID"

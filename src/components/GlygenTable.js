@@ -49,7 +49,7 @@ const GlygenTable = props => {
   var columnsToRender = Object.assign({}, props.columns);
 
   useEffect(() => {
-    tableElement.state && tableElement.fireFetchData();
+    tableElement.state && !customOffset && tableElement.fireFetchData();
   }, [searchFilter, props]);
 
   const deletePrompt = (id, queryParamDelete) => {
@@ -634,6 +634,9 @@ const GlygenTable = props => {
           }*/
 
           if (props.fetchWS) {
+            if (props.authCheckAgent) {
+              props.authCheckAgent();
+            }
             setShowLoading(true);
             var sortColumn = state.sorted.length > 0 ? state.sorted[0].id : props.defaultSortColumn;
             var sortOrder = state.sorted.length > 0 ? (state.sorted[0].desc === false ? 1 : 0) : props.defaultSortOrder;
@@ -726,7 +729,7 @@ const GlygenTable = props => {
 
   function fetchSuccess(response, state) {
     response.json().then(responseJson => {
-      if (searchFilter !== "" && responseJson.total < 10 && !customOffset) {
+      if (searchFilter !== "" && responseJson.total < state.pageSize && !customOffset) {
         setCustomOffset(true);
         tableElement.fireFetchData();
       } else {
@@ -881,7 +884,8 @@ GlygenTable.propTypes = {
   viewUrl: PropTypes.string,
   customViewonClick: PropTypes.bool,
   viewOnClick: PropTypes.func,
-  refreshTable: PropTypes.bool
+  refreshTable: PropTypes.bool,
+  authCheckAgent: PropTypes.func
 };
 
 GlygenTable.defaultProps = {

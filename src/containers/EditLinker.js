@@ -14,7 +14,6 @@ import { externalizeUrl } from "../utils/commonUtils";
 import { Button } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
-import { addCommas } from "../utils/commonUtils";
 import { Table } from "react-bootstrap";
 
 const EditLinker = props => {
