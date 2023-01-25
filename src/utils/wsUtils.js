@@ -1,4 +1,5 @@
 import { trackPromise } from "react-promise-tracker";
+import { reLogin } from "./commonUtils";
 
 const ws_base = process.env.REACT_APP_API_URL;
 /**
@@ -441,7 +442,12 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
             body: body
           }).catch((error) => {
             console.log(error);
-            exceptionFunction && exceptionFunction(error);
+            if (error instanceof TypeError) {
+              if (error.message.search("fetch")) {
+                exceptionFunction && exceptionFunction(error);
+                console.log("server is down!");
+              }
+            } 
           })
         : await trackPromise(
             fetch(url, {
@@ -451,7 +457,12 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
               body: body
             }).catch((error) => {
               console.log(error);
-              exceptionFunction && exceptionFunction(error);
+              if (error instanceof TypeError) {
+                if (error.message.search("fetch")) {
+                  exceptionFunction && exceptionFunction(error);
+                  console.log("server is down!");
+                }
+              } 
             })
           );
 
@@ -462,7 +473,12 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     if (response.ok) {
       successFunction(response);
     } else {
-      errorFunction(response);
+      // check if the error code is 403 (expired token)
+      if (response.status == 403 || response.status == 401) {
+        reLogin(window.history);
+      } else {
+        errorFunction(response);
+      }
     }
   } catch (error) {
     console.log(error);

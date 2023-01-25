@@ -60,6 +60,20 @@ export function getLoginStatus() {
   return true;
 }
 
+export function reLogin(history) {
+
+  var redirectFrom = "";
+  if (history.state && history.state.state && history.state.state.redirectedFrom) {
+    redirectFrom = history.state.state.redirectedFrom;
+  }
+
+  history.push({
+    pathname: "/login",
+    state: { redirectedFrom: redirectFrom }
+  });
+
+}
+
 export function getPageName(history) {
   var path = history.location.pathname;
   var pagename = path.substring(1, path.indexOf("/", 1) > 0 ? path.indexOf("/", 1) : path.length);

@@ -634,9 +634,6 @@ const GlygenTable = props => {
           }*/
 
           if (props.fetchWS) {
-            if (props.authCheckAgent) {
-              props.authCheckAgent();
-            }
             setShowLoading(true);
             var sortColumn = state.sorted.length > 0 ? state.sorted[0].id : props.defaultSortColumn;
             var sortOrder = state.sorted.length > 0 ? (state.sorted[0].desc === false ? 1 : 0) : props.defaultSortOrder;
