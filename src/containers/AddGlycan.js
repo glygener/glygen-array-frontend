@@ -45,6 +45,7 @@ const AddGlycan = props => {
   // const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
   const [validateName, setValidateName] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -180,6 +181,7 @@ const AddGlycan = props => {
     setUserSelection({ ...initialState, ...{ selectedGlycan: userSelection.selectedGlycan } });
     setRegistrationCheckFlag(true);
     setDisableReset(false);
+    setReadOnly(false);
   };
 
   const getUnknownGlycanStep = () => {
@@ -543,13 +545,14 @@ const AddGlycan = props => {
                   }`}
                 >
                   <Col xs={12} lg={9}>
-                    <FormLabel label="Sequence Type" className="required-asterik" />
+                    <FormLabel label="Sequence Format" className="required-asterik" />
                     <Form.Control
                       as="select"
                       name="sequenceType"
                       placeholder="GlycoCT (first dropdown by default)"
                       value={userSelection.sequenceType}
                       onChange={handleClassSelect}
+                      disabled={readOnly}
                       required={true}
                     >
                       <option value="GlycoCT">GlycoCT</option>
@@ -557,7 +560,7 @@ const AddGlycan = props => {
                       <option value="Wurcs">WURCS</option>
                       <option value="IUPAC">CFG IUPAC Condensed</option>
                     </Form.Control>
-                    <Feedback message="Sequence Type is required"></Feedback>
+                    <Feedback message="Sequence Format is required"></Feedback>
                   </Col>
                 </Form.Group>
 
@@ -592,6 +595,7 @@ const AddGlycan = props => {
                       required={true}
                       isInvalid={validate}
                       maxLength={5000}
+                      readOnly={readOnly}
                     />
                     <Feedback message="Please enter Valid Sequence" />
                     <Row>
@@ -761,7 +765,7 @@ const AddGlycan = props => {
                 }`}
               >
                 <Col xs={12} lg={9}>
-                  <FormLabel label="Sequence Type" />
+                  <FormLabel label="Sequence Format" />
                   <Form.Control name="sequenceType" value={userSelection.sequenceType} disabled />
                 </Col>
               </Form.Group>
@@ -818,6 +822,7 @@ const AddGlycan = props => {
     response.text().then(parsedJson => {
       setUserSelection({ sequence: parsedJson });
       setRegistrationCheckFlag(false);
+      setReadOnly(true)
       getGlytoucanRegistration();
       setUserSelection({ glytoucanRegistration: false });
       setDisableReset(true);

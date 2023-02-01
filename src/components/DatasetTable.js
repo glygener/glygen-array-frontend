@@ -22,6 +22,7 @@ const DatasetTable = props => {
   const [curPage, setCurPage] = useState(0);
   const [tableElement, setTableElement] = useState({});
   const [searchFilter, setSearchFilter] = useState("");
+  const [descOpen, setDescOpen] = useState(false);
   
   // const { data, onModifySearch } = props;
   // const {id, name, description}= data;
@@ -167,7 +168,11 @@ const DatasetTable = props => {
                     </div>
 
                     {row.original.description && <div style={{whiteSpace: "normal"}}>
-                      <strong>Dataset Description:</strong> {row.original.description}
+                      <strong>Dataset Description:</strong>
+                      {getDescription(row.original.description)}
+                      <button className={"more-less"} onClick={() => setDescOpen(!descOpen)}>
+                        {row.original.description.length > 150 && !descOpen ? `more` : descOpen ? `less` : ``}
+                      </button>
                     </div>}
 
                     <div>
@@ -256,6 +261,10 @@ const DatasetTable = props => {
         </div>
       </>
     );
+  };
+
+  const getDescription = desc => {
+    return desc.length > 150 && !descOpen ? `${desc.substring(0, 100)}...` : descOpen ? `${desc}` : desc;
   };
 
   return (
