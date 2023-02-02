@@ -553,7 +553,7 @@ const MetaData = props => {
     let selectedDescriptorIndex;
     let maxCurrentOrder;
 
-    if (isUpdate) {
+    if (isUpdate || props.isCopy) {
       sampleModelUpdate = { ...sampleModel };
     } else {
       sampleModelUpdate = [...sampleModel];
@@ -578,7 +578,7 @@ const MetaData = props => {
         maxCurrentOrder
       );
 
-      if (isUpdate) {
+      if (isUpdate || props.isCopy) {
         setSampleModel(sampleModelUpdate);
       } else {
         selectedDescriptorIndex = itemByType.descriptors.indexOf(selectedGroup);
@@ -2361,6 +2361,7 @@ function getDescriptorGroups(selectedItemByType) {
 
     if ((d.allowNotApplicable || d.allowNotRecorded) && (d.notApplicable || d.notRecorded)) {
       dArray.push({
+        name: d.name,
         descriptors: null,
         order: d.order ? d.order : -1,
         key: {
@@ -2381,6 +2382,7 @@ function getDescriptorGroups(selectedItemByType) {
       }
 
       dArray.push({
+        name: d.name,
         descriptors: null,
         order: d.order ? d.order : -1,
         key: {
@@ -2438,7 +2440,7 @@ function getDescriptorGroups(selectedItemByType) {
                 value: sgd.value,
                 notRecorded: notRecorded ? true : false,
                 notApplicable: notApplicable ? true : false,
-                unit: sgd.unit ? dg.unit : "",
+                unit: sgd.unit ? sgd.unit : "",
                 key: {
                   "@type": "descriptortemplate",
                   ...getkey(sgd)
@@ -2460,7 +2462,7 @@ function getDescriptorGroups(selectedItemByType) {
                     value: "",
                     notRecorded: filledMandateGrp[0].mandateGroup.notRecorded ? true : false,
                     notApplicable: filledMandateGrp[0].mandateGroup.notApplicable ? true : false,
-                    unit: sgd.unit ? dg.unit : "",
+                    unit: sgd.unit ? sgd.unit : "",
                     key: {
                       "@type": "descriptortemplate",
                       ...getkey(sgd)
@@ -2556,6 +2558,7 @@ function getDescriptorGroups(selectedItemByType) {
 
       if (dgArray.length > 0) {
         dArray.push({
+          name: d.name,
           descriptors: dgArray,
           order: d.order ? d.order : -1,
           key: {

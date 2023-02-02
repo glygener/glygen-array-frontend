@@ -619,7 +619,7 @@ const AddBlockLayout = props => {
                   {/*loading addfeature and submit button */}
                   {loadGrid && (
                     <>
-                      {showDescriptos && <ViewDescriptor metadataId={spotFeatureCard.metadata.id} showModal={showDescriptos} setShowModal={setShowDescriptos}
+                      {showDescriptos && <ViewDescriptor metadataId={spotFeatureCard.metadata.id} metadata={spotFeatureCard.metadata} showModal={showDescriptos} setShowModal={setShowDescriptos}
                         wsCall={"getspotmetadata"} useToken={true} name={"Spot Metadata"} isSample={false} />}
                       <Row className="gg-align-center text-center">
                         <Col xs={12} md={12} lg={8} className="pb-3 pt-3" style={{ width: "800px" }}>
@@ -658,7 +658,7 @@ const AddBlockLayout = props => {
                                 <div className={"summary-border"}>
                                   <h4>Spot Metadata</h4>
                                 </div>
-                                {isUpdateBlock && spotFeatureCard.metadata ? (
+                                {spotFeatureCard.metadata ? (
                                   <LineTooltip text="View Details">
                                     <Button
                                       className={"lnk-btn lnk-btn-left"}
