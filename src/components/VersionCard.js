@@ -87,14 +87,14 @@ export default function VersionCard(props) {
               {versionData.Portal &&
                 versionData.Portal.version +
                   " (" +
-                  getDateMMDDYYYY(versionData.Portal.releaseDate) +
+              versionData.Portal.releaseDate +
                   ")"}
               <br />
               <span>
                 <strong>Api: &nbsp;</strong>
               </span>
               {versionData.API &&
-                versionData.API.version + " (" + getDateMMDDYYYY(versionData.API.releaseDate) + ")"}
+                versionData.API.version + " (" + versionData.API.releaseDate + ")"}
             </CardContent>
           </div>
         </Card>
