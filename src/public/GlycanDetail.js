@@ -14,7 +14,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
 import { GlygenTable } from "../components/GlygenTable";
-import { addCommas } from "../utils/commonUtils";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 import { Loading } from "../components/Loading";
 
@@ -179,7 +178,7 @@ const GlycanList = (props) => {
                 {glycanData && glycanData.mass && (
                   <div>
                     <strong>Monoisotopic Mass: </strong>
-                    {addCommas(parseInt(glycanData.mass).toFixed(2))} Da
+                    {Number(parseFloat(glycanData.mass).toFixed(2)).toLocaleString('en-US')} Da
                   </div>
                 )}
                 {/* Creation date/user */}

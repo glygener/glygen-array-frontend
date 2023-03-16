@@ -60,6 +60,20 @@ export function getLoginStatus() {
   return true;
 }
 
+export function reLogin(history) {
+
+  var redirectFrom = "";
+  if (history.state && history.state.state && history.state.state.redirectedFrom) {
+    redirectFrom = history.state.state.redirectedFrom;
+  }
+
+  history.push({
+    pathname: "/login",
+    state: { redirectedFrom: redirectFrom }
+  });
+
+}
+
 export function getPageName(history) {
   var path = history.location.pathname;
   var pagename = path.substring(1, path.indexOf("/", 1) > 0 ? path.indexOf("/", 1) : path.length);
@@ -453,7 +467,7 @@ export function sortByOrder(a, b) {
 // function capitalizeFirstLetter(string) {
 //   return string.charAt(0).toUpperCase() + string.slice(1);
 // }
-export function addCommas(nStr) {
+/*export function addCommas(nStr) {
   nStr += "";
   var x = nStr.split(".");
   var x1 = x[0];
@@ -464,7 +478,7 @@ export function addCommas(nStr) {
     x1 = x1.replace(rgx, "$1" + "," + "$2");
   }
   return x1 + x2;
-}
+}*/
 
 export function getToolTip(displayValue) {
   return (

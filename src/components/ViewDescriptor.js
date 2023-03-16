@@ -28,52 +28,57 @@ const ViewDescriptor = props =>  {
         response =>
           response.json().then(responseJson => {
             setMetadata(responseJson);
-
-            let name = props.name;
-            if (props.isSample) {
-              let template = "";
-              template = responseJson && responseJson.template ? responseJson.template.replace("Sample", "").trim() : ""
-              if (template !== "") {
-                name = name + " (" + template +")";
-              }
-            }
-            setDescName(name);
-
-            let descObj = [];
-            let descObjUniArr = [];
-            let result = {count: 0};
-
-            for (let i = 0; i < responseJson.descriptors.length; i++) {
-              descObj.push(addDescriptor(responseJson.descriptors[i]));
-            }
-
-            for (let i = 0; i < responseJson.descriptorGroups.length; i++) {
-              let temp = responseJson.descriptorGroups[i];
-              let id = "";
-              if (
-                (temp.notRecorded || temp.notApplicable) &&
-                temp.key &&
-                temp.key.mandateGroup
-              ) {
-                id = temp.key.mandateGroup.id;
-              }
-
-              if (id === "" || !descObjUniArr.includes(id)) {
-                descObjUniArr.push(id);
-                descObj.push(addDescriptorGroup(temp, result));
-              }
-            }
-
-            if (descObj.length > 0) {
-              result.count += descObj.length;
-            }
-
-            descObj.sort((obj1, obj2) => obj1.order - obj2.order);
-            setData({data: descObj, rowCount: result.count});
-            setShowloading(false);
+            arrangeData(props, responseJson);
           }),
         errorWscall
       );
+    } else if (props.metadata) {
+      arrangeData(props, props.metadata);
+    }
+
+    function arrangeData(props, responseJson) {
+      let name = props.name;
+      if (props.isSample) {
+        let template = "";
+        template = responseJson && responseJson.template ? responseJson.template.replace("Sample", "").trim() : ""
+        if (template !== "") {
+          name = name + " (" + template + ")";
+        }
+      }
+      setDescName(name);
+
+      let descObj = [];
+      let descObjUniArr = [];
+      let result = { count: 0 };
+
+      for (let i = 0; i < responseJson.descriptors.length; i++) {
+        descObj.push(addDescriptor(responseJson.descriptors[i]));
+      }
+
+      for (let i = 0; i < responseJson.descriptorGroups.length; i++) {
+        let temp = responseJson.descriptorGroups[i];
+        let id = "";
+        if (
+          (temp.notRecorded || temp.notApplicable) &&
+          temp.key &&
+          temp.key.mandateGroup
+        ) {
+          id = temp.key.mandateGroup.id;
+        }
+
+        if (id === "" || !descObjUniArr.includes(id)) {
+          descObjUniArr.push(id);
+          descObj.push(addDescriptorGroup(temp, result));
+        }
+      }
+
+      if (descObj.length > 0) {
+        result.count += descObj.length;
+      }
+
+      descObj.sort((obj1, obj2) => obj1.order - obj2.order);
+      setData({ data: descObj, rowCount: result.count });
+      setShowloading(false);
     }
 
     function errorWscall(response) {
@@ -108,24 +113,26 @@ const ViewDescriptor = props =>  {
       let descObjArr = [];
       let descObjUniArr = [];
 
-      for (let i = 0; i < descGroup.descriptors.length; i++) {
-        if (descGroup.descriptors[i].group) {
-          let temp = descGroup.descriptors[i];
-          let id = "";
-          if (
-            (temp.notRecorded || temp.notApplicable) &&
-            temp.key &&
-            temp.key.mandateGroup
-          ) {
-            id = temp.key.mandateGroup.id;
-          }
+      if (descGroup.descriptors) {
+        for (let i = 0; i < descGroup.descriptors.length; i++) {
+          if (descGroup.descriptors[i].group) {
+            let temp = descGroup.descriptors[i];
+            let id = "";
+            if (
+              (temp.notRecorded || temp.notApplicable) &&
+              temp.key &&
+              temp.key.mandateGroup
+            ) {
+              id = temp.key.mandateGroup.id;
+            }
 
-          if (id === "" || !descObjUniArr.includes(id)) {
-            descObjUniArr.push(id);
-            descObjArr.push(addDescriptorGroup(temp, result));
+            if (id === "" || !descObjUniArr.includes(id)) {
+              descObjUniArr.push(id);
+              descObjArr.push(addDescriptorGroup(temp, result));
+            }
+          } else {
+            descObjArr.push(addDescriptor(descGroup.descriptors[i]));
           }
-        } else {
-          descObjArr.push(addDescriptor(descGroup.descriptors[i]));
         }
       }
 

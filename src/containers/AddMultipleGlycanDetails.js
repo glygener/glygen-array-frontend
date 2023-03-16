@@ -6,7 +6,6 @@ import { StructureImage } from "../components/StructureImage";
 import { PageHeading } from "../components/FormControls";
 import Container from "@material-ui/core/Container";
 import { Card, Button } from "react-bootstrap";
-import { addCommas } from "../utils/commonUtils";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 const AddMultipleGlycanDetails = props => {
@@ -79,7 +78,7 @@ const AddMultipleGlycanDetails = props => {
                       headerStyle: { whiteSpace: "pre-wrap" },
 
                       // eslint-disable-next-line react/prop-types
-                      Cell: row => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : "")
+                      Cell: row => (row.value ? Number(parseFloat(row.value).toFixed(2)).toLocaleString('en-US') : "")
                     }
                   ]
             }

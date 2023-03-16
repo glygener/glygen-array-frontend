@@ -30,10 +30,16 @@ const ErrorSummary = props => {
       if (props.errorJson && null != props.errorJson.errors && props.errorJson.errors.length > 0) {
         props.errorJson.errors.forEach(error => {
           if (props.customMessage) {
+            let detailedMessage = ""
+            if (error.codes && error.codes.length > 0) {
+              error.codes.forEach(code => {
+                detailedMessage += "\n" + code
+              })
+            }
             if (props.errorJson.errors.length > 1) {
-              alerts.push(error.objectName + " - " + error.defaultMessage);
+              alerts.push(error.objectName + " - " + error.defaultMessage + "\n" + detailedMessage);
             } else {
-              aggregatedSummary += "\n" + error.objectName + " - " + error.defaultMessage + "\n";
+              aggregatedSummary += "\n" + error.objectName + " - " + error.defaultMessage + "\n" + detailedMessage;
             }
           } else {
             if (props.errorJson.errors.length > 1) {

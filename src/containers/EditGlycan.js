@@ -10,7 +10,6 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { Loading } from "../components/Loading";
 import { StructureImage } from "../components/StructureImage";
 import { Card } from "react-bootstrap";
-import { addCommas } from "../utils/commonUtils";
 import { Button } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
 
@@ -154,7 +153,7 @@ const EditGlycan = (props) => {
                         type="text"
                         // plaintext
                         readOnly
-                        value={addCommas(parseInt(glycanDetails.mass).toFixed(2)) + " Da"}
+                        value={Number(parseFloat(glycanDetails.mass).toFixed(2)).toLocaleString('en-US') + " Da"}
                       />
                     </Col>
                   </Form.Group>

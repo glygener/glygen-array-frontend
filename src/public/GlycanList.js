@@ -11,7 +11,6 @@ import Grid from "@material-ui/core/Grid";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
-import { addCommas } from "../utils/commonUtils";
 // import { Loading } from "../components/Loading";
 
 const GlycanList = (props) => {
@@ -129,7 +128,7 @@ const GlycanList = (props) => {
                     Header: "Monoisotopic Mass (Da)",
                     accessor: "mass",
                     // // eslint-disable-next-line react/prop-types
-                    Cell: row => (row.value ? addCommas(parseFloat(row.value).toFixed(2)) : ""),
+                    Cell: row => (row.value ? Number(parseFloat(row.value).toFixed(2)).toLocaleString('en-US') : ""),
                   },
                   {
                     Header: "Dataset Count",

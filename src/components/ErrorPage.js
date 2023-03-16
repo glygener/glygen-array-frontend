@@ -24,6 +24,11 @@ const ErrorPage = props => {
     errorMessage = props.errorMessage;
   }
 
+  function getCodesString(codes) {
+    if (codes) return codes.join(", ");
+    return "";
+  }
+
   const getErrorsContent = () => {
     return (
       <>
@@ -47,7 +52,7 @@ const ErrorPage = props => {
                       }}
                       variant={"danger"}
                     > */}
-                      {row.original.defaultMessage.substring(0, row.original.defaultMessage.indexOf("."))}
+                    {row.original.defaultMessage}
                     {/* </Alert> */}
                   </>
                 );
@@ -67,10 +72,10 @@ const ErrorPage = props => {
                       <Popover>
                         <Popover.Title as="h3">{row.original.objectName}</Popover.Title>
                         <Popover.Content style={{ textTransform: "uppercase", textAlign: "justify" }}>
-                          {row.original.defaultMessage} &nbsp; &nbsp;
+                          <ul>{row.original.codes && row.original.codes.map((code) => <li>{code}</li>)}</ul>
                           <br />
                           <br />
-                          <CopyToClipboard text={row.original.defaultMessage} onCopy={() => setCopy(true)}>
+                          <CopyToClipboard text={getCodesString(row.original.codes)} onCopy={() => setCopy(true)}>
                             <FontAwesomeIcon
                               key={"copytoclipboard" + index}
                               icon={["fas", "copy"]}

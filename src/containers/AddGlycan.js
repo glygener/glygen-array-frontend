@@ -24,6 +24,7 @@ import moleculeExamples from "../appData/moleculeExamples";
 import ExampleSequenceControl from "../components/ExampleSequenceControl";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import GlycoGlyph from "../components/search/GlycoGlyph";
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -44,6 +45,7 @@ const AddGlycan = props => {
   // const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [validate, setValidate] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
   const [validateName, setValidateName] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -52,6 +54,7 @@ const AddGlycan = props => {
   const [invalidMass, setInvalidMass] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const history = useHistory();
+  const [glycoGlyphDialog, setGlycoGlyphDialog] = useState(false);
 
   const initialState = {
     selectedGlycan: "SequenceDefined",
@@ -63,6 +66,7 @@ const AddGlycan = props => {
     sequence: "",
     glytoucanRegistration: true,
     sequenceType: "GlycoCT",
+    glycoGlyphName: ""
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -163,6 +167,11 @@ const AddGlycan = props => {
     }
   };
 
+  function handleSequenceChange(inputSequence) {
+    setUserSelection({ sequence: inputSequence, glycoGlyphName: "" });
+    setUserSelection({ sequenceType: "GlycoCT" });
+  }
+
   const handleClassSelect = e => {
     const select = e.target.options[e.target.selectedIndex].value;
     setUserSelection({ sequenceType: select });
@@ -172,6 +181,7 @@ const AddGlycan = props => {
     setUserSelection({ ...initialState, ...{ selectedGlycan: userSelection.selectedGlycan } });
     setRegistrationCheckFlag(true);
     setDisableReset(false);
+    setReadOnly(false);
   };
 
   const getUnknownGlycanStep = () => {
@@ -239,6 +249,17 @@ const AddGlycan = props => {
         <title>{head.addGlycan.title}</title>
         {getMeta(head.addGlycan)}
       </Helmet>
+      <GlycoGlyph
+        show={glycoGlyphDialog}
+        glySequenceChange={handleSequenceChange}
+        glySequence={userSelection.sequence}
+        setInputValue={setUserSelection}
+        inputValue={userSelection}
+        title={"GlycoGlyph"}
+        setOpen={(input) => {
+          setGlycoGlyphDialog(input)
+        }}
+      />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title="Add Glycan to Repository" subTitle="Please provide the information for the new glycan." />
@@ -524,13 +545,14 @@ const AddGlycan = props => {
                   }`}
                 >
                   <Col xs={12} lg={9}>
-                    <FormLabel label="Sequence Type" className="required-asterik" />
+                    <FormLabel label="Sequence Format" className="required-asterik" />
                     <Form.Control
                       as="select"
                       name="sequenceType"
                       placeholder="GlycoCT (first dropdown by default)"
                       value={userSelection.sequenceType}
                       onChange={handleClassSelect}
+                      disabled={readOnly}
                       required={true}
                     >
                       <option value="GlycoCT">GlycoCT</option>
@@ -538,7 +560,7 @@ const AddGlycan = props => {
                       <option value="Wurcs">WURCS</option>
                       <option value="IUPAC">CFG IUPAC Condensed</option>
                     </Form.Control>
-                    <Feedback message="Sequence Type is required"></Feedback>
+                    <Feedback message="Sequence Format is required"></Feedback>
                   </Col>
                 </Form.Group>
 
@@ -553,7 +575,16 @@ const AddGlycan = props => {
                   }`}
                 >
                   <Col xs={12} lg={9}>
-                    <FormLabel label="Sequence" className="required-asterik" />
+                    <Row className="gg-align-center mb-3">
+                      <Col><FormLabel label="Sequence" className="required-asterik" /></Col>
+                      <Col xs="auto">
+                        <Button
+                          className="gg-btn-blue"
+                          onClick={() => setGlycoGlyphDialog(true)}>
+                          Draw with Glyco Glyph
+                        </Button>
+                      </Col>
+                    </Row>
                     <Form.Control
                       as="textarea"
                       rows="5"
@@ -564,6 +595,7 @@ const AddGlycan = props => {
                       required={true}
                       isInvalid={validate}
                       maxLength={5000}
+                      readOnly={readOnly}
                     />
                     <Feedback message="Please enter Valid Sequence" />
                     <Row>
@@ -733,7 +765,7 @@ const AddGlycan = props => {
                 }`}
               >
                 <Col xs={12} lg={9}>
-                  <FormLabel label="Sequence Type" />
+                  <FormLabel label="Sequence Format" />
                   <Form.Control name="sequenceType" value={userSelection.sequenceType} disabled />
                 </Col>
               </Form.Group>
@@ -790,6 +822,7 @@ const AddGlycan = props => {
     response.text().then(parsedJson => {
       setUserSelection({ sequence: parsedJson });
       setRegistrationCheckFlag(false);
+      setReadOnly(true)
       getGlytoucanRegistration();
       setUserSelection({ glytoucanRegistration: false });
       setDisableReset(true);

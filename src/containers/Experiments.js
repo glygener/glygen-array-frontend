@@ -59,6 +59,7 @@ const Experiments = props => {
                 showMakePublic
                 setShowDeleteModal
                 commentsRefColumn="description"
+                authCheckAgent={props.authCheckAgent}
                 fetchWS="listexperiments"
                 deleteWS="deletedataset"
                 editUrl="experiments/editExperiment"

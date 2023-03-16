@@ -7,7 +7,7 @@ import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
-import { getToolTip, addCommas } from "../utils/commonUtils";
+import { getToolTip } from "../utils/commonUtils";
 import { viewGlycoPeptide, getSource } from "../utils/FeatureUtils";
 import { ViewInfoModal } from "../components/ViewInfoModal";
 import { useHistory, Link } from "react-router-dom";
@@ -131,8 +131,8 @@ const FeatureView = props => {
               accessor: "opensRing",
               Cell: row => {
                 return featureDetails.type === "LINKEDGLYCAN"
-                  ? getToolTip(row.original.reducingEndConfiguration.type)
-                  : getToolTip(row.original.glycans[0].reducingEndConfiguration.type);
+                  ? row.original.reducingEndConfiguration && getToolTip(row.original.reducingEndConfiguration.type)
+                  : row.original.glycans[0].reducingEndConfiguration && getToolTip(row.original.glycans[0].reducingEndConfiguration.type);
               }
             },
             ...(featureDetails.type === "GLYCOLIPID"
@@ -1001,7 +1001,7 @@ const linkerDetailsOnModal = (linker, page) => {
               type="text"
               disabled={page === "case4"}
               readOnly={page === "view"}
-              value={addCommas(parseInt(linker.mass).toFixed(2)) + " Da"}
+              value={Number(parseFloat(linker.mass).toFixed(2)).toLocaleString('en-US') + " Da"}
             />
           </Col>
         </Form.Group>

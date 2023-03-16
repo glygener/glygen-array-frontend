@@ -14,7 +14,6 @@ import { externalizeUrl } from "../utils/commonUtils";
 import { Button } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
-import { addCommas } from "../utils/commonUtils";
 import { Table } from "react-bootstrap";
 
 const EditLinker = props => {
@@ -325,7 +324,7 @@ const EditLinker = props => {
                         readOnly
                         disabled
                         // value={linkerDetails.mass}
-                        value={addCommas(parseInt(linkerDetails.mass).toFixed(2)) + " Da"}
+                        value={Number(parseFloat(linkerDetails.mass).toFixed(2)).toLocaleString('en-US') + " Da"}
                       />
                     </Col>
                   </Form.Group>
