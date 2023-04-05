@@ -395,6 +395,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/checkbatchupload";
     case "updatebatchupload":
       return ws_base_array + "/updatebatchupload";
+    case "checkslideupload":
+      return ws_base_array + "/checkslideupload";
 
     default:
       return ws_base_user;

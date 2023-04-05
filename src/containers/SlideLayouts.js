@@ -14,10 +14,54 @@ import { exportFile, downloadSpinner } from "../utils/commonUtils";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import { wsCall } from "../utils/wsUtils";
+import { ErrorSummary } from "../components/ErrorSummary";
 
 const SlideLayouts = props => {
-  useEffect(props.authCheckAgent, []);
+  const [uploadProcessing, setUploadProcessing] = useState(false);
+  const [pageErrorsJson, setPageErrorsJson] = useState({});
+  const [pageErrorMessage, setPageErrorMessage] = useState("");
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+
+  useEffect(() => {
+    if (props.authCheckAgent) {
+      props.authCheckAgent();
+    }
+
+    checkUpload();
+  }, []);
+
+  function checkUpload() {
+    wsCall(
+      "checkslideupload",
+      "GET",
+      null,
+      true,
+      null,
+      response => {
+        response && response.json().then(resp => {
+          setUploadProcessing(true);
+          setPageErrorMessage("There is currently an ongoing slide layout import. Please wait for that to finish before uploading another one");
+          setShowErrorSummary(true);
+        });
+      },
+      response => {
+        if (response.status === 404) {
+          response && response.text().then(resp => {
+            console.log(JSON.parse(resp));
+          });
+        } else {
+          if (response) {
+            setPageErrorsJson && setPageErrorsJson({ status: "DEFAULT" });
+            console.log(response);
+          };
+        }
+      }
+    );
+  }
+
   const [showSpinner, setShowSpinner] = useState(false);
+
 
   return (
     <>
@@ -43,6 +87,15 @@ const SlideLayouts = props => {
 
           <Card>
             <Card.Body>
+              {showErrorSummary === true && (
+                <ErrorSummary
+                  show={showErrorSummary}
+                  form="slidelayout"
+                  errorJson={pageErrorsJson}
+                  errorMessage={pageErrorMessage}
+                ></ErrorSummary>
+              )}
+
               <div className="text-center mb-4">
                 <Link to="/slideLayouts/addSlide">
                   <Button className="gg-btn-blue mt-2 gg-mr-20">Add Slide Layout</Button>
@@ -51,7 +104,7 @@ const SlideLayouts = props => {
                   to="/slideLayouts/addMultiple"
                   // title="Upload a GAL/XML file wih Slide Layouts"
                 >
-                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Slide Layout From File</Button>
+                  <Button disabled={uploadProcessing} className="gg-btn-blue mt-2 gg-ml-20">Add Slide Layout From File</Button>
                 </Link>
               </div>
 

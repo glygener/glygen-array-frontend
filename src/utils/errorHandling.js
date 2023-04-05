@@ -75,7 +75,8 @@ const FORM_ERROR_MESSAGES = {
       "The uploaded file appears to be invalid. Please double-check that the file is a valid GRITS glycan library."
   },
   importSlidelayouts: {
-    NotValid_file: "The submitted file appears to be invalid. You might try re-uploading the file."
+    NotValid_file: "The submitted file appears to be invalid. You might try re-uploading the file.",
+    Duplicate_slideLayout: "The slide layout with that name already exists in your library."
   },
   blockLayouts: {
     Duplicate_name: "The same name appears in another block layout in your collection. Please use a different name.",
