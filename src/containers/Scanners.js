@@ -22,14 +22,14 @@ const Scanners = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Scanners"
-            subTitle="The table below displays a list of all scanners that have been uploaded to your repository. New scanners may be added, old scanners can be edited, and unused scanners can be removed."
+            title="Scanner Metadata"
+            subTitle="The table below displays a list of all scanner metadata that have been uploaded to your repository. New scanner metadata may be added, old scanner metadata can be edited, and unused scanner metadata can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/scanners/addScanner">
-                  <Button className="gg-btn-blue mt-2">Add Scanner</Button>
+                  <Button className="gg-btn-blue mt-2">Add Scanner Metadata</Button>
                 </Link>
               </div>
 
@@ -61,7 +61,7 @@ const Scanners = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Scanners"
+                infoRowsText="Scanner Metadata"
               />
             </Card.Body>
           </Card>

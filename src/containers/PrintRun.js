@@ -22,14 +22,14 @@ const PrintRun = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Print Run"
-            subTitle="The table below displays a list of all printruns that have been uploaded to your repository. New printruns may be added, old printruns can be edited, and unused Print Run can be removed."
+            title="Your Print Run Metadata"
+            subTitle="The table below displays a list of all printrun metadata that have been uploaded to your repository. New printrun metadata may be added, old printrun metadata can be edited, and unused print run metadata can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/printRun/addPrintRun">
-                  <Button className="gg-btn-blue mt-2">Add Print Run</Button>
+                  <Button className="gg-btn-blue mt-2">Add Print Run Metadata</Button>
                 </Link>
               </div>
 
@@ -61,7 +61,7 @@ const PrintRun = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Printrun"
+                infoRowsText="Printrun Metadata"
               />
             </Card.Body>
           </Card>

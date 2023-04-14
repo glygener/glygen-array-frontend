@@ -35,11 +35,11 @@ const AddPrintRun = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={printRunId ? "Edit Print Run" : "Add Print Run to Repository"}
+            title={printRunId ? "Edit Print Run Metadata" : "Add Print Run Metadata to Repository"}
             subTitle={
               printRunId
-                ? "Update Print Run information. Name must be unique in your Print Run run repository and cannot be used for more than one Print Run."
-                : "Please provide the information for the new Print Run."
+                ? "Update Print Run metadata information. Name must be unique in your Print Run metadata repository and cannot be used for more than one Print Run metadata."
+                : "Please provide the information for the new Print Run metadata"
             }
           />
           <Card>

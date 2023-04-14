@@ -35,11 +35,11 @@ const AddPrinter = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={printerId ? "Edit Printer" : "Add Printer to Repository"}
+            title={printerId ? "Edit Printer Metadata" : "Add Printer Metadata to Repository"}
             subTitle={
               printerId
-                ? "Update printer information. Name must be unique in your printer repository and cannot be used for more than one printer."
-                : "Please provide the information for the new printer."
+                ? "Update printer metadata information. Name must be unique in your printer metadata repository and cannot be used for more than one printer metadata."
+                : "Please provide the information for the new printer metadata."
             }
           />
           <Card>

@@ -611,7 +611,7 @@ const MetaData = props => {
     newElement.order = maxCurrentOrder + 1;
     newElement.group &&
       newElement.descriptors.forEach(e => {
-        e.value = "";
+       // e.value = "";
         e.id = "newlyAddedItems" + newItemsCount + e.id;
       });
 

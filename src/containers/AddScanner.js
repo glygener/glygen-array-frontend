@@ -35,11 +35,11 @@ const AddScanner = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={scannerId ? "Edit Scanner" : "Add Scanner to Repository"}
+            title={scannerId ? "Edit Scanner Metadata" : "Add Scanner Metadata to Repository"}
             subTitle={
               scannerId
-                ? "Update scanner information. Name must be unique in your scanner repository and cannot be used for more than one scanner."
-                : "Please provide the information for the new scanner."
+                ? "Update scanner metadata information. Name must be unique in your scanner metadata repository and cannot be used for more than one scanner metadata."
+                : "Please provide the information for the new scanner metadata."
             }
           />
           <Card>

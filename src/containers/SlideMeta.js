@@ -22,14 +22,14 @@ const SlideMeta = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Slide Meta"
-            subTitle="The table below displays a list of all slide metas that have been uploaded to your repository. New slide metas may be added, old slide metas can be edited, and unused slide metas can be removed."
+            title="Your Slide Metadata"
+            subTitle="The table below displays a list of all slide metadata that have been uploaded to your repository. New slide metadata may be added, old slide metadata can be edited, and unused slide metadata can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/listSlideMeta/addSlideMeta">
-                  <Button className="gg-btn-blue mt-2">Add Slide Meta</Button>
+                  <Button className="gg-btn-blue mt-2">Add Slide Metadata</Button>
                 </Link>
               </div>
 
@@ -61,7 +61,7 @@ const SlideMeta = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Slide Meta"
+                infoRowsText="Slide Metadata"
               />
             </Card.Body>
           </Card>

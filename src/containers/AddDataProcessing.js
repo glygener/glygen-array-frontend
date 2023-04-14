@@ -35,11 +35,11 @@ const AddDataProcessing = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={dataProcessingId ? "Edit Data Processing" : "Add Data Processing to Repository"}
+            title={dataProcessingId ? "Edit Data Processing Software Metadata" : "Add Data Processing Software Metadata to Repository"}
             subTitle={
               dataProcessingId
-                ? "Update data processing information. Name must be unique in your data processing repository and cannot be used for more than one data processing."
-                : "Please provide the information for the new data processing."
+                ? "Update data processing software information. Name must be unique in your data processing software repository and cannot be used for more than one data processing software."
+                : "Please provide the information for the new data processing software."
             }
           />
           <Card>

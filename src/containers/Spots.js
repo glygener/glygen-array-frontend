@@ -21,14 +21,14 @@ const Spots = props => {
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Spots"
-            subTitle="The table below displays a list of all spots that have been uploaded to your repository. New spots may be added, old spots can be edited, and unused spots can be removed."
+            title="Your Spot Metadata"
+            subTitle="The table below displays a list of all spot metadata that have been uploaded to your repository. New spots may be added, old spots can be edited, and unused spots can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/spots/addSpot">
-                  <Button className="gg-btn-blue mt-2">Add Spot</Button>
+                  <Button className="gg-btn-blue mt-2">Add Spot Metadata</Button>
                 </Link>
               </div>
 
@@ -56,7 +56,7 @@ const Spots = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Spots"
+                infoRowsText="Spot Metadata"
               />
             </Card.Body>
           </Card>
