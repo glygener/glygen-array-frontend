@@ -385,17 +385,7 @@ const AddExperiment = props => {
                   : "Please provide the information for the new experiment."
               }
             />
-            <Card>
-              <Card.Body>
-                {!experimentId && showErrorSummary === true && (
-                  <ErrorSummary
-                    show={showErrorSummary}
-                    form="experiments"
-                    errorJson={pageErrorsJson}
-                    errorMessage={pageErrorMessage}
-                  />
-                )}
-                {experimentId && (
+            {experimentId && (
                   <div className="text-right mb-3">
                     <LineTooltip text={"Export Metadata into Excel"}>
                       <Link className="btn gg-download-btn btn-link">
@@ -420,6 +410,17 @@ const AddExperiment = props => {
                     </LineTooltip>
                   </div>
                 )}
+            <Card>
+              <Card.Body>
+                {!experimentId && showErrorSummary === true && (
+                  <ErrorSummary
+                    show={showErrorSummary}
+                    form="experiments"
+                    errorJson={pageErrorsJson}
+                    errorMessage={pageErrorMessage}
+                  />
+                )}
+
                 <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
                   <div className="text-center mb-4">
                     <Link to="/experiments">
