@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { exportMetadata, downloadSpinner } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
-import { Tooltip } from "@material-ui/core";
+import { downloadSpinnerBottomSide } from "../utils/commonUtils";
 
 const PublicExperimentData = () => {
   let { datasetId }  = useParams();
@@ -65,6 +65,7 @@ const PublicExperimentData = () => {
         <title>{head.publicmetadata.title}</title>
         {getMeta(head.publicmetadata)}
       </Helmet>
+      {showSpinner && downloadSpinnerBottomSide()}
       <CardLoader pageLoading={showLoading} />
         <div className="page-container">
           <Container maxWidth="xl">
@@ -86,7 +87,18 @@ const PublicExperimentData = () => {
           <div class="mb-4">
                 <div className="text-right mb-3">
                   <LineTooltip text={"Export Metadata into Excel"}>
-                    <Link className="btn gg-download-btn btn-link">
+                    <Link className="btn gg-download-btn btn-link"
+                      onClick={() =>
+                        exportMetadata(
+                          dataset.id,
+                          setPageErrorsJson,
+                          setPageErrorMessage,
+                          setShowErrorSummary,
+                          setShowSpinner,
+                          "publicexportmetadata",
+                          downloadFailure
+                        )
+                      }>
                       <FontAwesomeIcon
                         className={"gg-blue tbl-icon-btn download-btn"}
                         icon={["fas", "file-export"]}
@@ -294,8 +306,7 @@ const PublicExperimentData = () => {
                 <CardDescriptor metadataId={"DPM6390096"} wsCall={"getpublicdataprocessing"} useToken={ false } name={"Data Processing"}  isSample={true}/>
                 </div>} */}
               </Card.Body>
-        </Card>
-          {showSpinner && downloadSpinner()}
+          </Card>
       </Container>
     </div>
     </>

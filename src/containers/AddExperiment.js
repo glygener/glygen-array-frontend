@@ -388,7 +388,18 @@ const AddExperiment = props => {
             {experimentId && (
                   <div className="text-right mb-3">
                     <LineTooltip text={"Export Metadata into Excel"}>
-                      <Link className="btn gg-download-btn btn-link">
+                  <Link className="btn gg-download-btn btn-link"
+                    onClick={() =>
+                      exportMetadata(
+                        experimentId,
+                        setPageErrorsJson,
+                        setPageErrorMessage,
+                        setShowErrorSummary,
+                        setShowSpinner,
+                        "exportmetadata",
+                        downloadFailure
+                      )
+                    }>
                         <FontAwesomeIcon
                           className={"gg-blue tbl-icon-btn download-btn"}
                           icon={["fas", "file-export"]}
