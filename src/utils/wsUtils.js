@@ -399,6 +399,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/checkslideupload";
     case "publicexportmetadata":
       return ws_base_public + "/downloadMetadata"
+    case "exportmetadata":
+      return ws_base_array + "/downloadMetadata"
 
     default:
       return ws_base_user;

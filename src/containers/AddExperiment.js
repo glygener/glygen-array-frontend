@@ -24,6 +24,9 @@ import { Link } from "react-router-dom";
 import { FilesOnExp } from "../components/FilesOnExp";
 import { KeywordsOnExp } from "../components/KeywordsOnExp";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
+import { exportMetadata, downloadSpinner } from "../utils/commonUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -150,6 +153,12 @@ const AddExperiment = props => {
       setPageErrorsJson(responseJson);
       setShowErrorSummary(true);
     });
+  }
+
+  function downloadFailure(response) {
+    setPageErrorMessage("Download failed. Please contact the system administrators!");
+    setShowErrorSummary(true);
+    setShowSpinner(false);
   }
 
   function getPublication() {
@@ -385,6 +394,31 @@ const AddExperiment = props => {
                     errorJson={pageErrorsJson}
                     errorMessage={pageErrorMessage}
                   />
+                )}
+                {experimentId && (
+                  <div className="text-right mb-3">
+                    <LineTooltip text={"Export Metadata into Excel"}>
+                      <Link className="btn gg-download-btn btn-link">
+                        <FontAwesomeIcon
+                          className={"gg-blue tbl-icon-btn download-btn"}
+                          icon={["fas", "file-export"]}
+                          size="lg"
+                          onClick={() =>
+                            exportMetadata(
+                              experimentId,
+                              setPageErrorsJson,
+                              setPageErrorMessage,
+                              setShowErrorSummary,
+                              setShowSpinner,
+                              "exportmetadata",
+                              downloadFailure
+                            )
+                          }
+                        />
+                        EXPORT
+                      </Link>
+                    </LineTooltip>
+                  </div>
                 )}
                 <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
                   <div className="text-center mb-4">

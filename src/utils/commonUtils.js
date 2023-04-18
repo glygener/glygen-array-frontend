@@ -333,7 +333,7 @@ export function exportMetadata(datasetid, setPageErrorsJson, setPageErrorMessage
     wscall,
     "GET",
     { datasetId: datasetid, filename: "" },
-    true,
+    wscall.startsWith("public") ? false : true,
     null,
     response => fileDownloadSuccess(response, setShowSpinner),
     response => {
