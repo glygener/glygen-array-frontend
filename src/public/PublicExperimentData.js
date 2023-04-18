@@ -10,6 +10,10 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import CardLoader from "../components/CardLoader";
 import { wsCall } from "../utils/wsUtils";
 import { Link } from "react-router-dom";
+import { exportMetadata, downloadSpinner } from "../utils/commonUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Tooltip } from "@material-ui/core";
 
 const PublicExperimentData = () => {
   let { datasetId }  = useParams();
@@ -21,6 +25,7 @@ const PublicExperimentData = () => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [dataset, setDataset] = useState();
   const [showLoading, setShowLoading] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
     setShowLoading(true);
@@ -48,6 +53,11 @@ const PublicExperimentData = () => {
     });
   }
 
+  function downloadFailure(response) {
+    setPageErrorMessage("Download failed. Please contact the system administrators!");
+    setShowErrorSummary(true);
+    setShowSpinner(false);
+  }
 
   return (
     <>
@@ -63,7 +73,6 @@ const PublicExperimentData = () => {
               subTitle={<Link to={`/data/dataset/${datasetId}`}>{"Back to dataset"}</Link>}
             />
 
-
         <Card>
           <Card.Body>
             {showErrorSummary === true && (
@@ -75,6 +84,29 @@ const PublicExperimentData = () => {
               />
             )}
           <div class="mb-4">
+                <div className="text-right mb-3">
+                  <LineTooltip text={"Export Metadata into Excel"}>
+                    <Link className="btn gg-download-btn btn-link">
+                      <FontAwesomeIcon
+                        className={"gg-blue tbl-icon-btn download-btn"}
+                        icon={["fas", "file-export"]}
+                        size="lg"
+                        onClick={() =>
+                          exportMetadata(
+                            dataset.id,
+                            setPageErrorsJson,
+                            setPageErrorMessage,
+                            setShowErrorSummary,
+                            setShowSpinner,
+                            "publicexportmetadata",
+                            downloadFailure
+                          )
+                        }
+                      />
+                      EXPORT
+                    </Link>
+                  </LineTooltip>
+                </div>
             <Card>
               <Card.Header>
                   <Card.Title id="contained-modal-title-vcenter">
@@ -263,6 +295,7 @@ const PublicExperimentData = () => {
                 </div>} */}
               </Card.Body>
         </Card>
+          {showSpinner && downloadSpinner()}
       </Container>
     </div>
     </>

@@ -327,6 +327,23 @@ export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessag
   );
 }
 
+export function exportMetadata(datasetid, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportmetadata", downloadFailure) {
+  setShowSpinner(true);
+  wsCall(
+    wscall,
+    "GET",
+    { datasetId: datasetid, filename: "" },
+    true,
+    null,
+    response => fileDownloadSuccess(response, setShowSpinner),
+    response => {
+      downloadFailure ? downloadFailure(response) : fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    },
+    null,
+    response => downloadFailure(response)
+  );
+}
+
 export function downloadSpinner() {
   return (
     <>
