@@ -515,7 +515,7 @@ const AddFeatureToBlock = props => {
                         }}
                       >
                         {row.original.concentrationInfo.ratio}
-                        {"%"}
+
                       </span>
                     ) : (
                       ""
