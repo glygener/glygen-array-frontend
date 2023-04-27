@@ -44,7 +44,7 @@ const AddExperiment = props => {
       wsCall(
         "listsamples",
         "GET",
-        { offset: "0", loadAll: false, arraydatasetId: experimentId },
+        { offset: "0", sortBy: "name", order: 1, loadAll: false, arraydatasetId: experimentId },
         true,
         null,
         response =>

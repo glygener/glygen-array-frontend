@@ -297,7 +297,7 @@ const GlygenTable = props => {
                     wsCall(
                       "ismiragecompliant",
                       "GET",
-                      { qsParams: { type: "SAMPLE" }, urlParams: [row.original.id] },
+                      { qsParams: { type: getMetadataType(row.original.template) }, urlParams: [row.original.id] },
                       true,
                       null,
                       isMirageCheckSuccess,
@@ -744,6 +744,28 @@ const GlygenTable = props => {
     });
   }
 
+  function getMetadataType(template) {
+    if (template.includes("Printer")) {
+      return "PRINTER";
+    } else if (template.includes("Sample")) {
+      return "SAMPLE";
+    } else if (template.includes("Data")) {
+      return "DATAPROCESSINGSOFTWARE";
+    } else if (template.includes("Image")) {
+      return "IMAGEANALYSISSOFTWARE";
+    } else if (template.includes("Scanner")) {
+      return "SCANNER";
+    } else if (template.includes("Slide")) {
+      return "SLIDE";
+    } else if (template.includes("Assay")) {
+      return "ASSAY";
+    } else if (template.includes("Spot")) {
+      return "SPOT";
+    } else if (template.includes("Printrun")) {
+      return "PRINTRUN";
+    }
+  }
+
   function fetchError(response) {
     response.json().then(response => {
       setPageErrorsJson(response);
@@ -771,10 +793,15 @@ const GlygenTable = props => {
 
   function isMirageCheckSuccess(response) {
     console.log(response);
+    setPageErrorMessage("Mirage compliant metadata!");
+    setShowErrorSummary(true);
   }
 
   function isMirageCheckFailure(response) {
-    console.log(response);
+    response.json().then(responseJson => {
+      setPageDiaErrorsJson(responseJson);
+    });
+    setShowErrorDialogue(true);
   }
 
   function isMakePublicSuccess() {

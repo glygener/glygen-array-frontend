@@ -55,8 +55,8 @@ const PrintRun = props => {
                 commentsRefColumn="description"
                 fetchWS="listprintrun"
                 deleteWS="printrundelete"
-                editUrl="printers/editPrintRun"
-                copyUrl="printers/copyPrintRun"
+                editUrl="printRun/editPrintRun"
+                copyUrl="printRun/copyPrintRun"
                 copyPage="copyPrintRun"
                 keyColumn="id"
                 form={"metadata"}

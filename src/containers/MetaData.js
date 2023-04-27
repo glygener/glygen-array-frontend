@@ -393,9 +393,7 @@ const MetaData = props => {
       sampleType = sampleModel[0];
     } else if (props.metadataType !== "Assay") {
       sampleType = sampleModel.find(i => i.name === metaDataDetails.selectedtemplate);
-    }
-
-    if (props.metadataType === "Assay") {
+    } else if (props.metadataType === "Assay") {
       sampleType = sampleModel[0];
     }
 
