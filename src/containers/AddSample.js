@@ -14,7 +14,10 @@ const AddSample = props => {
   let { sampleId } = useParams();
   let location = useLocation();
 
-  if (location.search && location.search === "?copySample") {
+  /*if (location.search && location.search === "copySample") {
+    isCopySample = true;
+  }*/
+  if (location && location.pathname.includes("copySample")) {
     isCopySample = true;
   }
 

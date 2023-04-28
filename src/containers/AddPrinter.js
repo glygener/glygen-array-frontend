@@ -18,6 +18,10 @@ const AddPrinter = props => {
     isCopyPrinter = true;
   }
 
+  if (location && location.pathname.includes("copyPrinter")) {
+    isCopyPrinter = true;
+  }
+
   useEffect(() => {
     if (!printerId || printerId === "") {
       props.authCheckAgent();

@@ -15,7 +15,7 @@ const ErrorMessageDialogue = props => {
       onHide={() => props.setShowErrorSummary(false)}
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Errors</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">{props.title ? props.title : "Errors"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <ErrorSummary
@@ -25,6 +25,7 @@ const ErrorMessageDialogue = props => {
           customMessage={props.customMessage}
           errorJson={props.pageErrorsJson}
           errorMessage={props.pageErrorMessage}
+            titleMessage={props.titleMessage}
         />
       </Modal.Body>
       <Modal.Footer>
@@ -43,6 +44,8 @@ ErrorMessageDialogue.propTypes = {
   form: PropTypes.string,
   pageErrorsJson: PropTypes.object,
   pageErrorMessage: PropTypes.string,
+  title: PropTypes.string,
+  titleMessage: PropTypes.string
 };
 
 export { ErrorMessageDialogue };

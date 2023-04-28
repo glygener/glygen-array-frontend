@@ -18,6 +18,10 @@ const AddImageAnalysis = props => {
     isCopyImageAnalysis = true;
   }
 
+  if (location && location.pathname.includes("copyImageAnalysis")) {
+    isCopyImageAnalysis = true;
+  }
+
   useEffect(() => {
     if (!imageAnalysisId || imageAnalysisId === "") {
       props.authCheckAgent();

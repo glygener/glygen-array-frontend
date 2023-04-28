@@ -18,6 +18,10 @@ const AddPrintRun = props => {
     isCopyPrintRun = true;
   }
 
+  if (location && location.pathname.includes("copyPrintRun")) {
+    isCopyPrintRun = true;
+  }
+
   useEffect(() => {
     if (!printRunId || printRunId === "") {
       props.authCheckAgent();

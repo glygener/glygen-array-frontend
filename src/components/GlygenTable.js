@@ -44,6 +44,8 @@ const GlygenTable = props => {
   const [curPage, setCurPage] = useState(0);
   const [pageDiaErrorsJson, setPageDiaErrorsJson] = useState({});
   const [pageDiaErrorMessage, setPageDiaErrorMessage] = useState("");
+  const [pageDiaTitle, setPageDiaTitle] = useState("");
+  const [pageDiaTitleMessage, setPageDiaTitleMessage] = useState("");
   const [showErrorDialogue, setShowErrorDialogue] = useState(false);
 
   var columnsToRender = Object.assign({}, props.columns);
@@ -284,7 +286,7 @@ const GlygenTable = props => {
           )}
 
           {props.showMirageCompliance && (
-            <LineTooltip text="Mirage Compliance">
+            <LineTooltip text="Check for Mirage Compliance">
               <Link>
                 <img
                   className="tbl-icon-btn image-icon5"
@@ -293,17 +295,18 @@ const GlygenTable = props => {
                   aria-hidden="true"
                   height="40px"
                   width="40px"
-                  onClick={() =>
+                  onClick={() => {
+                    setShowLoading(true);
                     wsCall(
                       "ismiragecompliant",
                       "GET",
                       { qsParams: { type: getMetadataType(row.original.template) }, urlParams: [row.original.id] },
                       true,
                       null,
-                      isMirageCheckSuccess,
-                      isMirageCheckFailure
+                      response => isMirageCheckSuccess(response, row.original.name),
+                      response => isMirageCheckFailure(response, row.original.name)
                     )
-                  }
+                  }}
                 />
               </Link>
             </LineTooltip>
@@ -498,6 +501,8 @@ const GlygenTable = props => {
           customMessage={true}
           pageErrorsJson={pageDiaErrorsJson}
           pageErrorMessage={pageDiaErrorMessage}
+        title={pageDiaTitle}
+        titleMessage={pageDiaTitleMessage}
         />
       }
 
@@ -791,17 +796,24 @@ const GlygenTable = props => {
     setShowLoading(false);
   }
 
-  function isMirageCheckSuccess(response) {
+  function isMirageCheckSuccess(response, sampleName) {
     console.log(response);
-    setPageErrorMessage("Mirage compliant metadata!");
-    setShowErrorSummary(true);
+    setPageDiaTitle(sampleName + " is MIRAGE compliant!");
+    setPageDiaErrorMessage(" ");  // no message should be displayed
+    setShowErrorDialogue(true);
+    setShowLoading(false);
   }
 
-  function isMirageCheckFailure(response) {
+  function isMirageCheckFailure(response, sampleName) {
     response.json().then(responseJson => {
       setPageDiaErrorsJson(responseJson);
     });
+    setPageDiaTitle(sampleName + " is not MIRAGE compliant");
+    setPageDiaTitleMessage("Errors:");
+    //setPageErrorMessage("");
+    //setShowErrorSummary(false);
     setShowErrorDialogue(true);
+    setShowLoading(false);
   }
 
   function isMakePublicSuccess() {

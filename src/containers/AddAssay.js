@@ -3,7 +3,7 @@ import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
@@ -12,10 +12,21 @@ const AddAssay = props => {
   let type = "ASSAY";
   let { assayId } = useParams();
   let isCopyAssay = false;
+  let location = useLocation();
+
+  if (location.search && location.search === "?copyAssay") {
+    isCopyAssay = true;
+  }
+
+  if (location && location.pathname.includes("copyAssay")) {
+    isCopyAssay = true;
+  }
 
   if (props.location && props.location.search && props.location.search === "?copyAssay") {
     isCopyAssay = true;
   }
+
+
 
   useEffect(() => {
     if (props.authCheckAgent) {

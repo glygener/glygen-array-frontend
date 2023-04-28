@@ -18,6 +18,10 @@ const AddDataProcessing = props => {
     isCopyDataProcessing = true;
   }
 
+  if (location && location.pathname.includes("copyDataProcessing")) {
+    isCopyDataProcessing = true;
+  }
+
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();

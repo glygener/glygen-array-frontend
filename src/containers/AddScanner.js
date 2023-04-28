@@ -18,6 +18,10 @@ const AddScanner = props => {
     isCopyScanner = true;
   }
 
+  if (location && location.pathname.includes("copyScanner")) {
+    isCopyScanner = true;
+  }
+
   useEffect(() => {
     if (!scannerId || scannerId === "") {
       props.authCheckAgent();

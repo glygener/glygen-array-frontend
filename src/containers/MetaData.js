@@ -1474,13 +1474,16 @@ const MetaData = props => {
           </Col>
         </Form.Group>
 
-        {!isUpdate && !props.isCopy && (
+        {!isUpdate && !props.isCopy &&
+          ((sampleModel && sampleModel.length > 1) ||
+            (sampleModel && sampleModel.name && !sampleModel.name.startsWith("Default"))) && (
           <Form.Group as={Row} controlId="description" className="gg-align-center mb-3">
             <Col xs={12} lg={9}>
               <FormLabel
                 label={`${props.metadataType === "Printrun" ? "Print Run" : props.metadataType} Type`}
                 className="required-asterik"
               />
+
               <Form.Control
                 as="select"
                 name="selectedtemplate"
@@ -1501,8 +1504,7 @@ const MetaData = props => {
               </Form.Control>
               <Feedback message={`${props.metadataType} Type is required`} />
             </Col>
-          </Form.Group>
-        )}
+            </Form.Group>)}
 
         {(isUpdate || props.isCopy) && getListTemplate()}
 

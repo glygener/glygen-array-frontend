@@ -18,6 +18,10 @@ const AddSpot = props => {
     isCopySpot = true;
   }
 
+  if (location && location.pathname.includes("copySpot")) {
+    isCopySpot = true;
+  }
+
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();

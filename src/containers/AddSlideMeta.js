@@ -18,6 +18,10 @@ const AddSlideMeta = props => {
     isCopySlideMeta = true;
   }
 
+  if (location && location.pathname.includes("copySlideMeta")) {
+    isCopySlideMeta = true;
+  }
+
   useEffect(() => {
     if (props.authCheckAgent) {
       props.authCheckAgent();
