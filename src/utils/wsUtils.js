@@ -480,7 +480,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
       successFunction(response);
     } else {
       // check if the error code is 403 (expired token)
-      if (response.status == 403 || response.status == 401) {
+      if (!url.includes("login") && (response.status == 403 || response.status == 401)) {
         reLogin(window.history);
       } else {
         errorFunction(response);
