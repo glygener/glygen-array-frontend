@@ -110,7 +110,7 @@ const UploadMolecules = props => {
           </Typography>
           <Card>
             <Card.Body>
-              {showErrorSummary === true && (
+              {showErrorSummary && (
                 <ErrorSummary
                   show={showErrorSummary}
                   form="molecules"
