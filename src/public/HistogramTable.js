@@ -97,7 +97,7 @@ const HistogramTable = props => {
                 ),
               accessor: "rfu",
               sortable: true,
-              sortMethod: (a, b) => Number(a.split(" ")[0]) - Number(a.split(" ")[0])
+              sortMethod: (a, b) => Number(a.split(" ")[0]) - Number(b.split(" ")[0])
             },
             {
               // Header: () => <div className={"table-header"}>{"Structure Image"}</div>,
