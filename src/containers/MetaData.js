@@ -348,6 +348,23 @@ const MetaData = props => {
     let selectedSample;
     let name;
 
+    const onDescriptorChange = ({ target: { value } }) => {
+      setAddDescriptorSelection(value);
+      name = value;
+      if (value !== "Select" && value !== "select") {
+        if (isUpdate || props.isCopy) {
+          sampleModelUpdate = { ...sampleModel };
+          selectedSample = sampleModelUpdate;
+        } else {
+          sampleModelUpdate = [...sampleModel];
+          selectedSample = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
+        }
+
+        var existedElement = selectedSample.descriptors.find(e => e.name === name && !e.isNewlyAdded);
+        handleAddDescriptorGroups(existedElement);
+      }
+    };
+
     return (
       <>
         <Form.Group as={Row} controlId={""} className="gg-align-center">
@@ -356,22 +373,7 @@ const MetaData = props => {
             <Form.Control
               as="select"
               value={addDescriptorSelection}
-              onChange={e => {
-                setAddDescriptorSelection(e.target.value);
-                name = e.target.value;
-                if (e.target.value !== "Select" && e.target.value !== "select") {
-                  if (isUpdate || props.isCopy) {
-                    sampleModelUpdate = { ...sampleModel };
-                    selectedSample = sampleModelUpdate;
-                  } else {
-                    sampleModelUpdate = [...sampleModel];
-                    selectedSample = sampleModelUpdate.find(i => i.name === metaDataDetails.selectedtemplate);
-                  }
-
-                  var existedElement = selectedSample.descriptors.find(e => e.name === name && !e.isNewlyAdded);
-                  handleAddDescriptorGroups(existedElement);
-                }
-              }}
+              onChange={onDescriptorChange}
             >
               {getDescriptorOptions()}
             </Form.Control>

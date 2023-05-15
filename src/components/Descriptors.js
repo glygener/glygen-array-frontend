@@ -276,7 +276,7 @@ const Descriptors = props => {
             }
           } else {
             if (isUpdate || isCopySample) {
-              return descriptor.descriptors.find(i => i.value) && getDescriptorGroups(descriptor, index);
+              return (descriptor.descriptors.find(i => i.value) || descriptor.isNewlyAdded) && getDescriptorGroups(descriptor, index);
             } else {
               return <>{getDescriptorGroups(descriptor, index)}</>;
             }

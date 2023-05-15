@@ -115,8 +115,9 @@ const FORM_ERROR_MESSAGES = {
     Notvalid_file: "The uploaded file appears to be invalid. Please verify it and try again."
   },
   molecules: {
-    NotValid_moleculeType: "The uplodaded file is not of the correct molecule type. Please make sure to upload a file with correct molecules.",
+    NotValid_moleculeType: "The uploaded molecule is not of the correct molecule type. Please make sure to upload a file with correct molecules.",
     NotValid_file: "The uploaded file is not a valid repository export (.json) file. Please verify it and try again.",
+    NotValid_filetype: "Incorrect file type is selected. Please make sure to select repository export file.",
   },
 
   default: {
