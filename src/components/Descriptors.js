@@ -336,7 +336,7 @@ const Descriptors = props => {
           style={{
             border: descriptor.group ? "" : "none",
             padding: descriptor.group ? "1em" : "none",
-            paddingLeft: descriptor.group ? "1em" : "1em"
+            paddingLeft: descriptor.group ? "1em" : "1.5em"
           }}
         >
           <Col md={12} lg={descriptor.group ? 12 : 11}>
@@ -484,8 +484,28 @@ const Descriptors = props => {
 
     return (
       <>
-        <Row>
-          <Col>
+        <div
+          style={{
+            textAlign: "left",
+            paddingLeft: "10px"
+          }}
+          key={descriptor.id.toString()}
+        >
+          <Form.Group as={Row} controlId={descriptor.id} key={descriptor.id.toString()} className="gg-align-center mb-3">
+            <Col xs={12} lg={7}>
+              {!descriptor.id.startsWith("newly") && isSubGroup && (
+                <span className="font-awesome-color " style={{ float: "left" }}>
+                  <span>
+                    <HelpToolTip
+                      title={groupElement.name}
+                      url={groupElement.wikiLink}
+                      text={groupElement.description}
+                      helpIcon="gg-helpicon-detail"
+                    />
+                  </span>
+                </span>
+              )}
+
             {!descriptor.id.startsWith("newly") && descriptor.group && (
               <p
                 style={{ textAlign: "left", fontWeight: "bold" }}
@@ -494,12 +514,9 @@ const Descriptors = props => {
                 {descriptor.name}
               </p>
             )}
-          </Col>
-          <Col
-            style={{
-              textAlign: isSubGroup ? "left" : "right"
-            }}
-          >
+
+            </Col>
+            <Col xs={12} lg={3} className="mt-2 pt-2">
             {!descriptor.id.startsWith("newly") &&
               (descriptor.maxOccurrence > 1 ||
                 (descriptor.maxOccurrence === 1 &&
@@ -544,7 +561,8 @@ const Descriptors = props => {
               </LineTooltip>
             )}
           </Col>
-        </Row>
+          </Form.Group>
+        </div>
       </>
     );
   };
@@ -602,29 +620,24 @@ const Descriptors = props => {
           } else if (descriptor.group) {
             let commonGroups = groupElement.descriptors.filter(i => i.name === descriptor.name);
 
+            let rowExists = false;
+            commonGroups.map(desc => {
+              let filledDescriptors = desc.descriptors.filter(i => i.value && i.value !== "");
+
+              if (filledDescriptors.length > 0) {
+                rowExists = true;
+              }
+            });
+
             return (
               <>
-                {!descriptor.id.startsWith("newly") && (
-                  <span className="font-awesome-color " style={{ float: "left" }}>
-                    <span>
-                      <HelpToolTip
-                        title={groupElement.name}
-                        url={groupElement.wikiLink}
-                        text={groupElement.description}
-                        helpIcon="gg-helpicon-detail"
-                      />
-                    </span>
-                  </span>
-                )}
-
-                <div key={descriptor.id.toString()}>
                   {groupElement.isNewlyAdded
                     ? getCardBody(descriptor, index, groupElement, true, true)
                     : getCardBody(descriptor, index, groupElement, true, false)}
 
-                  {!descriptor.id.startsWith("newly") && (
-                    /* Creating Sub group Table */
-                    <table fluid="true" className="table-striped mb-3">
+                {!descriptor.id.startsWith("newly") && rowExists && (
+                  /* Creating Sub group Table */
+                  <table fluid="true" className="table-striped mb-3">
                       <thead>
                         <tr>
                           {descriptor.descriptors.map(field => {
@@ -671,8 +684,7 @@ const Descriptors = props => {
                         })}
                       </tbody>
                     </table>
-                  )}
-                </div>
+                )}
               </>
             );
           } else {
@@ -832,6 +844,7 @@ const Descriptors = props => {
     } else if (element.namespace && !element.namespace.name) {
       element.namespace = { ...element.namespace, name: "label" };
     }
+    if (element.name === "Cell free expression system") return;
     return (
       <Form.Group as={Row} controlId={element.id} key={element.id.toString()} className="gg-align-center mb-3">
         <Col xs={12} lg={7}>
@@ -862,7 +875,7 @@ const Descriptors = props => {
                 </div>
               </Col>
             ) : element.namespace.name === "number" ? (
-              <Col className="ml-0 pl-0 mr-0 pr-0">
+                <Col>
                 <Form.Control
                   type="text"
                   name={element.name}
@@ -925,9 +938,9 @@ const Descriptors = props => {
                 control={
                   <BlueCheckbox
                     name={element.name}
-                    onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
+                              onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "checkBox")}
                     size="large"
-                    defaultChecked={element.notApplicable}
+                              checked={element.value}
                     disabled={descriptorDetails.isHide || element.disabled}
                   />
                 }

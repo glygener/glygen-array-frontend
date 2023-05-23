@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useRef } from "react";
 import { Feedback, FormLabel, BlueCheckbox } from "../components/FormControls";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { wsCall } from "../utils/wsUtils";
@@ -310,6 +310,8 @@ const MetaData = props => {
       }
     } else if (e.target.name === "notRecorded" && !flag) {
       descriptorDetails.notRecorded = flag;
+    } else { // other boolean
+      descriptorDetails.value = flag;
     }
 
     if (descriptorDetails.notApplicable || descriptorDetails.notRecorded) {
@@ -608,7 +610,7 @@ const MetaData = props => {
 
     newElement.isNewlyAdded = true;
     newElement.isNewlyAddedNonMandatory = true;
-    newElement.order = maxCurrentOrder + 1;
+    //newElement.order = maxCurrentOrder + 1;
     newElement.group &&
       newElement.descriptors.forEach(e => {
        // e.value = "";
@@ -642,10 +644,10 @@ const MetaData = props => {
     var itemByTypeIndex;
 
     if (isUpdate || props.isCopy) {
-      sampleModelDelete = { ...sampleModel };
+      itemByType = { ...sampleModel };
 
-      itemByType = sampleModelDelete.find(i => i.name === metaDataDetails.selectedtemplate);
-      itemByTypeIndex = sampleModelDelete.indexOf(itemByType);
+      //itemByType = sampleModelDelete.find(i => i.name === metaDataDetails.selectedtemplate);
+     // itemByTypeIndex = sampleModelDelete.indexOf(itemByType);
     } else {
       sampleModelDelete = [...sampleModel];
 
@@ -1267,11 +1269,11 @@ const MetaData = props => {
         }
       }
 
-      indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
+      indexOfCurrentDefaultSelection = superGroup.indexOf(currentDefaultSelection[0]);
       currentDefaultSelection[0].mandateGroup.defaultSelection = false;
       currentDefaultSelection[0].mandateGroup.notApplicable = false;
       currentDefaultSelection[0].mandateGroup.notRecorded = false;
-      itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
+      superGroup[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
     }
 
     if (notApplicableOrRecorded) {
@@ -1292,12 +1294,13 @@ const MetaData = props => {
         }
       }
     } else {
-      indexOfLatestDefaultSelection = itemDescriptors.indexOf(latestDefaultSelection);
+      indexOfLatestDefaultSelection = superGroup.indexOf(latestDefaultSelection);
       latestDefaultSelection.mandateGroup.defaultSelection = true;
-      itemDescriptors[indexOfLatestDefaultSelection] = latestDefaultSelection;
+      if (!latestDefaultSelection.group && latestDefaultSelection.namespace.name === "boolean") {
+        latestDefaultSelection.value = true;
+      }
+      superGroup[indexOfLatestDefaultSelection] = latestDefaultSelection;
     }
-
-    itemByType.descriptors = itemDescriptors;
 
     if (isUpdate || props.isCopy) {
       setSampleModel(itemByType);
@@ -1895,7 +1898,9 @@ const MetaData = props => {
 
       metaDataDetails.sample.descriptorGroups.forEach(group => {
         let templateDescriptorGroup;
-        let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.order === group.order);
+        let tempDescGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
+
+        let filledDescriptors = tempDescGroup.descriptors.filter(i => i.value && i.value !== "");
 
         if (!tempDescGroup) {
           templateDescriptorGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
@@ -1910,7 +1915,12 @@ const MetaData = props => {
             });
 
           sampleModelUpdate.descriptors.push(newElement);
-        } else {
+        } else if (filledDescriptors.length > 0) {   // we need another fresh copy, this one already has values 
+          templateDescriptorGroup = sampleModelUpdate.descriptors.find(i => i.id === group.key.id);
+          tempDescGroup = JSON.parse(JSON.stringify(templateDescriptorGroup));
+          sampleModelUpdate.descriptors.push(tempDescGroup);
+        }
+        if (tempDescGroup) {
           if (group.key.mandateGroup && (group.notApplicable || group.notRecorded)) {
             templateDescriptorGroup = tempDescGroup;
             templateDescriptorGroup.mandateGroup.defaultSelection = false;
@@ -1959,6 +1969,24 @@ const MetaData = props => {
               templateDescriptorGroup && templateDescriptorGroup.descriptors.find(i => i.id === dbRetrivedDesc.key.id);
             const newlyAddedGroupsInDBRetrivedDesc =
               templateDescriptorGroup && group.descriptors.filter(i => i.key.id === dbRetrivedDesc.key.id);
+
+            if (dbRetrivedDesc.key.mandateGroup) {
+              if ((dbRetrivedDesc.group && dbRetrivedDesc.descriptors.length > 0) ||
+                (dbRetrivedDesc.value)) {
+                subDescriptor.mandateGroup.defaultSelection = true;
+
+                let defaultSelectedUnfilledDesc = templateDescriptorGroup.descriptors.find(
+                  e =>
+                    e.mandateGroup &&
+                    e.mandateGroup.id === subDescriptor.mandateGroup.id &&
+                    e.mandateGroup.defaultSelection
+                );
+
+                if (defaultSelectedUnfilledDesc.id !== subDescriptor.id) {
+                  defaultSelectedUnfilledDesc.mandateGroup.defaultSelection = false;
+                }
+              }
+            }
 
             if (subDescriptor && !subDescriptor.group) {
               if (dbRetrivedDesc.notApplicable) {
