@@ -327,12 +327,12 @@ export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessag
   );
 }
 
-export function exportMetadata(datasetid, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportmetadata", downloadFailure) {
+export function exportMetadata(datasetid, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportmetadata", downloadFailure, singleSheet, mirageOnly) {
   setShowSpinner(true);
   wsCall(
     wscall,
     "GET",
-    { datasetId: datasetid, filename: "" },
+    { datasetId: datasetid, filename: "", singleSheet: (singleSheet ? "true" : "false"), mirageOnly: (mirageOnly ? "true" : "false") },
     wscall.startsWith("public") ? false : true,
     null,
     response => fileDownloadSuccess(response, setShowSpinner),

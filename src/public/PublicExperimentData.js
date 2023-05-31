@@ -14,6 +14,7 @@ import { exportMetadata, downloadSpinner } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
+import ExportButton from "../components/ExportButton";
 
 const PublicExperimentData = () => {
   let { datasetId }  = useParams();
@@ -59,6 +60,27 @@ const PublicExperimentData = () => {
     setShowSpinner(false);
   }
 
+  function handleExport(style, metadata) {
+    let singleSheet = undefined;
+    let mirageOnly = undefined;
+    if (style === "Single sheet") singleSheet = true;;
+    if (metadata !== "Complete Metadata") {
+      mirageOnly = true;
+    }
+
+    exportMetadata(
+      datasetId,
+      setPageErrorsJson,
+      setPageErrorMessage,
+      setShowErrorSummary,
+      setShowSpinner,
+      "publicexportmetadata",
+      downloadFailure,
+      singleSheet,
+      mirageOnly
+    )
+  }
+
   return (
     <>
       <Helmet>
@@ -86,38 +108,7 @@ const PublicExperimentData = () => {
             )}
           <div class="mb-4">
                 <div className="text-right mb-3">
-                  <LineTooltip text={"Export Metadata into Excel"}>
-                    <Link className="btn gg-download-btn btn-link"
-                      onClick={() =>
-                        exportMetadata(
-                          dataset.id,
-                          setPageErrorsJson,
-                          setPageErrorMessage,
-                          setShowErrorSummary,
-                          setShowSpinner,
-                          "publicexportmetadata",
-                          downloadFailure
-                        )
-                      }>
-                      <FontAwesomeIcon
-                        className={"gg-blue tbl-icon-btn download-btn"}
-                        icon={["fas", "file-export"]}
-                        size="lg"
-                        onClick={() =>
-                          exportMetadata(
-                            dataset.id,
-                            setPageErrorsJson,
-                            setPageErrorMessage,
-                            setShowErrorSummary,
-                            setShowSpinner,
-                            "publicexportmetadata",
-                            downloadFailure
-                          )
-                        }
-                      />
-                      EXPORT
-                    </Link>
-                  </LineTooltip>
+                  <ExportButton handleExport={handleExport} />
                 </div>
             <Card>
               <Card.Header>
