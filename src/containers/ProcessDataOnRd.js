@@ -18,6 +18,8 @@ import { DownloadButton } from "../components/DownloadButton";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { ViewDescriptor } from "../components/ViewDescriptor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { HelpToolTip } from "../components/tooltip/HelpToolTip";
+import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 
 const ProcessDataOnRd = props => {
   let { experimentId } = useParams();
@@ -106,6 +108,8 @@ const ProcessDataOnRd = props => {
     {
       controlId: "fileUploader",
       label: "Process Data File",
+      wikiTitle: wikiHelpTooltip.experiment.processed_data.title,
+      wikiURL: wikiHelpTooltip.experiment.processed_data.url,
       fileType: processData.fileType,
       setUploadedFile: setUploadedDF,
       required: true,
@@ -114,6 +118,8 @@ const ProcessDataOnRd = props => {
     {
       controlId: "fileUploader",
       label: "Exclusion List File",
+      wikiTitle: wikiHelpTooltip.experiment.exclusion_list.title,
+      wikiURL: wikiHelpTooltip.experiment.exclusion_list.url,
       fileType: processData.fileType,
       setUploadedFile: setUploadedExclusiveFile,
       required: false
@@ -442,6 +448,14 @@ const ProcessDataOnRd = props => {
                           className="gg-align-center mt-0 pt-0"
                         >
                           <Col xs={12} lg={9}>
+                            <span className="font-awesome-color" style={{ float: "left" }}>
+                              <span>
+                                <HelpToolTip
+                                  url={data.wikiURL}
+                                  text={data.wikiTitle}
+                                  helpIcon="gg-helpicon-detail" />
+                              </span>
+                            </span>
                             <FormLabel label={data.label} className={data.required ? "required-asterik pb-0 mb-0" : "pb-0 mb-0" } />
                             <ResumableUploader
                               className="mt-0 pt-0"
