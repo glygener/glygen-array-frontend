@@ -551,7 +551,9 @@ const AddFeatureToBlock = props => {
                   ? row.original.feature.glycans.map(element => (
                       <StructureImage
                         key={index}
-                        base64={element.glycan ? element.glycan.cartoon : element.cartoon}
+                        base64={element.glycan ? element.glycan.cartoon : 
+                          (element.glycans && element.glycans[0] &&
+                            element.glycans[0].glycan ? element.glycans[0].glycan.cartoon : element.cartoon)}
                         style={{
                           maxWidth: "100px",
                           overflow: "scroll",

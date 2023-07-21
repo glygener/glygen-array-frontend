@@ -74,9 +74,29 @@ const SpotInformation = props => {
                                     }}
                                   />
                                 ) : (
+                                  element.glycans ? 
+                                    (element.glycans.map((element, index) =>
+                                    element.glycan && element.glycan.cartoon ? (
+                                      <StructureImage
+                                        key={index}
+                                        base64={element.glycan.cartoon}
+                                        style={{
+                                          maxWidth: "100px",
+                                          overflow: "scroll"
+                                        }}
+                                      />
+                                    ) : (
+                                      <div key={index}>
+                                        <Col>{"No Image"}</Col>
+                                      </div>
+                                    )
+                                  )
+                                )
+                                 : (
                                   <div key={index}>
-                                    <Col>{"No Image"}</Col>
-                                  </div>
+                                        <Col>{"No Image"}</Col>
+                                      </div>
+                                )
                                 )
                               )}
                             </Col>
