@@ -97,7 +97,9 @@ const HistogramTable = props => {
                 ),
               accessor: "rfu",
               sortable: true,
-              sortMethod: (a, b) => Number(a.split(" ")[0]) - Number(b.split(" ")[0])
+              // RFU value is assumed to be in this format: 1,415.23 +- 12.45
+              // if it is changed in PublicDataset.js, this part needs to be modified
+              sortMethod: (a, b) => Number(a.replace(",", "").split(" ")[0]) - Number(b.replace(",", "").split(" ")[0])
             },
             {
               // Header: () => <div className={"table-header"}>{"Structure Image"}</div>,
