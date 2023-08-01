@@ -5,7 +5,7 @@ import "react-table/react-table.css";
 import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import "./GlygenTable.css";
-import { Form, Col, Row, Button } from "react-bootstrap";
+import { Form, Col, Row, Button, Modal } from "react-bootstrap";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { GlygenTableRowsInfo } from "./GlygenTableRowsInfo";
 import { ErrorSummary } from "./ErrorSummary";
@@ -708,24 +708,39 @@ const GlygenTable = props => {
         body="Are you sure you want to delete?"
       />
 
-      <ConfirmationModal
-        showModal={showMakePublicModal}
-        onCancel={() => setShowMakePublicModal(false)}
-        onConfirm={() => {
-          setShowMakePublicModal(false);
-          wsCall(
-            "makearraydatasetpublic",
-            "POST",
-            [selectedIdMakePublic],
-            true,
-            null,
-            isMakePublicSuccess,
-            isMakePublicFailure
-          );
-        }}
-        title="Confirm"
-        body="You are going to make this Data Set public. Are you sure you want to proceed?"
-      />
+      <Modal
+        show={showMakePublicModal}
+        animation={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>You are going to make this Data Set public. When releasing datasets to the public all information will be accessible under the Creative Commons  Attribution 4.0 International (CC BY 4.0). Users can freely access, share and adapt the data. But are required to give appropriate credit.
+          Detailed information on the license can be found <a href="https://creativecommons.org/licenses/by/4.0/">here</a>.</Modal.Body>
+        <Modal.Footer>
+          <Button className="gg-btn-outline-reg" onClick={() => setShowMakePublicModal(false)}>
+            Decline
+          </Button>
+          <Button className="gg-btn-blue-reg" onClick={() => {
+            setShowMakePublicModal(false);
+            wsCall(
+              "makearraydatasetpublic",
+              "POST",
+              [selectedIdMakePublic],
+              true,
+              null,
+              isMakePublicSuccess,
+              isMakePublicFailure
+            );
+          }}>
+            Accept
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </>
   );
 

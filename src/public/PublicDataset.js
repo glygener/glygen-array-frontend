@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../css/Search.css";
 import "./PublicDataset.css";
 import { getDateCreated } from "../utils/commonUtils";
-import { Row, Col, Button, Card, Form } from "react-bootstrap";
+import { Row, Col, Button, Card, Form, Image } from "react-bootstrap";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { useParams, useHistory } from "react-router-dom";
@@ -24,6 +24,7 @@ import { PubOnExp } from "../components/PubOnExp";
 import { Link } from "react-router-dom";
 import CardLoader from "../components/CardLoader";
 import { ViewDescriptor } from "../components/ViewDescriptor";
+import licenseLogo from "../images/creativecommonslogo.svg";
 
 // const Files = React.lazy(() => import("./Files"));
 // const SubmitterDetails = React.lazy(() => import("./SubmitterDetails"));
@@ -274,14 +275,27 @@ const PublicDataset = () => {
                 </Card> */}
               </Col>
               <Col md={4} style={{display: "flex",  flexDirection: "column"}}>
-              <Card style={{height: "100%"}}>
-              <Card.Body>
-                <Title title="Submitter" />
-                {dataset.user && dataset.user.name ? (
-                  <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
-                ) : null}
-              </Card.Body>
-            </Card>
+                <Card style={{ height: "50%" }}>
+                  <Card.Body>
+                    <Title title="Submitter" />
+                    {dataset.user && dataset.user.name ? (
+                      <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
+                    ) : null}
+                  </Card.Body>
+                </Card>
+                <Card style={{ height: "50%" }}>
+                  <Card.Body>
+                    <Title title="License" />
+                    <div className="text-left">
+                      <Link to={`https://creativecommons.org/licenses/by/4.0/`}>Creative Commons Attribution 4.0 International</Link>
+                      <p>(CC BY 4.0)</p>
+                      <a href={"https://creativecommons.org/licenses/by/4.0/"} target="_blank" rel="noopener noreferrer">
+                        <Image src={licenseLogo} className="licenseIcons" />
+                      </a>
+
+                    </div>
+                  </Card.Body>
+                </Card>
             </Col>
             </Row>
             <Card style={{marginBottom: "30px"}}>

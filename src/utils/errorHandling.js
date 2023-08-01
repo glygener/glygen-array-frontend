@@ -102,7 +102,8 @@ const FORM_ERROR_MESSAGES = {
   },
   experiments: {
     NotDone_rawData: "RawData is still in the process. Please try once more.",
-    NotFound_publicationId: "The publication ID could not be found."
+    NotFound_publicationId: "The publication ID could not be found.",
+    HasError_dataset: "Dataset has errors, cannot be made public without resolving data errors!"
   },
   grants: {
     Duplicate_grant: "Another grant has the same grant number as this one. Use a different grant number."
