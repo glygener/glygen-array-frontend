@@ -259,7 +259,7 @@ const PublicDataset = () => {
           <>
             <Row style={{marginBottom: "30px"}}>
               <Col md={8}>
-                <Card>
+                <Card style={{ height: "100%" }}>
                   <Card.Body>
                     <Title title="Summary" />
                     {getDetails()}
@@ -275,7 +275,7 @@ const PublicDataset = () => {
                 </Card> */}
               </Col>
               <Col md={4} style={{display: "flex",  flexDirection: "column"}}>
-                <Card style={{ height: "50%" }}>
+                <Card style={{ height: "100%", marginBottom: "30px" }}>
                   <Card.Body>
                     <Title title="Submitter" />
                     {dataset.user && dataset.user.name ? (
@@ -283,19 +283,21 @@ const PublicDataset = () => {
                     ) : null}
                   </Card.Body>
                 </Card>
-                <Card style={{ height: "50%" }}>
+
+                <Card style={{ height: "100%" }}>
                   <Card.Body>
                     <Title title="License" />
-                    <div className="text-left">
-                      <Link to={`https://creativecommons.org/licenses/by/4.0/`}>Creative Commons Attribution 4.0 International</Link>
+                    <div className="text-center">
+                      <a href={"https://creativecommons.org/licenses/by/4.0/"} target="_blank" rel="noopener noreferrer">
+                        Creative Commons Attribution 4.0 International</a>
                       <p>(CC BY 4.0)</p>
                       <a href={"https://creativecommons.org/licenses/by/4.0/"} target="_blank" rel="noopener noreferrer">
                         <Image src={licenseLogo} className="licenseIcons" />
                       </a>
-
                     </div>
                   </Card.Body>
                 </Card>
+
             </Col>
             </Row>
             <Card style={{marginBottom: "30px"}}>
