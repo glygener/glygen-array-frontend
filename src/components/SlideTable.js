@@ -139,6 +139,7 @@ const SlideTable = props => {
                             },
                             {
                                 Header: "Block dimension",
+                                sortable: false,
                                 Cell: row => getBlockDimension(row.original.layout)
                             },
                             {

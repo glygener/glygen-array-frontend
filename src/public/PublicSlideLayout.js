@@ -12,29 +12,26 @@ import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 import { ViewDescriptor } from "../components/ViewDescriptor";
 import { GlygenGrid } from "../components/GlygenGrid";
-import { SelectedSpotsSlide, SpotInformationBlock } from "../components/SpotInformation";
+import { SpotInformationBlock } from "../components/SpotInformation";
 import { ColorNotation } from "../components/ColorNotation";
+import { downloadFile, exportFile } from "../utils/commonUtils";
+import { DownloadButton } from "../components/DownloadButton";
+import { downloadSpinnerBottomSide } from "../utils/commonUtils";
 
 const PublicSlideLayout = () => {
     let { slideId } = useParams();
 
     const history = useHistory();
     const [slide, setSlide] = useState();
-    const [enableMetadata, setEnableMetadata] = useState(false);
     const [descOpen, setDescOpen] = useState(false);
     const [pageErrorsJson, setPageErrorsJson] = useState({});
     const [pageErrorMessage, setPageErrorMessage] = useState("");
     const [showErrorSummary, setShowErrorSummary] = useState(false);
-    const [pageErrorsJsonData, setPageErrorsJsonData] = useState({});
-    const [pageErrorMessageData, setPageErrorMessageData] = useState("");
-    const [showErrorSummaryData, setShowErrorSummaryData] = useState(false);
-    const [showloadingData, setShowloadingData] = useState(false);
     const [showPrinter, setShowPrinter] = useState(false);
     const [showPrintrun, setShowPrintrun] = useState(false);
     const [showSlideMetadata, setShowSlideMetadata] = useState(false);
-
+    const [showSpinner, setShowSpinner] = useState(false);
     const [arraySelected, setArraySelected] = useState(new Map());
-    const [spotsSelected, setSpotsSelected] = useState(new Map());
     const [blockCard, setBlockCard] = useState();
 
     const gridSize = {
@@ -101,7 +98,6 @@ const PublicSlideLayout = () => {
         });
 
         setArraySelected(spots);
-        setSpotsSelected(spots);
     }
 
     function updateBlockGridParams(slidelayout) {
@@ -111,6 +107,36 @@ const PublicSlideLayout = () => {
             cols: slidelayout.width,
             rows: slidelayout.height
         };
+    }
+
+    function handleDownload(type) {
+        if (type === "export") {
+            exportFile(
+                slide.layout,
+                null,
+                null,
+                null,
+                setShowSpinner,
+                "publicexportslidelayout",
+                downloadFailure
+            )
+        } else if (type === "download") {
+            downloadFile(
+                slide.layout.file,
+                null,
+                null,
+                null,
+                "publicfiledownload",
+                setShowSpinner,
+                downloadFailure
+            );
+        }
+    }
+
+    function downloadFailure(response) {
+        setPageErrorMessage("Download failed. Please contact the system administrators!");
+        setShowErrorSummary(true);
+        setShowSpinner(false);
     }
 
 
@@ -221,7 +247,6 @@ const PublicSlideLayout = () => {
             setBlockCard(selectedSpot);
         }
 
-        setSpotsSelected(spots);
         setArraySelected(spots);
     };
 
@@ -279,6 +304,8 @@ const PublicSlideLayout = () => {
                 {getMeta(head.publicslidelist)}
             </Helmet>
 
+            {showSpinner && downloadSpinnerBottomSide()}
+
             {showErrorSummary === true && (
                 <ErrorSummary
                     show={showErrorSummary}
@@ -292,13 +319,22 @@ const PublicSlideLayout = () => {
                 {slide ? (
                     <>
                         <Row style={{ marginBottom: "30px" }}>
-                            <Col md={12}>
+                            <Col md={10}>
                                 <Card style={{ height: "100%" }} className="text-center summary-panel">
                                     <Card.Body>
                                         <Title title="Summary" />
                                         {getDetails()}
                                     </Card.Body>
                                 </Card>
+                            </Col>
+                            <Col md={2}>
+                                <DownloadButton
+                                    showExport={true}
+                                    exportName={"Export Extended GAL File"}
+                                    downloadName={"Download"}
+                                    showDownload={slide.layout.file ? true : false}
+                                    handleDownload={handleDownload}
+                                />
                             </Col>
                         </Row>
 
