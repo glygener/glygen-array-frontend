@@ -52,8 +52,11 @@ import { Spots } from "./containers/Spots";
 import { ErrorPage } from "./components/ErrorPage";
 import { Switch, Route } from "react-router-dom";
 import { PublicData } from "./public/PublicData";
+import { PublicSlide } from "./public/PublicSlide";
 import { PublicExperimentData } from "./public/PublicExperimentData";
 import { PublicDataset } from "./public/PublicDataset";
+import { PublicSlideLayout } from "./public/PublicSlideLayout";
+import { PublicBlockLayout } from "./public/PublicBlockLayout";
 import { AddGrant } from "./containers/AddGrant";
 import { AddMultipleGlycans } from "./containers/AddMultipleGlycans";
 import { Peptides } from "./containers/Peptides";
@@ -151,6 +154,22 @@ const Routes = props => {
       path: "/data",
       exact: true,
       main: () => <PublicData />,
+      sidebar: () => "",
+    },
+    {
+      path: "/slideList",
+      exact: true,
+      main: () => <PublicSlide />,
+      sidebar: () => "",
+    },
+    {
+      path: "/slideList/slidelayout/:slideId",
+      main: () => <PublicSlideLayout {...props} />,
+      sidebar: () => "",
+    },
+    {
+      path: "/slideList/blockLayouts/viewBlock/:blockLayoutId",
+      main: () => <PublicBlockLayout />,
       sidebar: () => "",
     },
     {
@@ -484,7 +503,7 @@ const Routes = props => {
     /* Slide */
 
     {
-      path: "/slide/editSlide/:slideId?",
+      path: "/slides/editSlide/:slideId?",
       main: () => <AddSlide {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("slide"),
     },

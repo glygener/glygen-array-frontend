@@ -211,7 +211,7 @@ SelectedSpotsSlide.propTypes = {
 };
 
 const SpotInformationBlock = props => {
-  const { blockCard } = props;
+  const { blockCard, publicView } = props;
 
   return (
     <>
@@ -224,7 +224,7 @@ const SpotInformationBlock = props => {
             <Accordion.Toggle as={Card.Header}>
               Block: &nbsp;
               <Link
-                to={`/blockLayouts/editBlock/${blockCard.blockSelected.id}`}
+                to={publicView ? `/slideList/blockLayouts/viewBlock/${blockCard.blockSelected.id}` : `/blockLayouts/editBlock/${blockCard.blockSelected.id}`}
                 target="_blank"
                 className="custom_link"
               >
@@ -239,6 +239,7 @@ const SpotInformationBlock = props => {
 };
 SpotInformationBlock.propTypes = {
   blockCard: PropTypes.object,
+  publicView: PropTypes.bool,
   spotFeaturedCard: arrayOf(PropTypes.object, PropTypes.array)
 };
 

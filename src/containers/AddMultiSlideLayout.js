@@ -219,12 +219,14 @@ const AddMultiSlideLayout = props => {
 
     columnsToRender["nameColumn"] = {
       Header: "Name",
+      accessor: "name",
       // eslint-disable-next-line react/display-name
       Cell: row => editSlideName(row)
     };
 
     columnsToRender["selectionColumn"] = {
       Header: "Select",
+      sortable: false,
       // eslint-disable-next-line react/display-name
       Cell: row => (
         <FormControlLabel

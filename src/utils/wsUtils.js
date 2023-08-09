@@ -303,6 +303,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/listAllPrintedSlide";
     case "listpublicdataset":
       return ws_base_public + "/listArrayDataset";
+    case "listpublicslide":
+      return ws_base_public + "/listPrintedSlide";
     case "getpublicblocklayout":
       return ws_base_public + "/getblocklayout";
     case "getpublicdataset":
@@ -329,6 +331,10 @@ export function getWsUrl(ws) {
       return ws_base_public + "/getImageAnalysisSoftware";
     case "getpublicdataprocessing":
       return ws_base_public + "/getDataProcessingSoftware";
+    case "listpublicspotmetadata":
+      return ws_base_public + "/listSpotMetadata";
+    case "getpublicspotmetadata":
+      return ws_base_public + "/getSpotMetadata";
     case "getlistintensities":
       return ws_base_public + "/listIntensityData";
     case "getglycanpublic":
@@ -401,6 +407,8 @@ export function getWsUrl(ws) {
       return ws_base_public + "/downloadMetadata"
     case "exportmetadata":
       return ws_base_array + "/downloadMetadata"
+    case "getpublicprintedslide":
+      return ws_base_public + "/getprintedslide"
 
     default:
       return ws_base_user;

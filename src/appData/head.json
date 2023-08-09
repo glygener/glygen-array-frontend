@@ -17,6 +17,15 @@
       }
     ]
   },
+  "publicslidelist": {
+    "title": "Glycan Array slide",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
   "publicmetadata": {
     "title": "Glycan Array metadata",
     "meta": [

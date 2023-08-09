@@ -613,7 +613,7 @@ const MetaData = props => {
     //newElement.order = maxCurrentOrder + 1;
     newElement.group &&
       newElement.descriptors.forEach(e => {
-       // e.value = "";
+        e.value = "";
         e.id = "newlyAddedItems" + newItemsCount + e.id;
       });
 
@@ -2000,10 +2000,10 @@ const MetaData = props => {
                 subDescriptor.unit = dbRetrivedDesc.unit ? dbRetrivedDesc.unit : "";
               }
             } else {
-              if (subDescriptor && !subDescriptor.mandatory && newlyAddedGroupsInDBRetrivedDesc.length < 2) {
+              /*if (subDescriptor && !subDescriptor.mandatory && newlyAddedGroupsInDBRetrivedDesc.length < 2) {
                 subDescriptor.id = "newlyAddedItems" + subDescriptor.id;
                 subDescriptor.isNewlyAdded = true;
-              } else if (
+              } else */if (
                 newlyAddedGroupsInDBRetrivedDesc.length > 1 &&
                 subDescriptor.descriptors.filter(e => e.value && e.value.length > 0).length > 0
               ) {

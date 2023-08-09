@@ -72,7 +72,7 @@ const Slides = props => {
                 commentsRefColumn="description"
                 fetchWS="slidelist"
                 deleteWS="slidedelete"
-                editUrl="slide/editSlide"
+                editUrl="slides/editSlide"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Slides"
