@@ -498,6 +498,7 @@ const AddFeatureToBlock = props => {
             },
             {
               Header: "Ratio",
+              accessor: "concentrationInfo.ratio",
               // eslint-disable-next-line react/display-name
               Cell: (row, index) => (
                 <>
@@ -526,6 +527,7 @@ const AddFeatureToBlock = props => {
             },
             {
               Header: "Linker",
+              accessor: "feature.linker.name",
               // eslint-disable-next-line react/display-name
               Cell: (row, index) => (
                 <input
@@ -546,6 +548,7 @@ const AddFeatureToBlock = props => {
             },
             {
               Header: "Sequence",
+              sortable: false,
               Cell: (row, index) => {
                 return row.original && row.original.feature.glycans
                   ? row.original.feature.glycans.map(element => (
@@ -581,6 +584,7 @@ const AddFeatureToBlock = props => {
           keyColumn="id"
           showPaginationTop
           sortable={true}
+          multiSort={false}
           // filterable={true}
         />
       </>
