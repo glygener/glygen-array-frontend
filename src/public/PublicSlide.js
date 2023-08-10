@@ -19,7 +19,7 @@ const PublicSlide = () => {
                     // marginTop: window.innerHeight / 8
                 }}
             >
-                <SlideTable wsName="listpublicslide" showSearchBox="true" />
+                <SlideTable wsName="listpublicslide" showSearchBox={true} showHeading={true} />
                 {/* public slides /> */}
             </Card>
         </>

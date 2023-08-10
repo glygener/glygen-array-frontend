@@ -126,9 +126,9 @@ const PublicDataset = () => {
             let stdev = Math.round((obj.intensity.stDev + Number.EPSILON) * 100) / 100;
             return {
               'featureId' : obj.feature.id, 
-              'id' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
-              'glytoucanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? true : false, 
-              'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
+              'id': obj.feature.glycans[0].glycan.glytoucanId == null ? obj.feature.glycans[0].glycan.id : obj.feature.glycans[0].glycan.glytoucanId,
+              'glytoucanId': obj.feature.glycans[0].glycan.glytoucanId == null ? false : true,
+              'cartoon': obj.feature.glycans[0].glycan.cartoon == null ? "" : obj.feature.glycans[0].glycan.cartoon,
               'linkerName' : obj.feature.linker ? obj.feature.linker.name : "",
               'linkerId' : obj.feature.linker ? obj.feature.linker.id : "",
               'inChiSequence' : obj.feature.linker ? obj.feature.linker.inChiSequence : "",
@@ -152,8 +152,8 @@ const PublicDataset = () => {
 
             return {
               'featureId' : obj.feature.id, 
-              'glycanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
-              'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
+              'glycanId': obj.feature.glycans[0].glycan.glytoucanId == null ? obj.feature.glycans[0].glycan.id : obj.feature.glycans[0].glycan.glytoucanId,
+              'cartoon': obj.feature.glycans[0].glycan.cartoon == null ? "" : obj.feature.glycans[0].glycan.cartoon,
               'linkerName' : obj.feature.linker.name,
               'rfuBarValue' : rfu <= 0 ? 0 : rfu,
               'rfu' : Number(rfu).toLocaleString('en-US') ,

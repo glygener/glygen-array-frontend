@@ -11,6 +11,8 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardLoader from "../components/CardLoader";
 import { getToolTip } from "../utils/commonUtils";
+import PropTypes from "prop-types";
+import { GlygenTableRowsInfo } from "./GlygenTableRowsInfo";
 
 const SlideTable = props => {
     const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -87,6 +89,7 @@ const SlideTable = props => {
         return (
             <>
                 <div className="m-3">
+                    {props.showHeading ? (
                     <Row>
                         <Col className="pt-2 mb-3">
                             {" "}
@@ -116,7 +119,20 @@ const SlideTable = props => {
                                 />
                             </Col>
                         )}
-                    </Row>
+                        </Row>) : (
+                        <Row>
+                            <Col>
+                                <GlygenTableRowsInfo
+                                    currentPage={tableElement.state ? tableElement.state.page : 0}
+                                    pageSize={tableElement.state ? tableElement.state.pageSize : 0}
+                                    currentRows={data && data.length}
+                                    totalRows={rows}
+                                    infoRowsText="Slides"
+                                    show={true}
+                                />
+                            </Col>
+                            </Row>
+                    )}
 
                     <ReactTable
                         columns={[
@@ -176,23 +192,21 @@ const SlideTable = props => {
                         onFetchData={state => {
                             setShowLoading(true);
 
-                            let params = {
-                                offset: customOffset ? 0 : state.page * state.pageSize,
-                                limit: state.pageSize,
-                                loadAll: false,
-                                sortBy: publicData.sortBy,
-                                filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
-                                order: orderBy ? 1 : 0
-                            };
-
-                            if (props.qsParams) {
-                                params = { ...params, ...props.qsParams };
-                            }
-
                             wsCall(
                                 props.wsName,
                                 "GET",
-                                params,
+                                {
+                                    urlParams: props.urlParams || [],
+                                    qsParams: {
+                                        offset: customOffset ? 0 : state.page * state.pageSize,
+                                        limit: state.pageSize,
+                                        sortBy: publicData.sortBy,
+                                        order: orderBy ? 1 : 0,
+                                        loadAll: false, //only useful for features, blocks and slides
+                                        filter: searchFilter !== "" ? encodeURIComponent(searchFilter) : "",
+                                        ...props.qsParams,
+                                    },
+                                },
                                 false,
                                 null,
                                 response =>
@@ -217,6 +231,20 @@ const SlideTable = props => {
                             );
                         }}
                     />
+                    !props.showHeading && (
+                    <Row>
+                        <Col>
+                            <GlygenTableRowsInfo
+                                currentPage={tableElement.state ? tableElement.state.page : 0}
+                                pageSize={tableElement.state ? tableElement.state.pageSize : 0}
+                                currentRows={data && data.length}
+                                totalRows={rows}
+                                infoRowsText="Slides"
+                                show={true}
+                            />
+                        </Col>
+                    </Row>
+                    )
                 </div>
             </>
         );
@@ -242,6 +270,10 @@ export function getBlockDimension(layout) {
     return layout.width + "x" + layout.height;
 }
 
-SlideTable.propTypes = {};
+SlideTable.propTypes = {
+    showSearchBox: PropTypes.bool,
+    showHeading: PropTypes.bool,
+    qsParams: PropTypes.object
+};
 
 export { SlideTable };
