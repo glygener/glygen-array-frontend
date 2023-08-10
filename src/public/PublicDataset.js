@@ -164,7 +164,14 @@ const PublicDataset = () => {
               'height' : tempHeight
             } 
           });
-          data.sort((obj1, obj2) => obj1.glycanId.localeCompare(obj2.glycanId));
+          data.sort((obj1, obj2) => {
+            if (!obj1.glycanId || !obj2.glycanId) {
+              console.warn("glycan id is null " + obj1.featureId);
+              return 0;
+            }
+            else return obj1.glycanId.localeCompare(obj2.glycanId);
+          });
+          /*data.sort((obj1, obj2) => obj1.glycanId.localeCompare(obj2.glycanId));*/
           setListIntensityChart(data);
           setShowloadingData(false);
         }),
