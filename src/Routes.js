@@ -65,6 +65,7 @@ import { GlycanSearch } from "./public/GlycanSearch";
 import { SubmitterSearch } from "./public/SubmitterSearch";
 import { DatasetDetailSearch } from "./public/DatasetDetailSearch";
 import { DatasetDetailList } from "./public/DatasetDetailList";
+import { UserDatasets } from "./public/UserDatasets";
 import { Proteins } from "./containers/Proteins";
 import { AddProtein } from "./containers/AddProtein";
 import { Lipids } from "./containers/Lipids";
@@ -138,6 +139,12 @@ const Routes = props => {
       path: "/glycanDetail/:glycanId",
       exact: true,
       main: () => <GlycanDetail />,
+      sidebar: () => "",
+    },
+    {
+      path: "/data/userDatasets/:username",
+      exact: true,
+      main: () => <UserDatasets />,
       sidebar: () => "",
     },
     {

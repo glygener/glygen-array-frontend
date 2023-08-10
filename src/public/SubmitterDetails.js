@@ -3,6 +3,7 @@ import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import { ErrorSummary } from "../components/ErrorSummary";
 import CardLoader from "../components/CardLoader";
+import { Link } from "react-router-dom";
 
 const SubmitterDetails = props => {
   const [submitterinfo, setSubmitterinfo] = useState();
@@ -51,7 +52,8 @@ const SubmitterDetails = props => {
         <>
           <div>
             <strong>Username: </strong>
-            {submitterinfo.userName}
+            {/*submitterinfo.userName*/}
+            <Link to={`/data/userDatasets/${submitterinfo.userName}`}>{submitterinfo.userName}</Link>
           </div>
           <div>
             <strong>Full Name: </strong>

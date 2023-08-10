@@ -231,7 +231,7 @@ const SlideTable = props => {
                             );
                         }}
                     />
-                    !props.showHeading && (
+                    {!props.showHeading && (
                     <Row>
                         <Col>
                             <GlygenTableRowsInfo
@@ -244,7 +244,7 @@ const SlideTable = props => {
                             />
                         </Col>
                     </Row>
-                    )
+                    )}
                 </div>
             </>
         );

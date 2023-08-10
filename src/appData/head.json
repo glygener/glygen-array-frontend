@@ -26,6 +26,15 @@
       }
     ]
   },
+  "userdatasets": {
+    "title": "Glycan Array user dataset",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
   "publicmetadata": {
     "title": "Glycan Array metadata",
     "meta": [
