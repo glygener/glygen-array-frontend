@@ -275,6 +275,24 @@ export function fileExportSuccess(response, fileName) {
   });
 }
 
+export function validateEmail(email) {
+  if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Function to replace special characters.
+ * @param {string} input input value.
+ **/
+export function replaceSpecialCharacters(input) {
+  input = input.replace(/\\/g, "\\\\");
+  input = input.replace(/"/g, "\\\"");
+  input = input.replace(/\n/g, "\\n");
+  return input;
+}
+
 export function fileDownloadFailure(
   response,
   setPageErrorsJson,

@@ -25,6 +25,7 @@ import { Link } from "react-router-dom";
 import CardLoader from "../components/CardLoader";
 import { ViewDescriptor } from "../components/ViewDescriptor";
 import licenseLogo from "../images/creativecommonslogo.svg";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 // const Files = React.lazy(() => import("./Files"));
 // const SubmitterDetails = React.lazy(() => import("./SubmitterDetails"));
@@ -252,6 +253,7 @@ const PublicDataset = () => {
         {getMeta(head.publicdatalist)}
       </Helmet>
 
+      <FeedbackWidget />
       {showErrorSummary === true && (
         <ErrorSummary
           show={showErrorSummary}
