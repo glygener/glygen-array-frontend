@@ -28,6 +28,7 @@ import { exportMetadata, downloadSpinner } from "../utils/commonUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import ExportButton from "../components/ExportButton";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -369,6 +370,7 @@ const AddExperiment = props => {
           <title>{head.addExperiment.title}</title>
           {getMeta(head.addExperiment)}
         </Helmet>
+        <FeedbackWidget />
         {showSpinner && downloadSpinnerBottomSide()}
         {experimentId && showErrorSummary && <ErrorMessageDialogue
             showErrorSummary={showErrorSummary}

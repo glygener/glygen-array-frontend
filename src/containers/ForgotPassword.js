@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const ForgotPassword = () => {
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {
@@ -34,6 +35,7 @@ const ForgotPassword = () => {
         <title>{head.forgotPassword.title}</title>
         {getMeta(head.forgotPassword)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="sm" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Forgot Password"} />

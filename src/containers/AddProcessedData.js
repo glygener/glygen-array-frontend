@@ -9,6 +9,7 @@ import React, { useEffect, useState, useReducer } from "react";
 import { ResumableUploader } from "../components/ResumableUploader";
 import { useHistory, Prompt, Link, useParams } from "react-router-dom";
 import { FormLabel, Feedback, Title, FormButton } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddProcessedData = props => {
   let { experimentId, processedDataId } = useParams();
@@ -218,7 +219,7 @@ const AddProcessedData = props => {
           <title>{head.addProcessData.title}</title>
           {getMeta(head.addProcessData)}
         </Helmet>
-
+        <FeedbackWidget />
         <div className="page-container">
           <Title title="Add Process Data" />
 

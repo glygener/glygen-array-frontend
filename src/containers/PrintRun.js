@@ -8,6 +8,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const PrintRun = props => {
   useEffect(props.authCheckAgent, []);
@@ -18,7 +19,7 @@ const PrintRun = props => {
         <title>{head.printRun.title}</title>
         {getMeta(head.printRun)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

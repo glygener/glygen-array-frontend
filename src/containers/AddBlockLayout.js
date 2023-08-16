@@ -25,6 +25,7 @@ import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import { ViewDescriptor } from "../components/ViewDescriptor";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const stepsHelpTooltipData = [
   {
@@ -563,6 +564,7 @@ const AddBlockLayout = props => {
 
   return (
     <>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           {!props.publicView && (

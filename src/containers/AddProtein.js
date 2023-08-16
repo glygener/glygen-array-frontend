@@ -32,6 +32,7 @@ import plusIcon from "../images/icons/plus.svg";
 import { Table } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddProtein = props => {
   useEffect(props.authCheckAgent, []);
@@ -872,6 +873,7 @@ const AddProtein = props => {
         <title>{head.addProtein.title}</title>
         {getMeta(head.addProtein)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

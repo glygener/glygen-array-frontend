@@ -8,6 +8,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { useHistory, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const ChangeEmail = () => {
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {
@@ -35,7 +36,7 @@ const ChangeEmail = () => {
         <title>{head.changeEmail.title}</title>
         {getMeta(head.changeEmail)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="sm" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Change Email"} />

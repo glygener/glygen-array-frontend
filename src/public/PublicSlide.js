@@ -3,6 +3,8 @@ import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { Card } from "react-bootstrap";
 import { SlideTable } from "../components/SlideTable";
+import FeedbackWidget from "../components/FeedbackWidget";
+
 const PublicSlide = () => {
     return (
         <>
@@ -10,6 +12,7 @@ const PublicSlide = () => {
                 <title>{head.publicslidelist.title}</title>
                 {getMeta(head.publicslidelist)}
             </Helmet>
+            <FeedbackWidget />
             <Card
                 style={{
                     // marginLeft: "5%",

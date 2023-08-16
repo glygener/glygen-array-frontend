@@ -10,6 +10,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Signup = () => {
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {
@@ -46,6 +47,7 @@ const Signup = () => {
         <title>{head.signup.title}</title>
         {getMeta(head.signup)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="md" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Sign Up"} />

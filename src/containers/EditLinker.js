@@ -15,6 +15,7 @@ import { Button } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { Table } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const EditLinker = props => {
   useEffect(props.authCheckAgent, []);
@@ -170,6 +171,7 @@ const EditLinker = props => {
         <title>{head.editLinker.title}</title>
         {getMeta(head.editLinker)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title={title} subTitle={subTitle} />

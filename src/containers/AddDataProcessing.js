@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddDataProcessing = props => {
   let type = "DATAPROCESSINGSOFTWARE";
@@ -35,7 +36,7 @@ const AddDataProcessing = props => {
         <title>{head.addDataProcessing.title}</title>
         {getMeta(head.addDataProcessing)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

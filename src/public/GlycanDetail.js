@@ -18,6 +18,7 @@ import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 import { Loading } from "../components/Loading";
 import { Title } from "../components/FormControls";
 import { SlideTable } from "../components/SlideTable";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 function getDateTime(date) {
   var now = new Date(date);
@@ -103,7 +104,7 @@ const GlycanList = (props) => {
         })}
         {getMetaID("glycanDetail")}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="lg" className="gg-container">
         <Loading show={showLoading} />
         <div className="content-box-md text-center horizontal-heading">

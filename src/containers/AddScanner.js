@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddScanner = props => {
   let type = "SCANNER";
@@ -35,7 +36,7 @@ const AddScanner = props => {
         <title>{head.addScanner.title}</title>
         {getMeta(head.addScanner)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

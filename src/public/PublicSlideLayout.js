@@ -17,6 +17,7 @@ import { ColorNotation } from "../components/ColorNotation";
 import { downloadFile, exportFile } from "../utils/commonUtils";
 import { DownloadButton } from "../components/DownloadButton";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const PublicSlideLayout = () => {
     let { slideId } = useParams();
@@ -303,7 +304,7 @@ const PublicSlideLayout = () => {
                 <title>{head.publicslidelist.title}</title>
                 {getMeta(head.publicslidelist)}
             </Helmet>
-
+            <FeedbackWidget />
             {showSpinner && downloadSpinnerBottomSide()}
 
             {showErrorSummary === true && (

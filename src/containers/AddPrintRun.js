@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddPrintRun = props => {
   let type = "PRINTRUN";
@@ -35,7 +36,7 @@ const AddPrintRun = props => {
         <title>{head.addPrintRun.title}</title>
         {getMeta(head.addPrintRun)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

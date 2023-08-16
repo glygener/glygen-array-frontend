@@ -9,6 +9,7 @@ import { Card } from "react-bootstrap";
 import { Title } from "../components/FormControls";
 import { Loading } from "../components/Loading";
 import { DatasetTable } from "../components/DatasetTable";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const UserDatasets = (props) => {
     const { username } = useParams();
@@ -91,7 +92,7 @@ const UserDatasets = (props) => {
                 <title>{head.userdatasets.title}</title>
                 {getMeta(head.userdatasets)}
             </Helmet>
-
+            <FeedbackWidget />
             <Container maxWidth="lg" className="gg-container">
                 <Loading show={showLoading} />
 

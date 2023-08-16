@@ -7,6 +7,7 @@ import { useLocation, useParams } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddSlideMeta = props => {
   let type = "SLIDE";
@@ -35,7 +36,7 @@ const AddSlideMeta = props => {
         <title>{head.addSlideMeta.title}</title>
         {getMeta(head.addSlideMeta)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

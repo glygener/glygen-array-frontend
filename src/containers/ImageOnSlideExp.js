@@ -12,6 +12,7 @@ import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ViewDescriptor } from "../components/ViewDescriptor";
 import { DownloadButton } from "../components/DownloadButton";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const ImageOnSlideExp = props => {
   let { experimentId } = useParams();
@@ -354,6 +355,7 @@ const ImageOnSlideExp = props => {
           <Modal.Title>{!imageView ? "Add Image to Slide" : "View Image Details"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <FeedbackWidget />
           <Container maxWidth="xl">
             <div>
               {showErrorSummary === true && (

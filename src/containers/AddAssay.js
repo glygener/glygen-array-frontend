@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddAssay = props => {
   let type = "ASSAY";
@@ -41,7 +42,7 @@ const AddAssay = props => {
         <title>{head.addAssay.title}</title>
         {getMeta(head.addAssay)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

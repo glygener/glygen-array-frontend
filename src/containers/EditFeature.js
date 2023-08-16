@@ -9,6 +9,7 @@ import { FeatureCard } from "../components/FeatureCard";
 import { useParams } from "react-router-dom";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Loading } from "../components/Loading";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const EditFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -60,6 +61,7 @@ const EditFeature = props => {
         <title>{head.editFeature.title}</title>
         {getMeta(head.editFeature)}
       </Helmet>
+      <FeedbackWidget />
       <div className="page-container">
         <Title title="View Feature" />
 

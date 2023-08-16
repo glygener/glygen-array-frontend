@@ -12,6 +12,7 @@ import { StructureImage } from "../components/StructureImage";
 import { Card } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const EditGlycan = (props) => {
   let { glycanId } = useParams();
@@ -84,6 +85,7 @@ const EditGlycan = (props) => {
         <title>{head.editGlycan.title}</title>
         {getMeta(head.editGlycan)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

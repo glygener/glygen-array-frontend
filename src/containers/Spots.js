@@ -8,6 +8,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Spots = props => {
   useEffect(props.authCheckAgent, []);
@@ -17,7 +18,7 @@ const Spots = props => {
         <title>{head.spots.title}</title>
         {getMeta(head.spots)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

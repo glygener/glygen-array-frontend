@@ -20,6 +20,7 @@ import { PageHeading } from "../components/FormControls";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddSlideLayout = props => {
   let { slideLayoutId } = useParams();
@@ -343,7 +344,7 @@ const AddSlideLayout = props => {
         <title>{head.addSlideLayout.title}</title>
         {getMeta(head.addSlideLayout)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title={title} subTitle={subTitle} />

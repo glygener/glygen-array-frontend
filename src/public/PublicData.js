@@ -3,6 +3,7 @@ import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
 import { Card } from "react-bootstrap";
 import { DatasetTable } from "../components/DatasetTable";
+import FeedbackWidget from "../components/FeedbackWidget";
 const PublicData = () => {
   return (
     <>
@@ -10,6 +11,7 @@ const PublicData = () => {
         <title>{head.publicdatalist.title}</title>
         {getMeta(head.publicdatalist)}
       </Helmet>
+      <FeedbackWidget />
       <Card
         style={{
           // marginLeft: "5%",

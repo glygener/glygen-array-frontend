@@ -8,6 +8,7 @@ import { useParams, Link } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import { Title } from "./FormControls";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "./FeedbackWidget";
 
 const EmailConfirmation = () => {
   const [variant, setVariant] = useState("success");
@@ -25,6 +26,7 @@ const EmailConfirmation = () => {
         <title>{head.emailConfirmation.title}</title>
         {getMeta(head.addGlycan)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="sm" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Email Confirmation"} />

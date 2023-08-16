@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
 import ExportButton from "../components/ExportButton";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const PublicExperimentData = () => {
   let { datasetId }  = useParams();
@@ -87,6 +88,7 @@ const PublicExperimentData = () => {
         <title>{head.publicmetadata.title}</title>
         {getMeta(head.publicmetadata)}
       </Helmet>
+      <FeedbackWidget />
       {showSpinner && downloadSpinnerBottomSide()}
       <CardLoader pageLoading={showLoading} />
         <div className="page-container">

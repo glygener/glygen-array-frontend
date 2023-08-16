@@ -18,6 +18,7 @@ import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import property from "../appData/properties";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { StatusMessage } from "../components/StatusMessage";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 
 const Glycans = props => {
@@ -32,7 +33,7 @@ const Glycans = props => {
         <title>{head.glycans.title}</title>
         {getMeta(head.glycans)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

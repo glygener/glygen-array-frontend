@@ -17,6 +17,7 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddRawData = props => {
   let { experimentId } = useParams();
@@ -490,6 +491,7 @@ const AddRawData = props => {
           <title>{head.addRawData.title}</title>
           {getMeta(head.addRawData)}
         </Helmet>
+        <FeedbackWidget />
         <Container maxWidth="xl">
           <div className="page-container">
             <PageHeading

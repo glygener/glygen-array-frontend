@@ -59,18 +59,13 @@ const FeedbackWidget = (props) => {
     }
 
     const formData = {
-      fname: firstName,
-      lname: lastName,
+      firstName: firstName,
+      lastName: lastName,
       email: email,
-      page:  escape(replaceSpecialCharacters(window.location.href)),
+      page: window.location.href,
       // page: window.location.href.split("?")[0],
-      subject: "Feedback Form " + subject,
-      message:  escape(replaceSpecialCharacters(message)),
-    };
-
-    const url = `/auth/contact?query=${JSON.stringify(formData)}`;
-    const myHeaders = {
-      "Content-Type": "application/x-www-form-urlencoded",
+      subject: "Feedback Form: " + subject,
+      message: message,
     };
 
     const body = JSON.stringify(formData);

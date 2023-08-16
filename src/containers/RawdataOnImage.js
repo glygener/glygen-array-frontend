@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Spacing from "material-ui/styles/spacing";
 import { DownloadButton } from "../components/DownloadButton";
 import { ViewDescriptor } from "../components/ViewDescriptor";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const RawdataOnImage = props => {
   let { experimentId } = useParams();
@@ -439,6 +440,7 @@ const RawdataOnImage = props => {
               <title>{head.addRawData.title}</title>
               {getMeta(head.addRawData)}
             </Helmet>
+            <FeedbackWidget />
             <Container maxWidth="xl">
               <div>
                 {showErrorSummary === true && (

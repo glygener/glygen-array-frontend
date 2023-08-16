@@ -17,6 +17,7 @@ import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import property from "../appData/properties";
 import { StatusMessage } from "../components/StatusMessage";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);
@@ -46,6 +47,7 @@ const Features = props => {
         <title>{head.features.title}</title>
         {getMeta(head.features)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

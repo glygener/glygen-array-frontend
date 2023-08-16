@@ -20,6 +20,7 @@ import { ViewDescriptor } from "../components/ViewDescriptor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const ProcessDataOnRd = props => {
   let { experimentId } = useParams();
@@ -424,6 +425,7 @@ const ProcessDataOnRd = props => {
               <title>{head.addProcessData.title}</title>
               {getMeta(head.addProcessData)}
             </Helmet>
+            <FeedbackWidget />
             <Container maxWidth="xl">
               <div>
                 {showErrorSummary === true && (

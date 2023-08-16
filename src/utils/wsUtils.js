@@ -411,7 +411,7 @@ export function getWsUrl(ws) {
       return ws_base_array + "/downloadMetadata"
     case "getpublicprintedslide":
       return ws_base_public + "/getprintedslide"
-    case "sendfeedbback":
+    case "sendfeedback":
         return ws_base_util + "/sendfeedback"
 
     default:

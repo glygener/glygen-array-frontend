@@ -16,6 +16,7 @@ import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import { StatusMessage } from "../components/StatusMessage";
 import property from "../appData/properties";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const OtherMolecules = props => {
   let linkerProperty = property["linker"];
@@ -30,6 +31,7 @@ const OtherMolecules = props => {
         <title>{head.otherMolecules.title}</title>
         {getMeta(head.otherMolecules)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className={!props.isImported ? "page-container" : ""}>
           <PageHeading

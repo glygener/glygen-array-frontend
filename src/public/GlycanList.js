@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import { GlygenTable } from "../components/GlygenTable";
 import { StructureImage } from "../components/StructureImage";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
+import FeedbackWidget from "../components/FeedbackWidget";
 // import { Loading } from "../components/Loading";
 
 const GlycanList = (props) => {
@@ -66,7 +67,7 @@ const GlycanList = (props) => {
         <title>{head.glycanList.title}</title>
         {getMeta(head.glycanList)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl" className="gg-container">
         {/* <Loading show={showLoading} /> */}
 

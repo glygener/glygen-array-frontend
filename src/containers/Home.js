@@ -12,6 +12,7 @@ import VersionCard from "../components/VersionCard";
 import { StatisticsCard } from "../components/StatisticsCard";
 import { useHistory } from "react-router-dom";
 import { DatasetTable } from "../components/DatasetTable";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Home = () => {
   const history = useHistory();
@@ -33,7 +34,7 @@ const Home = () => {
         <title>{head.home.title}</title>
         {getMeta(head.home)}
       </Helmet>
-
+      <FeedbackWidget />
       <div style={{ marginTop: "-8px" }}>
         <MainFeaturedCard post={mainFeaturedCard} />
 

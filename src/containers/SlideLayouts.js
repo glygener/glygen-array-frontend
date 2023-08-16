@@ -16,6 +16,7 @@ import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const SlideLayouts = props => {
   const [uploadProcessing, setUploadProcessing] = useState(false);
@@ -69,7 +70,7 @@ const SlideLayouts = props => {
         <title>{head.slideLayouts.title}</title>
         {getMeta(head.slideLayouts)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
