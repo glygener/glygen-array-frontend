@@ -11,6 +11,7 @@ import GlycanStructureSearch from "../components/search/GlycanStructureSearch";
 import GlycanSubstructureSearch from "../components/search/GlycanSubstructureSearch";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const GlycanSearch = (props) => {
   const { searchId } = useParams();
@@ -66,7 +67,7 @@ const GlycanSearch = (props) => {
         <title>{head.glycanSearch.title}</title>
         {getMeta(head.glycanSearch)}
       </Helmet>
-
+      <FeedbackWidget />
       <div className="lander">
         {showErrorSummary === true && (
           <ErrorSummary

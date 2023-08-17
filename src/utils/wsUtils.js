@@ -303,6 +303,8 @@ export function getWsUrl(ws) {
       return ws_base_array + "/listAllPrintedSlide";
     case "listpublicdataset":
       return ws_base_public + "/listArrayDataset";
+    case "listpublicslide":
+      return ws_base_public + "/listPrintedSlide";
     case "getpublicblocklayout":
       return ws_base_public + "/getblocklayout";
     case "getpublicdataset":
@@ -329,12 +331,18 @@ export function getWsUrl(ws) {
       return ws_base_public + "/getImageAnalysisSoftware";
     case "getpublicdataprocessing":
       return ws_base_public + "/getDataProcessingSoftware";
+    case "listpublicspotmetadata":
+      return ws_base_public + "/listSpotMetadata";
+    case "getpublicspotmetadata":
+      return ws_base_public + "/getSpotMetadata";
     case "getlistintensities":
       return ws_base_public + "/listIntensityData";
     case "getglycanpublic":
       return ws_base_public + "/getglycan";
     case "getdatasetforglycan":
       return ws_base_public + "/getdatasetforglycan";
+    case "getslideforglycan":
+      return ws_base_public + "/getslideforglycan";
     case "deleteslide":
       return ws_base_array + "/deleteslide";
     case "deleteimage":
@@ -395,6 +403,16 @@ export function getWsUrl(ws) {
       return ws_base_array + "/checkbatchupload";
     case "updatebatchupload":
       return ws_base_array + "/updatebatchupload";
+    case "checkslideupload":
+      return ws_base_array + "/checkslideupload";
+    case "publicexportmetadata":
+      return ws_base_public + "/downloadMetadata"
+    case "exportmetadata":
+      return ws_base_array + "/downloadMetadata"
+    case "getpublicprintedslide":
+      return ws_base_public + "/getprintedslide"
+    case "sendfeedback":
+        return ws_base_util + "/sendfeedback"
 
     default:
       return ws_base_user;
@@ -474,7 +492,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
       successFunction(response);
     } else {
       // check if the error code is 403 (expired token)
-      if (response.status == 403 || response.status == 401) {
+      if (!url.includes("login") && (response.status == 403 || response.status == 401)) {
         reLogin(window.history);
       } else {
         errorFunction(response);

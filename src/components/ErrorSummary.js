@@ -17,7 +17,11 @@ const ErrorSummary = props => {
     var defaultError = "";
 
     if (props.errorJson && props.errorJson.errors && props.errorJson.errors.length > 1) {
-      aggregatedSummary += "There have been multiple errors submitting the entry: \n";
+      if (props.titleMessage) {
+        aggregatedSummary += props.titleMessage;
+      } else {
+        aggregatedSummary += "There have been multiple errors submitting the entry: \n";
+      }
     }
 
     if (props.errorJson && props.errorJson.errors && props.errorJson.statusCode >= 500 && props.customMessage) {
@@ -105,7 +109,8 @@ ErrorSummary.propTypes = {
   form: PropTypes.string,
   errorJson: PropTypes.object,
   errorMessage: PropTypes.string,
-  customMessage: PropTypes.bool
+  customMessage: PropTypes.bool,
+  titleMessage: PropTypes.string
 };
 
 export { ErrorSummary };

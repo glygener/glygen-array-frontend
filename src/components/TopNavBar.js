@@ -37,6 +37,9 @@ const TopNavBar = (props) => {
               <LinkContainer className="gg-nav-link" to="/data" exact>
                 <Nav.Link>DATASETS</Nav.Link>
               </LinkContainer>
+              <LinkContainer className="gg-nav-link" to="/slideList" exact>
+                <Nav.Link>SLIDES</Nav.Link>
+              </LinkContainer>
               <NavDropdown
                 className={
                   location.pathname.includes("/glycanSearch") ||

@@ -13,6 +13,7 @@ import Container from "@material-ui/core/Container";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const UploadMolecules = props => {
   useEffect(() => {
@@ -98,6 +99,7 @@ const UploadMolecules = props => {
 
   return (
     <>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
@@ -110,7 +112,7 @@ const UploadMolecules = props => {
           </Typography>
           <Card>
             <Card.Body>
-              {showErrorSummary === true && (
+              {showErrorSummary && (
                 <ErrorSummary
                   show={showErrorSummary}
                   form="molecules"

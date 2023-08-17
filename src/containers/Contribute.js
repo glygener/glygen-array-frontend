@@ -16,6 +16,7 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import { useHistory } from "react-router-dom";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 function ErrorMessage(props) {
   return (
@@ -175,6 +176,7 @@ const Contribute = props => {
         <title>{head.contribute.title}</title>
         {getMeta(head.contribute)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

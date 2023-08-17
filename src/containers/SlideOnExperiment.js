@@ -14,6 +14,7 @@ import { downloadFile, exportFile } from "../utils/commonUtils";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { DownloadButton } from "../components/DownloadButton";
 import { ViewDescriptor } from "../components/ViewDescriptor";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const SlideOnExperiment = props => {
   let { experimentId } = useParams();
@@ -512,6 +513,7 @@ const SlideOnExperiment = props => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
+        <FeedbackWidget />
         <Modal.Header closeButton>
           <Modal.Title>{!slideView ? "Add Slide to DataSet" : "View Slide Details"}</Modal.Title>
         </Modal.Header>

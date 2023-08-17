@@ -17,11 +17,29 @@ import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import property from "../appData/properties";
 import { StatusMessage } from "../components/StatusMessage";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Features = props => {
   useEffect(props.authCheckAgent, []);
 
   const [batchUpload, setBatchUpload] = useState(false);
+
+  function getGlycanInfo (glycans, i) {
+    if (glycans.glycan) {
+      return <div key={i}>
+      <Link to={"/glycans/editGlycan/" + glycans.glycan.id} target="_blank">
+        {getToolTip(glycans.glycan.name)}
+      </Link>
+      </div>
+    } else if (glycans.glycans) {
+      return <div key={i}> { glycans.glycans.map((glycan, j) => 
+        <Link to={"/glycans/editGlycan/" + glycan.glycan.id} target="_blank">
+        {getToolTip(glycan.glycan.name)}
+      </Link>)}
+      </div>
+    }
+    
+  }
 
   return (
     <>
@@ -29,6 +47,7 @@ const Features = props => {
         <title>{head.features.title}</title>
         {getMeta(head.features)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
@@ -129,14 +148,8 @@ const Features = props => {
                       <div key={index}>
                         {row.value
                           ? row.value.map(
-                              (glycans, i) =>
-                                glycans.glycan && (
-                                  <div key={i}>
-                                    <Link to={"/glycans/editGlycan/" + glycans.glycan.id} target="_blank">
-                                      {getToolTip(glycans.glycan.name)}
-                                    </Link>
-                                  </div>
-                                )
+                              (glycans, i) =>  getGlycanInfo (glycans, i)
+                                
                             )
                           : ""}
                       </div>

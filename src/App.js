@@ -106,6 +106,7 @@ const App = () => {
           {location &&
           location.pathname &&
           (location.pathname === "/data" ||
+            location.pathname === "/slideList" ||
             location.pathname === "/glycanSearch" ||
             location.pathname === "/glycanList" ||
             location.pathname === "/glycanDetail" ||
@@ -152,7 +153,8 @@ const App = () => {
       "glycanDetail",
       "datasetDetailSearch",
       "datasetDetailList",
-      "datasetDetail"
+      "datasetDetail",
+      "slideList"
     ];
     var pagename = getPageName(history);
 

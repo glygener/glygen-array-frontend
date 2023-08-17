@@ -8,6 +8,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const VerifyToken = () => {
   const [confirmRegistration, setConfirmRegistration] = useReducer(
@@ -35,7 +36,7 @@ const VerifyToken = () => {
         <title>{head.verifyToken.title}</title>
         {getMeta(head.verifyToken)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="sm" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Verify Sign Up"} />

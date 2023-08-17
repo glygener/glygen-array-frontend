@@ -25,6 +25,7 @@ import ExampleSequenceControl from "../components/ExampleSequenceControl";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import GlycoGlyph from "../components/search/GlycoGlyph";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -249,6 +250,7 @@ const AddGlycan = props => {
         <title>{head.addGlycan.title}</title>
         {getMeta(head.addGlycan)}
       </Helmet>
+      <FeedbackWidget />
       <GlycoGlyph
         show={glycoGlyphDialog}
         glySequenceChange={handleSequenceChange}

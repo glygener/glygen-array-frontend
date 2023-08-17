@@ -8,6 +8,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { Feedback, Title } from "../components/FormControls";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const ChangePassword = () => {
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {
@@ -40,7 +41,7 @@ const ChangePassword = () => {
         <title>{head.changePassword.title}</title>
         {getMeta(head.changePassword)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="sm" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Change Password"} />

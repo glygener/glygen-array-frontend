@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddPrintRun = props => {
   let type = "PRINTRUN";
@@ -15,6 +16,10 @@ const AddPrintRun = props => {
   let isCopyPrintRun = false;
 
   if (location.search && location.search === "?copyPrintRun") {
+    isCopyPrintRun = true;
+  }
+
+  if (location && location.pathname.includes("copyPrintRun")) {
     isCopyPrintRun = true;
   }
 
@@ -31,15 +36,15 @@ const AddPrintRun = props => {
         <title>{head.addPrintRun.title}</title>
         {getMeta(head.addPrintRun)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={printRunId ? "Edit Print Run" : "Add Print Run to Repository"}
+            title={printRunId ? "Edit Print Run Metadata" : "Add Print Run Metadata to Repository"}
             subTitle={
               printRunId
-                ? "Update Print Run information. Name must be unique in your Print Run run repository and cannot be used for more than one Print Run."
-                : "Please provide the information for the new Print Run."
+                ? "Update Print Run metadata information. Name must be unique in your Print Run metadata repository and cannot be used for more than one Print Run metadata."
+                : "Please provide the information for the new Print Run metadata"
             }
           />
           <Card>

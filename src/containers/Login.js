@@ -11,6 +11,7 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Login.css";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Login = props => {
   useEffect(() => {
@@ -44,6 +45,7 @@ const Login = props => {
         <title>{head.login.title}</title>
         {getMeta(head.login)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="sm" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Log In"} />

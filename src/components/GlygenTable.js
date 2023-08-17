@@ -5,7 +5,7 @@ import "react-table/react-table.css";
 import { wsCall } from "../utils/wsUtils";
 import PropTypes from "prop-types";
 import "./GlygenTable.css";
-import { Form, Col, Row, Button } from "react-bootstrap";
+import { Form, Col, Row, Button, Modal } from "react-bootstrap";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { GlygenTableRowsInfo } from "./GlygenTableRowsInfo";
 import { ErrorSummary } from "./ErrorSummary";
@@ -44,6 +44,8 @@ const GlygenTable = props => {
   const [curPage, setCurPage] = useState(0);
   const [pageDiaErrorsJson, setPageDiaErrorsJson] = useState({});
   const [pageDiaErrorMessage, setPageDiaErrorMessage] = useState("");
+  const [pageDiaTitle, setPageDiaTitle] = useState("");
+  const [pageDiaTitleMessage, setPageDiaTitleMessage] = useState("");
   const [showErrorDialogue, setShowErrorDialogue] = useState(false);
 
   var columnsToRender = Object.assign({}, props.columns);
@@ -284,7 +286,7 @@ const GlygenTable = props => {
           )}
 
           {props.showMirageCompliance && (
-            <LineTooltip text="Mirage Compliance">
+            <LineTooltip text="Check for Mirage Compliance">
               <Link>
                 <img
                   className="tbl-icon-btn image-icon5"
@@ -293,17 +295,18 @@ const GlygenTable = props => {
                   aria-hidden="true"
                   height="40px"
                   width="40px"
-                  onClick={() =>
+                  onClick={() => {
+                    setShowLoading(true);
                     wsCall(
                       "ismiragecompliant",
                       "GET",
-                      { qsParams: { type: "SAMPLE" }, urlParams: [row.original.id] },
+                      { qsParams: { type: getMetadataType(row.original.template) }, urlParams: [row.original.id] },
                       true,
                       null,
-                      isMirageCheckSuccess,
-                      isMirageCheckFailure
+                      response => isMirageCheckSuccess(response, row.original.name),
+                      response => isMirageCheckFailure(response, row.original.name)
                     )
-                  }
+                  }}
                 />
               </Link>
             </LineTooltip>
@@ -498,6 +501,8 @@ const GlygenTable = props => {
           customMessage={true}
           pageErrorsJson={pageDiaErrorsJson}
           pageErrorMessage={pageDiaErrorMessage}
+        title={pageDiaTitle}
+        titleMessage={pageDiaTitleMessage}
         />
       }
 
@@ -703,24 +708,39 @@ const GlygenTable = props => {
         body="Are you sure you want to delete?"
       />
 
-      <ConfirmationModal
-        showModal={showMakePublicModal}
-        onCancel={() => setShowMakePublicModal(false)}
-        onConfirm={() => {
-          setShowMakePublicModal(false);
-          wsCall(
-            "makearraydatasetpublic",
-            "POST",
-            [selectedIdMakePublic],
-            true,
-            null,
-            isMakePublicSuccess,
-            isMakePublicFailure
-          );
-        }}
-        title="Confirm"
-        body="You are going to make this Data Set public. Are you sure you want to proceed?"
-      />
+      <Modal
+        show={showMakePublicModal}
+        animation={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>You are going to make this Data Set public. When releasing datasets to the public all information will be accessible under the Creative Commons  Attribution 4.0 International (CC BY 4.0). Users can freely access, share and adapt the data. But are required to give appropriate credit.
+          Detailed information on the license can be found <a href="https://creativecommons.org/licenses/by/4.0/">here</a>.</Modal.Body>
+        <Modal.Footer>
+          <Button className="gg-btn-outline-reg" onClick={() => setShowMakePublicModal(false)}>
+            Decline
+          </Button>
+          <Button className="gg-btn-blue-reg" onClick={() => {
+            setShowMakePublicModal(false);
+            wsCall(
+              "makearraydatasetpublic",
+              "POST",
+              [selectedIdMakePublic],
+              true,
+              null,
+              isMakePublicSuccess,
+              isMakePublicFailure
+            );
+          }}>
+            Accept
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </>
   );
 
@@ -742,6 +762,28 @@ const GlygenTable = props => {
         setShowLoading(false);
       }
     });
+  }
+
+  function getMetadataType(template) {
+    if (template.includes("Printer")) {
+      return "PRINTER";
+    } else if (template.includes("Sample")) {
+      return "SAMPLE";
+    } else if (template.includes("Data")) {
+      return "DATAPROCESSINGSOFTWARE";
+    } else if (template.includes("Image")) {
+      return "IMAGEANALYSISSOFTWARE";
+    } else if (template.includes("Scanner")) {
+      return "SCANNER";
+    } else if (template.includes("Slide")) {
+      return "SLIDE";
+    } else if (template.includes("Assay")) {
+      return "ASSAY";
+    } else if (template.includes("Spot")) {
+      return "SPOT";
+    } else if (template.includes("Printrun")) {
+      return "PRINTRUN";
+    }
   }
 
   function fetchError(response) {
@@ -769,12 +811,24 @@ const GlygenTable = props => {
     setShowLoading(false);
   }
 
-  function isMirageCheckSuccess(response) {
+  function isMirageCheckSuccess(response, sampleName) {
     console.log(response);
+    setPageDiaTitle(sampleName + " is MIRAGE compliant!");
+    setPageDiaErrorMessage(" ");  // no message should be displayed
+    setShowErrorDialogue(true);
+    setShowLoading(false);
   }
 
-  function isMirageCheckFailure(response) {
-    console.log(response);
+  function isMirageCheckFailure(response, sampleName) {
+    response.json().then(responseJson => {
+      setPageDiaErrorsJson(responseJson);
+    });
+    setPageDiaTitle(sampleName + " is not MIRAGE compliant");
+    setPageDiaTitleMessage("Errors:");
+    //setPageErrorMessage("");
+    //setShowErrorSummary(false);
+    setShowErrorDialogue(true);
+    setShowLoading(false);
   }
 
   function isMakePublicSuccess() {

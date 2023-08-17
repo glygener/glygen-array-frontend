@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddScanner = props => {
   let type = "SCANNER";
@@ -15,6 +16,10 @@ const AddScanner = props => {
   let isCopyScanner = false;
 
   if (location.search && location.search === "?copyScanner") {
+    isCopyScanner = true;
+  }
+
+  if (location && location.pathname.includes("copyScanner")) {
     isCopyScanner = true;
   }
 
@@ -31,15 +36,15 @@ const AddScanner = props => {
         <title>{head.addScanner.title}</title>
         {getMeta(head.addScanner)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={scannerId ? "Edit Scanner" : "Add Scanner to Repository"}
+            title={scannerId ? "Edit Scanner Metadata" : "Add Scanner Metadata to Repository"}
             subTitle={
               scannerId
-                ? "Update scanner information. Name must be unique in your scanner repository and cannot be used for more than one scanner."
-                : "Please provide the information for the new scanner."
+                ? "Update scanner metadata information. Name must be unique in your scanner metadata repository and cannot be used for more than one scanner metadata."
+                : "Please provide the information for the new scanner metadata."
             }
           />
           <Card>

@@ -8,6 +8,7 @@ import { head, getMeta } from "../utils/head";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const ForgotUsername = () => {
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {
@@ -32,6 +33,7 @@ const ForgotUsername = () => {
         <title>{head.forgotUsername.title}</title>
         {getMeta(head.forgotUsername)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="sm" className="card-page-container">
         <div className="card-page-sm">
           <Title title={"Forgot Username"} />

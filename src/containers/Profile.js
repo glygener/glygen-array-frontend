@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Profile = (props) => {
   const profile = {
@@ -64,6 +65,7 @@ const Profile = (props) => {
         <title>{head.profile.title}</title>
         {getMeta(head.profile)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="md" className="card-page-container">
         <div className="card-page-sm">
           <Title title={title} />

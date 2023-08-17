@@ -16,6 +16,7 @@ import { BlueCheckbox } from "../components/FormControls";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddMultipleGlycans = props => {
   useEffect(() => {
@@ -100,7 +101,7 @@ const AddMultipleGlycans = props => {
         <title>{head.addMultiSlideLayout.title}</title>
         {getMeta(head.addMultiSlideLayout)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

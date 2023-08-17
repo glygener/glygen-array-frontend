@@ -16,6 +16,9 @@ import Accordion from "react-bootstrap/Accordion";
 import { GlygenTable } from "../components/GlygenTable";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 import { Loading } from "../components/Loading";
+import { Title } from "../components/FormControls";
+import { SlideTable } from "../components/SlideTable";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 function getDateTime(date) {
   var now = new Date(date);
@@ -101,7 +104,7 @@ const GlycanList = (props) => {
         })}
         {getMetaID("glycanDetail")}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="lg" className="gg-container">
         <Loading show={showLoading} />
         <div className="content-box-md text-center horizontal-heading">
@@ -207,7 +210,10 @@ const GlycanList = (props) => {
         </Accordion>
         <Grid container>
           <Grid item xs={12} sm={12}>
-            <div>
+            <div style={{ marginBottom: "30px" }}>
+              <Card style={{ height: "100%" }}>
+                <Card.Body>
+                  <Title title="Datasets" />
               <GlygenTable
                 columns={[
                   {
@@ -286,6 +292,16 @@ const GlycanList = (props) => {
                 infoRowsText="Datasets"
                 urlParams={[glycanId]}
               />
+                </Card.Body>
+              </Card>
+            </div>
+            <div style={{ marginBottom: "30px" }}>
+              <Card style={{ height: "100%" }}>
+                <Card.Body>
+                  <Title title="Slides" />
+                  <SlideTable wsName="getslideforglycan" urlParams={[glycanId]} showSearchBox={false} showHeading={false} />
+                </Card.Body>
+              </Card>
             </div>
           </Grid>
         </Grid>

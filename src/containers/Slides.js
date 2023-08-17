@@ -14,6 +14,7 @@ import { exportFile, downloadSpinner } from "../utils/commonUtils";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Slides = props => {
   useEffect(props.authCheckAgent, []);
@@ -25,7 +26,7 @@ const Slides = props => {
         <title>{head.slides.title}</title>
         {getMeta(head.slide)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
@@ -72,7 +73,7 @@ const Slides = props => {
                 commentsRefColumn="description"
                 fetchWS="slidelist"
                 deleteWS="slidedelete"
-                editUrl="slide/editSlide"
+                editUrl="slides/editSlide"
                 keyColumn="id"
                 showRowsInfo
                 infoRowsText="Slides"

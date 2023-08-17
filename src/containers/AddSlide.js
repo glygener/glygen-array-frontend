@@ -15,6 +15,7 @@ import { Loading } from "../components/Loading";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddSlide = props => {
   let { slideId } = useParams();
@@ -234,7 +235,7 @@ const AddSlide = props => {
           <title>{head.addSlideMeta.title}</title>
           {getMeta(head.addSlideMeta)}
         </Helmet>
-
+        <FeedbackWidget />
         <Container maxWidth="xl">
           <div className="page-container">
             <PageHeading title={title} subTitle={subTitle} />

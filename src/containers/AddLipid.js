@@ -29,6 +29,7 @@ import plusIcon from "../images/icons/plus.svg";
 import { Table } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddLipid = props => {
   useEffect(props.authCheckAgent, []);
@@ -1015,6 +1016,7 @@ const AddLipid = props => {
         <title>{head.addLipid.title}</title>
         {getMeta(head.addLipid)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading title="Add Lipid to Repository" subTitle="Please provide the information for the new lipid." />

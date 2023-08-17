@@ -75,7 +75,8 @@ const FORM_ERROR_MESSAGES = {
       "The uploaded file appears to be invalid. Please double-check that the file is a valid GRITS glycan library."
   },
   importSlidelayouts: {
-    NotValid_file: "The submitted file appears to be invalid. You might try re-uploading the file."
+    NotValid_file: "The submitted file appears to be invalid. You might try re-uploading the file.",
+    Duplicate_slideLayout: "The slide layout with that name already exists in your library."
   },
   blockLayouts: {
     Duplicate_name: "The same name appears in another block layout in your collection. Please use a different name.",
@@ -101,7 +102,8 @@ const FORM_ERROR_MESSAGES = {
   },
   experiments: {
     NotDone_rawData: "RawData is still in the process. Please try once more.",
-    NotFound_publicationId: "The publication ID could not be found."
+    NotFound_publicationId: "The publication ID could not be found.",
+    HasError_dataset: "Dataset has errors, cannot be made public without resolving data errors!"
   },
   grants: {
     Duplicate_grant: "Another grant has the same grant number as this one. Use a different grant number."
@@ -112,6 +114,11 @@ const FORM_ERROR_MESSAGES = {
   supplementaryfiles: {
     Toolarge_file: "Please keep the file size to a maximum of 1MB.",
     Notvalid_file: "The uploaded file appears to be invalid. Please verify it and try again."
+  },
+  molecules: {
+    NotValid_moleculeType: "The uploaded molecule is not of the correct molecule type. Please make sure to upload a file with correct molecules.",
+    NotValid_file: "The uploaded file is not a valid repository export (.json) file. Please verify it and try again.",
+    NotValid_filetype: "Incorrect file type is selected. Please make sure to select repository export file.",
   },
 
   default: {

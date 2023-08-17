@@ -8,6 +8,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const ImageAnalysis = props => {
   useEffect(props.authCheckAgent, []);
@@ -17,18 +18,18 @@ const ImageAnalysis = props => {
         <title>{head.imageAnalysis.title}</title>
         {getMeta(head.imageAnalysis)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Image Analysis"
-            subTitle="The table below displays a list of all image analysis that have been uploaded to your repository. New printers may be added, old image analysis can be edited, and unused image analysis can be removed."
+            title="Your Image Analysis Metadata"
+            subTitle="The table below displays a list of all image analysis metadata that have been uploaded to your repository. New image analysis metadata may be added, old image analysis  metadatacan be edited, and unused image analysis metadata can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/imageAnalysis/addImageMetadata">
-                  <Button className="gg-btn-blue mt-2">Add Image Metadata</Button>
+                  <Button className="gg-btn-blue mt-2">Add Image Analysis Metadata</Button>
                 </Link>
               </div>
 
@@ -60,7 +61,7 @@ const ImageAnalysis = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Image Analysis"
+                infoRowsText="Image Analysis Metadata"
               />
             </Card.Body>
           </Card>

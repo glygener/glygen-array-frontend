@@ -24,6 +24,11 @@ import { Link } from "react-router-dom";
 import { FilesOnExp } from "../components/FilesOnExp";
 import { KeywordsOnExp } from "../components/KeywordsOnExp";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
+import { exportMetadata, downloadSpinner } from "../utils/commonUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import ExportButton from "../components/ExportButton";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 // const ArraydatasetTables = lazy(() => import("./ArraydatasetTables"));
 
@@ -41,7 +46,7 @@ const AddExperiment = props => {
       wsCall(
         "listsamples",
         "GET",
-        { offset: "0", loadAll: false, arraydatasetId: experimentId },
+        { offset: "0", sortBy: "name", order: 1, loadAll: false, arraydatasetId: experimentId },
         true,
         null,
         response =>
@@ -150,6 +155,12 @@ const AddExperiment = props => {
       setPageErrorsJson(responseJson);
       setShowErrorSummary(true);
     });
+  }
+
+  function downloadFailure(response) {
+    setPageErrorMessage("Download failed. Please contact the system administrators!");
+    setShowErrorSummary(true);
+    setShowSpinner(false);
   }
 
   function getPublication() {
@@ -271,6 +282,27 @@ const AddExperiment = props => {
     });
   }
 
+  function handleExport(style, metadata) {
+    let singleSheet = undefined;
+    let mirageOnly = undefined;
+    if (style === "Single sheet") singleSheet = true;;
+    if (metadata !== "Complete Metadata") {
+      mirageOnly = true;
+    }
+
+    exportMetadata(
+      experimentId,
+      setPageErrorsJson,
+      setPageErrorMessage,
+      setShowErrorSummary,
+      setShowSpinner,
+      "exportmetadata",
+      downloadFailure,
+      singleSheet,
+      mirageOnly
+    )
+  }
+
   const getPublicationFormControl = () => {
     return (
       <>
@@ -338,6 +370,7 @@ const AddExperiment = props => {
           <title>{head.addExperiment.title}</title>
           {getMeta(head.addExperiment)}
         </Helmet>
+        <FeedbackWidget />
         {showSpinner && downloadSpinnerBottomSide()}
         {experimentId && showErrorSummary && <ErrorMessageDialogue
             showErrorSummary={showErrorSummary}
@@ -376,6 +409,11 @@ const AddExperiment = props => {
                   : "Please provide the information for the new experiment."
               }
             />
+            {experimentId && (
+                  <div className="text-right mb-3">
+                <ExportButton handleExport={handleExport} />
+                  </div>
+                )}
             <Card>
               <Card.Body>
                 {!experimentId && showErrorSummary === true && (
@@ -386,6 +424,7 @@ const AddExperiment = props => {
                     errorMessage={pageErrorMessage}
                   />
                 )}
+
                 <Form noValidate validated={validated} onSubmit={e => handleSubmit(e)}>
                   <div className="text-center mb-4">
                     <Link to="/experiments">

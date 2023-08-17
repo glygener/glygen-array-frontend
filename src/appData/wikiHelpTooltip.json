@@ -293,8 +293,8 @@
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Slide_Layout#Common_information"
     },
     "add_multiple_slide_layouts": {
-      "title": "Add Multiple Slide Layouts",
-      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Slide_Layout#Multiple_slide_layouts"
+      "title": "Add Slide Layouts From File",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Slide_Layout#Slide_layouts_from_file"
     }
   },
   "slide": {
@@ -305,6 +305,16 @@
     "generic_information": {
       "title": "Generic Information",
       "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Slide#Generic_information"
+    }
+  },
+  "experiment": {
+    "processed_data": {
+      "title": "Processed Data Format",
+      "url": "https://wiki.glygen.org/Glycan_array_data_repository/Processed_data_file"
+    },
+    "exclusion_list": {
+      "title": "Exclusion List Format",
+      "url": "https://wiki.glygen.org/Glycan_array_data_repository/Exclusion_list_format"
     }
   }
 }

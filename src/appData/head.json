@@ -17,6 +17,24 @@
       }
     ]
   },
+  "publicslidelist": {
+    "title": "Glycan Array slide",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
+  "userdatasets": {
+    "title": "Glycan Array user dataset",
+    "meta": [
+      {
+        "name": "",
+        "content": ""
+      }
+    ]
+  },
   "publicmetadata": {
     "title": "Glycan Array metadata",
     "meta": [
@@ -491,7 +509,7 @@
     ]
   },
   "printers": {
-    "title": "Printers",
+    "title": "Printer Metadata",
     "meta": [
       {
         "name": "",
@@ -500,7 +518,7 @@
     ]
   },
   "imageAnalysis": {
-    "title": "Image Analysis",
+    "title": "Image Analysis Metadata",
     "meta": [
       {
         "name": "",
@@ -509,7 +527,7 @@
     ]
   },
   "scanners": {
-    "title": "Scanners",
+    "title": "Scanner Metadata",
     "meta": [
       {
         "name": "",
@@ -518,7 +536,7 @@
     ]
   },
   "dataProcessing": {
-    "title": "Data Processing",
+    "title": "Data Processing Metadata",
     "meta": [
       {
         "name": "",
@@ -536,11 +554,11 @@
     ]
   },
   "addPrinter": {
-    "title": "Add Printer",
+    "title": "Add Printer Metadata",
     "meta": [
       {
         "name": "description",
-        "content": "Adding printers to my Glygen Array repository"
+        "content": "Adding printer metadata to my Glygen Array repository"
       },
       {
         "name": "keywords",
@@ -549,24 +567,24 @@
     ]
   },
   "addScanner": {
-    "title": "Add Scanner",
+    "title": "Add Scanner Metadata",
     "meta": [
       {
         "name": "description",
-        "content": "Adding Scanners to my Glygen Array repository"
+        "content": "Adding Scanner metadata to my Glygen Array repository"
       },
       {
         "name": "keywords",
-        "content": "SCanners"
+        "content": "Scanners"
       }
     ]
   },
   "addImageAnalysis": {
-    "title": "Add Image Analysis",
+    "title": "Add Image Analysis Metadata",
     "meta": [
       {
         "name": "description",
-        "content": "Adding Image Analysis to my Glygen Array repository"
+        "content": "Adding Image Analysis metadata to my Glygen Array repository"
       },
       {
         "name": "keywords",
@@ -575,11 +593,11 @@
     ]
   },
   "addDataProcessing": {
-    "title": "Add Data Processing",
+    "title": "Add Data Processing Metadata",
     "meta": [
       {
         "name": "description",
-        "content": "Adding Data Processing to my Glygen Array repository"
+        "content": "Adding Data Processing metadata to my Glygen Array repository"
       },
       {
         "name": "keywords",
@@ -629,11 +647,11 @@
   },
 
   "addPrintRun": {
-    "title": "Add Print Run",
+    "title": "Add Print Run Metadata",
     "meta": [
       {
         "name": "description",
-        "content": "Adding print run to my Glygen Array repository"
+        "content": "Adding print run metadata to my Glygen Array repository"
       },
       {
         "name": "keywords",
@@ -642,7 +660,7 @@
     ]
   },
   "printRun": {
-    "title": "Print Run",
+    "title": "Print Run Metadata",
     "meta": [
       {
         "name": "",
@@ -687,7 +705,7 @@
     ]
   },
   "addProcessData": {
-    "title": "Add Process Data",
+    "title": "Add Processed Data",
     "meta": [
       {
         "name": "",
@@ -697,7 +715,7 @@
   },
 
   "addAssay": {
-    "title": "Add Assay",
+    "title": "Add Assay Metadata",
     "meta": [
       {
         "name": "",
@@ -706,7 +724,7 @@
     ]
   },
   "assays": {
-    "title": "My Assays",
+    "title": "My Assay Metadata",
     "meta": [
       {
         "name": "",
@@ -715,7 +733,7 @@
     ]
   },
   "spots": {
-    "title": "My Spots",
+    "title": "My Spot Metadata",
     "meta": [
       {
         "name": "",
@@ -724,7 +742,7 @@
     ]
   },
   "addSpot": {
-    "title": "Add Spot",
+    "title": "Add Spot Metadata",
     "meta": [
       {
         "name": "",

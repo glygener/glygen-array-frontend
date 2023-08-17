@@ -8,6 +8,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Assay = props => {
   useEffect(props.authCheckAgent, []);
@@ -17,18 +18,18 @@ const Assay = props => {
         <title>{head.assays.title}</title>
         {getMeta(head.assays)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Assays"
-            subTitle="The table below displays a list of all assays that have been uploaded to your repository. New assays may be added, old assays can be edited, and unused assays can be removed."
+            title="Your Assay Metadata"
+            subTitle="The table below displays a list of all assay metadata that have been uploaded to your repository. New assay metadata may be added, old assay metadata can be edited, and unused assay metadata can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/assays/addAssay">
-                  <Button className="gg-btn-blue mt-2">Add Assay</Button>
+                  <Button className="gg-btn-blue mt-2">Add Assay Metadata</Button>
                 </Link>
               </div>
 
@@ -56,7 +57,7 @@ const Assay = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Assays"
+                infoRowsText="Assay Metadata"
               />
             </Card.Body>
           </Card>

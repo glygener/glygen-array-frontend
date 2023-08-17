@@ -8,6 +8,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Printers = props => {
   useEffect(props.authCheckAgent, []);
@@ -18,18 +19,18 @@ const Printers = props => {
         <title>{head.printers.title}</title>
         {getMeta(head.printers)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Printers"
-            subTitle="The table below displays a list of all printers that have been uploaded to your repository. New printers may be added, old printers can be edited, and unused printers can be removed."
+            title="Your Printer Metadata"
+            subTitle="The table below displays a list of all printer metadata that have been uploaded to your repository. New printer metadata may be added, old printer metadata can be edited, and unused printer metadata can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/printers/addPrinter">
-                  <Button className="gg-btn-blue mt-2">Add Printer</Button>
+                  <Button className="gg-btn-blue mt-2">Add Printer Metadata</Button>
                 </Link>
               </div>
 
@@ -61,7 +62,7 @@ const Printers = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Printers"
+                infoRowsText="Printer Metadata"
               />
             </Card.Body>
           </Card>

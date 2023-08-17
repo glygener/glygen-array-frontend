@@ -8,6 +8,7 @@ import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { Card } from "react-bootstrap";
 import { DatasetTable } from "../components/DatasetTable";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const DatasetDetailList = () => {
   const { searchId } = useParams();
@@ -58,6 +59,7 @@ const DatasetDetailList = () => {
         <title>{head.publicdatalist.title}</title>
         {getMeta(head.publicdatalist)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl" className="gg-container">
         {showErrorSummary === true && (
           <ErrorSummary

@@ -28,6 +28,7 @@ import { Table } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddOtherMolecule = props => {
   useEffect(props.authCheckAgent, []);
@@ -469,6 +470,7 @@ const AddOtherMolecule = props => {
         <title>{head.addOtherMolecule.title}</title>
         {getMeta(head.addOtherMolecule)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

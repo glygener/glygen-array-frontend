@@ -498,6 +498,7 @@ const AddFeatureToBlock = props => {
             },
             {
               Header: "Ratio",
+              accessor: "concentrationInfo.ratio",
               // eslint-disable-next-line react/display-name
               Cell: (row, index) => (
                 <>
@@ -515,7 +516,7 @@ const AddFeatureToBlock = props => {
                         }}
                       >
                         {row.original.concentrationInfo.ratio}
-                        {"%"}
+
                       </span>
                     ) : (
                       ""
@@ -526,6 +527,7 @@ const AddFeatureToBlock = props => {
             },
             {
               Header: "Linker",
+              accessor: "feature.linker.name",
               // eslint-disable-next-line react/display-name
               Cell: (row, index) => (
                 <input
@@ -546,12 +548,15 @@ const AddFeatureToBlock = props => {
             },
             {
               Header: "Sequence",
+              sortable: false,
               Cell: (row, index) => {
                 return row.original && row.original.feature.glycans
                   ? row.original.feature.glycans.map(element => (
                       <StructureImage
                         key={index}
-                        base64={element.glycan ? element.glycan.cartoon : element.cartoon}
+                        base64={element.glycan ? element.glycan.cartoon : 
+                          (element.glycans && element.glycans[0] &&
+                            element.glycans[0].glycan ? element.glycans[0].glycan.cartoon : element.cartoon)}
                         style={{
                           maxWidth: "100px",
                           overflow: "scroll",
@@ -579,6 +584,7 @@ const AddFeatureToBlock = props => {
           keyColumn="id"
           showPaginationTop
           sortable={true}
+          multiSort={false}
           // filterable={true}
         />
       </>

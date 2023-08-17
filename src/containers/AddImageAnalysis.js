@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddImageAnalysis = props => {
   let type = "IMAGEANALYSISSOFTWARE";
@@ -15,6 +16,10 @@ const AddImageAnalysis = props => {
   let isCopyImageAnalysis = false;
 
   if (location.search && location.search === "?copyImageAnalysis") {
+    isCopyImageAnalysis = true;
+  }
+
+  if (location && location.pathname.includes("copyImageAnalysis")) {
     isCopyImageAnalysis = true;
   }
 
@@ -31,15 +36,15 @@ const AddImageAnalysis = props => {
         <title>{head.addImageAnalysis.title}</title>
         {getMeta(head.addImageAnalysis)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={imageAnalysisId ? "Edit Image Analysis" : "Add Image Analysis to Repository"}
+            title={imageAnalysisId ? "Edit Image Analysis Metadata" : "Add Image Analysis Metadata to Repository"}
             subTitle={
               imageAnalysisId
-                ? "Update image analysis information. Name must be unique in your image analysis repository and cannot be used for more than one image analysis."
-                : "Please provide the information for the new image analysis."
+                ? "Update image analysis metadata information. Name must be unique in your image analysis metadata repository and cannot be used for more than one image analysis metadata."
+                : "Please provide the information for the new image analysis metadata."
             }
           />
           <Card>

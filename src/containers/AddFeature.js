@@ -37,6 +37,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { BlueRadio } from "../components/FormControls";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip.json";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -3011,6 +3012,7 @@ const AddFeature = props => {
         <title>{head.addFeature.title}</title>
         {getMeta(head.addFeature)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

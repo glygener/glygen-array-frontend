@@ -21,6 +21,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import { Typography } from "@material-ui/core";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const MAX_ERROR_LIMIT = 10;
 
@@ -219,12 +220,14 @@ const AddMultiSlideLayout = props => {
 
     columnsToRender["nameColumn"] = {
       Header: "Name",
+      accessor: "name",
       // eslint-disable-next-line react/display-name
       Cell: row => editSlideName(row)
     };
 
     columnsToRender["selectionColumn"] = {
       Header: "Select",
+      sortable: false,
       // eslint-disable-next-line react/display-name
       Cell: row => (
         <FormControlLabel
@@ -492,6 +495,7 @@ const AddMultiSlideLayout = props => {
         <title>{head.addMultiSlideLayout.title}</title>
         {getMeta(head.addMultiSlideLayout)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

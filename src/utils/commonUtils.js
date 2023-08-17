@@ -275,6 +275,24 @@ export function fileExportSuccess(response, fileName) {
   });
 }
 
+export function validateEmail(email) {
+  if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Function to replace special characters.
+ * @param {string} input input value.
+ **/
+export function replaceSpecialCharacters(input) {
+  input = input.replace(/\\/g, "\\\\");
+  input = input.replace(/"/g, "\\\"");
+  input = input.replace(/\n/g, "\\n");
+  return input;
+}
+
 export function fileDownloadFailure(
   response,
   setPageErrorsJson,
@@ -317,6 +335,23 @@ export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessag
     "GET",
     { processeddataid: row.id, filename: "" },
     true,
+    null,
+    response => fileDownloadSuccess(response, setShowSpinner),
+    response => {
+      downloadFailure ? downloadFailure(response) : fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    },
+    null,
+    response => downloadFailure(response)
+  );
+}
+
+export function exportMetadata(datasetid, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportmetadata", downloadFailure, singleSheet, mirageOnly) {
+  setShowSpinner(true);
+  wsCall(
+    wscall,
+    "GET",
+    { datasetId: datasetid, filename: "", singleSheet: (singleSheet ? "true" : "false"), mirageOnly: (mirageOnly ? "true" : "false") },
+    wscall.startsWith("public") ? false : true,
     null,
     response => fileDownloadSuccess(response, setShowSpinner),
     response => {

@@ -8,6 +8,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const Spots = props => {
   useEffect(props.authCheckAgent, []);
@@ -17,18 +18,18 @@ const Spots = props => {
         <title>{head.spots.title}</title>
         {getMeta(head.spots)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Spots"
-            subTitle="The table below displays a list of all spots that have been uploaded to your repository. New spots may be added, old spots can be edited, and unused spots can be removed."
+            title="Your Spot Metadata"
+            subTitle="The table below displays a list of all spot metadata that have been uploaded to your repository. New spots may be added, old spots can be edited, and unused spots can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/spots/addSpot">
-                  <Button className="gg-btn-blue mt-2">Add Spot</Button>
+                  <Button className="gg-btn-blue mt-2">Add Spot Metadata</Button>
                 </Link>
               </div>
 
@@ -56,7 +57,7 @@ const Spots = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Spots"
+                infoRowsText="Spot Metadata"
               />
             </Card.Body>
           </Card>

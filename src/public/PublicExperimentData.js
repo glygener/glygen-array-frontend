@@ -10,6 +10,12 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import CardLoader from "../components/CardLoader";
 import { wsCall } from "../utils/wsUtils";
 import { Link } from "react-router-dom";
+import { exportMetadata, downloadSpinner } from "../utils/commonUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { downloadSpinnerBottomSide } from "../utils/commonUtils";
+import ExportButton from "../components/ExportButton";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const PublicExperimentData = () => {
   let { datasetId }  = useParams();
@@ -21,6 +27,7 @@ const PublicExperimentData = () => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [dataset, setDataset] = useState();
   const [showLoading, setShowLoading] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
     setShowLoading(true);
@@ -48,6 +55,32 @@ const PublicExperimentData = () => {
     });
   }
 
+  function downloadFailure(response) {
+    setPageErrorMessage("Download failed. Please contact the system administrators!");
+    setShowErrorSummary(true);
+    setShowSpinner(false);
+  }
+
+  function handleExport(style, metadata) {
+    let singleSheet = undefined;
+    let mirageOnly = undefined;
+    if (style === "Single sheet") singleSheet = true;;
+    if (metadata !== "Complete Metadata") {
+      mirageOnly = true;
+    }
+
+    exportMetadata(
+      datasetId,
+      setPageErrorsJson,
+      setPageErrorMessage,
+      setShowErrorSummary,
+      setShowSpinner,
+      "publicexportmetadata",
+      downloadFailure,
+      singleSheet,
+      mirageOnly
+    )
+  }
 
   return (
     <>
@@ -55,6 +88,8 @@ const PublicExperimentData = () => {
         <title>{head.publicmetadata.title}</title>
         {getMeta(head.publicmetadata)}
       </Helmet>
+      <FeedbackWidget />
+      {showSpinner && downloadSpinnerBottomSide()}
       <CardLoader pageLoading={showLoading} />
         <div className="page-container">
           <Container maxWidth="xl">
@@ -62,7 +97,6 @@ const PublicExperimentData = () => {
               title={`Metadata for Dataset ${dataset && dataset.name ? dataset.name : ""}`}
               subTitle={<Link to={`/data/dataset/${datasetId}`}>{"Back to dataset"}</Link>}
             />
-
 
         <Card>
           <Card.Body>
@@ -75,6 +109,9 @@ const PublicExperimentData = () => {
               />
             )}
           <div class="mb-4">
+                <div className="text-right mb-3">
+                  <ExportButton handleExport={handleExport} />
+                </div>
             <Card>
               <Card.Header>
                   <Card.Title id="contained-modal-title-vcenter">
@@ -262,7 +299,7 @@ const PublicExperimentData = () => {
                 <CardDescriptor metadataId={"DPM6390096"} wsCall={"getpublicdataprocessing"} useToken={ false } name={"Data Processing"}  isSample={true}/>
                 </div>} */}
               </Card.Body>
-        </Card>
+          </Card>
       </Container>
     </div>
     </>

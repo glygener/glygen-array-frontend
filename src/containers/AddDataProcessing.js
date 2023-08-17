@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddDataProcessing = props => {
   let type = "DATAPROCESSINGSOFTWARE";
@@ -15,6 +16,10 @@ const AddDataProcessing = props => {
   let isCopyDataProcessing = false;
 
   if (location.search && location.search === "?copyDataProcessing") {
+    isCopyDataProcessing = true;
+  }
+
+  if (location && location.pathname.includes("copyDataProcessing")) {
     isCopyDataProcessing = true;
   }
 
@@ -31,15 +36,15 @@ const AddDataProcessing = props => {
         <title>{head.addDataProcessing.title}</title>
         {getMeta(head.addDataProcessing)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={dataProcessingId ? "Edit Data Processing" : "Add Data Processing to Repository"}
+            title={dataProcessingId ? "Edit Data Processing Software Metadata" : "Add Data Processing Software Metadata to Repository"}
             subTitle={
               dataProcessingId
-                ? "Update data processing information. Name must be unique in your data processing repository and cannot be used for more than one data processing."
-                : "Please provide the information for the new data processing."
+                ? "Update data processing software information. Name must be unique in your data processing software repository and cannot be used for more than one data processing software."
+                : "Please provide the information for the new data processing software."
             }
           />
           <Card>

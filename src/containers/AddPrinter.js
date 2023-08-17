@@ -7,6 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddPrinter = props => {
   let type = "PRINTER";
@@ -15,6 +16,10 @@ const AddPrinter = props => {
   let isCopyPrinter = false;
 
   if (location.search && location.search === "?copyPrinter") {
+    isCopyPrinter = true;
+  }
+
+  if (location && location.pathname.includes("copyPrinter")) {
     isCopyPrinter = true;
   }
 
@@ -31,15 +36,15 @@ const AddPrinter = props => {
         <title>{head.addPrinter.title}</title>
         {getMeta(head.addPrinter)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title={printerId ? "Edit Printer" : "Add Printer to Repository"}
+            title={printerId ? "Edit Printer Metadata" : "Add Printer Metadata to Repository"}
             subTitle={
               printerId
-                ? "Update printer information. Name must be unique in your printer repository and cannot be used for more than one printer."
-                : "Please provide the information for the new printer."
+                ? "Update printer metadata information. Name must be unique in your printer metadata repository and cannot be used for more than one printer metadata."
+                : "Please provide the information for the new printer metadata."
             }
           />
           <Card>

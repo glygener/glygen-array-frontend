@@ -10,6 +10,7 @@ import { StructureImage } from "../components/StructureImage";
 import { head, getMeta } from "../utils/head";
 import { Title } from "../components/FormControls";
 import { Container } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const SubmitterSearch = (props) => {
   // useEffect(props.authCheckAgent, []);
@@ -20,7 +21,7 @@ const SubmitterSearch = (props) => {
         <title>{head.glycans.title}</title>
         {getMeta(head.glycans)}
       </Helmet> */}
-
+      <FeedbackWidget />
       <Container maxWidth="md">
         <Title title="Submitter" />
         <div className="card-page-sm">

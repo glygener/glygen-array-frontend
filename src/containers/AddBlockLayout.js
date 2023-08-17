@@ -25,6 +25,7 @@ import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import { ViewDescriptor } from "../components/ViewDescriptor";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const stepsHelpTooltipData = [
   {
@@ -60,7 +61,19 @@ const AddBlockLayout = props => {
       props.authCheckAgent();
     }
 
-    if (blockLayoutId && blockLayoutId !== "") {
+    if (props.publicView) {
+      setShowLoading(true);
+      wsCall(
+        "getpublicblocklayout",
+        "GET",
+        { qsParams: { loadAll: true }, urlParams: [props.publicView] },
+        false,
+        null,
+        getBlockLayoutSuccess,
+        getBlockLayoutFailure
+      );
+    }
+    else if (blockLayoutId && blockLayoutId !== "") {
       // count = 1;
       setShowLoading(true);
       wsCall(
@@ -76,31 +89,35 @@ const AddBlockLayout = props => {
       setSubTitle(
         "Update block layout information. Name must be unique in your block layout repository and cannot be used for more than one block layout."
       );
-    } else if (props.publicView) {
-      setShowLoading(true);
+    }
+
+    if (props.publicView) {
       wsCall(
-        "getpublicblocklayout",
+        "listpublicspotmetadata",
         "GET",
-        { qsParams: { loadAll: true }, urlParams: [props.publicView] },
+        { offset: 0 },
+        false,
+        null,
+        response =>
+          response.json().then(responseJson => {
+            setListSpots(responseJson.rows);
+          }),
+        getBlockLayoutFailure
+      );
+    } else {
+      wsCall(
+        "listspotmetadata",
+        "GET",
+        { offset: 0 },
         true,
         null,
-        getBlockLayoutSuccess,
+        response =>
+          response.json().then(responseJson => {
+            setListSpots(responseJson.rows);
+          }),
         getBlockLayoutFailure
       );
     }
-
-    wsCall(
-      "listspotmetadata",
-      "GET",
-      { offset: 0 },
-      true,
-      null,
-      response =>
-        response.json().then(responseJson => {
-          setListSpots(responseJson.rows);
-        }),
-      getBlockLayoutFailure
-    );
     if (!arraySelected.length > 0) {
       setArraySelected(spotsSelected);
     }
@@ -547,6 +564,7 @@ const AddBlockLayout = props => {
 
   return (
     <>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           {!props.publicView && (
@@ -620,7 +638,7 @@ const AddBlockLayout = props => {
                   {loadGrid && (
                     <>
                       {showDescriptos && <ViewDescriptor metadataId={spotFeatureCard.metadata.id} metadata={spotFeatureCard.metadata} showModal={showDescriptos} setShowModal={setShowDescriptos}
-                        wsCall={"getspotmetadata"} useToken={true} name={"Spot Metadata"} isSample={false} />}
+                        wsCall={props.publicView ? "getpublicspotmetadata" : "getspotmetadata"} useToken={props.publicView ? false : true} name={"Spot Metadata"} isSample={false} />}
                       <Row className="gg-align-center text-center">
                         <Col xs={12} md={12} lg={8} className="pb-3 pt-3" style={{ width: "800px" }}>
                           <div

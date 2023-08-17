@@ -13,6 +13,7 @@ import DatasetDetailSearchUser from "../components/search/DatasetDetailSearchUse
 // import GlycanSubstructureSearch from "../components/search/GlycanSubstructureSearch";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const DatasetDetailSearch = (props) => {
   const { searchId } = useParams();
@@ -67,7 +68,7 @@ const DatasetDetailSearch = (props) => {
         <title>{head.datasetDetailSearch.title}</title>
         {getMeta(head.datasetDetailSearch)}
       </Helmet>
-
+      <FeedbackWidget />
       <div className="lander">
         {showErrorSummary === true && (
           <ErrorSummary

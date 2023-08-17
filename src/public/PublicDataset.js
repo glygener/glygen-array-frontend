@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../css/Search.css";
 import "./PublicDataset.css";
 import { getDateCreated } from "../utils/commonUtils";
-import { Row, Col, Button, Card, Form } from "react-bootstrap";
+import { Row, Col, Button, Card, Form, Image } from "react-bootstrap";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
 import { useParams, useHistory } from "react-router-dom";
@@ -24,6 +24,8 @@ import { PubOnExp } from "../components/PubOnExp";
 import { Link } from "react-router-dom";
 import CardLoader from "../components/CardLoader";
 import { ViewDescriptor } from "../components/ViewDescriptor";
+import licenseLogo from "../images/creativecommonslogo.svg";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 // const Files = React.lazy(() => import("./Files"));
 // const SubmitterDetails = React.lazy(() => import("./SubmitterDetails"));
@@ -122,15 +124,16 @@ const PublicDataset = () => {
 
           let dataTable = responseJson.rows.map((obj, ind) => { 
             let rfu = Math.round((obj.intensity.rfu + Number.EPSILON) * 100) / 100;
+            let stdev = Math.round((obj.intensity.stDev + Number.EPSILON) * 100) / 100;
             return {
               'featureId' : obj.feature.id, 
-              'id' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
-              'glytoucanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? true : false, 
-              'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
+              'id': obj.feature.glycans[0].glycan.glytoucanId == null ? obj.feature.glycans[0].glycan.id : obj.feature.glycans[0].glycan.glytoucanId,
+              'glytoucanId': obj.feature.glycans[0].glycan.glytoucanId == null ? false : true,
+              'cartoon': obj.feature.glycans[0].glycan.cartoon == null ? "" : obj.feature.glycans[0].glycan.cartoon,
               'linkerName' : obj.feature.linker ? obj.feature.linker.name : "",
               'linkerId' : obj.feature.linker ? obj.feature.linker.id : "",
               'inChiSequence' : obj.feature.linker ? obj.feature.linker.inChiSequence : "",
-              'rfu': Number(rfu).toLocaleString('en-US'),
+              'rfu': Number(rfu).toLocaleString('en-US') + " \u00B1 " + Number(stdev).toLocaleString('en-US')
           }});
           setListIntensityTable(dataTable);
 
@@ -150,8 +153,8 @@ const PublicDataset = () => {
 
             return {
               'featureId' : obj.feature.id, 
-              'glycanId' : obj.feature.glycans[0].glycan.glytoucanId !== null ? obj.feature.glycans[0].glycan.glytoucanId : obj.feature.glycans[0].glycan.id, 
-              'cartoon' : obj.feature.glycans[0].glycan.cartoon !== null ? obj.feature.glycans[0].glycan.cartoon : "",
+              'glycanId': obj.feature.glycans[0].glycan.glytoucanId == null ? obj.feature.glycans[0].glycan.id : obj.feature.glycans[0].glycan.glytoucanId,
+              'cartoon': obj.feature.glycans[0].glycan.cartoon == null ? "" : obj.feature.glycans[0].glycan.cartoon,
               'linkerName' : obj.feature.linker.name,
               'rfuBarValue' : rfu <= 0 ? 0 : rfu,
               'rfu' : Number(rfu).toLocaleString('en-US') ,
@@ -162,7 +165,14 @@ const PublicDataset = () => {
               'height' : tempHeight
             } 
           });
-          data.sort((obj1, obj2) => obj1.glycanId.localeCompare(obj2.glycanId));
+          data.sort((obj1, obj2) => {
+            if (!obj1.glycanId || !obj2.glycanId) {
+              console.warn("glycan id is null " + obj1.featureId);
+              return 0;
+            }
+            else return obj1.glycanId.localeCompare(obj2.glycanId);
+          });
+          /*data.sort((obj1, obj2) => obj1.glycanId.localeCompare(obj2.glycanId));*/
           setListIntensityChart(data);
           setShowloadingData(false);
         }),
@@ -243,6 +253,7 @@ const PublicDataset = () => {
         {getMeta(head.publicdatalist)}
       </Helmet>
 
+      <FeedbackWidget />
       {showErrorSummary === true && (
         <ErrorSummary
           show={showErrorSummary}
@@ -257,7 +268,7 @@ const PublicDataset = () => {
           <>
             <Row style={{marginBottom: "30px"}}>
               <Col md={8}>
-                <Card>
+                <Card style={{ height: "100%" }}>
                   <Card.Body>
                     <Title title="Summary" />
                     {getDetails()}
@@ -273,14 +284,29 @@ const PublicDataset = () => {
                 </Card> */}
               </Col>
               <Col md={4} style={{display: "flex",  flexDirection: "column"}}>
-              <Card style={{height: "100%"}}>
-              <Card.Body>
-                <Title title="Submitter" />
-                {dataset.user && dataset.user.name ? (
-                  <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
-                ) : null}
-              </Card.Body>
-            </Card>
+                <Card style={{ height: "100%", marginBottom: "30px" }}>
+                  <Card.Body>
+                    <Title title="Submitter" />
+                    {dataset.user && dataset.user.name ? (
+                      <SubmitterDetails wsCall={"getuserdetails"} username={dataset.user.name} />
+                    ) : null}
+                  </Card.Body>
+                </Card>
+
+                <Card style={{ height: "100%" }}>
+                  <Card.Body>
+                    <Title title="License" />
+                    <div className="text-center">
+                      <a href={"https://creativecommons.org/licenses/by/4.0/"} target="_blank" rel="noopener noreferrer">
+                        Creative Commons Attribution 4.0 International</a>
+                      <p>(CC BY 4.0)</p>
+                      <a href={"https://creativecommons.org/licenses/by/4.0/"} target="_blank" rel="noopener noreferrer">
+                        <Image src={licenseLogo} className="licenseIcons" />
+                      </a>
+                    </div>
+                  </Card.Body>
+                </Card>
+
             </Col>
             </Row>
             <Card style={{marginBottom: "30px"}}>

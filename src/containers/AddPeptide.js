@@ -32,6 +32,7 @@ import moleculeExamples from "../appData/moleculeExamples";
 import { Table } from "react-bootstrap";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddPeptide = props => {
   useEffect(props.authCheckAgent, []);
@@ -804,6 +805,7 @@ const AddPeptide = props => {
         <title>{head.addPeptide.title}</title>
         {getMeta(head.addPeptide)}
       </Helmet>
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading

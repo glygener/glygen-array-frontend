@@ -8,6 +8,7 @@ import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 const DataProcessing = props => {
   useEffect(props.authCheckAgent, []);
@@ -18,18 +19,18 @@ const DataProcessing = props => {
         <title>{head.dataProcessing.title}</title>
         {getMeta(head.dataProcessing)}
       </Helmet>
-
+      <FeedbackWidget />
       <Container maxWidth="xl">
         <div className="page-container">
           <PageHeading
-            title="Your Data Processing"
-            subTitle="The table below displays a list of all data processing that have been uploaded to your repository. New data processing may be added, old data processing can be edited, and unused data processing can be removed."
+            title="Your Data Processing Software Metadata"
+            subTitle="The table below displays a list of all data processing software metadata that have been uploaded to your repository. New data processing software metadata may be added, old data processing software metadata can be edited, and unused data processing software metadata can be removed."
           />
           <Card>
             <Card.Body>
               <div className="text-center mb-4">
                 <Link to="/dataProcessing/addDataProcessing">
-                  <Button className="gg-btn-blue mt-2">Add Data Processing</Button>
+                  <Button className="gg-btn-blue mt-2">Add Data Processing Software Metadata</Button>
                 </Link>
               </div>
 
@@ -61,7 +62,7 @@ const DataProcessing = props => {
                 keyColumn="id"
                 form={"metadata"}
                 showRowsInfo
-                infoRowsText="Data Processing"
+                infoRowsText="Data Processing Software Metadata"
               />
             </Card.Body>
           </Card>
