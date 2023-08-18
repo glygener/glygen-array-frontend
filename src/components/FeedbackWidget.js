@@ -7,7 +7,7 @@ import { FaRegLightbulb } from "react-icons/fa";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { AiFillBug } from "react-icons/ai";
 import { wsCall } from "../utils/wsUtils";
-import { validateEmail, replaceSpecialCharacters } from "../utils/commonUtils";
+import { validateEmail } from "../utils/commonUtils";
 import Typography from "@material-ui/core/Typography";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import CloseIcon from "@material-ui/icons/Close";
@@ -19,13 +19,10 @@ const FeedbackWidget = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [fname, setFName] = useState("");
-  const [lname, setLName] = useState("None Given");
   const [subject, setSubject] = useState(defaultSubject);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-
   const [fNameValidated, setFNameValidated] = useState(false);
-  const [lNameValidated, setLNameValidated] = useState(false);
   const [emailValidated, setEmailValidated] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
   const [messageValidated, setMessageValidated] = useState(false);
@@ -94,14 +91,12 @@ const FeedbackWidget = (props) => {
 
   const resetForm = () => {
     setFName("");
-    setLName("");
     setEmail("");
     setSubject("Suggestion");
     setMessage("");
     setMessageCharsLeft(`${messageMaxLen}`);
     setFormValidated(false);
     setFNameValidated(false);
-    setLNameValidated(false);
     setEmailValidated(false);
     setMessageValidated(false);
   };
@@ -121,7 +116,7 @@ const FeedbackWidget = (props) => {
         <Row>
           <Col sm={12} md={12} lg={12}>
             <div
-              className={"toggle rotate" + (isOpen ? " active" : "")}
+              className={"feedbacktoggle rotate" + (isOpen ? " active" : "")}
               onClick={() => closeForm()}
             >
               {isOpen ? (

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useReducer } from "react";
 import Helmet from "react-helmet";
 import { getMetaID, getTitle } from "../utils/head";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
-import { Link } from "react-router-dom";
+import { Row } from "react-bootstrap";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -133,22 +133,11 @@ const GlycanList = (props) => {
           />
         )}
         {/*  general */}
-        <Accordion id="General" defaultActiveKey="0" className="panel-width" style={{ padding: "20px 0" }}>
-          <Card>
-            <Card.Header className="panelHeadBgr">
-              <h4 className="gg-green d-inline">General</h4>
-              {/* <div className="float-right">
-                <Accordion.Toggle
-                  eventKey="0"
-                  onClick={() => toggleCollapse("general", collapsed.general)}
-                  className="gg-green arrow-btn"
-                >
-                  <span>{collapsed.general ? closeIcon : expandIcon}</span>
-                </Accordion.Toggle>
-              </div> */}
-            </Card.Header>
-            <Accordion.Collapse eventKey="0">
-              <Card.Body>
+        <Row style={{ marginBottom: "30px" }}>
+          <Card style={{ height: "100%" }} className="summary-panel">
+            <Card.Body>
+              <Title title="General" />
+
                 {/* image */}
                 {glycanData && glycanData.cartoon ? (
                   // <div className="mb-1">
@@ -205,9 +194,9 @@ const GlycanList = (props) => {
                   </div>
                 )}
               </Card.Body>
-            </Accordion.Collapse>
+
           </Card>
-        </Accordion>
+        </Row>
         <Grid container>
           <Grid item xs={12} sm={12}>
             <div style={{ marginBottom: "30px" }}>

@@ -105,11 +105,10 @@ const UserDatasets = (props) => {
                     />
                 )}
                 <div style={{ margin: "30px" }}>
-                    <Card
-                        style={{
+                    <Card style={{
                             width: "100%",
                             margin: "2%",
-                        }} className="text-center summary-panel">
+                    }} className=" summary-panel">
                         <Card.Body>
                             <Title title="User" />
                             {/* userName */}

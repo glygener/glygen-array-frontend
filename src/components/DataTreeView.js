@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import Tree from "react-animated-tree";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
-import { LineTooltip } from "./tooltip/LineTooltip";
 import { SlideOnExperiment } from "../containers/SlideOnExperiment";
 import { ImageOnSlideExp } from "../containers/ImageOnSlideExp";
 import { RawdataOnImage } from "../containers/RawdataOnImage";
 import { ProcessDataOnRd } from "../containers/ProcessDataOnRd";
 import "../components/DataTreeView.css";
-import { Col, Row, Modal, Button, Form } from "react-bootstrap";
+import { Col, Row, Modal, Button } from "react-bootstrap";
 import { ErrorPage } from "./ErrorPage";
 import { ExperimentDetails } from "../containers/ExperimentDetails";
 

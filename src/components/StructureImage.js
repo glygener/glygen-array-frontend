@@ -5,7 +5,7 @@ import { loadDefaultImage } from "../utils/commonUtils";
 
 const StructureImage = props => {
   return (
-    <div className="image-container">
+    <div className="image-container" style={{ overflowX: "scroll" }}>
       {(props.base64 || props.imgUrl || props.style) && (
         <img
           className="structure-image"

@@ -316,14 +316,20 @@ const PublicSlideLayout = () => {
                 />
             )}
 
+            <div className="content-box-md text-center horizontal-heading">
+                <h1 className="page-heading">
+                    <span>Details for Slide </span> <strong>{slide && slide.name && <> {slide.name}</>}</strong>
+                </h1>
+            </div>
+
             <div style={{ margin: "30px" }}>
                 {slide ? (
                     <>
                         <Row style={{ marginBottom: "30px" }}>
                             <Col md={10}>
-                                <Card style={{ height: "100%" }} className="text-center summary-panel">
+                                <Card style={{ height: "100%" }} className=" summary-panel">
                                     <Card.Body>
-                                        <Title title="Summary" />
+                                        <Title title="General" />
                                         {getDetails()}
                                     </Card.Body>
                                 </Card>
