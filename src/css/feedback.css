@@ -81,7 +81,7 @@
     font-size: 18px;
 }
 
-.toggle {
+.feedbacktoggle {
     position: absolute;
     height: 50px;
     width: 100px;
@@ -92,30 +92,30 @@
     line-height: 48px;
 }
 
-.toggle:before {
+.feedbacktoggle:before {
     font-family: fontAwesome;
     font-size: 16px;
     color: #fff;
 }
 
-.toggle.active:before {
+.feedbacktoggle.active:before {
     font-family: fontAwesome;
     font-size: 20px;
     content: "";
     left: 70px;
 }
 
-.toggle.active span {
+.feedbacktoggle.active span {
     display: none;
 }
 
-.sidebar-contact .toggle {
+.sidebar-contact .feedbacktoggle {
     top: 4.5%;
     /* transform:translateY(-50%); */
     transition: 0.5s;
 }
 
-.sequence-dashboard .toggle {
+.sequence-dashboard .feedbacktoggle {
     top: 7.5%;
     transition: 0.5s;
 }
@@ -147,23 +147,23 @@
         right: -100%;
     }
 
-    .sidebar-contact .toggle {
+        .sidebar-contact .feedbacktoggle {
         top: 15.5%;
         transition: 0.5s;
     }
 
-    .sequence-dashboard .toggle {
+        .sequence-dashboard .feedbacktoggle {
         top: 30.0%;
         transition: 0.5s;
     }
 
-    .sequence-dashboard.active .toggle {
+        .sequence-dashboard.active .feedbacktoggle {
         top: 8.5%;
         right: 0;
         left: 85.5% !important;
     }
 
-    .sidebar-contact.active .toggle {
+        .sidebar-contact.active .feedbacktoggle {
         top: 8.5%;
         right: 0;
         left: 85.5% !important;
@@ -182,22 +182,22 @@
 }
 
 @media (max-width: 480px) {
-    .sidebar-contact.active .toggle {
+    .sidebar-contact.active .feedbacktoggle {
         top: 5%;
         left: 80% !important;
     }
 
-    .sidebar-contact .toggle {
+        .sidebar-contact .feedbacktoggle {
         top: 15%;
         transition: 0.5s;
     }
 
-    .sequence-dashboard .toggle {
+        .sequence-dashboard .feedbacktoggle {
         top: 30%;
         /* transition: 0.5s; */
     }
 
-    .sequence-dashboard.active .toggle {
+        .sequence-dashboard.active .feedbacktoggle {
         top: 7%;
         left: 81% !important;
         /* transition: 0.5s; */
