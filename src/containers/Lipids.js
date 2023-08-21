@@ -102,7 +102,7 @@ const Lipids = props => {
                     accessor: "imageURL",
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
-                    Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
+                    Cell: row => <StructureImage zoom={true} imgUrl={row.value}></StructureImage>,
                     minWidth: 150,
                   },
                 ]}

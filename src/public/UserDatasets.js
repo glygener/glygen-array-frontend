@@ -106,9 +106,8 @@ const UserDatasets = (props) => {
                 )}
                 <div style={{ margin: "30px" }}>
                     <Card style={{
-                            width: "100%",
-                            margin: "2%",
-                    }} className=" summary-panel">
+                        width: "100%"
+                    }}>
                         <Card.Body>
                             <Title title="User" />
                             {/* userName */}
@@ -150,8 +149,7 @@ const UserDatasets = (props) => {
                     </Card>
                     <Card
                         style={{
-                            width: "95%",
-                            margin: "2%",
+                            width: "100%"
                         }}
                     >
                         {searchId && (

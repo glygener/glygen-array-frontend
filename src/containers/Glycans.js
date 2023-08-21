@@ -102,7 +102,7 @@ const Glycans = props => {
                     accessor: "cartoon",
                     sortable: false,
                     // eslint-disable-next-line react/prop-types
-                    Cell: row => <StructureImage base64={row.value}></StructureImage>,
+                    Cell: row => <StructureImage zoom={true} base64={row.value}></StructureImage>,
                     minWidth: 300
                   },
                   {
