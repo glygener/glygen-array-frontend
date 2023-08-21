@@ -198,7 +198,7 @@ const SlideTable = props => {
                                 {
                                     urlParams: props.urlParams || [],
                                     qsParams: {
-                                        offset: customOffset ? 0 : state.page * state.pageSize,
+                                        offset: customOffset ? 0 : curPage * state.pageSize,
                                         limit: state.pageSize,
                                         sortBy: publicData.sortBy,
                                         order: orderBy ? 1 : 0,

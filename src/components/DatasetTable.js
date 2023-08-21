@@ -218,7 +218,7 @@ const DatasetTable = props => {
               setShowLoading(true);
 
               let params = {
-                offset: customOffset ? 0 : state.page * state.pageSize,
+                offset: customOffset ? 0 : curPage * state.pageSize,
                 limit: state.pageSize,
                 loadAll: false,
                 sortBy: publicData.sortBy,
