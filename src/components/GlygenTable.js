@@ -619,6 +619,7 @@ const GlygenTable = props => {
         pages={pages}
         page={curPage}
         onPageChange={(pageNo) => setCurPage(pageNo)}
+        onPageSizeChange={(pageSize, page) => setCurPage(0)}
         loading={showLoading}
         loadingText={<CardLoader pageLoading={showLoading} />}
         multiSort={false}
@@ -648,7 +649,7 @@ const GlygenTable = props => {
               {
                 urlParams: props.urlParams || [],
                 qsParams: {
-                  offset: customOffset ? 0 : curPage * state.pageSize,
+                  offset: customOffset ? 0 : state.page * state.pageSize,
                   limit: state.pageSize,
                   sortBy: sortColumn,
                   order: sortOrder,

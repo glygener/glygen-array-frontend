@@ -34,7 +34,7 @@ const SlideTable = props => {
     };
     const [publicData, setPublicData] = useReducer((state, newState) => ({ ...state, ...newState }), slide);
     useEffect(() => {
-        tableElement.state && tableElement.fireFetchData();
+        tableElement.state && !customOffset && tableElement.fireFetchData();
     }, [searchFilter, props, orderBy, publicData.sortBy]);
 
     function errorWscall(response) {
@@ -182,6 +182,7 @@ const SlideTable = props => {
                         pages={pages}
                         page={curPage}
                         onPageChange={(pageNo) => setCurPage(pageNo)}
+                        onPageSizeChange={(pageSize, page) => setCurPage(0)}
                         loading={showLoading}
                         loadingText={<CardLoader pageLoading={showLoading} />}
                         multiSort={false}
@@ -198,7 +199,7 @@ const SlideTable = props => {
                                 {
                                     urlParams: props.urlParams || [],
                                     qsParams: {
-                                        offset: customOffset ? 0 : curPage * state.pageSize,
+                                        offset: customOffset ? 0 : state.page * state.pageSize,
                                         limit: state.pageSize,
                                         sortBy: publicData.sortBy,
                                         order: orderBy ? 1 : 0,
@@ -209,24 +210,7 @@ const SlideTable = props => {
                                 },
                                 false,
                                 null,
-                                response =>
-                                    response.json().then(responseJson => {
-                                        if (searchFilter !== "" && responseJson.total < 5 && !customOffset) {
-                                            setCustomOffset(true);
-                                            tableElement.fireFetchData();
-                                        } else {
-                                            setCustomOffset(false);
-                                            if (responseJson.rows) {
-                                                setData(responseJson.rows);
-                                                setRows(responseJson.total);
-                                            } else {
-                                                setData(responseJson);
-                                                setRows(responseJson.length);
-                                            }
-                                            setPages(Math.ceil(responseJson.total / state.pageSize));
-                                            setShowLoading(false);
-                                        }
-                                    }),
+                                response => fetchSuccess(response, state),
                                 errorWscall
                             );
                         }}
@@ -249,6 +233,26 @@ const SlideTable = props => {
             </>
         );
     };
+
+    function fetchSuccess(response, state) {
+        response.json().then(responseJson => {
+            if (searchFilter !== "" && responseJson.total < state.pageSize && !customOffset) {
+                setCustomOffset(true);
+                tableElement.fireFetchData();
+            } else {
+                setCustomOffset(false);
+                if (responseJson.rows) {
+                    setData(responseJson.rows);
+                    setRows(responseJson.total);
+                } else {
+                    setData(responseJson);
+                    setRows(responseJson.length);
+                }
+                setPages(Math.ceil(responseJson.total / state.pageSize));
+                setShowLoading(false);
+            }
+        });
+    }
 
     return (
         <>
