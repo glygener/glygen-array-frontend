@@ -72,7 +72,7 @@ const Home = () => {
                   }}
                 >
                   <VersionCard data={{}} />
-                  {history.location.pathname === "/" && <TwitterCard />}
+                  {/*history.location.pathname === "/" && <TwitterCard />*/}
                 </Grid>
               </Grid>
             </Grid>
