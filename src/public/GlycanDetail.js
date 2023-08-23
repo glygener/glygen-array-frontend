@@ -14,6 +14,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Accordion from "react-bootstrap/Accordion";
 import { GlygenTable } from "../components/GlygenTable";
+import { DatasetTable } from "../components/DatasetTable";
 import glygenNotFoundSmall from "../images/glygenNotFoundSmall.svg";
 import { Loading } from "../components/Loading";
 import { Title } from "../components/FormControls";
@@ -205,7 +206,11 @@ const GlycanList = (props) => {
               <Card style={{ height: "100%" }}>
                 <Card.Body>
                   <Title title="Datasets" />
-              <GlygenTable
+
+                  {glycanId && (
+                    <DatasetTable wsName="getdatasetforglycan" urlParams={[glycanId]} />
+                  )}
+                  {/* <GlygenTable
                 columns={[
                   {
                     // Header: "Dataset ID",
@@ -282,7 +287,7 @@ const GlycanList = (props) => {
                 showRowsInfo
                 infoRowsText="Datasets"
                 urlParams={[glycanId]}
-              />
+              />*/}
                 </Card.Body>
               </Card>
             </div>

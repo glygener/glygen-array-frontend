@@ -217,6 +217,7 @@ const DatasetTable = props => {
             ref={element => setTableElement(element)}
             onFetchData={state => {
               setShowLoading(true);
+
               let params = {
                 offset: customOffset ? 0 : state.page * state.pageSize,
                 limit: state.pageSize,
@@ -233,7 +234,10 @@ const DatasetTable = props => {
               wsCall(
                 props.wsName,
                 "GET",
-                params,
+                {
+                  urlParams: props.urlParams || [],
+                  qsParams: params,
+                },
                 false,
                 null,
                 response => fetchSuccess(response, state),
