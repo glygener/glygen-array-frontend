@@ -107,7 +107,9 @@ const ChangeEmail = () => {
   function handleSubmit(e) {
     setValidated(true);
 
-    const username = window.localStorage.getItem("loggedinuser");
+    var base = process.env.REACT_APP_BASENAME;
+
+    const username = window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser");
     var password = userInput.password;
 
     if (e.currentTarget.checkValidity() && verifyPassword(username, password)) {
@@ -118,7 +120,8 @@ const ChangeEmail = () => {
   }
 
   function changeEmail() {
-    const username = window.localStorage.getItem("loggedinuser");
+    var base = process.env.REACT_APP_BASENAME;
+    const username = window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser");
     var password = userInput.password;
 
     const changeEmail = {

@@ -447,8 +447,9 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     }
   }
 
+  var base = process.env.REACT_APP_BASENAME;
   if (useToken) {
-    headers["Authorization"] = window.localStorage.getItem("token") || "";
+    headers["Authorization"] = window.localStorage.getItem(base ? base + "_token" : "token") || "";
   }
 
   try {

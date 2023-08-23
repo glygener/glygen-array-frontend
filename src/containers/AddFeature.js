@@ -1216,11 +1216,12 @@ const AddFeature = props => {
     const descriptorGroups = getDescriptorGroups(featureMetadata[0]);
 
     const descriptors = getDescriptors(featureMetadata[0]);
+    var base = process.env.REACT_APP_BASENAME;
 
     let objectToBeSaved = {
       name: featureAddState.name,
       user: {
-        name: window.localStorage.getItem("loggedinuser"),
+        name: window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser"),
       },
       template: "Default Feature",
       descriptors: descriptors,
