@@ -1216,11 +1216,12 @@ const AddFeature = props => {
     const descriptorGroups = getDescriptorGroups(featureMetadata[0]);
 
     const descriptors = getDescriptors(featureMetadata[0]);
+    var base = process.env.REACT_APP_BASENAME;
 
     let objectToBeSaved = {
       name: featureAddState.name,
       user: {
-        name: window.localStorage.getItem("loggedinuser"),
+        name: window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser"),
       },
       template: "Default Feature",
       descriptors: descriptors,
@@ -1531,7 +1532,7 @@ const AddFeature = props => {
             {
               Header: "Structure Image",
               accessor: "cartoon",
-              Cell: row => <StructureImage base64={row.value} />,
+              Cell: row => <StructureImage zoom={true} base64={row.value} />,
               minWidth: 200,
             },
             {
@@ -1901,7 +1902,7 @@ const AddFeature = props => {
               Cell: (row, index) =>
                 row.value ? (
                   row.value.cartoon ? (
-                    <StructureImage key={index} base64={row.value.cartoon} />
+                    <StructureImage key={index} zoom={true} base64={row.value.cartoon} />
                   ) : row.value.name ? (
                     row.value.name
                   ) : (
@@ -2072,7 +2073,7 @@ const AddFeature = props => {
               Cell: (row, index) =>
                 row.value ? (
                   row.value.cartoon ? (
-                    <StructureImage key={index} base64={row.value.cartoon} />
+                    <StructureImage key={index} zoom={true} base64={row.value.cartoon} />
                   ) : row.value.name ? (
                     row.value.name
                   ) : (
@@ -2309,7 +2310,7 @@ const AddFeature = props => {
                     Cell: (row, index) =>
                       row.value ? (
                         row.value.cartoon ? (
-                          <StructureImage key={index} base64={row.value.cartoon} />
+                          <StructureImage key={index} zoom={true} base64={row.value.cartoon} />
                         ) : (
                           row.value.name
                         )
@@ -2755,7 +2756,7 @@ const AddFeature = props => {
               ),
               accessor: "cartoon",
               Cell: row => {
-                return row.value ? <StructureImage base64={row.value} /> : "";
+                return row.value ? <StructureImage zoom={true} base64={row.value} /> : "";
               },
               sortable: false,
               minWidth: 200,

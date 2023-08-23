@@ -31,6 +31,8 @@ const UploadMolecules = props => {
   const [title, setTitle] = useState(props.moleculeUploadType === "FEATURE" ? "Upload Features" : "Upload Molecules");
   const defaultFileType = "Repository Export (.json)";
 
+  var base = process.env.REACT_APP_BASENAME;
+
   const fileDetails = {
     fileType: defaultFileType,
     glytoucanRegistration: false,
@@ -147,7 +149,7 @@ const UploadMolecules = props => {
                     <ResumableUploader
                       history={history}
                       headerObject={{
-                        Authorization: window.localStorage.getItem("token") || "",
+                        Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                         Accept: "*/*",
                       }}
                       fileType={fileDetails.fileType}

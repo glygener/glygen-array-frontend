@@ -132,8 +132,9 @@ const Login = props => {
 
   function logInSuccess(response) {
     var token = response.headers.get("Authorization");
-    window.localStorage.setItem("token", token);
-    window.localStorage.setItem("loggedinuser", credentials.userName);
+    var base = process.env.REACT_APP_BASENAME;
+    window.localStorage.setItem(base ? base + "_token" : "token", token);
+    window.localStorage.setItem(base ? base + "_loggedinuser" : "loggedinuser", credentials.userName);
     props.updateLogin(true);
 
     var redirectedFrom = "";

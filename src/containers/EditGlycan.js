@@ -111,7 +111,7 @@ const EditGlycan = (props) => {
                   <Form.Group as={Row} controlId="image" className="gg-align-center text-center mb-0">
                     {/* <FormLabel label="Image" /> */}
                     <Col md={8}>
-                      <StructureImage base64={glycanDetails.cartoon} style={{ minWidth: "20%" }} />
+                      <StructureImage base64={glycanDetails.cartoon} style={{ transform: "scale(1.0)" }} />
                     </Col>
                   </Form.Group>
                 )}

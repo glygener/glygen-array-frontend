@@ -33,7 +33,7 @@ const DatasetTable = props => {
   };
   const [publicData, setPublicData] = useReducer((state, newState) => ({ ...state, ...newState }), dataset);
   useEffect(() => {
-    tableElement.state && tableElement.fireFetchData();
+    tableElement.state && !customOffset && tableElement.fireFetchData();
   }, [searchFilter, props, orderBy, publicData.sortBy]);
   /*useEffect(() => {
     setShowLoading(true);
@@ -207,6 +207,7 @@ const DatasetTable = props => {
             pages={pages}
             page={curPage}
             onPageChange={(pageNo) => setCurPage(pageNo)}
+            onPageSizeChange={(pageSize, page) => setCurPage(0)}
             loading={showLoading}
             loadingText={<CardLoader pageLoading={showLoading} />}
             multiSort={false}
@@ -216,7 +217,6 @@ const DatasetTable = props => {
             ref={element => setTableElement(element)}
             onFetchData={state => {
               setShowLoading(true);
-
               let params = {
                 offset: customOffset ? 0 : state.page * state.pageSize,
                 limit: state.pageSize,
@@ -236,24 +236,7 @@ const DatasetTable = props => {
                 params,
                 false,
                 null,
-                response =>
-                  response.json().then(responseJson => {
-                    if (searchFilter !== "" && responseJson.total < 5 && !customOffset) {
-                      setCustomOffset(true);
-                      tableElement.fireFetchData();
-                    } else {
-                      setCustomOffset(false);
-                      if (responseJson.rows) {
-                        setData(responseJson.rows);
-                        setRows(responseJson.total);
-                      } else {
-                        setData(responseJson);
-                        setRows(responseJson.length);
-                      }
-                      setPages(Math.ceil(responseJson.total / state.pageSize));
-                      setShowLoading(false);
-                    }
-                  }),
+                response => fetchSuccess(response, state),
                 errorWscall
               );
             }}
@@ -262,6 +245,26 @@ const DatasetTable = props => {
       </>
     );
   };
+
+  function fetchSuccess(response, state) {
+    response.json().then(responseJson => {
+      if (searchFilter !== "" && responseJson.total < state.pageSize && !customOffset) {
+        setCustomOffset(true);
+        tableElement.fireFetchData();
+      } else {
+        setCustomOffset(false);
+        if (responseJson.rows) {
+          setData(responseJson.rows);
+          setRows(responseJson.total);
+        } else {
+          setData(responseJson);
+          setRows(responseJson.length);
+        }
+        setPages(Math.ceil(responseJson.total / state.pageSize));
+        setShowLoading(false);
+      }
+    });
+  }
 
   const getDescription = desc => {
     return desc.length > 150 && !descOpen ? `${desc.substring(0, 100)}...` : descOpen ? `${desc}` : desc;

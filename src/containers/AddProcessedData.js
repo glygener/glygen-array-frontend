@@ -13,6 +13,7 @@ import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddProcessedData = props => {
   let { experimentId, processedDataId } = useParams();
+  var base = process.env.REACT_APP_BASENAME;
 
   useEffect(() => {
     if (props.authCheckAgent) {
@@ -240,7 +241,7 @@ const AddProcessedData = props => {
               <ResumableUploader
                 history={history}
                 headerObject={{
-                  Authorization: window.localStorage.getItem("token") || "",
+                  Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                   Accept: "*/*",
                 }}
                 fileType={processData.fileType}

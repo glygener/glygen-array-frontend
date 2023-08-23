@@ -9,6 +9,11 @@
   transition: .3s ease-in-out;
 } */
 
+/*img.structure-image {
+  cursor: -moz-zoom-in;
+  cursor: -webkit-zoom-in;
+  cursor: zoom-in;
+}*/
 .image-container {
   overflow: hidden;
   z-index: -1000;

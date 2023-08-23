@@ -27,7 +27,8 @@ const Profile = (props) => {
     profile
   );
 
-  const username = window.localStorage.getItem("loggedinuser");
+  var base = process.env.REACT_APP_BASENAME;
+  const username = window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser");
   const [validated, setValidate] = useState(false);
   const [isUpdate, setIsupdate] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);

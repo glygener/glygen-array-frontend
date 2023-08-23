@@ -182,7 +182,9 @@ const App = () => {
   }
   function logout(e) {
     e.preventDefault();
-    window.localStorage.clear();
+    var base = process.env.REACT_APP_BASENAME;
+    window.localStorage.removeItem(base ? base + "_token" : "token");
+    window.localStorage.removeItem(base ? base + "_loggedinuser" : "loggedinuser");
     setLoggedIn(false);
     history.push("/");
   }

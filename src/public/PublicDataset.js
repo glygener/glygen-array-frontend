@@ -127,6 +127,7 @@ const PublicDataset = () => {
             let stdev = Math.round((obj.intensity.stDev + Number.EPSILON) * 100) / 100;
             return {
               'featureId' : obj.feature.id, 
+              'accession': obj.feature.glycans && obj.feature.glycans[0] ? obj.feature.glycans[0].glycan.id : "",
               'id': obj.feature.glycans[0].glycan.glytoucanId == null ? obj.feature.glycans[0].glycan.id : obj.feature.glycans[0].glycan.glytoucanId,
               'glytoucanId': obj.feature.glycans[0].glycan.glytoucanId == null ? false : true,
               'cartoon': obj.feature.glycans[0].glycan.cartoon == null ? "" : obj.feature.glycans[0].glycan.cartoon,

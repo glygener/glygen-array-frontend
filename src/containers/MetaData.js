@@ -1626,12 +1626,12 @@ const MetaData = props => {
     const descriptorGroups = getDescriptorGroups(selectedItemByType);
 
     const descriptors = getDescriptors(selectedItemByType);
-
+    var base = process.env.REACT_APP_BASENAME;
     let objectToBeSaved = {
       name: metaDataDetails.name,
       description: metaDataDetails.description,
       user: {
-        name: window.localStorage.getItem("loggedinuser")
+        name: window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser")
       },
       template: metaDataDetails.selectedtemplate,
       descriptors: descriptors,

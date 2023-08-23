@@ -343,6 +343,8 @@ export function getWsUrl(ws) {
       return ws_base_public + "/getdatasetforglycan";
     case "getslideforglycan":
       return ws_base_public + "/getslideforglycan";
+    case "getslideforuser":
+      return ws_base_public + "/getslideforuser";
     case "deleteslide":
       return ws_base_array + "/deleteslide";
     case "deleteimage":
@@ -445,8 +447,9 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     }
   }
 
+  var base = process.env.REACT_APP_BASENAME;
   if (useToken) {
-    headers["Authorization"] = window.localStorage.getItem("token") || "";
+    headers["Authorization"] = window.localStorage.getItem(base ? base + "_token" : "token") || "";
   }
 
   try {

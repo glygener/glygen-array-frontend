@@ -151,7 +151,8 @@ const ChangePassword = () => {
 
   function handleSubmit(e) {
     setValidated(true);
-    const username = window.localStorage.getItem("loggedinuser");
+    var base = process.env.REACT_APP_BASENAME;
+    const username = window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser");
 
     if (userInput.newPassword !== userInput.confirmPassword) {
       setPageErrorsJson({});

@@ -25,6 +25,7 @@ import FeedbackWidget from "../components/FeedbackWidget";
 const ProcessDataOnRd = props => {
   let { experimentId } = useParams();
   let { rawDataId, enableProcessRawdata, setEnableProcessRawdata, processDataView, setProcessDataView } = props;
+  var base = process.env.REACT_APP_BASENAME;
 
   const history = useHistory();
 
@@ -463,7 +464,7 @@ const ProcessDataOnRd = props => {
                               className="mt-0 pt-0"
                               history={history}
                               headerObject={{
-                                Authorization: window.localStorage.getItem("token") || "",
+                                Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                                 Accept: "*/*"
                               }}
                               fileType={data.fileType}

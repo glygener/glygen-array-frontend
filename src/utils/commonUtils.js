@@ -31,7 +31,8 @@ export function getDateMMDDYYYY(date) {
  * Check logged in status and update app component state
  */
 export function getLoginStatus() {
-  var token = window.localStorage.getItem("token");
+  var base = process.env.REACT_APP_BASENAME;
+  var token = window.localStorage.getItem(base ? base + "_token" : "token");
   //if token exists
   if (token) {
     // check if it is expired
@@ -41,7 +42,10 @@ export function getLoginStatus() {
     if (jwt.exp < current_time) {
       /* expired */
 
-      window.localStorage.clear();
+      var base = process.env.REACT_APP_BASENAME;
+      window.localStorage.removeItem(base ? base + "_token" : "token");
+      window.localStorage.removeItem(base ? base + "_loggedinuser" : "loggedinuser");
+      //window.localStorage.clear();
       token = null;
       return false;
     }

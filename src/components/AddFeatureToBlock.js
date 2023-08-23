@@ -554,6 +554,7 @@ const AddFeatureToBlock = props => {
                   ? row.original.feature.glycans.map(element => (
                       <StructureImage
                         key={index}
+                      zoom={true}
                         base64={element.glycan ? element.glycan.cartoon : 
                           (element.glycans && element.glycans[0] &&
                             element.glycans[0].glycan ? element.glycans[0].glycan.cartoon : element.cartoon)}

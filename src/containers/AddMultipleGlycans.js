@@ -37,6 +37,7 @@ const AddMultipleGlycans = props => {
   const history = useHistory();
 
   const defaultFileType = "*/*";
+  var base = process.env.REACT_APP_BASENAME;
 
   const fileDetails = {
     fileType: defaultFileType,
@@ -160,7 +161,7 @@ const AddMultipleGlycans = props => {
                     <ResumableUploader
                       history={history}
                       headerObject={{
-                        Authorization: window.localStorage.getItem("token") || "",
+                        Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                         Accept: "*/*"
                       }}
                       fileType={fileDetails.fileType}

@@ -44,7 +44,7 @@ const UploadMoleculeDetails = props => {
                       Header: displayNames.linker.STRUCTURE,
                       accessor: "imageURL",
                       // eslint-disable-next-line react/prop-types
-                      Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
+                      Cell: row => <StructureImage zoom={true} imgUrl={row.value}></StructureImage>,
                       minWidth: 150,
                     },
                   ]
@@ -110,7 +110,7 @@ const UploadMoleculeDetails = props => {
                 Header: displayNames.linker.STRUCTURE,
                 accessor: "imageURL",
                 // eslint-disable-next-line react/prop-types
-                Cell: row => <StructureImage imgUrl={row.value}></StructureImage>,
+                Cell: row => <StructureImage zoom={true} imgUrl={row.value}></StructureImage>,
                 minWidth: 150
               },
               {

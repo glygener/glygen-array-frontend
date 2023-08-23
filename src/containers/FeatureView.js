@@ -102,6 +102,7 @@ const FeatureView = props => {
                       ? row.original.glycan.cartoon
                       : row.original.glycans[0].glycan.cartoon
                   }
+                  zoom={true} 
                 />
               )
               // minWidth: 300,
@@ -632,9 +633,9 @@ const FeatureView = props => {
                 Cell: row => {
                   return (props.type === "GLYCO_PEPTIDE" || props.type === "GLYCO_PROTEIN") &&
                     props.rangeGlycans.length === 0 ? (
-                    <StructureImage base64={row.original.glycan && row.original.glycan.cartoon} />
+                      <StructureImage zoom={true} base64={row.original.glycan && row.original.glycan.cartoon} />
                   ) : (
-                    <StructureImage base64={row.value} />
+                      <StructureImage zoom={true} base64={row.value} />
                   );
                 },
                 minWidth: 300

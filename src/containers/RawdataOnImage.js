@@ -24,6 +24,7 @@ import FeedbackWidget from "../components/FeedbackWidget";
 const RawdataOnImage = props => {
   let { experimentId } = useParams();
   let { imageId, enableRawdataOnImage, setEnableRawdataOnImage, rawDataView, setRawDataView } = props;
+  var base = process.env.REACT_APP_BASENAME;
 
   const history = useHistory();
   const [validated, setValidated] = useState(false);
@@ -497,7 +498,7 @@ const RawdataOnImage = props => {
                               className="mt-0 pt-0"
                               history={history}
                               headerObject={{
-                                Authorization: window.localStorage.getItem("token") || "",
+                                Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                                 Accept: "*/*"
                               }}
                               fileType={data.fileType}

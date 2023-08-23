@@ -21,6 +21,7 @@ import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddRawData = props => {
   let { experimentId } = useParams();
+  var base = process.env.REACT_APP_BASENAME;
 
   const history = useHistory();
   const [blocks, setBlocks] = useState([]);
@@ -526,7 +527,7 @@ const AddRawData = props => {
                           className="mt-0 pt-0"
                           history={history}
                           headerObject={{
-                            Authorization: window.localStorage.getItem("token") || "",
+                            Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                             Accept: "*/*",
                           }}
                           fileType={data.fileType}

@@ -65,6 +65,8 @@ const AddMultiSlideLayout = props => {
 
   const defaultFileType = "*/*";
 
+  var base = process.env.REACT_APP_BASENAME;
+
   const fileDetails = {
     fileType: defaultFileType,
     name: "",
@@ -651,7 +653,7 @@ const AddMultiSlideLayout = props => {
                         <ResumableUploader
                           history={history}
                           headerObject={{
-                            Authorization: window.localStorage.getItem("token") || "",
+                            Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                             Accept: "*/*",
                           }}
                           fileType={fileDetails.fileType}
@@ -673,7 +675,7 @@ const AddMultiSlideLayout = props => {
                         <ResumableUploader
                           history={history}
                           headerObject={{
-                            Authorization: window.localStorage.getItem("token") || "",
+                            Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                             Accept: "*/*",
                           }}
                           fileType={fileDetails.fileType}

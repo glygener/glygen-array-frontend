@@ -118,7 +118,7 @@ const GlycanList = (props) => {
                     // ),
                     Cell: row =>
                       row.original.glycan.cartoon ? (
-                        <StructureImage base64={row.original.glycan.cartoon}></StructureImage>
+                        <StructureImage zoom={true} base64={row.original.glycan.cartoon}></StructureImage>
                       ) : (
                         <StructureImage imgUrl={glygenNotFoundSmall}></StructureImage>
                       ),

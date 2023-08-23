@@ -3,7 +3,7 @@ import Helmet from "react-helmet";
 import { getMetaID, getTitle } from "../utils/head";
 import { useParams, useHistory, Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
-import { Row } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
 import { wsCall } from "../utils/wsUtils";
 import { ErrorSummary } from "../components/ErrorSummary";
@@ -134,14 +134,15 @@ const GlycanList = (props) => {
         )}
         {/*  general */}
         <Row style={{ marginBottom: "30px" }}>
-          <Card style={{ height: "100%" }} className="summary-panel">
+          <Col md={12}>
+            <Card style={{ height: "100%", width: "100%" }} >
             <Card.Body>
               <Title title="General" />
 
                 {/* image */}
                 {glycanData && glycanData.cartoon ? (
                   // <div className="mb-1">
-                  <StructureImage style={{ maxWidth: "30%" }} base64={glycanData.cartoon}></StructureImage>
+                  <StructureImage style={{ transform: "scale(1.0)" }} base64={glycanData.cartoon}></StructureImage>
                 ) : (
                   // </div>
                   <StructureImage style={{ minWidth: "20%" }} imgUrl={glygenNotFoundSmall}></StructureImage>
@@ -196,6 +197,7 @@ const GlycanList = (props) => {
               </Card.Body>
 
           </Card>
+          </Col>
         </Row>
         <Grid container>
           <Grid item xs={12} sm={12}>

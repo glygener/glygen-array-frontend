@@ -619,6 +619,7 @@ const GlygenTable = props => {
         pages={pages}
         page={curPage}
         onPageChange={(pageNo) => setCurPage(pageNo)}
+        onPageSizeChange={(pageSize, page) => setCurPage(0)}
         loading={showLoading}
         loadingText={<CardLoader pageLoading={showLoading} />}
         multiSort={false}

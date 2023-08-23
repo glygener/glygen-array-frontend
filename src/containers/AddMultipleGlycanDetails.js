@@ -64,7 +64,7 @@ const AddMultipleGlycanDetails = props => {
                       accessor: "cartoon",
                       sortable: false,
                       // eslint-disable-next-line react/prop-types
-                      Cell: row => row.value && <StructureImage base64={row.value} />,
+                      Cell: row => row.value && <StructureImage base64={row.value} zoom={true} />,
                       minWidth: 200
                     },
                     {

@@ -18,6 +18,7 @@ import { downloadFile, exportFile } from "../utils/commonUtils";
 import { DownloadButton } from "../components/DownloadButton";
 import { downloadSpinnerBottomSide } from "../utils/commonUtils";
 import FeedbackWidget from "../components/FeedbackWidget";
+import Container from "@material-ui/core/Container";
 
 const PublicSlideLayout = () => {
     let { slideId } = useParams();
@@ -305,6 +306,7 @@ const PublicSlideLayout = () => {
                 {getMeta(head.publicslidelist)}
             </Helmet>
             <FeedbackWidget />
+            <Container maxWidth="lg" className="gg-container">
             {showSpinner && downloadSpinnerBottomSide()}
 
             {showErrorSummary === true && (
@@ -326,22 +328,22 @@ const PublicSlideLayout = () => {
                 {slide ? (
                     <>
                         <Row style={{ marginBottom: "30px" }}>
-                            <Col md={10}>
-                                <Card style={{ height: "100%" }} className=" summary-panel">
+                                <Col md={12}>
+                                    <Card style={{ height: "100%", width: "100%" }} >
                                     <Card.Body>
                                         <Title title="General" />
-                                        {getDetails()}
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                            <Col md={2}>
-                                <DownloadButton
-                                    showExport={true}
-                                    exportName={"Export Extended GAL File"}
-                                    downloadName={"Download"}
-                                    showDownload={slide.layout.file ? true : false}
-                                    handleDownload={handleDownload}
-                                />
+                                            <div className="text-right mb-3">
+                                                <DownloadButton
+                                                    showExport={true}
+                                                    exportName={"Export Extended GAL File"}
+                                                    downloadName={"Download"}
+                                                    showDownload={slide.layout.file ? true : false}
+                                                    handleDownload={handleDownload}
+                                                />
+                                            </div>
+                                            {getDetails()}
+                                        </Card.Body>
+                                    </Card>
                             </Col>
                         </Row>
 
@@ -379,6 +381,7 @@ const PublicSlideLayout = () => {
                     <div> </div>
                 )}
             </div>
+            </Container>
         </>
     );
 };

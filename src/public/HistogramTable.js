@@ -5,6 +5,7 @@ import ReactTable from "react-table";
 import { StructureImage } from "../components/StructureImage";
 import { OverlayTrigger, Popover, Row, Col } from "react-bootstrap";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
+import { Link } from "react-router-dom";
 
 const HistogramTable = props => {
   let { listIntensityTable } = props;
@@ -25,15 +26,28 @@ const HistogramTable = props => {
               </div>
               ),
               accessor: "id",
-              Cell: (row, index) => {
-                return (
+              Cell: (row, index) =>
+                row.original.accession ? (
+                  <>
+                    <div key={index}>
+                      <LineTooltip text="View Glycan Details">
+                        <Link to={`/glycanDetail/${row.original.accession}`}>
+                          {row.original.glytoucanId === true
+                            ? <span>{row.original.id}</span>
+                            : <span style={{ fontStyle: "italic" }}>{row.original.id}</span>}
+                        </Link>
+                      </LineTooltip>
+                    </div>
+                  </>
+                ) : (
+                  <>
                   <div key={index}>
                     {row.original.glytoucanId === true
                       ? <span>{row.original.id}</span>
                       : <span style={{ fontStyle: "italic" }}>{row.original.id}</span>}
                   </div>
-                );
-              },
+                  </>
+                ),
               minWidth: 130,
               sortable: true
             },
@@ -112,7 +126,7 @@ const HistogramTable = props => {
                 ),
               accessor: "cartoon",
               Cell: row => (
-                <StructureImage base64={row.original.cartoon} />
+                <StructureImage zoom={true} base64={row.original.cartoon} />
                 //<div style={{ height: "auto", overflowX: "scroll" }}>
                 //  <img src={"data:image/png;base64," + row.original.cartoon} alt="Glycan img" />
                // </div>

@@ -37,6 +37,8 @@ const ImageOnSlideExp = props => {
     scanner: ""
   };
 
+  var base = process.env.REACT_APP_BASENAME;
+
   const [imageOnSlide, setImageOnSlide] = useReducer((state, newState) => ({ ...state, ...newState }), image);
 
   const handleSelect = e => {
@@ -205,7 +207,7 @@ const ImageOnSlideExp = props => {
                   className="mt-0 pt-0"
                   history={history}
                   headerObject={{
-                    Authorization: window.localStorage.getItem("token") || "",
+                    Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                     Accept: "*/*"
                   }}
                   fileType={data.fileType}

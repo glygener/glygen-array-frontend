@@ -27,6 +27,8 @@ const FilesOnExp = props => {
   const [showFileModal, setShowFileModal] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
 
+  var base = process.env.REACT_APP_BASENAME;
+
   const history = useHistory();
 
   const fileDetails = {
@@ -111,7 +113,7 @@ const FilesOnExp = props => {
                 className="mt-0 pt-0"
                 history={history}
                 headerObject={{
-                  Authorization: window.localStorage.getItem("token") || "",
+                  Authorization: window.localStorage.getItem(base ? base + "_token" : "token") || "",
                   Accept: "*/*"
                 }}
                 // fileType={data.fileType}
