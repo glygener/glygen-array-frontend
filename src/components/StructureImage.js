@@ -9,15 +9,17 @@ const StructureImage = props => {
   const [img, setImg] = useState("");
 
   let newStyle = { ...props.style };
+  let scrollstyle = {};
   if (props.zoom) {
     newStyle = {
       ...props.style, cursor: 'zoom-in', cursor: '-moz-zoom-in',
       cursor: '-webkit-zoom-in'
     };
+    scrollstyle = { overflowX: "scroll" };
   } 
 
   return (
-    <div className="image-container" style={{ overflowX: "scroll" }}>
+    <div className="image-container" style={scrollstyle}>
       {(props.base64 || props.imgUrl || props.style) && (
         <img
           className="structure-image"
@@ -46,7 +48,11 @@ const StructureImage = props => {
                 Image
               </Modal.Title>
             </Modal.Header>
-            <Modal.Body>{<img src={img} />} </Modal.Body>
+            <Modal.Body style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>{<img src={img} />} </Modal.Body>
             <Modal.Footer></Modal.Footer>
           </Modal>
       )}

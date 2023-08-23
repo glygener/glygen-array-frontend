@@ -10,6 +10,7 @@ import { Title } from "../components/FormControls";
 import { Loading } from "../components/Loading";
 import { DatasetTable } from "../components/DatasetTable";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { SlideTable } from "../components/SlideTable";
 
 const UserDatasets = (props) => {
     const { username } = useParams();
@@ -104,9 +105,10 @@ const UserDatasets = (props) => {
                         errorMessage={pageErrorMessage}
                     />
                 )}
-                <div style={{ margin: "30px" }}>
+                <div style={{ margin: "30px" }} >
                     <Card style={{
-                        width: "100%"
+                        width: "100%",
+                        marginBottom: "30px"
                     }}>
                         <Card.Body>
                             <Title title="User" />
@@ -156,6 +158,15 @@ const UserDatasets = (props) => {
                             <DatasetTable wsName="listdatasetsforsearch" qsParams={{ searchId: searchId }} />
                         )}
                     </Card>
+
+                    <div style={{ marginBottom: "30px" }}>
+                        <Card style={{ height: "100%" }}>
+                            <Card.Body>
+                                <Title title="Slides" />
+                                <SlideTable wsName="getslideforuser" urlParams={[username]} showSearchBox={false} showHeading={false} />
+                            </Card.Body>
+                        </Card>
+                    </div>
                 </div>
             </Container>
         </>

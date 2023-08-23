@@ -343,6 +343,8 @@ export function getWsUrl(ws) {
       return ws_base_public + "/getdatasetforglycan";
     case "getslideforglycan":
       return ws_base_public + "/getslideforglycan";
+    case "getslideforuser":
+      return ws_base_public + "/getslideforuser";
     case "deleteslide":
       return ws_base_array + "/deleteslide";
     case "deleteimage":
