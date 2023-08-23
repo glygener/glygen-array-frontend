@@ -42,7 +42,10 @@ export function getLoginStatus() {
     if (jwt.exp < current_time) {
       /* expired */
 
-      window.localStorage.clear();
+      var base = process.env.REACT_APP_BASENAME;
+      window.localStorage.removeItem(base ? base + "_token" : "token");
+      window.localStorage.removeItem(base ? base + "_loggedinuser" : "loggedinuser");
+      //window.localStorage.clear();
       token = null;
       return false;
     }
