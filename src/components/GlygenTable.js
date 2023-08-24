@@ -604,6 +604,12 @@ const GlygenTable = props => {
 
       <ReactTable
         columns={Object.values(columnsToRender)}
+        defaultSorted={[
+          {
+            id: props.defaultSortColumn,
+            desc: props.defaultSortOrder
+          }
+        ]}
         pageSizeOptions={[5, 10, 25, 50]}
         minRows={0}
         className="MyReactTableClass"

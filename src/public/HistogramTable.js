@@ -137,6 +137,12 @@ const HistogramTable = props => {
           ]}
           // className={"-striped -highlight"}
           defaultPageSize={5}
+          defaultSorted={[
+            {
+              id: "rfu",
+              desc: true
+            }
+          ]}
           minRows={0}
           className="MyReactTableClass"
           NoDataComponent={({ state, ...rest }) =>

@@ -54,6 +54,7 @@ const Experiments = props => {
                 ]}
                 defaultPageSize={5}
                 defaultSortColumn="id"
+                defaultSortOrder={1}
                 experimentStatus
                 showDeleteButton
                 showEditButton
