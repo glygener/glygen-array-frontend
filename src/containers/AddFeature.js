@@ -38,6 +38,7 @@ import { BlueRadio } from "../components/FormControls";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip.json";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { scrollToTop } from "react-scroll/modules/mixins/animate-scroll";
 
 const AddFeature = props => {
   useEffect(props.authCheckAgent, []);
@@ -514,6 +515,7 @@ const AddFeature = props => {
   const handleNextGlycan = () => {
     var stepIncrement = 1;
 
+    ScrollToTop();
     if (metaDataStep) {
       setMetaDataStep(false);
     }
@@ -554,6 +556,7 @@ const AddFeature = props => {
   const handleNextGlycoTypes = () => {
     var stepIncrement = 1;
 
+    ScrollToTop();
     if (metaDataStep) {
       setMetaDataStep(false);
     }
@@ -649,6 +652,7 @@ const AddFeature = props => {
   const handleNextLights = () => {
     var stepIncrement = 1;
 
+    ScrollToTop();
     if (metaDataStep) {
       setMetaDataStep(false);
     }
@@ -722,6 +726,7 @@ const AddFeature = props => {
   const handleBack = () => {
     var stepDecrement = 1;
 
+    ScrollToTop();
     if (metaDataStep) {
       setMetaDataStep(false);
     } else if (activeStep > 3) {
