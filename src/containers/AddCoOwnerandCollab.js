@@ -112,7 +112,7 @@ const AddCoOwnerandCollab = props => {
             onSearch={query => {
               handleSearch(query);
             }}
-            options={users}
+            options={!users ? [{ label: "Loading...", id: 0 }] : users}
             placeholder="Search for a User..."
             selected={userSelected}
             onChange={handleChange}
