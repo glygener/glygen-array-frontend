@@ -611,11 +611,19 @@ const MetaData = props => {
     newElement.isNewlyAdded = true;
     newElement.isNewlyAddedNonMandatory = true;
     //newElement.order = maxCurrentOrder + 1;
+    let newElementDescriptors = [];
     newElement.group &&
       newElement.descriptors.forEach(e => {
-        e.value = "";
-        e.id = "newlyAddedItems" + newItemsCount + e.id;
+        if (!e.isNewlyAdded) {
+          newElementDescriptors.push(e);
+          e.value = "";
+          e.id = "newlyAddedItems" + newItemsCount + e.id;
+        }
       });
+
+    if (newElement.group) {
+      newElement.descriptors = newElementDescriptors;
+    }
 
     const selectedElementIndex = selectedGroup.descriptors.indexOf(existedElement);
     const totalSelectedElementsDuplicateCount = selectedElementIndex + 1 + newItemsCount;

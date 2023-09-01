@@ -329,6 +329,16 @@ const Descriptors = props => {
         !e.id.startsWith("newly")
     );
 
+    if (sameXorGroup.length == 0) {
+      sameXorGroup = descMetaData.filter(
+        e =>
+          e.mandateGroup &&
+          e.mandateGroup.xOrMandate &&
+          e.mandateGroup.id === descriptor.mandateGroup.id &&
+          e.id.startsWith("newly")
+      );
+    }
+
     return (
       <>
         <Row
@@ -345,7 +355,7 @@ const Descriptors = props => {
               className="xorGroupHeader"
             />
             {sameXorGroup.map((grp, index) => {
-              return !grp.id.startsWith("newly") ? (
+              return (
                 <>
                   <FormControlLabel
                     control={<BlueRadio />}
@@ -400,9 +410,7 @@ const Descriptors = props => {
                     </>
                   )}
                 </>
-              ) : (
-                ""
-              );
+              ) 
             })}
           </Col>
         </Row>
@@ -493,20 +501,20 @@ const Descriptors = props => {
         >
           <Form.Group as={Row} controlId={descriptor.id} key={descriptor.id.toString()} className="gg-align-center mb-3">
             <Col xs={12} lg={7}>
-              {!descriptor.id.startsWith("newly") && isSubGroup && (
+              {(!descriptor.id.startsWith("newly") || duplicateGroup) && isSubGroup && (
                 <span className="font-awesome-color " style={{ float: "left" }}>
                   <span>
                     <HelpToolTip
-                      title={groupElement.name}
-                      url={groupElement.wikiLink}
-                      text={groupElement.description}
+                      title={descriptor.name}
+                      url={descriptor.wikiLink}
+                      text={descriptor.description}
                       helpIcon="gg-helpicon-detail"
                     />
                   </span>
                 </span>
               )}
 
-            {!descriptor.id.startsWith("newly") && descriptor.group && (
+              {(!descriptor.id.startsWith("newly") || duplicateGroup) && descriptor.group && (
               <p
                 style={{ textAlign: "left", fontWeight: "bold" }}
                 className={descriptor.mandatory ? "required-asterik" : ""}
@@ -517,7 +525,7 @@ const Descriptors = props => {
 
             </Col>
             <Col xs={12} lg={3} className="mt-2 pt-2">
-            {!descriptor.id.startsWith("newly") &&
+              {(!descriptor.id.startsWith("newly") || duplicateGroup) &&
               (descriptor.maxOccurrence > 1 ||
                 (descriptor.maxOccurrence === 1 &&
                   descriptor.descriptors &&
