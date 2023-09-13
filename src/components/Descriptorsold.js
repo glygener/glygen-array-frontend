@@ -15,17 +15,18 @@ import { LineTooltip } from "./tooltip/LineTooltip";
 import plusIcon from "../images/icons/plus.svg";
 import { ConfirmationModal } from "./ConfirmationModal";
 
-const subgroupRendermap = new Map();
-
 const Descriptors = props => {
+  let descriptorsByMetaType;
 
   const {
-    descriptors,   // metadata instance - metadataModel from Metadata.js
-    metaDataTemplate,   // metadata template - selected metadata template from Metadata.js
-    metaType,    // FEATURE/SAMPLE/ASSAY etc.
+    descriptors,
+    metaDataTemplate,
+    metaType,
     handleDelete,
     handleSubGroupDelete,
     handleCancelModal,
+    isUpdate,
+    isCopySample,
     setLoadDataOnFirstNextInUpdate,
     loadDataOnFirstNextInUpdate,
     assayCurrentStep,
@@ -39,7 +40,7 @@ const Descriptors = props => {
   const [modalInputValidateError, setModalInputValidateError] = useState(false);
 
   let descriptorForm = [];
-  let descMetaData;   // holds all descriptors from the template
+  let descMetaData;
   const simpleDescriptorTitle = "General Descriptors";
 
   let inputProps = {
@@ -50,17 +51,17 @@ const Descriptors = props => {
   };
 
   const buildDescriptors = () => {
-    descMetaData = metaDataTemplate.descriptors;
-    const accorSimpleDesc = descriptors.descriptors;
-    const accorDescGroups = descriptors.descriptorGroups;
+    if (isUpdate || isCopySample) {
+      descriptorsByMetaType = descriptors;
+    } else if (metaType === "Feature") {
+      descriptorsByMetaType = descriptors[0];
+    } else {
+      descriptorsByMetaType = descriptors.find(e => e.name === metaDataTemplate);
+    }
 
-    const allDescriptors = [];
-    accorSimpleDesc.forEach(element => {
-      allDescriptors.push(element);
-    });
-    accorDescGroups.forEach(element => {
-      allDescriptors.push(element);
-    });
+    var subGroupKeyIndex = 900;
+    descMetaData = descriptorsByMetaType.descriptors;
+    const accorSimpleDesc = descMetaData.filter(i => i.group !== true);
 
     //General Descriptors
 
@@ -74,20 +75,29 @@ const Descriptors = props => {
 
     //sorting for assay to display in order or regular metadatas
     if (metaType === "Assay") {
-      allDescriptors.sort((a, b) => a.order - b.order);
+      descMetaData.sort((a, b) => a.order - b.order);
     } else {
-      accorDescGroups.sort((a, b) => b.group - a.group);
+      descMetaData.sort((a, b) => b.group - a.group);
     }
 
     let accorGroup;
 
-    accorGroup = metaType === "Assay" ? getAssayDroppable(allDescriptors) : loadDescGroups(accorDescGroups);
+    if (isUpdate || isCopySample) {
+      accorGroup =
+        metaType === "Assay"
+          ? getAssayDroppableUpdateOrCopy(descMetaData, subGroupKeyIndex)
+          : loadDescGroups(descMetaData, isUpdate, isCopySample);
+    } else {
+      accorGroup =
+        metaType === "Assay" ? getAssayDroppable(descMetaData, subGroupKeyIndex) : loadDescGroups(descMetaData);
+    }
 
     descriptorForm.push(accorGroup);
 
     //General Descriptors for FeatureMetadata
     if (metaType === "Feature") {
       if (accorSimpleDesc.length > 0) {
+        // descriptorForm.push(loadSimpleDescs(accorSimpleDesc));
         descriptorForm.push(getSimpleDescriptorsAccord(accorSimpleDesc));
       }
     }
@@ -132,24 +142,23 @@ const Descriptors = props => {
 
   const loadSimpleDescs = generalDescriptors => {
     return generalDescriptors.map((element, index) => {
-      let firstIndex = generalDescriptors.findIndex(e => e.name === element.name);
-      return !element.key.mandateGroup ? (
+      return !element.mandateGroup ? (
         <div
           style={{
             paddingLeft: "10px",
-            backgroundColor: index > firstIndex ? "#f3f3f3" : ""
+            backgroundColor: element.id && element.id.startsWith("newly") ? "#f3f3f3" : ""
           }}
           key={index + element.id}
         >
-          {getCardBody(element, index, generalDescriptors, false)}
-          {getNewField(element, index, generalDescriptors, "")}
+          {getCardBody(element, 0, generalDescriptors, false)}
+          {getNewField(element, element, "")}
         </div>
       ) : (
-          element.key.mandateGroup &&
-          element.key.mandateGroup.xOrMandate &&
-          (element.key.mandateGroup.defaultSelection ||
-            element.notApplicable ||
-            element.notRecorded) && (
+        element.mandateGroup &&
+          element.mandateGroup.xOrMandate &&
+          (element.mandateGroup.defaultSelection ||
+            element.mandateGroup.notApplicable ||
+            element.mandateGroup.notRecorded) && (
             <div key={index + element.id}>{getXorGroupsforSimpleDescs(generalDescriptors, element, index)}</div>
           )
       );
@@ -162,27 +171,27 @@ const Descriptors = props => {
     //skipping the radio button display for mandategroup if there is one for current group
     let alreadyDisplayedXorGroupWiz = listTraversed.filter(
       i =>
-        i.key.mandateGroup &&
-        i.key.mandateGroup.xOrMandate &&
-        i.key.mandateGroup.id === element.key.mandateGroup.id &&
-        (i.key.mandateGroup.defaultSelection || i.notApplicable || i.notRecorded)
+        i.mandateGroup &&
+        i.mandateGroup.xOrMandate &&
+        i.mandateGroup.id === element.mandateGroup.id &&
+        (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
     );
 
     let notRecordedorApp = false;
-    if (element.notApplicable || element.notRecorded) {
+    if (element.mandateGroup.notApplicable || element.mandateGroup.notRecorded) {
       notRecordedorApp = true;
     }
 
-    return element.key.mandateGroup.xOrMandate ? (
+    return element.mandateGroup.xOrMandate ? (
       <>
         {alreadyDisplayedXorGroupWiz.length < 1 && subGroupSimpleDescriptors
           ? getXorMandateHeader(element, generalDescriptors, subGroupSimpleDescriptors)
-          : alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, generalDescriptors)}
+          : alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(element, descMetaData)}
 
-        {!notRecordedorApp && getNewField(element, index, generalDescriptors, "", true)}
+        {!notRecordedorApp && getNewField(element, element, "", true)}
       </>
     ) : (
-        getNewField(element, index, generalDescriptors, "", true)
+      getNewField(element, element, "", true)
     );
   };
 
@@ -211,7 +220,7 @@ const Descriptors = props => {
 
             <FormControlLabel
               control={<BlueRadio />}
-              name={`notApplicable${descriptor.name}`}
+              name={`notApplicable${descriptors.name}`}
               value={"notApplicable"}
               label={
                 <>
@@ -246,14 +255,14 @@ const Descriptors = props => {
     );
   };
 
-  const loadDescGroups = (descGroups, isUpdate, isCopySample) => {
-    return descGroups.map((descriptor, index) => {
+  const loadDescGroups = (descMetaData, isUpdate, isCopySample) => {
+    return descMetaData.map((descriptor, index) => {
       if (
-        (descriptor.group && descriptor.key.mandatory) ||
-        (descriptor.group && !descriptor.key.mandatory)
+        (descriptor.group && descriptor.mandatory) ||
+        (descriptor.group && !descriptor.mandatory && !descriptor.isDeleted)
       ) {
-        if (!descriptor.key.mandateGroup) {
-          if (descriptor.key.allowNotApplicable || descriptor.key.allowNotRecorded) {
+        if (!descriptor.mandateGroup) {
+          if (descriptor.allowNotApplicable || descriptor.allowNotRecorded) {
             if (descriptor.notApplicable || descriptor.notRecorded) {
               return <>{nonXorGroupsWithApplOrRecordEnabled(descriptor)}</>;
             } else {
@@ -266,35 +275,39 @@ const Descriptors = props => {
               );
             }
           } else {
-            return <>{getDescriptorGroups(descriptor, index)}</>;
+            if (isUpdate || isCopySample) {
+              return (descriptor.descriptors.find(i => i.value) || descriptor.isNewlyAdded) && getDescriptorGroups(descriptor, index);
+            } else {
+              return <>{getDescriptorGroups(descriptor, index)}</>;
+            }
           }
         } else {
           if (
-            descriptor.key.mandateGroup &&
-            descriptor.key.mandateGroup.xOrMandate &&
-            (descriptor.key.mandateGroup.defaultSelection ||
-              descriptor.notApplicable ||
-              descriptor.notRecorded)
+            descriptor.mandateGroup &&
+            descriptor.mandateGroup.xOrMandate &&
+            (descriptor.mandateGroup.defaultSelection ||
+              descriptor.mandateGroup.notApplicable ||
+              descriptor.mandateGroup.notRecorded)
           ) {
-            let listTraversed = descGroups.slice(0, index);
+            let listTraversed = descMetaData.slice(0, index);
 
             //skipping the radio button display for mandategroup if there is one for current group
             let alreadyDisplayedXorGroupWiz = listTraversed.filter(
               i =>
-                i.key.mandateGroup &&
-                i.key.mandateGroup.xOrMandate &&
-                i.key.mandateGroup.id === descriptor.key.mandateGroup.id &&
-                (i.key.mandateGroup.defaultSelection || i.notApplicable || i.notRecorded)
+                i.mandateGroup &&
+                i.mandateGroup.xOrMandate &&
+                i.mandateGroup.id === descriptor.mandateGroup.id &&
+                (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
             );
 
             let notRecordedorApp = false;
-            if (descriptor.notApplicable || descriptor.notRecorded) {
+            if (descriptor.mandateGroup.notApplicable || descriptor.mandateGroup.notRecorded) {
               notRecordedorApp = true;
             }
 
             return (
               <>
-                {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(descriptor, descGroups)}
+                {alreadyDisplayedXorGroupWiz.length < 1 && getXorMandateHeader(descriptor, descMetaData)}
 
                 {!notRecordedorApp && getDescriptorGroups(descriptor, index)}
               </>
@@ -307,13 +320,24 @@ const Descriptors = props => {
     });
   };
 
-  const getXorMandateHeader = (descriptor, descriptors, superGroup) => {
-    let sameXorGroup = descriptors.filter(
+  const getXorMandateHeader = (descriptor, descMetaData, superGroup) => {
+    let sameXorGroup = descMetaData.filter(
       e =>
-        e.key.mandateGroup &&
-        e.key.mandateGroup.xOrMandate &&
-        e.key.mandateGroup.id === descriptor.key.mandateGroup.id
+        e.mandateGroup &&
+        e.mandateGroup.xOrMandate &&
+        e.mandateGroup.id === descriptor.mandateGroup.id &&
+        !e.id.startsWith("newly")
     );
+
+    if (sameXorGroup.length == 0) {
+      sameXorGroup = descMetaData.filter(
+        e =>
+          e.mandateGroup &&
+          e.mandateGroup.xOrMandate &&
+          e.mandateGroup.id === descriptor.mandateGroup.id &&
+          e.id.startsWith("newly")
+      );
+    }
 
     return (
       <>
@@ -327,7 +351,7 @@ const Descriptors = props => {
         >
           <Col md={12} lg={descriptor.group ? 12 : 11}>
             <FormLabel
-              label={descriptor.key.mandateGroup && descriptor.key.mandateGroup.xOrMandate && descriptor.key.mandateGroup.name}
+              label={descriptor.mandateGroup && descriptor.mandateGroup.xOrMandate && descriptor.mandateGroup.name}
               className="xorGroupHeader"
             />
             {sameXorGroup.map((grp, index) => {
@@ -340,10 +364,10 @@ const Descriptors = props => {
                     label={grp.name}
                     onChange={() => {
                       superGroup
-                        ? props.defaultSelectionChangeSuperGroup(grp, undefined, superGroup)
-                        : props.defaultSelectionChangeSuperGroup(grp, undefined, descriptors);
+                        ? props.defaultSelectionChangeSubGroup(grp, undefined, superGroup)
+                        : props.defaultSelectionChangeSuperGroup(grp);
                     }}
-                    checked={grp.key.mandateGroup.defaultSelection === true ? true : false}
+                    checked={grp.mandateGroup.defaultSelection === true ? true : false}
                   />
 
                   {index === sameXorGroup.length - 1 && (
@@ -360,10 +384,10 @@ const Descriptors = props => {
                         }
                         onChange={() => {
                           superGroup
-                            ? props.defaultSelectionChangeSuperGroup(grp, "notApplicable", superGroup)
-                            : props.defaultSelectionChangeSuperGroup(grp, "notApplicable", descriptors);
+                            ? props.defaultSelectionChangeSubGroup(grp, "notApplicable", superGroup)
+                            : props.defaultSelectionChangeSuperGroup(grp, "notApplicable");
                         }}
-                        checked={grp.notApplicable === true ? true : false}
+                        checked={grp.mandateGroup.notApplicable === true ? true : false}
                       />
 
                       <FormControlLabel
@@ -378,15 +402,15 @@ const Descriptors = props => {
                         }
                         onChange={() => {
                           superGroup
-                            ? props.defaultSelectionChangeSuperGroup(grp, "notRecorded", superGroup)
-                            : props.defaultSelectionChangeSuperGroup(grp, "notRecorded", descriptors);
+                            ? props.defaultSelectionChangeSubGroup(grp, "notRecorded", superGroup)
+                            : props.defaultSelectionChangeSuperGroup(grp, "notRecorded");
                         }}
-                        checked={grp.notRecorded === true ? true : false}
+                        checked={grp.mandateGroup.notRecorded === true ? true : false}
                       />
                     </>
                   )}
                 </>
-              )
+              ) 
             })}
           </Col>
         </Row>
@@ -394,16 +418,42 @@ const Descriptors = props => {
     );
   };
 
-  const getAssayDroppable = (descGroups) => {
+  const getAssayDroppable = (descMetaData, subGroupKeyIndex) => {
     return (
       <>
         <Droppable droppableId={"descriptors"}>
           {provided => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {descGroups.map((descriptor, index) => {
+              {descMetaData.map((descriptor, index) => {
+                if (assayCurrentStep === 2 && descriptor.name === "Reference" && !descriptor.isDeleted) {
+                  return <>{getDescriptorGroups(descriptor, index)}</>;
+                } else if (assayCurrentStep === 1 && descriptor.name !== "Reference") {
+                  if (descriptor.group && !descriptor.isDeleted) {
+                    if ((descriptor.displayLabel && descriptor.displayLabelSelected) || !descriptor.displayLabel) {
+                      return <>{getDescriptorGroups(descriptor, index)}</>;
+                    }
+                  }
+                }
+                return <></>;
+              })}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </>
+    );
+  };
+
+  const getAssayDroppableUpdateOrCopy = (descMetaData, subGroupKeyIndex) => {
+    return (
+      <>
+        <Droppable droppableId={"descriptors"}>
+          {provided => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {descMetaData.map((descriptor, index) => {
                 if (
                   descriptor.group &&
-                  (descriptor.descriptors.find(i => i.value))
+                  (descriptor.descriptors.find(i => i.value) || descriptor.isNewlyAddedNonMandatory)
                 ) {
                   return <>{getDescriptorGroups(descriptor, index)}</>;
                 }
@@ -418,21 +468,26 @@ const Descriptors = props => {
     );
   };
 
-  function checkRenderMap(groupElement, descriptor, index, firstIndex, isSubGroup) {
-    let key = groupElement.id + descriptor.name + index;
-    if (index === firstIndex && isSubGroup && !subgroupRendermap.get(key)) {
-      subgroupRendermap.set(key, true);
-      return true;
-    }
-    return false;
-  }
+  const getCardBody = (descriptor, index, groupElement, isSubGroup, duplicateGroup) => {
+    let lastAddedIsNewMandatory = false;
+    let lastAddedIsNewMandatoryCount;
+    let listofGroupElementItems;
+    let lastAddedIsNewMandatoryElement;
 
-  const getCardBody = (descriptor, index, groupElement, isSubGroup) => {
-    let firstIndex = 0;
     if (isSubGroup) {
-      firstIndex = groupElement.descriptors.findIndex(e => e.name === descriptor.name);
-    } else {
-      firstIndex = groupElement.findIndex(e => e.name === descriptor.name);
+      lastAddedIsNewMandatoryCount = groupElement.descriptors.filter(
+        i => i.isNewlyAddedNonMandatory && i.name === descriptor.name
+      ).length;
+
+      listofGroupElementItems = groupElement.descriptors.filter(i => i.name === descriptor.name);
+
+      lastAddedIsNewMandatoryElement = listofGroupElementItems[lastAddedIsNewMandatoryCount];
+
+      if (lastAddedIsNewMandatoryElement && lastAddedIsNewMandatoryElement.id === descriptor.id) {
+        lastAddedIsNewMandatory = true;
+      } else if (lastAddedIsNewMandatoryCount === 0) {
+        lastAddedIsNewMandatory = true;
+      }
     }
 
     return (
@@ -446,7 +501,7 @@ const Descriptors = props => {
         >
           <Form.Group as={Row} controlId={descriptor.id} key={descriptor.id.toString()} className="gg-align-center mb-3">
             <Col xs={12} lg={7}>
-              {index === firstIndex && isSubGroup && checkRenderMap(groupElement, descriptor, index, firstIndex, isSubGroup) && (   // first copy, display the header
+              {(!descriptor.id.startsWith("newly") || duplicateGroup) && isSubGroup && (
                 <span className="font-awesome-color " style={{ float: "left" }}>
                   <span>
                     <HelpToolTip
@@ -459,61 +514,61 @@ const Descriptors = props => {
                 </span>
               )}
 
-              {index === firstIndex && descriptor.group && (
-                <p
-                  style={{ textAlign: "left", fontWeight: "bold" }}
-                  className={descriptor.key.mandatory ? "required-asterik" : ""}
-                >
-                  {descriptor.name}
-                </p>
-              )}
+              {(!descriptor.id.startsWith("newly") || duplicateGroup) && descriptor.group && (
+              <p
+                style={{ textAlign: "left", fontWeight: "bold" }}
+                className={descriptor.mandatory ? "required-asterik" : ""}
+              >
+                {descriptor.name}
+              </p>
+            )}
 
             </Col>
             <Col xs={12} lg={3} className="mt-2 pt-2">
-              {index <= firstIndex &&
-                (descriptor.key.maxOccurrence > 1 ||
-                  (descriptor.key.maxOccurrence === 1 &&
-                    descriptor.descriptors &&
-                    descriptor.descriptors.filter(e => !e.value || (e.value && e.value.length < 1)).length > 1)) &&
-                groupElement.group && (
-                  <LineTooltip text="Add Descriptor Group">
-                    <span>
-                      <FontAwesomeIcon
-                        icon={["fas", "plus"]}
-                        size="lg"
-                        title="Add Descriptor Group"
-                        alt="Add Descriptor Group"
-                        style={{
-                          marginRight: "10px",
-                          marginBottom: "6px"
-                        }}
-                        onClick={() => {
-                          setEnableSubGroupAddModal(true);
-                          setSubGroupAddDescriptor(props.handleAddDescriptorSubGroups(groupElement, descriptor));
-                          setSubGroupAddElement(groupElement);
-                        }}
-                      />
-                    </span>
-                  </LineTooltip>
-                )}
-
-              {index > firstIndex && !isSubGroup && metaType !== "Feature" && (
-                <LineTooltip text="Delete Descriptor">
+              {(!descriptor.id.startsWith("newly") || duplicateGroup) &&
+              (descriptor.maxOccurrence > 1 ||
+                (descriptor.maxOccurrence === 1 &&
+                  descriptor.descriptors &&
+                  descriptor.descriptors.filter(e => !e.value || (e.value && e.value.length < 1)).length > 1)) &&
+              groupElement.group && (
+                <LineTooltip text="Add Descriptor Group">
                   <span>
                     <FontAwesomeIcon
-                      key={"delete" + index}
-                      icon={["far", "trash-alt"]}
-                      size="large"
-                      title="Delete Descriptor"
-                      alt="Delete Descriptor"
-                      className="caution-color tbl-icon-btn"
-                      style={{ marginRight: "10px", marginBottom: "4px" }}
-                      onClick={() => handleSubGroupDelete(descriptor, groupElement)}
+                      icon={["fas", "plus"]}
+                      size="lg"
+                      title="Add Descriptor Group"
+                      alt="Add Descriptor Group"
+                      style={{
+                        marginRight: "10px",
+                        marginBottom: "6px"
+                      }}
+                      onClick={() => {
+                        setEnableSubGroupAddModal(true);
+                        setSubGroupAddElement(groupElement);
+                        setSubGroupAddDescriptor(descriptor);
+                      }}
                     />
                   </span>
                 </LineTooltip>
               )}
-            </Col>
+
+            {descriptor.id.startsWith("newly") && !isSubGroup && metaType !== "Feature" && (
+              <LineTooltip text="Delete Descriptor">
+                <span>
+                  <FontAwesomeIcon
+                    key={"delete" + index}
+                    icon={["far", "trash-alt"]}
+                    size="large"
+                    title="Delete Descriptor"
+                    alt="Delete Descriptor"
+                    className="caution-color tbl-icon-btn"
+                    style={{ marginRight: "10px", marginBottom: "4px" }}
+                    onClick={() => handleSubGroupDelete(descriptor.id)}
+                  />
+                </span>
+              </LineTooltip>
+            )}
+          </Col>
           </Form.Group>
         </div>
       </>
@@ -522,26 +577,26 @@ const Descriptors = props => {
 
   const getSubGroupXorMandateGroup = (descriptor, groupElement, index) => {
     if (
-      descriptor.key.mandateGroup &&
-      descriptor.key.mandateGroup.xOrMandate &&
-      (descriptor.key.mandateGroup.defaultSelection ||
-        descriptor.notApplicable ||
-        descriptor.notRecorded)
+      descriptor.mandateGroup &&
+      descriptor.mandateGroup.xOrMandate &&
+      (descriptor.mandateGroup.defaultSelection ||
+        descriptor.mandateGroup.notApplicable ||
+        descriptor.mandateGroup.notRecorded)
     ) {
       let listTraversed = groupElement.descriptors.slice(0, index);
 
       //skipping the radio button display for mandategroup if there is one for current group
       let alreadyDisplayedXorGroupWiz = listTraversed.filter(
         i =>
-          i.key.mandateGroup &&
-          i.key.mandateGroup.xOrMandate &&
-          i.key.mandateGroup.id === descriptor.key.mandateGroup.id &&
-          (i.key.mandateGroup.defaultSelection || i.notApplicable || i.notRecorded)
+          i.mandateGroup &&
+          i.mandateGroup.xOrMandate &&
+          i.mandateGroup.id === descriptor.mandateGroup.id &&
+          (i.mandateGroup.defaultSelection || i.mandateGroup.notApplicable || i.mandateGroup.notRecorded)
       );
 
       let notRecordedorApp = false;
 
-      if (descriptor.notApplicable || descriptor.notRecorded) {
+      if (descriptor.mandateGroup.notApplicable || descriptor.mandateGroup.notRecorded) {
         notRecordedorApp = true;
       }
 
@@ -556,15 +611,6 @@ const Descriptors = props => {
     }
   };
 
-  function checkRenderTableMap(subgroupTableRendermap, groupElement, descriptor) {
-    let key = groupElement.id + descriptor.name;
-    if (!subgroupTableRendermap.get(key)) {
-      subgroupTableRendermap.set(key, true);
-      return true;
-    }
-    return false;
-  }
-
   const getDescriptorGroups = (groupElement, index) => {
     const descriptorWithSubGroups = groupElement.descriptors.filter(i => i.group === true);
 
@@ -574,16 +620,10 @@ const Descriptors = props => {
       groupElement.descriptors.sort((a, b) => a.group - b.group);
     }
 
-    let firstIndex = descriptors.descriptorGroups.findIndex(e => e.name === groupElement.name);
-    let lastIndex = descriptors.descriptorGroups.findLastIndex(e => e.name === groupElement.name);
-    let count = descriptors.descriptorGroups.filter(e => e.name === groupElement.name).length;
-
-    const subgroupTableRendermap = new Map();
-
     const cardBody = (
       <Card.Body>
         {groupElement.descriptors.map((descriptor, index) => {
-          if (descriptor.group && descriptor.key.mandateGroup) {
+          if (descriptor.group && descriptor.mandateGroup) {
             return getSubGroupXorMandateGroup(descriptor, groupElement, index);
           } else if (descriptor.group) {
             let commonGroups = groupElement.descriptors.filter(i => i.name === descriptor.name);
@@ -599,71 +639,73 @@ const Descriptors = props => {
 
             return (
               <>
-                {getCardBody(descriptor, index, groupElement, true)}
+                  {groupElement.isNewlyAdded
+                    ? getCardBody(descriptor, index, groupElement, true, true)
+                    : getCardBody(descriptor, index, groupElement, true, false)}
 
-                {rowExists && checkRenderTableMap(subgroupTableRendermap, groupElement, descriptor) && (
+                {!descriptor.id.startsWith("newly") && rowExists && (
                   /* Creating Sub group Table */
                   <table fluid="true" className="table-striped mb-3">
-                    <thead>
-                      <tr>
-                        {descriptor.descriptors.map(field => {
-                          return (
-                            <>
-                              <th>{field.name}</th>
-                            </>
-                          );
-                        })}
-                        <th>{"Action"}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="table-body">
-                      {commonGroups.map(desc => {
-                        let rowData = [];
-                        let filledDescriptors = desc.descriptors.filter(i => i.value && i.value !== "");
+                      <thead>
+                        <tr>
+                          {descriptor.descriptors.map(field => {
+                            return (
+                              <>
+                                <th>{field.name}</th>
+                              </>
+                            );
+                          })}
+                          <th>{"Action"}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="table-body">
+                        {commonGroups.map(desc => {
+                          let rowData = [];
+                          let filledDescriptors = desc.descriptors.filter(i => i.value && i.value !== "");
 
-                        if (filledDescriptors.length > 0) {
-                          rowData.push(
-                            desc.descriptors.map(field => {
-                              return field.value && field.value !== "" ? <td>{field.value}</td> : <td></td>;
-                            })
-                          );
-                          rowData.push(
-                            <td>
-                              <LineTooltip text="Delete Descriptor">
-                                <span>
-                                  <FontAwesomeIcon
-                                    key={"delete" + index}
-                                    icon={["far", "trash-alt"]}
-                                    size="large"
-                                    alt="Delete Descriptor"
-                                    title="Delete Descriptor"
-                                    className="caution-color tbl-icon-btn"
-                                    style={{ marginRight: "10px", marginBottom: "4px" }}
-                                    onClick={() => handleSubGroupDelete(desc, groupElement)}
-                                  />
-                                </span>
-                              </LineTooltip>
-                            </td>
-                          );
-                        }
-                        return <tr>{rowData}</tr>;
-                      })}
-                    </tbody>
-                  </table>
+                          if (filledDescriptors.length > 0) {
+                            rowData.push(
+                              desc.descriptors.map(field => {
+                                return field.value && field.value !== "" && <td>{field.value}</td>;
+                              })
+                            );
+                            rowData.push(
+                              <td>
+                                <LineTooltip text="Delete Descriptor">
+                                  <span>
+                                    <FontAwesomeIcon
+                                      key={"delete" + index}
+                                      icon={["far", "trash-alt"]}
+                                      size="large"
+                                      alt="Delete Descriptor"
+                                      title="Delete Descriptor"
+                                      className="caution-color tbl-icon-btn"
+                                      style={{ marginRight: "10px", marginBottom: "4px" }}
+                                      onClick={() => handleSubGroupDelete(desc.id, desc)}
+                                    />
+                                  </span>
+                                </LineTooltip>
+                              </td>
+                            );
+                          }
+                          return <tr>{rowData}</tr>;
+                        })}
+                      </tbody>
+                    </table>
                 )}
               </>
             );
           } else {
-            return descriptor.key.mandateGroup &&
-              descriptor.key.mandateGroup.xOrMandate &&
-              (descriptor.key.mandateGroup.defaultSelection ||
-                descriptor.notApplicable ||
-                descriptor.notRecorded) ? (
+            return descriptor.mandateGroup &&
+              descriptor.mandateGroup.xOrMandate &&
+              (descriptor.mandateGroup.defaultSelection ||
+                descriptor.mandateGroup.notApplicable ||
+                descriptor.mandateGroup.notRecorded) ? (
               <div key={index + descriptor.id}>
                 {getXorGroupsforSimpleDescs(groupElement.descriptors, descriptor, index, groupElement)}
               </div>
             ) : (
-                (!descriptor.key.mandateGroup || (descriptor.key.mandateGroup && !descriptor.key.mandateGroup.xOrMandate)) && (
+              (!descriptor.mandateGroup || (descriptor.mandateGroup && !descriptor.mandateGroup.xOrMandate)) && (
                 <div
                   style={{
                     textAlign: "left",
@@ -671,7 +713,7 @@ const Descriptors = props => {
                   }}
                   key={descriptor.id.toString()}
                 >
-                    {getNewField(descriptor, index, groupElement, "")}
+                  {getNewField(descriptor, groupElement, "")}
                 </div>
               )
             );
@@ -695,22 +737,23 @@ const Descriptors = props => {
             <span>
               <HelpToolTip
                 title={groupElement.name}
-                url={groupElement.key.wikiLink}
+                url={groupElement.wikiLink}
                 text={groupElement.description}
                 helpIcon="gg-helpicon-detail"
               />
             </span>
 
             <span
-              className={`descriptor-header ${groupElement.key.mandatory && index <= firstIndex ? "required-asterik" : ""
-                }`}
+              className={`descriptor-header ${
+                groupElement.mandatory && !groupElement.isNewlyAddedNonMandatory ? "required-asterik" : ""
+              }`}
             >
               {" " + groupElement.name}
             </span>
           </span>
 
           <div style={{ float: "right" }} key={groupElement.id}>
-            {groupElement.key.maxOccurrence > 1 && ((count > 0 && index == lastIndex) || (count == 1 && index === firstIndex)) && (
+            {groupElement.maxOccurrence > 1 && displayPlusIcon(groupElement, descriptorsByMetaType.descriptors, false) && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
                 size="lg"
@@ -719,13 +762,14 @@ const Descriptors = props => {
                   marginRight: "10px",
                   marginBottom: "6px"
                 }}
-                onClick={() => props.handleAddDescriptorGroups(groupElement.name)}
+                onClick={() => props.handleAddDescriptorGroups(groupElement)}
               />
             )}
 
-            {((groupElement.key.mandatory && groupElement.key.maxOccurrence > 1 && index > firstIndex) ||
-              (!groupElement.key.mandatory && !groupElement.key.mandateGroup) ||
-              (groupElement.key.mandateGroup && groupElement.key.maxOccurrence > 1 && index > firstIndex)) &&
+            {(groupElement.isNewlyAdded ||
+              groupElement.isNewlyAddedNonMandatory ||
+              (!groupElement.mandatory && !groupElement.mandateGroup) ||
+              (groupElement.mandateGroup && groupElement.maxOccurrence > 1 && groupElement.id.startsWith("newly"))) &&
               displayDeleteIcon(groupElement, index)}
             {/* toggle */}
             {accToggle}
@@ -776,104 +820,110 @@ const Descriptors = props => {
     );
   };
 
-  /**
-   * create components for the given descriptor based on it namespace: text/label/textarea/checkbox/date/selection etc.
-   * 
-   * @param {object} element descriptor to display
-   * @param {int} index index of the element in the list
-   * @param {string} parentGroup name of the parent descriptor group of the descriptor. if this is a subgroup
-   * @param {boolean} simpleDescAndMandateGroup is this part of a simple descriptor mandate group?
-   * @returns 
-   */
-  const getNewField = (element, index, parentGroup, simpleDescAndMandateGroup) => {
-    if (!element.key.namespace) {
-      element = { ...element, namespace: { name: "label" } };
-    } else if (element.key.namespace && !element.key.namespace.name) {
-      element.key.namespace = { ...element.key.namespace, name: "label" };
-    }
-    if (element.key.name === "Cell free expression system") return;
+  function displayPlusIcon(element, desc, group) {
+    let lastAddedIsNewMandatory = false;
+    let lastAddedIsNewMandatoryCount;
+    let listofGroupElementItems;
+    let lastAddedIsNewMandatoryElement;
 
-    let firstIndex = 0;
-    let count = 0;
-    if (!parentGroup.group) {
-      firstIndex = parentGroup.findIndex(e => e.name === element.name);
-      count = parentGroup.filter(e => e.name === element.name).length;
+    if (group) {
+      lastAddedIsNewMandatoryCount = desc.filter(i => !i.group && i.isNewlyAddedNonMandatory && i.name === element.name)
+        .length;
     } else {
-      firstIndex = parentGroup.descriptors.findIndex(e => e.name === element.name);
-      count = parentGroup.descriptors.filter(e => e.name === element.name).length;
+      lastAddedIsNewMandatoryCount = desc.filter(i => i.isNewlyAddedNonMandatory && i.name === element.name).length;
     }
 
+    listofGroupElementItems = desc.filter(i => i.name === element.name);
+
+    lastAddedIsNewMandatoryElement = listofGroupElementItems[lastAddedIsNewMandatoryCount];
+
+    if (lastAddedIsNewMandatoryElement && lastAddedIsNewMandatoryElement.id === element.id) {
+      lastAddedIsNewMandatory = true;
+    } else if (lastAddedIsNewMandatoryCount === 0) {
+      lastAddedIsNewMandatory = true;
+    }
+
+    return lastAddedIsNewMandatory;
+  }
+
+  const getNewField = (element, descriptorDetails, subGroupName, simpleDescAndMandateGroup) => {
+    if (!element.namespace) {
+      element = { ...element, namespace: { name: "label" } };
+    } else if (element.namespace && !element.namespace.name) {
+      element.namespace = { ...element.namespace, name: "label" };
+    }
+    if (element.name === "Cell free expression system") return;
     return (
       <Form.Group as={Row} controlId={element.id} key={element.id.toString()} className="gg-align-center mb-3">
         <Col xs={12} lg={7}>
           <span className="font-awesome-color" style={{ float: "left" }}>
             <span>
-              <HelpToolTip url={element.key.wikiLink} text={element.description} helpIcon="gg-helpicon-detail" />
+              <HelpToolTip url={element.wikiLink} text={element.description} helpIcon="gg-helpicon-detail" />
             </span>
           </span>
 
-          <FormLabel label={element.name} className={element.key.mandatory ? "required-asterik" : ""} />
+          <FormLabel label={element.name} className={element.mandatory ? "required-asterik" : ""} />
           <Row>
-            {element.key.namespace.name === "text" ? (
+            {element.namespace.name === "text" ? (
               <Col>
                 <Form.Control
                   as="textarea"
                   name={element.name}
                   value={element.value || ""}
-                  placeholder={element.key.example && `e.g., ${element.key.example}`}
-                  onChange={e => props.handleChange(element, e, "")}
-                  required={element.key.mandatory ? true : false}
+                  placeholder={element.example && `e.g., ${element.example}`}
+                  onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+                  required={element.mandatory ? true : false}
                   maxLength={2000}
                   rows={4}
-                  disabled={element.disabled}
+                  disabled={descriptorDetails.isHide || element.disabled}
                 />
                 <div className="gg-align-right text-right text-muted">
                   {element.value && element.value.length > 0 ? element.value.length : "0"}
                   /2000
                 </div>
               </Col>
-            ) : element.key.namespace.name === "number" ? (
-              <Col>
+            ) : element.namespace.name === "number" ? (
+                <Col>
                 <Form.Control
                   type="text"
                   name={element.name}
                   value={element.value || ""}
-                    placeholder={element.key.example && `e.g., ${element.key.example}`}
+                  placeholder={element.example && `e.g., ${element.example}`}
                   onChange={e => {
-                    if (element.key.namespace.name === "number") {
+                    if (element.namespace.name === "number") {
                       const _value = e.target.value;
                       if (_value && !/^[0-9]+$/.test(_value)) {
                         return;
                       }
                     }
-                    props.handleChange(element, e, "");
+                    props.handleChange(descriptorDetails, e, subGroupName, "");
                   }}
-                    required={element.key.mandatory ? true : false}
-                    disabled={element.disabled}
-                // maxLength={3}
+                  required={element.mandatory ? true : false}
+                  disabled={descriptorDetails.isHide || element.disabled}
+                  // maxLength={3}
                 />
               </Col>
-              ) : element.key.namespace.name === "label" || element.key.namespace.name === "dictionary" ? (
+            ) : element.namespace.name === "label" || element.namespace.name === "dictionary" ? (
               <Form.Control
                 type="text"
                 name={element.name}
                 value={element.value || ""}
-                    placeholder={element.key.example && `e.g., ${element.key.example}`}
-                    onChange={e => props.handleChange(element, e, "")}
-                    required={element.key.mandatory ? true : false}
-                    disabled={element.disabled}
+                placeholder={element.example && `e.g., ${element.example}`}
+                onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
+                required={element.mandatory ? true : false}
+                disabled={descriptorDetails.isHide || element.disabled}
               />
-                ) : element.key.namespace.name === "selection" ? (
+            ) : element.namespace.name === "selection" ? (
               <Form.Control
                 as="select"
                 name={element.name}
                 value={element.value}
-                      onChange={e => props.handleChange(element, e, "")}
+                onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "")}
                 required={true}
-                      disabled={element.disabled}
+                disabled={descriptorDetails.isHide || element.disabled}
               >
                 <option value="id">Select</option>
-                      {element.key.selectionList.map((li, index) => {
+                {element.selectionList.map((li, index) => {
                   return (
                     <option value={li} key={index}>
                       {li}
@@ -881,25 +931,25 @@ const Descriptors = props => {
                   );
                 })}
               </Form.Control>
-                  ) : element.key.namespace.name === "date" ? (
+            ) : element.namespace.name === "date" ? (
               <Datetime
                 inputProps={inputProps}
                 timeFormat={false}
                 name={element.name}
                 value={element.value}
                 closeOnSelect
-                        onChange={e => props.handleChange(element, e, "date")}
-                        disabled={element.disabled}
+                onChange={e => props.handleChange(descriptorDetails, e, subGroupName, element.id)}
+                disabled={descriptorDetails.isHide || element.disabled}
               />
-                    ) : element.key.namespace.name === "boolean" ? (
+            ) : element.namespace.name === "boolean" ? (
               <FormControlLabel
                 control={
                   <BlueCheckbox
                     name={element.name}
-                              onChange={e => props.handleChange(element, e, "checkBox")}
+                              onChange={e => props.handleChange(descriptorDetails, e, subGroupName, "checkBox")}
                     size="large"
                               checked={element.value}
-                              disabled={element.disabled}
+                    disabled={descriptorDetails.isHide || element.disabled}
                   />
                 }
                 label={element.name}
@@ -909,19 +959,19 @@ const Descriptors = props => {
             )}
             <Feedback message={`${element.name} is required`} />
 
-            {element.key.units.length > 0 && (
+            {element.units.length > 0 && (
               <Col className="pr-0 mr-0">
                 <>
                   <Form.Control
                     as="select"
                     name="unitlevel"
                     value={element.unit}
-                    onChange={e => props.handleUnitSelectionChange(element, e, "")}
-                    required={element.key.mandatory ? true : false}
-                    disabled={element.disabled}
+                    onChange={e => props.handleUnitSelectionChange(descriptorDetails, e, subGroupName, "")}
+                    required={element.mandatory ? true : false}
+                    disabled={descriptorDetails.isHide || element.disabled}
                   >
                     <option value="">Select Unit</option>
-                    {element.key.units.map((unit, index) => {
+                    {element.units.map((unit, index) => {
                       return (
                         <option key={index} value={unit} id={element.id} name={element.name}>
                           {unit}
@@ -937,9 +987,9 @@ const Descriptors = props => {
         </Col>
 
         <Col xs={12} lg={3} className="mt-2 pt-2">
-          {(element.key.allowNotApplicable || element.key.allowNotRecorded) && !simpleDescAndMandateGroup && (
+          {(element.allowNotApplicable || element.allowNotRecorded) && !simpleDescAndMandateGroup && (
             <>
-              {element.key.allowNotApplicable && (
+              {element.allowNotApplicable && (
                 <FormControlLabel
                   style={{ marginBottom: "-15px" }}
                   control={
@@ -947,9 +997,9 @@ const Descriptors = props => {
                       key={Math.random()}
                       name="notApplicable"
                       checked={element.notApplicable}
-                      onChange={e => props.handleChange(element, e, "checkBox")}
+                      onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                       size="medium"
-                    // defaultChecked={element.notApplicable}
+                      // defaultChecked={element.notApplicable}
                     />
                   }
                   label={
@@ -961,7 +1011,7 @@ const Descriptors = props => {
                 />
               )}
 
-              {element.key.allowNotRecorded && (
+              {element.allowNotRecorded && (
                 <div>
                   <FormControlLabel
                     style={{ marginBottom: "-8px" }}
@@ -970,9 +1020,9 @@ const Descriptors = props => {
                         key={Math.random()}
                         name="notRecorded"
                         checked={element.notRecorded}
-                        onChange={e => props.handleChange(element, e, "checkBox")}
+                        onChange={e => props.handleChange(descriptorDetails, e, element.id, "checkBox")}
                         size="large"
-                      // defaultChecked={element.notRecorded}
+                        // defaultChecked={element.notRecorded}
                       />
                     }
                     label={
@@ -987,8 +1037,8 @@ const Descriptors = props => {
             </>
           )}
 
-          {element && element.key.maxOccurrence > 1 && ((count > 0 && index > firstIndex) || (count == 1 && index === firstIndex)) && (
-            <Button onClick={() => props.handleAddDescriptorGroups(element.name)}>
+          {element && element.maxOccurrence > 1 && displayPlusIcon(element, descMetaData, true) && (
+            <Button onClick={() => props.handleAddDescriptorGroups(descriptorDetails)}>
               <LineTooltip text="Add Descriptor">
                 <Image src={plusIcon} alt="plus button" />
               </LineTooltip>
@@ -999,30 +1049,34 @@ const Descriptors = props => {
     );
   };
 
-  /**
-   * update the metadata model with the changes from the Modal dialog (for subgroups)
-   */
+  const getSubNonXorGroupDescBody = () => {
+    let duplicateGroups;
+    let CurrentGroup;
+
+    duplicateGroups = subGroupAddElement.descriptors.filter(
+      i => i.name === subGroupAddDescriptor.name && i.id.startsWith("newly")
+    );
+
+    if (duplicateGroups.length > 0) {
+      CurrentGroup = duplicateGroups[duplicateGroups.length - 1];
+    } else {
+      CurrentGroup = subGroupAddDescriptor;
+    }
+
+    return CurrentGroup.descriptors.map(field => {
+      return getNewField(field, CurrentGroup, subGroupAddElement.id);
+    });
+  };
+
   function handleConfirmAddSubNonXorGroups() {
     if (props.validateUserInput(subGroupAddElement, subGroupAddDescriptor)) {
+      props.handleAddDescriptorSubGroups(subGroupAddElement, subGroupAddDescriptor);
       setModalInputValidateError(false);
       setEnableSubGroupAddModal(false);
     } else {
       setModalInputValidateError(true);
     }
   }
-
-  /**
-   * 
-   * handle subgroup (subGroupAddDesscriptor) that are not part of XOR mandate groups, like "Reference", "Reagent (in Protein Sample, Chemical Label)"
-   * it will return the components to be displayed in a modal dialog (ConfirmationModal)
-   * 
-   * @returns the components to display for all descriptors of the given group 
-   */
-  const getSubNonXorGroupDescBody = () => {
-    return subGroupAddDescriptor.descriptors.map((field, index) => {
-      return getNewField(field, index, subGroupAddDescriptor);
-    });
-  };
 
   return (
     <>
@@ -1060,19 +1114,14 @@ Descriptors.propTypes = {
   handleChange: PropTypes.func,
   handleDelete: PropTypes.func,
   handleSubGroupDelete: PropTypes.func,
+  descriptorSubGroup: PropTypes.func,
+  // id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isUpdate: PropTypes.bool,
+  isCopySample: PropTypes.bool,
   setLoadDataOnFirstNextInUpdate: PropTypes.func,
   isAllExpanded: PropTypes.bool,
   handleUnitSelectionChange: PropTypes.func,
-  validateUserInput: PropTypes.func,
-  handleCancelModal: PropTypes.func,
-  handleAddDescriptorGroups: PropTypes.func,
-  handleAddDescriptorSubGroups: PropTypes.func,
-  defaultSelectionChangeSuperGroup: PropTypes.func,
-  defaultSelectionChangeSubGroup: PropTypes.func,
-  nonXorGroupApporRec: PropTypes.func,
-  setAssayCurrentStep: PropTypes.func,
-  assayCurrentStep: PropTypes.number,
-  loadDataOnFirstNextInUpdate: PropTypes.bool
+  isHide: PropTypes.bool
 };
 
 export { Descriptors };

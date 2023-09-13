@@ -28,7 +28,7 @@ import { GlycoPeptides } from "../components/GlycoPeptides";
 import { useHistory, Link } from "react-router-dom";
 import { ViewInfoModal } from "../components/ViewInfoModal";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
-import { MetaData, getDescriptorGroups, getDescriptors } from "./MetaData";
+import { Metadata } from "./Metadata";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
@@ -120,7 +120,7 @@ const AddFeature = props => {
   const [metaDataStep, setMetaDataStep] = useState(false);
 
   const [featureMetadata, setFeatureMetadata] = useState([]);
-  const [spotMetaDataToSubmit, setSpotMetaDataToSubmit] = useState();
+  const [featuretMetaDataToSubmit, setFeatureMetaDataToSubmit] = useState();
 
   const [enableControlSubtypeTable, setEnableControlSubtypeTable] = useState(false);
 
@@ -969,7 +969,7 @@ const AddFeature = props => {
   const getMetadata = () => {
     return (
       <>
-        <MetaData
+        <Metadata
           type={"FEATURE"}
           featureAddState={featureAddState}
           setFeatureAddState={setFeatureAddState}
@@ -985,7 +985,7 @@ const AddFeature = props => {
               ? handleNextLights
               : handleNextGlycoTypes
           }
-          setImportedPageDataToSubmit={setSpotMetaDataToSubmit}
+          setImportedPageDataToSubmit={setFeatureMetaDataToSubmit}
         />
       </>
     );
@@ -1217,26 +1217,6 @@ const AddFeature = props => {
     }
   }
 
-  function metadataToSubmit() {
-    const descriptorGroups = getDescriptorGroups(featureMetadata[0]);
-
-    const descriptors = getDescriptors(featureMetadata[0]);
-    var base = process.env.REACT_APP_BASENAME;
-
-    let objectToBeSaved = {
-      name: featureAddState.name,
-      user: {
-        name: window.localStorage.getItem(base ? base + "_loggedinuser" : "loggedinuser"),
-      },
-      template: "Default Feature",
-      descriptors: descriptors,
-      descriptorGroups: descriptorGroups,
-      id: "",
-    };
-
-    return objectToBeSaved;
-  }
-
   function getGlycanData(featureObj) {
     featureObj = {
       type: "LINKEDGLYCAN",
@@ -1270,7 +1250,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit(),
+      metadata: featuretMetaDataToSubmit,
     };
     return featureObj;
   }
@@ -1311,7 +1291,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit(),
+      metadata: featuretMetaDataToSubmit,
     };
 
     return featureObj;
@@ -1383,7 +1363,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit(),
+      metadata: featuretMetaDataToSubmit,
     };
 
     return featureObj;
@@ -1439,7 +1419,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit(),
+      metadata: featuretMetaDataToSubmit,
     };
 
     return featureObj;
@@ -1478,7 +1458,7 @@ const AddFeature = props => {
         return map;
       }, {}),
 
-      metadata: metadataToSubmit(),
+      metadata: featuretMetaDataToSubmit,
     };
 
     return featureObj;

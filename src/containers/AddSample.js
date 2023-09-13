@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { MetaData } from "../containers/MetaData";
+import { Metadata } from "./Metadata";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -48,7 +48,7 @@ const AddSample = props => {
           />
           <Card>
             <Card.Body>
-              <MetaData
+              <Metadata
                 metaID={sampleId}
                 isCopy={isCopySample}
                 type={type}
