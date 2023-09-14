@@ -127,7 +127,6 @@ const Metadata = props => {
                 metadata: responseJson,
                 name: responseJson.name
             });
-            processMandateGroups();
             setShowLoading(false);
         });
     }
@@ -136,33 +135,27 @@ const Metadata = props => {
      * if this page is for edit, we need to set the defaultSelection of the mandategroups to true for the filled descriptor group of each mandate group
      * all descriptorgroups/descriptors belonging to a mandategroup would have defaultselection=false when loaded from the repository
      */
-    function processMandateGroups() {
+    function processMandateGroups(descriptorList) {
         // process simple descriptors
-        metadataModel.descriptors.map(desc => {
+        descriptorList.map(desc => {
             if (desc.key.mandateGroup) {
                 // find all descriptors belonging to the mandate group
                 // check which one has values
-                let mandateGroupDesc = metadataModel.descriptors.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
+                let mandateGroupDesc = descriptorList.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
                 mandateGroupDesc.map(e => {
-                    if (e.value && e.value !== "") {
+                    if (!e.group && e.value && e.value !== "") {
                         e.key.mandateGroup.defaultSelection = true;
+                    } else if (e.group) {
+                        // check if filled, set default selection
+                        let filledDescriptors = e.descriptors.filter(i => i.value && i.value !== "");
+                        if (filledDescriptors.length > 0) {
+                            e.key.mandateGroup.defaultSelection = true;
+                        }
+                        // process its subgroups
+                        processMandateGroups(e.descriptors);
                     }
                 });
             }
-        });
-
-        // process descriptor groups
-        metadataModel.descriptorGroups.map(desc => {
-            if (desc.key.mandateGroup) {
-                let mandateGroupDesc = metadataModel.descriptorGroups.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
-                mandateGroupDesc.map(group => {
-                    // check if filled, set default selection
-                    let filledDescriptors = group.descriptors.filter(i => i.value && i.value !== "");
-                    if (filledDescriptors.length > 0) {
-                        group.key.mandateGroup.defaultSelection = true;
-                    }
-                });
-          }
         });
     }
 
@@ -195,13 +188,8 @@ const Metadata = props => {
         let descriptorGroups = [];
         template.descriptors.forEach(desc => {
             if (desc.group) {
-                if (props.metadataType === "Assay" && desc.displayLabelSelected) {
-                    let descGroup = createDescriptorGroup(desc);
-                    descriptorGroups.push(descGroup);
-                } else if (props.metadataType !== "Assay") {
-                    let descGroup = createDescriptorGroup(desc);
-                    descriptorGroups.push(descGroup);
-                }
+                let descGroup = createDescriptorGroup(desc);
+                descriptorGroups.push(descGroup);
             } else {
                 let descriptor = createDescriptor(desc);
                 descriptors.push(descriptor);
@@ -541,6 +529,27 @@ const Metadata = props => {
         } else if (metadataModel.name === "") {
             setErrorName(true);
         } else {
+            if (!isUpdate && props.metadataType === "Assay") {
+                // need to keep only the selected groups from the first page
+                let selectedGroups = metadataModel.descriptorGroups.filter(function (group) {
+                    let selections = metadataTemplate.metadata[0].descriptors.filter(group => group.displayLabel && group.displayLabelSelected);
+                    let isSelected = selections.find(i => i.group && i.name == group.name);
+                    if (isSelected) {
+                        return group;
+                    }
+                    let notSelectable = metadataTemplate.metadata[0].descriptors.filter(group => !group.displayLabel);
+                    isSelected = notSelectable.find(i => i.group && i.name == group.name);
+                    if (isSelected) {
+                        return group;
+                    }
+                    if (group.key.mandatory) {
+                        return group;
+                    }
+                });
+                metadataModel.descriptorGroups = selectedGroups;
+            }
+            processMandateGroups(metadataModel.descriptors);
+            processMandateGroups(metadataModel.descriptorGroups);
             setLoadDescriptors(true);
         }
     };
@@ -622,12 +631,10 @@ const Metadata = props => {
 
         // mark selected descritor templates to 
         // be able to start with the selected descriptors 
-        let sModel = [...metadataTemplate];
-
-        let selectedItem = sModel[0].descriptors.find(i => i.id === id);
+        let selectedItem = metadataTemplate.metadata[0].descriptors.find(i => i.id === id);
         selectedItem.displayLabelSelected = flag;
 
-        setMetadataTemplate(sModel);
+        setMetadataTemplate(metadataTemplate);
     };
 
     const getStartMetadataPage = () => {
@@ -1247,7 +1254,7 @@ const Metadata = props => {
                                     sgd.notApplicable = false;
                                     sgd.notRecorded = false;
                                 }
-                                sgd.value = undefined;
+                                sgd.value = "";
                             });
                         } else if (!d.group) {
                             if (d.disabled) {
@@ -1255,18 +1262,18 @@ const Metadata = props => {
                                 d.notApplicable = false;
                                 d.notRecorded = false;
                             }
-                            d.value = undefined;
+                            d.value = "";
                         }
                     });
                 } else {
-                    currentDefaultSelection[0].value = undefined;
+                    currentDefaultSelection[0].value = "";
                 }
             }
 
             indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
             currentDefaultSelection[0].key.mandateGroup.defaultSelection = false;
-            currentDefaultSelection[0].notApplicable = false;
-            currentDefaultSelection[0].notRecorded = false;
+            currentDefaultSelection[0].notApplicable = notApplicableOrRecorded && notApplicableOrRecorded === "notApplicable" ? true : false;
+            currentDefaultSelection[0].notRecorded = notApplicableOrRecorded && notApplicableOrRecorded === "notRecorded" ? true : false;;
             itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
         }
 
@@ -1334,20 +1341,33 @@ const Metadata = props => {
         );
     };
 
+    const reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        if (startIndex < endIndex) {
+            const [removed] = result.splice(startIndex, 1);
+            result.splice(endIndex - 1, 0, removed);
+        } else {
+            // going up
+            const [removed] = result.splice(startIndex, 1);
+            result.splice(endIndex, 0, removed);
+        }
+        return result;
+    };
+
     const dragEnd = result => {
         const { source, destination } = result;
-        var itemByType = { ...metadataModel };
-
         if (!destination) {
             return;
         }
 
-        var itemDescriptors = itemByType.descriptors;
+        var list = metadataModel.descriptorGroups;
 
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
 
-        const sourceElement = itemDescriptors[sourceIndex];
+        var reorderedList = reorder(list, sourceIndex, destinationIndex);
+
+       /* const sourceElement = itemDescriptors[sourceIndex];
         const destinationElement = itemDescriptors[destinationIndex];
 
         const destinationOrder = destinationElement.order;
@@ -1355,23 +1375,48 @@ const Metadata = props => {
 
         itemDescriptors.splice(sourceIndex, 1);
 
-        itemDescriptors.splice(destinationIndex, 0, sourceElement);
+        itemDescriptors.splice(destinationIndex, 0, sourceElement);*/
 
-        if (sourceIndex < destinationIndex) {
-            const reOrderItems = itemDescriptors.slice(sourceIndex, destinationIndex);
+        /*if (sourceIndex < destinationIndex) {
+            const reOrderItems = list.slice(sourceIndex, destinationIndex);
             reOrderItems.forEach(item => {
                 item.order--;
             });
         } else if (sourceIndex > destinationIndex) {
-            const reOrderItems = itemDescriptors.slice(destinationIndex + 1, sourceIndex + 1);
+            const reOrderItems = list.slice(destinationIndex + 1, sourceIndex + 1);
             reOrderItems.forEach(item => {
                 item.order++;
             });
+        }*/
+
+        // update orders according to their current indices in the array
+        for (var i = 0; i < reorderedList.length; i++) {
+            reorderedList[i].order = i + 1;
         }
 
-        itemByType.descriptors = itemDescriptors;
+        metadataModel.descriptorGroups = reorderedList;
 
-        setMetadataModel(itemByType);
+        setMetadataModel(metadataModel);
+    };
+
+    const getPageLoaded = () => {
+        return (
+            <>
+                {getButtonsForImportedPage()}
+                <Row>
+                    <Col>
+                        {(!loadDataOnFirstNextInUpdate || props.importSpotchange) &&
+                            !props.importedPageData.id &&
+                            metadataModel &&
+                            processMandateGroups(metadataModel.descriptors) && processMandateGroups(metadataModel.descriptorGroups)}
+                        {((props.importedPageData && props.importedPageData.id) || props.metadataType === "Feature") &&
+                            metadataModel &&
+                            getMetaData()}
+                    </Col>
+                </Row>
+                {getButtonsForImportedPage()}
+            </>
+        );
     };
 
 
@@ -1445,6 +1490,7 @@ const Metadata = props => {
                     </>
                 )}
 
+                {props.importedInAPage ? <>{getPageLoaded()}</> : ""}
                 {showLoading && <Loading show={showLoading} />}
             </Form>
         </>
