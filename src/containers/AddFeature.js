@@ -28,7 +28,7 @@ import { GlycoPeptides } from "../components/GlycoPeptides";
 import { useHistory, Link } from "react-router-dom";
 import { ViewInfoModal } from "../components/ViewInfoModal";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
-import { Metadata } from "./Metadata";
+import { MetaData } from "./MetaData";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
@@ -969,7 +969,7 @@ const AddFeature = props => {
   const getMetadata = () => {
     return (
       <>
-        <Metadata
+        <MetaData
           type={"FEATURE"}
           featureAddState={featureAddState}
           setFeatureAddState={setFeatureAddState}

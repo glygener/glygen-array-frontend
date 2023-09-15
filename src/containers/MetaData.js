@@ -13,7 +13,7 @@ import { FormControlLabel, FormGroup } from "@material-ui/core";
 
 let idCounter = 1000;
 
-const Metadata = props => {
+const MetaData = props => {
 
     var meta = [];
 
@@ -982,7 +982,6 @@ const Metadata = props => {
     }
 
     const handleChangeMetaForm = (descriptorDetails, e, type) => {
-        let name = "";
         let value = "";
         let flag;
 
@@ -1000,7 +999,7 @@ const Metadata = props => {
             value = e.target.value;
         }
 
-        if (name === "unitlevel") {
+        if (e.target.name === "unitlevel") {
             descriptorDetails.unit = value;
         } else if (type === "checkBox") {
             descriptorDetails = handleCheckBox(descriptorDetails, flag, e);
@@ -1131,6 +1130,10 @@ const Metadata = props => {
                 let descGroup = createDescriptorGroup(descriptorGroupTemplate);
                 // insert right after an existing one, if any
                 if (existing.length > 0) {
+                    // set the order as the same as an existing one in case of Assay
+                    if (props.metadataType === "Assay") {
+                        descGroup.order = existing[0].order;
+                    }
                     const index = metadataModel.descriptorGroups.findLastIndex(e => e.name === elementSelected);
                     const newDescriptorGroups = [
                         ...metadataModel.descriptorGroups.slice(0, index + 1),
@@ -1147,6 +1150,9 @@ const Metadata = props => {
                 let desc = createDescriptor(descriptorGroupTemplate);
                 // insert right after an existing one, if any
                 if (existing.length > 0) {
+                    if (props.metadataType === "Assay") {
+                        desc.order = existing[0].order;
+                    }
                     const index = metadataModel.descriptors.findLastIndex(e => e.name === elementSelected);
                     const newDescriptorGroups = [
                         ...metadataModel.descriptors.slice(0, index + 1),
@@ -1164,9 +1170,9 @@ const Metadata = props => {
             alert(errorMessage);
         }
 
-        if (props.metadataType === "Assay") {
+     /*   if (props.metadataType === "Assay") {
             sortAssayDescriptors(metadataModel);
-        }
+        } */ 
 
         setMetadataModel(metadataModel);
     };
@@ -1218,15 +1224,6 @@ const Metadata = props => {
         } else { // max occurrence has been reached
             alert(errorMessage);
         }
-    };
-
-    const sortAssayDescriptors = selectedMetadata => {
-        selectedMetadata.descriptors.forEach(desc => {
-            if (desc.group) {
-                desc.descriptors.sort((a, b) => a.order - b.order);
-            }
-        });
-        selectedMetadata.descriptors.sort((a, b) => a.order - b.order);
     };
 
     function defaultSelectionChangeSuperGroup(latestDefaultSelection, notApplicableOrRecorded, sg) {
@@ -1343,7 +1340,7 @@ const Metadata = props => {
 
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
-        if (startIndex < endIndex) {
+        if (startIndex < endIndex - 1) {
             const [removed] = result.splice(startIndex, 1);
             result.splice(endIndex - 1, 0, removed);
         } else {
@@ -1477,7 +1474,7 @@ const Metadata = props => {
                                 <div>
                                     {getMetaData()}
                                     <div className="text-center mb-3">
-                                        <Button onClick={() => setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
+                                        <Button onClick={() => props.metadataType === "Assay" && assayCurrentStep === 2 ? setAssayCurrentStep(1) : setLoadDescriptors(false)} className="gg-btn-outline mt-2 gg-mr-20">
                                             Back
                                         </Button>
                                         <Button type="submit" className="gg-btn-blue mt-2 gg-ml-20">
@@ -1497,7 +1494,7 @@ const Metadata = props => {
     );
 };
 
-Metadata.propTypes = {
+MetaData.propTypes = {
     metaID: PropTypes.string,
     isCopy: PropTypes.bool,
     type: PropTypes.string,
@@ -1515,4 +1512,4 @@ Metadata.propTypes = {
     setFeatureAddState: PropTypes.func,
 };
 
-export { Metadata };
+export { MetaData };

@@ -12,7 +12,7 @@ import { StructureImage } from "../components/StructureImage";
 import { ErrorSummary } from "./ErrorSummary";
 import { wsCall } from "../utils/wsUtils";
 import { Popover } from "react-bootstrap";
-import { Metadata } from "../containers/Metadata";
+import { MetaData } from "../containers/MetaData";
 import { Button, makeStyles, Step, StepLabel, Stepper, Typography, FormControlLabel } from "@material-ui/core";
 import { isValidNumber } from "../utils/commonUtils";
 
@@ -466,7 +466,7 @@ const AddFeatureToBlock = props => {
 
   const getMetadata = () => {
     return (
-      <Metadata
+      <MetaData
         metaID={metadataId}
         isCopy={true}
         type={"SPOT"}

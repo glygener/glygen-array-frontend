@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Metadata } from "../containers/Metadata";
+import { MetaData } from "../containers/MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -50,7 +50,7 @@ const AddSpot = props => {
 
           <Card>
             <Card.Body>
-              <Metadata
+              <MetaData
                 metaID={spotId}
                 isCopy={isCopySpot}
                 type={type}

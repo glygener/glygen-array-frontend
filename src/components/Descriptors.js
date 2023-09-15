@@ -401,8 +401,12 @@ const Descriptors = props => {
           {provided => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {descGroups.map((descriptor, index) => {
-                if (descriptor.group) {
+                if (assayCurrentStep === 2 && descriptor.name === "Reference") {
                   return <>{getDescriptorGroups(descriptor, index)}</>;
+                } else if (assayCurrentStep === 1 && descriptor.name !== "Reference") {
+                  if (descriptor.group) {
+                    return <>{getDescriptorGroups(descriptor, index)}</>;
+                  }
                 }
                 return <></>;
               })}

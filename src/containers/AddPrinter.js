@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Metadata } from "./Metadata";
+import { MetaData } from "./MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -49,7 +49,7 @@ const AddPrinter = props => {
           />
           <Card>
             <Card.Body>
-              <Metadata
+              <MetaData
                 metaID={printerId}
                 isCopy={isCopyPrinter}
                 type={type}
