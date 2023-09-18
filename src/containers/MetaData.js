@@ -74,17 +74,17 @@ const MetaData = props => {
             if (props.importedInAPage && props.importedPageData && props.importedPageData.id) {   //TODO where do we have this case??? check to make sure the model is correct!!!
                 setMetadataModel(props.importedPageData);
             }
-            else {
-                wsCall(
-                    props.getMetaData,
-                    "GET",
-                    [props.metaID],
-                    true,
-                    null,
-                    getMetadataForUpdateSuccess,
-                    getGenericMetadataFailure
-                );
-            }
+
+            wsCall(
+                props.getMetaData,
+                "GET",
+                [props.metaID],
+                true,
+                null,
+                getMetadataForUpdateSuccess,
+                getGenericMetadataFailure
+            );
+
         } else {
             wsCall(
                 "listtemplates",
@@ -96,7 +96,7 @@ const MetaData = props => {
                 getGenericMetadataFailure
             );
         }
-    }, [props.metaID]);
+    }, []);
 
     function getMetadataForUpdateSuccess(response) {
         response.json().then(responseJson => {
@@ -127,6 +127,7 @@ const MetaData = props => {
                 metadata: responseJson,
                 name: responseJson.name
             });
+
             setShowLoading(false);
         });
     }
@@ -136,7 +137,6 @@ const MetaData = props => {
      * all descriptorgroups/descriptors belonging to a mandategroup would have defaultselection=false when loaded from the repository
      */
     function processMandateGroups(descriptorList) {
-        // process simple descriptors
         descriptorList.map(desc => {
             if (desc.key.mandateGroup) {
                 // find all descriptors belonging to the mandate group
@@ -151,10 +151,16 @@ const MetaData = props => {
                         if (filledDescriptors.length > 0) {
                             e.key.mandateGroup.defaultSelection = true;
                         }
-                        // process its subgroups
-                        processMandateGroups(e.descriptors);
                     }
                 });
+            }
+            if (desc.group) {
+                // process its subgroups
+                processMandateGroups(desc.descriptors);
+            }
+            // also disable the descriptor if notRecorded/notApplicable is true
+            if (desc.notRecorded || desc.notApplicable) {
+                desc.disabled = true;
             }
         });
     }
@@ -175,6 +181,7 @@ const MetaData = props => {
                 setMetadataTemplate({ selectedtemplate: responseJson[0].name });
                 setMetadataModel(createMetadataInstance(responseJson[0]));
             }
+
             setShowLoading(false);
         });
     }
@@ -1064,6 +1071,7 @@ const MetaData = props => {
         itemByType.descriptors = itemDescriptors;
 
         setMetadataModel(itemByType);
+        props.importedInAPage && props.setMetadataforImportedPage(metadataModel);
     }
 
     const handleDelete = (id) => {
@@ -1081,6 +1089,7 @@ const MetaData = props => {
             }
         }
         setMetadataModel(metadataModel);
+        props.importedInAPage && props.setMetadataforImportedPage(metadataModel);
     };
 
     const handleSubGroupDelete = (selectedDescriptor, parentGroup) => {
@@ -1101,6 +1110,7 @@ const MetaData = props => {
             descriptorList.push(desc);
         }
         setMetadataModel(metadataModel);
+        props.importedInAPage && props.setMetadataforImportedPage(metadataModel);
     };
     const handleCancelModal = (selectedSubGroup, selectedGroup) => {
         // remove selectedSubGroup from selectedGroup
@@ -1175,6 +1185,7 @@ const MetaData = props => {
         } */ 
 
         setMetadataModel(metadataModel);
+        props.importedInAPage && props.setMetadataforImportedPage(metadataModel);
     };
 
     const handleAddDescriptorSubGroups = (selectedGroup, selectedSubGrpDesc) => {
@@ -1220,6 +1231,7 @@ const MetaData = props => {
             }
 
             setMetadataModel(metadataModel);
+            props.importedInAPage && props.setMetadataforImportedPage(metadataModel);
             return desc;
         } else { // max occurrence has been reached
             alert(errorMessage);
@@ -1297,6 +1309,7 @@ const MetaData = props => {
         }
 
         setMetadataModel(metadataModel);
+        props.importedInAPage && props.setMetadataforImportedPage(metadataModel);
     }
 
     const loadDescriptorsAndGroups = () => {
@@ -1364,28 +1377,6 @@ const MetaData = props => {
 
         var reorderedList = reorder(list, sourceIndex, destinationIndex);
 
-       /* const sourceElement = itemDescriptors[sourceIndex];
-        const destinationElement = itemDescriptors[destinationIndex];
-
-        const destinationOrder = destinationElement.order;
-        sourceElement.order = destinationOrder;
-
-        itemDescriptors.splice(sourceIndex, 1);
-
-        itemDescriptors.splice(destinationIndex, 0, sourceElement);*/
-
-        /*if (sourceIndex < destinationIndex) {
-            const reOrderItems = list.slice(sourceIndex, destinationIndex);
-            reOrderItems.forEach(item => {
-                item.order--;
-            });
-        } else if (sourceIndex > destinationIndex) {
-            const reOrderItems = list.slice(destinationIndex + 1, sourceIndex + 1);
-            reOrderItems.forEach(item => {
-                item.order++;
-            });
-        }*/
-
         // update orders according to their current indices in the array
         for (var i = 0; i < reorderedList.length; i++) {
             reorderedList[i].order = i + 1;
@@ -1407,8 +1398,8 @@ const MetaData = props => {
                             metadataModel &&
                             processMandateGroups(metadataModel.descriptors) && processMandateGroups(metadataModel.descriptorGroups)}
                         {((props.importedPageData && props.importedPageData.id) || props.metadataType === "Feature") &&
-                            metadataModel &&
-                            getMetaData()}
+                            metadataModel && metadataModel.descriptors.length > 0 && getMetaData()
+                        }
                     </Col>
                 </Row>
                 {getButtonsForImportedPage()}

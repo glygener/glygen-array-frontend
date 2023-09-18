@@ -368,7 +368,13 @@ const FeatureView = props => {
       </Form.Group>
     );
 
-    groupData = displayMetadata(groupData, generalData, props.metadata[0].descriptors);
+    let mergedDesc = props.descriptorGroups;
+    if (props.descriptors.length > 0) {
+      props.descriptors.forEach(ele => {
+        mergedDesc.push(ele);
+      });
+    }
+    groupData = displayMetadata(groupData, generalData, mergedDesc);
 
     return groupData;
   };
@@ -414,14 +420,14 @@ const FeatureView = props => {
       if (props.linker) {
         sourceGroup = mergedDesc.filter(
           e =>
-            e.mandateGroup &&
-            ele.mandateGroup &&
-            e.mandateGroup.id === ele.mandateGroup.id &&
-            (e.mandateGroup.notApplicable || e.mandateGroup.notRecorded)
+            e.key.mandateGroup &&
+            ele.key.mandateGroup &&
+            e.key.mandateGroup.id === ele.key.mandateGroup.id &&
+            (e.notApplicable || e.notRecorded)
         );
 
         if (sourceGroup.length > 0) {
-          if (sourceGroup[0].mandateGroup.notApplicable) {
+          if (sourceGroup[0].notApplicable) {
             notApplicable = true;
           }
         }
@@ -439,26 +445,22 @@ const FeatureView = props => {
             notApplicable = true;
           }
         }
-
-        if (ele.key.mandateGroup) {
-          ele.mandateGroup = ele.key.mandateGroup;
-        }
       }
 
       if (ele.group) {
         if (
-          ((props.linker && ele.mandateGroup && ele.mandateGroup.defaultSelection) ||
-            (!props.linker && ele.mandateGroup)) &&
+          ((props.linker && ele.key.mandateGroup && ele.key.mandateGroup.defaultSelection) ||
+            (!props.linker && ele.key.mandateGroup)) &&
           sourceGroup.length < 1
         ) {
           groupData.push(
             <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
               <Col xs={12} lg={9}>
-                <h4 className="gg-blue">{`${ele.mandateGroup.name} - ${ele.name}`}</h4>
+                <h4 className="gg-blue">{`${ele.key.mandateGroup.name} - ${ele.name}`}</h4>
               </Col>
             </Form.Group>
           );
-        } else if (!ele.mandateGroup) {
+        } else if (!ele.key.mandateGroup) {
           if (ele.descriptors.filter(i => i.value).length > 0) {
             groupData.push(
               <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
@@ -472,7 +474,7 @@ const FeatureView = props => {
           groupData.push(
             <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
               <Col xs={12} lg={9}>
-                <h4 className="gg-blue">{`${ele.mandateGroup.name}`}</h4>
+                <h4 className="gg-blue">{`${ele.key.mandateGroup.name}`}</h4>
                 <Form.Control
                   type="text"
                   name={"source"}
@@ -485,9 +487,9 @@ const FeatureView = props => {
         }
 
         if (
-          (props.linker && ele.mandateGroup && ele.mandateGroup.defaultSelection) ||
-          (!props.linker && ele.mandateGroup) ||
-          !ele.mandateGroup
+          (props.linker && ele.key.mandateGroup && ele.key.mandateGroup.defaultSelection) ||
+          (!props.linker && ele.key.mandateGroup) ||
+          !ele.key.mandateGroup
         ) {
           ele.descriptors.forEach(subEle => {
             if (subEle.group && subEle.descriptors.filter(i => i.value).length > 0) {

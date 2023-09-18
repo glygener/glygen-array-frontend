@@ -2046,41 +2046,6 @@ const MetaData = props => {
     }
   }
 
-
-  /**
-     * if this page is for edit, we need to set the defaultSelection of the mandategroups to true for the filled descriptor group of each mandate group
-     * all descriptorgroups/descriptors belonging to a mandategroup would have defaultselection=false when loaded from the repository
-     */
-  function processMandateGroups() {
-    // process simple descriptors
-    metadataModel.descriptors.map(desc => {
-      if (desc.key.mandateGroup) {
-        // find all descriptors belonging to the mandate group
-        // check which one has values
-        let mandateGroupDesc = metadataModel.descriptors.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
-        mandateGroupDesc.map(e => {
-          if (e.value && e.value !== "") {
-            e.key.mandateGroup.defaultSelection = true;
-          }
-        });
-      }
-    });
-
-    // process descriptor groups
-    metadataModel.descriptorGroups.map(desc => {
-      if (desc.key.mandateGroup) {
-        let mandateGroupDesc = metadataModel.descriptorGroups.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
-        mandateGroupDesc.map(group => {
-          // check if filled, set default selection
-          let filledDescriptors = group.descriptors.filter(i => i.value && i.value !== "");
-          if (filledDescriptors.length > 0) {
-            group.key.mandateGroup.defaultSelection = true;
-          }
-        });
-      }
-    });
-  }
-
   function setAssayMetadataUpdate() {
     let sampleModelUpdate = sampleModel;
 

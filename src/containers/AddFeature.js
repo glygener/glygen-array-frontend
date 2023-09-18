@@ -970,6 +970,7 @@ const AddFeature = props => {
     return (
       <>
         <MetaData
+          metaID={undefined}
           type={"FEATURE"}
           featureAddState={featureAddState}
           setFeatureAddState={setFeatureAddState}
