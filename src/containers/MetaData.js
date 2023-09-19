@@ -171,7 +171,11 @@ const MetaData = props => {
                         let filledDescriptors = e.descriptors.filter(i => i.value && i.value !== "");
                         if (filledDescriptors.length > 0) {
                             e.key.mandateGroup.defaultSelection = true;
+                        } else if (e.key.mandateGroup.defaultSelection) {    // reset default selection if it is not filled
+                            e.key.mandateGroup.defaultSelection = false;
                         }
+                    } else if (!e.group && e.key.mandateGroup.defaultSelection) {
+                        e.key.mandateGroup.defaultSelection = false;
                     }
                 });
             }
