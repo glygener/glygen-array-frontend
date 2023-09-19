@@ -1287,7 +1287,35 @@ const MetaData = props => {
                 (i.key.mandateGroup.defaultSelection || i.notApplicable || i.notRecorded)
         );
 
-        if ((currentDefaultSelection.length === 1 && notApplicableOrRecorded) || !notApplicableOrRecorded) {
+        if (currentDefaultSelection.length > 1) {
+            if (isUpdate) {
+                // let listOfRemoveDefaultSelection=
+                currentDefaultSelection.filter(e => {
+                    if (e.id !== latestDefaultSelection.id) {
+                        e.notApplicable = false;
+                        e.notRecorded = false;
+                        e.key.mandateGroup.defaultSelection = false;
+                    }
+                });
+
+                latestDefaultSelection.key.mandateGroup.defaultSelection = true;
+                latestDefaultSelection.notApplicable = false;
+                latestDefaultSelection.notRecorded = false;
+            }
+        } else if (currentDefaultSelection.length < 1 && !notApplicableOrRecorded) {
+            currentDefaultSelection = itemDescriptors.filter(
+                i =>
+                    i.key.mandateGroup &&
+                    i.key.mandateGroup.id === latestDefaultSelection.key.mandateGroup.id &&
+                    i.key.mandateGroup.defaultSelection === false &&
+                    (i.notApplicable || i.notRecorded)
+            );
+
+            indexOfCurrentDefaultSelection = itemDescriptors.indexOf(currentDefaultSelection[0]);
+            currentDefaultSelection[0].notApplicable = false;
+            currentDefaultSelection[0].notRecorded = false;
+            itemDescriptors[indexOfCurrentDefaultSelection] = currentDefaultSelection[0];
+        } else if ((currentDefaultSelection.length === 1 && notApplicableOrRecorded) || !notApplicableOrRecorded) {
             if (currentDefaultSelection[0]) {
                 if (currentDefaultSelection[0].group) {
                     currentDefaultSelection[0].descriptors.forEach(d => {
