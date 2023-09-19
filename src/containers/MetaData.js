@@ -161,6 +161,12 @@ const MetaData = props => {
             // also disable the descriptor if notRecorded/notApplicable is true
             if (desc.notRecorded || desc.notApplicable) {
                 desc.disabled = true;
+                // if it is a group, check to make sure its descriptors are populated
+                // if this is for editing, notRecorded/notApplicable groups might not have the sub-descriptors loaded
+                if (desc.group && desc.descriptors.length == 0) {
+                    let newDesc = createDescriptorGroup(desc.key);
+                    desc.descriptors = newDesc.descriptors;
+                }
             }
         });
     }
@@ -433,6 +439,10 @@ const MetaData = props => {
             if (e.currentTarget.checkValidity() && !isGroupMandate()) {
                 setShowLoading(true);
 
+                // remove unfilled descriptors
+                metadataModel.descriptors = cleanupMetadata(metadataModel.descriptors);
+                metadataModel.descriptorGroups = cleanupMetadata(metadataModel.descriptorGroups);
+
                 if (props.importedPageData) {
                     props.handleNext(e);
                     props.setImportedPageDataToSubmit(metadataToSubmit());
@@ -450,6 +460,23 @@ const MetaData = props => {
         }
 
         e.preventDefault();
+    }
+
+    function cleanupMetadata(descList) {
+        let cleanedList = [];
+        descList.forEach(desc => {
+            if (desc.group) {
+                desc.descriptors = cleanupMetadata(desc.descriptors);
+                if (desc.descriptors.length > 0) {
+                    cleanedList.push(desc);
+                }
+            } else {
+                if (desc.notRecorded || desc.notApplicable || (desc.value && desc.value !== "")) {
+                    cleanedList.push(desc);
+                }
+            }
+        });
+        return cleanedList;
     }
 
     function addMetaSuccess(response) {
@@ -1051,13 +1078,18 @@ const MetaData = props => {
         let indexOfLatestSelection;
         var itemByType = { ...metadataModel };
 
-        var itemDescriptors = itemByType.descriptors;
+        var itemDescriptors = desc.group ? itemByType.descriptorGroups : itemByType.descriptors;
 
         indexOfLatestSelection = itemDescriptors.indexOf(desc);
 
         if (!notAppOrRec) {
             desc.notApplicable = false;
             desc.notRecorded = false;
+            if (desc.group && desc.descriptors.length == 0) {
+                // need to initialize the subdescriptors
+                let newDesc = createDescriptorGroup(desc.key);
+                desc.descriptors = newDesc.descriptors;
+            }
         } else if (notAppOrRec === "notApplicable") {
             desc.notApplicable = true;
             desc.notRecorded = false;
@@ -1068,7 +1100,11 @@ const MetaData = props => {
 
         itemDescriptors[indexOfLatestSelection] = desc;
 
-        itemByType.descriptors = itemDescriptors;
+        if (desc.group) {
+            itemByType.descriptorGroups = itemDescriptors;
+        } else {
+            itemByType.descriptors = itemDescriptors;
+        }
 
         setMetadataModel(itemByType);
         props.importedInAPage && props.setMetadataforImportedPage(metadataModel);
@@ -1395,10 +1431,10 @@ const MetaData = props => {
                     <Col>
                         {(!loadDataOnFirstNextInUpdate || props.importSpotchange) &&
                             !props.importedPageData.id &&
-                            metadataModel &&
+                            metadataModel && (metadataModel.descriptors.length > 0 || metadataModel.descriptorGroups.length > 0) &&
                             processMandateGroups(metadataModel.descriptors) && processMandateGroups(metadataModel.descriptorGroups)}
                         {((props.importedPageData && props.importedPageData.id) || props.metadataType === "Feature") &&
-                            metadataModel && metadataModel.descriptors.length > 0 && getMetaData()
+                            metadataModel && (metadataModel.descriptors.length > 0 || metadataModel.descriptorGroups.length > 0) && getMetaData()
                         }
                     </Col>
                 </Row>
