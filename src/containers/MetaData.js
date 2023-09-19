@@ -136,12 +136,33 @@ const MetaData = props => {
      * if this page is for edit, we need to set the defaultSelection of the mandategroups to true for the filled descriptor group of each mandate group
      * all descriptorgroups/descriptors belonging to a mandategroup would have defaultselection=false when loaded from the repository
      */
-    function processMandateGroups(descriptorList) {
+    function processMandateGroups(descriptorList, templateDescriptors) {
         descriptorList.map(desc => {
             if (desc.key.mandateGroup) {
                 // find all descriptors belonging to the mandate group
                 // check which one has values
                 let mandateGroupDesc = descriptorList.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
+                if (mandateGroupDesc && mandateGroupDesc.length == 1) {
+                    // we are missing the other descriptor groups in this mandateGroup
+                    // find them from the template and add to the list 
+                    if (templateDescriptors) {
+                        let otherMandateGroupDesc = templateDescriptors.filter(e => e.mandateGroup && e.mandateGroup.id == desc.key.mandateGroup.id);
+                        otherMandateGroupDesc.forEach(d => {
+                            let found = mandateGroupDesc.find(i => i.name === d.name);
+                            if (!found) {
+                                let newDesc;
+                                if (d.group) {
+                                    newDesc = createDescriptorGroup(d);
+                                } else {
+                                    newDesc = createDescriptor(d);
+                                }
+                                descriptorList.push(newDesc);
+                                sortDescriptors(descriptorList);
+                            }
+                        })
+                    }
+                }
+                mandateGroupDesc = descriptorList.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
                 mandateGroupDesc.map(e => {
                     if (!e.group && e.value && e.value !== "") {
                         e.key.mandateGroup.defaultSelection = true;
@@ -156,7 +177,7 @@ const MetaData = props => {
             }
             if (desc.group) {
                 // process its subgroups
-                processMandateGroups(desc.descriptors);
+                processMandateGroups(desc.descriptors, desc.key.descriptors);
             }
             // also disable the descriptor if notRecorded/notApplicable is true
             if (desc.notRecorded || desc.notApplicable) {
@@ -166,10 +187,31 @@ const MetaData = props => {
                 if (desc.group && desc.descriptors.length == 0) {
                     let newDesc = createDescriptorGroup(desc.key);
                     desc.descriptors = newDesc.descriptors;
-                }
+                }    
+            }
+            if (desc.group && isUpdate) {
+                // add missing sub descriptors
+                let newDesc = createDescriptorGroup(desc.key);
+                newDesc.descriptors.forEach(d => {
+                    let found = desc.descriptors.find(i => i.name === d.name);
+                    if (!found) {
+                        desc.descriptors.push(d);
+                        sortDescriptors(desc);
+                    }
+                })
             }
         });
     }
+
+    const sortDescriptors = selectedMetadata => {
+        let descriptorList = selectedMetadata.descriptors ? selectedMetadata.descriptors : selectedMetadata;
+        descriptorList.forEach(desc => {
+            if (desc.group) {
+                desc.descriptors.sort((a, b) => a.order - b.order);
+            }
+        });
+        descriptorList.sort((a, b) => a.order - b.order);
+    };
 
     function getListTemplatesSuccess(response) {
         response.json().then(responseJson => {
@@ -563,6 +605,8 @@ const MetaData = props => {
         } else if (metadataModel.name === "") {
             setErrorName(true);
         } else {
+
+
             if (!isUpdate && props.metadataType === "Assay") {
                 // need to keep only the selected groups from the first page
                 let selectedGroups = metadataModel.descriptorGroups.filter(function (group) {
@@ -582,8 +626,19 @@ const MetaData = props => {
                 });
                 metadataModel.descriptorGroups = selectedGroups;
             }
-            processMandateGroups(metadataModel.descriptors);
-            processMandateGroups(metadataModel.descriptorGroups);
+
+            let templateType;
+            if (isUpdate || props.isCopy) {
+                templateType = metadataTemplate.metadata;
+            } else if (props.importedInAPage) {
+                templateType = metadataTemplate.metadata[0];
+            } else if (props.metadataType !== "Assay") {
+                templateType = metadataTemplate.metadata.find(i => i.name === metadataTemplate.selectedtemplate);
+            } else if (props.metadataType === "Assay") {
+                templateType = metadataTemplate.metadata[0];
+            }
+            processMandateGroups(metadataModel.descriptors, templateType ? templateType.descriptors : undefined);
+            processMandateGroups(metadataModel.descriptorGroups, templateType ? templateType.descriptors : undefined);
             setLoadDescriptors(true);
         }
     };
@@ -1452,6 +1507,17 @@ const MetaData = props => {
     };
 
     const getPageLoaded = () => {
+        let templateType;
+
+        if (isUpdate || props.isCopy) {
+            templateType = metadataTemplate.metadata;
+        } else if (props.importedInAPage) {
+            templateType = metadataTemplate.metadata[0];
+        } else if (props.metadataType !== "Assay") {
+            templateType = metadataTemplate.metadata.find(i => i.name === metadataTemplate.selectedtemplate);
+        } else if (props.metadataType === "Assay") {
+            templateType = metadataTemplate.metadata[0];
+        }
         return (
             <>
                 {getButtonsForImportedPage()}
@@ -1460,7 +1526,7 @@ const MetaData = props => {
                         {(!loadDataOnFirstNextInUpdate || props.importSpotchange) &&
                             !props.importedPageData.id &&
                             metadataModel && (metadataModel.descriptors.length > 0 || metadataModel.descriptorGroups.length > 0) &&
-                            processMandateGroups(metadataModel.descriptors) && processMandateGroups(metadataModel.descriptorGroups)}
+                            processMandateGroups(metadataModel.descriptors, templateType.descriptors) && processMandateGroups(metadataModel.descriptorGroups, templateType.descriptors)}
                         {((props.importedPageData && props.importedPageData.id) || props.metadataType === "Feature") &&
                             metadataModel && (metadataModel.descriptors.length > 0 || metadataModel.descriptorGroups.length > 0) && getMetaData()
                         }
