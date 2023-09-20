@@ -24,7 +24,7 @@ const AddPrinter = props => {
   }
 
   useEffect(() => {
-    if (!printerId || printerId === "") {
+    if (props.authCheckAgent) {
       props.authCheckAgent();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

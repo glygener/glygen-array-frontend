@@ -466,6 +466,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
             if (error instanceof TypeError) {
               if (error.message.search("fetch")) {
                 exceptionFunction && exceptionFunction(error);
+                !exceptionFunction && defaultExceptionFunction(error);
                 console.log("server is down!");
               }
             } 
@@ -481,6 +482,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
               if (error instanceof TypeError) {
                 if (error.message.search("fetch")) {
                   exceptionFunction && exceptionFunction(error);
+                  !exceptionFunction && defaultExceptionFunction(error);
                   console.log("server is down!");
                 }
               } 
@@ -491,21 +493,26 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     //   throw new Error(`Error! status: ${response.status}`);
     // }
 
-    if (response.ok) {
+    if (response && response.ok) {
       successFunction(response);
-    } else {
+    } else if (response) {
       // check if the error code is 403 (expired token)
       if (!url.includes("login") && (response.status == 403 || response.status == 401)) {
         reLogin(window.history);
       } else {
         errorFunction(response);
       }
-    }
+    } 
   } catch (error) {
     console.log(error);
     exceptionFunction && exceptionFunction(error);
+    !exceptionFunction && defaultExceptionFunction(error);
     // alert("Network issue detected. Please try again.");
   }
+}
+
+function defaultExceptionFunction(error) {
+  console.log("Cannot connect to the server. Please contact the administrators!");
 }
 
 /**

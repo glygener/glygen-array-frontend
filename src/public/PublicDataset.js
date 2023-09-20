@@ -45,7 +45,6 @@ const PublicDataset = () => {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [selectedTreeData, setSelectedTreeData] = useState(false);
   const [currentDataTab, setCurrentDataTab] = useState("histogram");
-
   const [listIntensityTable, setListIntensityTable] = useState([]);
   const [listIntensityChart, setListIntensityChart] = useState();
   const [pageErrorsJsonData, setPageErrorsJsonData] = useState({});

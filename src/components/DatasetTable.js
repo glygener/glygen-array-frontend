@@ -13,6 +13,8 @@ const DatasetTable = props => {
   const [pageErrorsJson, setPageErrorsJson] = useState({});
   const [pageErrorMessage, setPageErrorMessage] = useState("");
   const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const [serverErrorMessage, setServerErrorMessage] = useState("");
+  const [showServerError, setShowServerError] = useState(false);
   const [orderBy, setOrderBy] = useState(1);
   const [showLoading, setShowLoading] = useState(true);
   const [rows, setRows] = useState(0);
@@ -71,6 +73,16 @@ const DatasetTable = props => {
     });
     setShowErrorSummary(true);
     setShowLoading(false);
+  }
+
+  function exceptionWsCall(error) {
+    if (error && error.message && error.message.search("fetch")) {
+      // the server is down
+      setServerErrorMessage("Cannot connect to the server. Please contact the administrators!");
+      setShowServerError(true);
+    } else {
+      alert(error);
+    }
   }
 
   const handleSelectSortBy = e => {
@@ -241,7 +253,9 @@ const DatasetTable = props => {
                 false,
                 null,
                 response => fetchSuccess(response, state),
-                errorWscall
+                errorWscall,
+                null,
+                exceptionWsCall,
               );
             }}
           />
@@ -284,7 +298,14 @@ const DatasetTable = props => {
           errorMessage={pageErrorMessage}
         />
       )}
-      {showLoading ? <CardLoader pageLoading={showLoading} /> : ""}
+      {showServerError === true && (
+        <ErrorSummary
+          show={showServerError}
+          form="experiments"
+          errorMessage={serverErrorMessage}
+        />
+      )}
+      {showLoading && !showServerError ? <CardLoader pageLoading={showLoading} /> : ""}
       {getTableDetails()}
     </>
   );

@@ -135,6 +135,11 @@ const MetaData = props => {
     /**
      * if this page is for edit, we need to set the defaultSelection of the mandategroups to true for the filled descriptor group of each mandate group
      * all descriptorgroups/descriptors belonging to a mandategroup would have defaultselection=false when loaded from the repository
+     * this method also adds missing descriptors to the current descriptor groups of the edited metadata so the user can also fill in those values as required
+     * (there is no mechanism on the page to add the subdescriptors if they are currently not displayed!)
+     * 
+     * @param {Array} descriptorList current descriptor list of the metadata being edited/updated
+     * @param {Array} templateDescriptors list of descriptors from the metadata template
      */
     function processMandateGroups(descriptorList, templateDescriptors) {
         descriptorList.map(desc => {
@@ -146,7 +151,7 @@ const MetaData = props => {
                     // we are missing the other descriptor groups in this mandateGroup
                     // find them from the template and add to the list 
                     if (templateDescriptors) {
-                        let otherMandateGroupDesc = templateDescriptors.filter(e => e.mandateGroup && e.mandateGroup.id == desc.key.mandateGroup.id);
+                        let otherMandateGroupDesc = templateDescriptors.filter(e => e.mandateGroup && e.mandateGroup.id === desc.key.mandateGroup.id);
                         otherMandateGroupDesc.forEach(d => {
                             let found = mandateGroupDesc.find(i => i.name === d.name);
                             if (!found) {
@@ -189,11 +194,13 @@ const MetaData = props => {
                 // if it is a group, check to make sure its descriptors are populated
                 // if this is for editing, notRecorded/notApplicable groups might not have the sub-descriptors loaded
                 if (desc.group && desc.descriptors.length == 0) {
-                    let newDesc = createDescriptorGroup(desc.key);
-                    desc.descriptors = newDesc.descriptors;
+                    if (desc.key.group) {
+                        let newDesc = createDescriptorGroup(desc.key);
+                        desc.descriptors = newDesc.descriptors;
+                    }
                 }    
             }
-            if (desc.group && isUpdate) {
+            if (desc.group && desc.key.group && isUpdate) {
                 // add missing sub descriptors
                 let newDesc = createDescriptorGroup(desc.key);
                 newDesc.descriptors.forEach(d => {
@@ -634,15 +641,14 @@ const MetaData = props => {
             let templateType;
             if (isUpdate || props.isCopy) {
                 templateType = metadataTemplate.metadata;
+                processMandateGroups(metadataModel.descriptors, templateType ? templateType.descriptors : undefined);
+                processMandateGroups(metadataModel.descriptorGroups, templateType ? templateType.descriptors : undefined);
             } else if (props.importedInAPage) {
                 templateType = metadataTemplate.metadata[0];
-            } else if (props.metadataType !== "Assay") {
-                templateType = metadataTemplate.metadata.find(i => i.name === metadataTemplate.selectedtemplate);
-            } else if (props.metadataType === "Assay") {
-                templateType = metadataTemplate.metadata[0];
+                processMandateGroups(metadataModel.descriptors, templateType ? templateType.descriptors : undefined);
+                processMandateGroups(metadataModel.descriptorGroups, templateType ? templateType.descriptors : undefined);
             }
-            processMandateGroups(metadataModel.descriptors, templateType ? templateType.descriptors : undefined);
-            processMandateGroups(metadataModel.descriptorGroups, templateType ? templateType.descriptors : undefined);
+
             setLoadDescriptors(true);
         }
     };

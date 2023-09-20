@@ -23,7 +23,7 @@ const AddSample = props => {
   }
 
   useEffect(() => {
-    if (!sampleId || sampleId === "") {
+    if (props.authCheckAgent) {
       props.authCheckAgent();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

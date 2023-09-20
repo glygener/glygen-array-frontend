@@ -141,6 +141,8 @@ const Contribute = props => {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showLoading, setShowLoading] = useState(true);
+  const [serverErrorMessage, setServerErrorMessage] = useState("");
+  const [showServerError, setShowServerError] = useState(false);
 
   useEffect(() => {
     setShowLoading(true);
@@ -166,9 +168,21 @@ const Contribute = props => {
           setErrorMessage(defaultErrorMessage);
           setHasError(true);
         });
-      }
+      },
+      null,
+      exceptionWsCall
     );
   }, []);
+
+  function exceptionWsCall(error) {
+    if (error && error.message && error.message.search("fetch")) {
+      // the server is down
+      setServerErrorMessage("Cannot connect to the server. Please contact the administrators!");
+      setShowServerError(true);
+    } else {
+      alert(error);
+    }
+  }
 
   return (
     <>
@@ -186,7 +200,9 @@ const Contribute = props => {
 
           <ErrorMessage show={hasError} message={errorMessage} />
 
-          {showLoading && <Loading show={showLoading} />}
+          <ErrorMessage show={showServerError} message={serverErrorMessage} />
+
+          {showLoading && !showServerError && <Loading show={showLoading} />}
 
           {Object.keys(statistics).length > 0 &&
             sections.map(section => (

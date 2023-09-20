@@ -31,7 +31,11 @@ import wikiHelpTooltip from "../appData/wikiHelpTooltip";
 import FeedbackWidget from "../components/FeedbackWidget";
 
 const AddOtherMolecule = props => {
-  useEffect(props.authCheckAgent, []);
+  useEffect(() => {
+    if (props.authCheckAgent) {
+      props.authCheckAgent();
+    }
+  }, []);
 
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
