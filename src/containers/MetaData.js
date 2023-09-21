@@ -10,6 +10,7 @@ import { Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Loading } from "../components/Loading";
 import { FormControlLabel, FormGroup } from "@material-ui/core";
+import { ScrollToTop } from "../components/ScrollToTop";
 
 let idCounter = 1000;
 
@@ -512,7 +513,10 @@ const MetaData = props => {
             validateAssayStep2Data(e);
         }
 
+        setPageErrorMessage("There are errors on the page. Please fill in the required fields and resubmit");
         e.preventDefault();
+        ScrollToTop();
+        setShowErrorSummary(true);
     }
 
     function cleanupMetadata(descList) {
