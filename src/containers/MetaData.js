@@ -142,19 +142,17 @@ const MetaData = props => {
      * @param {Array} descriptorList current descriptor list of the metadata being edited/updated
      * @param {Array} templateDescriptors list of descriptors from the metadata template
      */
-    function processMandateGroups(descriptorList, templateDescriptors) {
-        descriptorList.map(desc => {
-            if (desc.key.mandateGroup) {
-                // find all descriptors belonging to the mandate group
-                // check which one has values
-                let mandateGroupDesc = descriptorList.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
-                if (mandateGroupDesc && mandateGroupDesc.length == 1) {
-                    // we are missing the other descriptor groups in this mandateGroup
-                    // find them from the template and add to the list 
-                    if (templateDescriptors) {
-                        let otherMandateGroupDesc = templateDescriptors.filter(e => e.mandateGroup && e.mandateGroup.id === desc.key.mandateGroup.id);
-                        otherMandateGroupDesc.forEach(d => {
-                            let found = mandateGroupDesc.find(i => i.name === d.name);
+    function processMandateGroups(descriptorList, templateDescriptors, isSubGroup) {
+        if (!isSubGroup) {
+            // if it is top level simple descriptorslist, we need to add missing simple descriptors (from the template)
+            // since there is no way to add them in the page
+            if (descriptorList.filter(desc => !desc.group).length > 0) {
+                if (templateDescriptors) {
+                    // top level descriptors from the template
+                    let descriptorsFromTemplate = templateDescriptors.filter(e => !e.group);
+                    if (descriptorList.length < descriptorsFromTemplate.length) {
+                        descriptorsFromTemplate.forEach(d => {
+                            let found = descriptorList.find(i => i.name === d.name);
                             if (!found) {
                                 let newDesc;
                                 if (d.group) {
@@ -165,29 +163,69 @@ const MetaData = props => {
                                 descriptorList.push(newDesc);
                                 sortDescriptors(descriptorList);
                             }
-                        })
+                        });
                     }
                 }
-                mandateGroupDesc = descriptorList.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
+            }
+        }
+        descriptorList.map(desc => {
+            if (desc.key.mandateGroup) {
+                let mandateGroupDescFromTemplate = [];
+                // find all descriptors belonging to the mandate group
+                if (templateDescriptors) {
+                    mandateGroupDescFromTemplate = templateDescriptors.filter(e => e.mandateGroup && e.mandateGroup.id === desc.key.mandateGroup.id);
+                }
+                // check which one has values
+                let mandateGroupDesc = descriptorList.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
+                let modified = false;
+                if (mandateGroupDesc && mandateGroupDesc.length < mandateGroupDescFromTemplate.length) {
+                    // we are missing the other descriptor groups in this mandateGroup
+                    // find them from the template and add to the list 
+                    mandateGroupDescFromTemplate.forEach(d => {
+                        let found = mandateGroupDesc.find(i => i.name === d.name);
+                        if (!found) {
+                            let newDesc;
+                            if (d.group) {
+                                newDesc = createDescriptorGroup(d);
+                            } else {
+                                newDesc = createDescriptor(d);
+                            }
+                            descriptorList.push(newDesc);
+                            modified = true;
+                            sortDescriptors(descriptorList);
+                        }
+                    });
+                }
+                if (modified) {
+                    mandateGroupDesc = descriptorList.filter(i => i.key.mandateGroup && i.key.mandateGroup.id === desc.key.mandateGroup.id);
+                }
+                let defaultSelected = false;
                 mandateGroupDesc.map(e => {
                     if (!e.group && e.value && e.value !== "") {
                         e.key.mandateGroup.defaultSelection = true;
+                        defaultSelected = true;
                     } else if (e.group) {
                         // check if filled, set default selection
                         let filledDescriptors = e.descriptors.filter(i => i.value && i.value !== "");
                         if (filledDescriptors.length > 0) {
                             e.key.mandateGroup.defaultSelection = true;
+                            defaultSelected = true;
                         } else if (e.key.mandateGroup.defaultSelection) {    // reset default selection if it is not filled
                             e.key.mandateGroup.defaultSelection = false;
                         }
                     } else if (!e.group && e.key.mandateGroup.defaultSelection) {
                         e.key.mandateGroup.defaultSelection = false;
                     }
+                    if (e.notRecorded || e.notApplicable) {
+                        defaultSelected = true;
+                    }
                 });
-            }
-            if (desc.group) {
-                // process its subgroups
-                processMandateGroups(desc.descriptors, desc.key.descriptors);
+                if (!defaultSelected) {
+                    // select the first one
+                    if (mandateGroupDesc && mandateGroupDesc.length > 0) {
+                        mandateGroupDesc[0].key.mandateGroup.defaultSelection = true;
+                    }
+                }
             }
             // also disable the descriptor if notRecorded/notApplicable is true
             if (desc.notRecorded || desc.notApplicable) {
@@ -211,6 +249,11 @@ const MetaData = props => {
                         sortDescriptors(desc);
                     }
                 })
+            }
+
+            if (desc.group) {
+                // process its subgroups
+                processMandateGroups(desc.descriptors, desc.key.descriptors, true);
             }
         });
     }
@@ -417,7 +460,8 @@ const MetaData = props => {
 
         const mandatoryGroupsFilled = groupDescriptors.filter(function (e) {
             const filledDesc = e.descriptors.filter(function (subDescriptor) {
-                if (!subDescriptor.group && (subDescriptor.value || subDescriptor.notRecorded || subDescriptor.notApplicable)) {
+                if (!subDescriptor.group && (subDescriptor.value || subDescriptor.notRecorded || subDescriptor.notApplicable ||
+                    (subDescriptor.key.mandateGroup && subDescriptor.key.mandateGroup.defaultSelection))) {
                     return subDescriptor;
                 } else if (subDescriptor.group) {
                     const filledSubGroups = subDescriptor.descriptors.filter(i => i.value || i.notRecorded || i.notApplicable);
@@ -438,7 +482,7 @@ const MetaData = props => {
         groupDescriptors.filter(function (e) {
             const sameGroupItems = mandatoryGroupsFilled.filter(i => i.key.mandateGroup.id === e.key.mandateGroup.id);
 
-            if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.key.mandateGroup.xorMandate).length > 1) {
+            if (sameGroupItems.length > 1 && sameGroupItems.filter(i => i.key.mandateGroup.xOrMandate).length > 1) {
                 mandateGroupExceed.set(e.key.mandateGroup.id, sameGroupItems);
             } else {
                 let missingGroup = [];
@@ -461,16 +505,18 @@ const MetaData = props => {
                 var pair = descriptorPair[1];
                 pair.filter(function (desc) {
                     if (
-                        !desc.key.mandateGroup.xorMandate &&
+                        !desc.key.mandateGroup.xOrMandate &&
                         desc.descriptors.filter(i => i.value || i.notRecorded || i.notApplicable).length > 0
                     ) {
                         mandateGroupNotMet.delete(descriptorPair[0]);
-                    } else if (
-                        desc.key.mandateGroup.xorMandate &&
-                        desc.descriptors.filter(i => i.value && (i.value !== undefined || i.notRecorded || i.notApplicable))
-                            .length > 0
-                    ) {
-                        mandateGroupNotMet.delete(descriptorPair[0]);
+                    } else {
+                        // the last check (default selection check) is to handle "cell free expression system" since the value is not set on that descriptor (only a checkbox)
+                        if (desc.key.mandateGroup.xOrMandate) {
+                            let filled = desc.descriptors.filter(i => i.value || i.notRecorded || i.notApplicable || (i.key.mandateGroup && i.key.mandateGroup.defaultSelection));
+                            if (filled.length > 0) {
+                                mandateGroupNotMet.delete(descriptorPair[0]);
+                            }
+                        }
                     }
                 });
             }
@@ -513,10 +559,13 @@ const MetaData = props => {
             validateAssayStep2Data(e);
         }
 
-        setPageErrorMessage("There are errors on the page. Please fill in the required fields and resubmit");
+        if (!e.currentTarget.checkValidity()) { 
+            setPageErrorMessage("There are errors on the page. Please fill in the required fields and resubmit");
+
+            ScrollToTop();
+            setShowErrorSummary(true);
+        }
         e.preventDefault();
-        ScrollToTop();
-        setShowErrorSummary(true);
     }
 
     function cleanupMetadata(descList) {
@@ -524,11 +573,11 @@ const MetaData = props => {
         descList.forEach(desc => {
             if (desc.group) {
                 desc.descriptors = cleanupMetadata(desc.descriptors);
-                if (desc.descriptors.length > 0) {
+                if (desc.descriptors.length > 0 || desc.notRecorded || desc.notApplicable) {
                     cleanedList.push(desc);
                 }
             } else {
-                if (desc.notRecorded || desc.notApplicable || (desc.value && desc.value !== "")) {
+                if (desc.notRecorded || desc.notApplicable || (desc.value && desc.value !== "") || (desc.key.mandateGroup && desc.key.mandateGroup.defaultSelection)) {
                     cleanedList.push(desc);
                 }
             }
