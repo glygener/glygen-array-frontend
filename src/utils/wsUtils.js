@@ -408,13 +408,17 @@ export function getWsUrl(ws) {
     case "checkslideupload":
       return ws_base_array + "/checkslideupload";
     case "publicexportmetadata":
-      return ws_base_public + "/downloadMetadata"
+      return ws_base_public + "/downloadMetadata";
     case "exportmetadata":
-      return ws_base_array + "/downloadMetadata"
+      return ws_base_array + "/downloadMetadata";
+    case "publicexportsinglemetadata":
+      return ws_base_public + "/exportmetadata"
+    case "exportsinglemetadata":
+      return ws_base_array + "/exportmetadata"
     case "getpublicprintedslide":
-      return ws_base_public + "/getprintedslide"
+      return ws_base_public + "/getprintedslide";
     case "sendfeedback":
-        return ws_base_util + "/sendfeedback"
+      return ws_base_util + "/sendfeedback";
 
     default:
       return ws_base_user;

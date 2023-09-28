@@ -16,6 +16,7 @@ export const ExportButton = (props) => {
   const [show, setShow] = useState(false);
   const [selectedValue, setSelectedValue] = useState("Metadata in individual sheets");
   const [selectedMetadata, setSelectedMetadata] = useState("Complete Metadata");
+  const [showMetadataType, setShowMetadataType] = useState(true);
 
   const clearForm = () => {
     setSelectedValue("Metadata in indivudal sheets");
@@ -92,11 +93,15 @@ export const ExportButton = (props) => {
                               value={selectedValue}
                               onChange={(event) => {
                                 setSelectedValue(event.target.value);
+                                if (event.target.value === "JSON") {
+                                  setShowMetadataType(false);
+                                }
                               }}
                               required={true}
                             >
                               {<option value="Metadata in individual sheets">Metadata in individual sheets</option>}
                               {<option value="Single sheet">Single sheet</option>}
+                              {<option value="JSON">Repository export (.json)</option>}
                             </Form.Control>
                           </Col>
                         </Form.Group>
@@ -121,6 +126,7 @@ export const ExportButton = (props) => {
                                 setSelectedMetadata(event.target.value);
                               }}
                               required={true}
+                              disabled={!showMetadataType}
                             >
                               {<option value="Complete Metadata">Complete Metadata</option>}
                               {<option value="Mirage Metadata Only">Mirage Metadata Only</option>}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
@@ -9,9 +9,12 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { exportFileMetadata } from "../utils/commonUtils";
+
 
 const ImageAnalysis = props => {
   useEffect(props.authCheckAgent, []);
+  const [showSpinner, setShowSpinner] = useState(false);
   return (
     <>
       <Helmet>
@@ -54,6 +57,10 @@ const ImageAnalysis = props => {
                 showMirageCompliance
                 commentsRefColumn="description"
                 fetchWS="listimagemetadata"
+                showExport
+                setShowSpinner={setShowSpinner}
+                handleExport={exportFileMetadata}
+                exportTitle={"Export metadata to file"}
                 deleteWS="imagemetadatadelete"
                 editUrl="imageAnalysis/editImageAnalysisMetadata"
                 copyUrl="imageAnalysis/copyImageAnalysisMetadata"
