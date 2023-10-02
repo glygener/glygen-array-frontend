@@ -27,10 +27,11 @@ const DatasetDetailSearchDataset = (props) => {
       datasetName: "",
       printedSlideName: "",
       pmid: "",
+      keyword: "",
     }
   );
 
-  const searchDataset = (datasetName, printedSlideName, pmid) => {
+  const searchDataset = (datasetName, printedSlideName, pmid, keyword) => {
     wsCall(
       "searchdatasets",
       "POST",
@@ -40,6 +41,7 @@ const DatasetDetailSearchDataset = (props) => {
         datasetName,
         printedSlideName,
         pmid,
+        keyword,
       },
       glycanSearchSuccess,
       glycanSearchFailure
@@ -84,26 +86,34 @@ const DatasetDetailSearchDataset = (props) => {
     });
   }
 
+  function funcSetInputValuesKeyword(glycanSearchSuccess) {
+    setInputValue({
+      keyword: glycanSearchSuccess,
+    });
+  }
+
   const clearDataset = () => {
     setShowErrorSummary(false);
     setInputValue({
       datasetName: "",
       printedSlideName: "",
       pmid: "",
+      keyword: "",
     });
   };
 
   const searchDatasetAdvClick = () => {
-    const { datasetName, printedSlideName, pmid } = inputValue;
-    searchDataset(datasetName, printedSlideName, pmid);
+    const { datasetName, printedSlideName, pmid, keyword } = inputValue;
+    searchDataset(datasetName, printedSlideName, pmid, keyword);
   };
   useEffect(() => {
     if (props.searchData && props.searchData.type === "GENERAL") {
-      const { datasetName, printedSlideName, pmid } = props.searchData.input;
+      const { datasetName, printedSlideName, pmid, keyword } = props.searchData.input;
       setInputValue({
         datasetName: datasetName ? datasetName : "",
         printedSlideName: printedSlideName ? printedSlideName : "",
         pmid: pmid ? pmid : "",
+        keyword: keyword ? keyword : "",
       });
     }
   }, [props.searchData]);
@@ -200,6 +210,30 @@ const DatasetDetailSearchDataset = (props) => {
             <ExampleExploreControl
               setInputValue={funcSetInputValuesPmid}
               inputValue={datasetSearch.pmid.examples}
+            />
+          </FormControl>
+        </Grid>
+        {/* Keyword */}
+        <Grid item xs={12} sm={10} md={10}>
+          <FormControl fullWidth variant="outlined">
+            <Typography className={"search-lbl"} gutterBottom>
+              <HelpToolTip
+                title={datasetSearch.keyword.tooltip.title}
+                text={datasetSearch.keyword.tooltip.text}
+              />
+              Keyword
+            </Typography>
+            <AutoTextInput
+              length={datasetSearch.keyword.length}
+              errorText={datasetSearch.keyword.errorText}
+              placeholder={datasetSearch.keyword.placeholder}
+              inputValue={inputValue.keyword}
+              setInputValue={(value) => setInputValue({ keyword: value })}
+              typeahedID="keyword"
+            />
+            <ExampleExploreControl
+              setInputValue={funcSetInputValuesKeyword}
+              inputValue={datasetSearch.keyword.examples}
             />
           </FormControl>
         </Grid>
