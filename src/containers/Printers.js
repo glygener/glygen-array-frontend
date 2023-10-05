@@ -35,6 +35,16 @@ const Printers = props => {
                 <Link to="/printers/addPrinter">
                   <Button className="gg-btn-blue mt-2">Add Printer Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/printers/importFromFile",
+                    state: {
+                      templateType: "PRINTER"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable

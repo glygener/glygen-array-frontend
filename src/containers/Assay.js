@@ -34,6 +34,16 @@ const Assay = props => {
                 <Link to="/assays/addAssay">
                   <Button className="gg-btn-blue mt-2">Add Assay Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/assays/importFromFile",
+                    state: {
+                      templateType: "ASSAY"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable

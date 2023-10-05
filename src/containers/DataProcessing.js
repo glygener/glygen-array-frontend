@@ -34,6 +34,16 @@ const DataProcessing = props => {
                 <Link to="/dataProcessing/addDataProcessing">
                   <Button className="gg-btn-blue mt-2">Add Data Processing Software Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/dataProcessing/importFromFile",
+                    state: {
+                      templateType: "DATAPROCESSINGSOFTWARE"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable

@@ -34,6 +34,16 @@ const SlideMeta = props => {
                 <Link to="/listSlideMeta/addSlideMeta">
                   <Button className="gg-btn-blue mt-2">Add Slide Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/listSlideMeta/importFromFile",
+                    state: {
+                      templateType: "SLIDE"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable

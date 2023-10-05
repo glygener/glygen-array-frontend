@@ -34,6 +34,16 @@ const PrintRun = props => {
                 <Link to="/printRun/addPrintRun">
                   <Button className="gg-btn-blue mt-2">Add Print Run Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/printRun/importFromFile",
+                    state: {
+                      templateType: "PRINTRUN"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable

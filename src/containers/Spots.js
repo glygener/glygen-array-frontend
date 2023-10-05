@@ -33,6 +33,16 @@ const Spots = props => {
                 <Link to="/spots/addSpot">
                   <Button className="gg-btn-blue mt-2">Add Spot Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/spots/importFromFile",
+                    state: {
+                      templateType: "SPOT"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable
