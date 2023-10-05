@@ -414,7 +414,11 @@ export function getWsUrl(ws) {
     case "publicexportsinglemetadata":
       return ws_base_public + "/exportmetadata"
     case "exportsinglemetadata":
-      return ws_base_array + "/exportmetadata"
+      return ws_base_array + "/exportmetadata";
+    case "importmetadata":
+      return ws_base_array + "/importmetadata"
+    case "getmetadatafromfile":
+      return ws_base_array + "/getmetadatafromfile"
     case "getpublicprintedslide":
       return ws_base_public + "/getprintedslide";
     case "sendfeedback":

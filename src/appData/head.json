@@ -477,6 +477,15 @@
       }
     ]
   },
+  "addMetadataFromFile": {
+    "title": "Add Metadata from file",
+    "meta": [
+      {
+        "name": "description",
+        "content": "Add metadata from JSON file"
+      }
+    ]
+  },
   "emailConfirmation": {
     "title": "Email Confirmation",
     "meta": [

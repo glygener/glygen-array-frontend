@@ -586,6 +586,32 @@ export function getPath(type) {
   }
 }
 
+export function getMetadataPath(type) {
+  switch (type) {
+    case "SAMPLE":
+      return "samples";
+    case "ASSAY":
+      return "assays";
+    case "SCANNER":
+      return "scanners";
+    case "DATAPROCESSINGSOFTWARE":
+      return "dataProcessing";
+    case "IMAGEANALYSISSOFTWARE":
+      return "imageAnalysis";
+    case "PRINTER":
+      return "printers";
+    case "PRINTRUN":
+      return "printRun";
+    case "SPOT":
+      return "spots";
+    case "SLIDE":
+      return "listSlideMeta";
+
+    default:
+      return "contribute";
+  }
+}
+
 export function batchupload(wscall, methodType, uploadtype, moleculetype, setPageErrorsJson, setBatchUpload) {
   let jsobj = {}
   if (moleculetype) {

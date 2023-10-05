@@ -285,7 +285,11 @@ const AddExperiment = props => {
   function handleExport(style, metadata) {
     let singleSheet = undefined;
     let mirageOnly = undefined;
-    if (style === "Single sheet") singleSheet = true;;
+    let json = false;
+    if (style === "Single sheet") singleSheet = true;
+    if (style === "JSON") {
+      json = true;
+    }
     if (metadata !== "Complete Metadata") {
       mirageOnly = true;
     }
@@ -299,7 +303,8 @@ const AddExperiment = props => {
       "exportmetadata",
       downloadFailure,
       singleSheet,
-      mirageOnly
+      mirageOnly,
+      json
     )
   }
 

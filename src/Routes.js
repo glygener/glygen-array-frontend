@@ -83,6 +83,7 @@ import { UploadMoleculeDetails } from "./containers/UploadMoleculeDetails";
 import wikiHelpTooltip from "./appData/wikiHelpTooltip";
 import "./containers/Contribute.css";
 import { Col, Row } from "react-bootstrap";
+import AddMetadataFromFile from "./containers/AddMetadataFromFile";
 
 const Routes = props => {
   const routes = [
@@ -547,6 +548,12 @@ const Routes = props => {
       exact: true,
       main: () => <Samples authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
+    },
+    {
+      path: "/samples/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("slide"),
     },
 
     /* Printer */
