@@ -66,6 +66,10 @@ const Samples = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SAMPLE"}
+                fileName={"exportsamples"}
                 fetchWS="listsamples"
                 deleteWS="sampledelete"
                 editUrl="samples/editSample"

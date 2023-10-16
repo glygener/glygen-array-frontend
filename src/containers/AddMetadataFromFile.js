@@ -208,7 +208,7 @@ const AddMetadataFromFile = props => {
                 onChange={e => handleNameChange(row.original, e)}
                 value={getUpdateName(row.original)}
                 style={{
-                    border: "none"
+                    border: "1px solid rgba(0, 0, 0, 0.1)"
                 }}
             />
         );
@@ -292,6 +292,17 @@ const AddMetadataFromFile = props => {
                                                 ? " Metadata with Duplicate Name"
                                                 : "Errors"}
                                     </div>
+                                    <div
+                                        style={{
+                                            padding: "15px",
+                                            marginBottom: "20px",
+                                        }}
+                                    >
+                                        {key === "duplicates"
+                                            ? " You can go back to the selections and update the name if you still would like to be able to add the selected metadata"
+                                            : ""}
+                                    </div>
+
                                     {getMessages(key, value)}
 
                                     <div>
@@ -420,7 +431,7 @@ const AddMetadataFromFile = props => {
                 <div className="page-container">
                     <PageHeading
                         title="Add Metadata From File to Repository"
-                        subTitle="Please upload a file wih metadata."
+                        subTitle={fileSubmitted ? "Please select the metadata to import. You can enter a new name for selected metadata" : "Please upload a file wih metadata."}
                     />
                     <Typography className="text-right" gutterBottom>
                         <HelpToolTip

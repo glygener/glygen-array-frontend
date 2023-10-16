@@ -64,16 +64,22 @@ export function getLoginStatus() {
   return true;
 }
 
-export function reLogin(history) {
-
+export function reLogin(history, location) {
   var redirectFrom = "";
   if (history.state && history.state.state && history.state.state.redirectedFrom) {
     redirectFrom = history.state.state.redirectedFrom;
   }
 
+  let moleculeUploadType = location.state && location.state.type;
+  let templateType = location.state && location.state.templateType;
+
   history.push({
     pathname: "/login",
-    state: { redirectedFrom: redirectFrom }
+    state: {
+      redirectedFrom: redirectFrom,
+      moleculeUploadType: moleculeUploadType,
+      templateType: templateType
+    }
   });
 
 }
@@ -343,12 +349,12 @@ export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowE
  * @param {string} wscall web service name for the export, default is used if not set
  * @param {function} downloadFailure if not set, a default failure function is used
  */
-export function exportFileMetadata(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportsinglemetadata", downloadFailure) {
+export function exportFileMetadata(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "contributeexportmetadata", downloadFailure) {
   setShowSpinner(true);
   wsCall(
     wscall,
     "GET",
-    { metadataId: row.id, template: row.templateType },
+    { metadataId: row.id, template: row.type },
     true,
     null,
     response => fileExportSuccess(response, row.id, setShowSpinner),

@@ -413,7 +413,7 @@ export function getWsUrl(ws) {
       return ws_base_array + "/downloadMetadata";
     case "publicexportsinglemetadata":
       return ws_base_public + "/exportmetadata"
-    case "exportsinglemetadata":
+    case "contributeexportmetadata":
       return ws_base_array + "/exportmetadata";
     case "importmetadata":
       return ws_base_array + "/importmetadata"
@@ -506,7 +506,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     } else if (response) {
       // check if the error code is 403 (expired token)
       if (!url.includes("login") && (response.status == 403 || response.status == 401)) {
-        reLogin(window.history);
+        reLogin(window.history, window.location);
       } else {
         errorFunction(response);
       }
