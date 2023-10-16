@@ -62,6 +62,10 @@ const Assay = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"ASSAY"}
+                fileName={"exportassays"}
                 fetchWS="listassaymetadata"
                 deleteWS="deleteassaymetadata"
                 editUrl="assays/editAssay"

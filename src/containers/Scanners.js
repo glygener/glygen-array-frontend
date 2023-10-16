@@ -66,6 +66,10 @@ const Scanners = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SCANNER"}
+                fileName={"exportscanners"}
                 fetchWS="listscanners"
                 deleteWS="scannerdelete"
                 editUrl="scanners/editScanner"

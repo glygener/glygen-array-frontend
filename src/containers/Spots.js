@@ -61,6 +61,10 @@ const Spots = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SPOT"}
+                fileName={"exportspotmetadata"}
                 fetchWS="listspotmetadata"
                 deleteWS="deletespotmetadata"
                 editUrl="spots/editSpot"

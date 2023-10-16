@@ -66,6 +66,10 @@ const ImageAnalysis = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"IMAGEANALYSISSOFTWARE"}
+                fileName={"exportimageanalysis"}
                 fetchWS="listimagemetadata"
                 showExport
                 setShowSpinner={setShowSpinner}

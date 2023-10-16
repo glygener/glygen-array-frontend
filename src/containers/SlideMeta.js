@@ -66,6 +66,10 @@ const SlideMeta = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SLIDE"}
+                fileName={"exportslidemetadata"}
                 fetchWS="listslidemeta"
                 deleteWS="slideMetaDelete"
                 editUrl="listSlideMeta/editSlideMeta"

@@ -66,6 +66,10 @@ const PrintRun = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"PRINTRUN"}
+                fileName={"exportprintrunmetadata"}
                 fetchWS="listprintrun"
                 showExport
                 setShowSpinner={setShowSpinner}

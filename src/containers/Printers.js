@@ -67,6 +67,10 @@ const Printers = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"PRINTER"}
+                fileName={"exportprinters"}
                 fetchWS="listprinters"
                 showExport
                 setShowSpinner={setShowSpinner}

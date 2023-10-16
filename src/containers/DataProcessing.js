@@ -66,6 +66,10 @@ const DataProcessing = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"DATAPROCESSINGSOFTWARE"}
+                fileName={"exportdataprocessingmetadata"}
                 fetchWS="listdataprocessing"
                 deleteWS="dataprocessingdelete"
                 editUrl="dataProcessing/editDataProcessing"
