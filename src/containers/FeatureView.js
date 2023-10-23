@@ -369,11 +369,12 @@ const FeatureView = props => {
     );
 
     let mergedDesc = props.descriptorGroups;
-    if (props.descriptors.length > 0) {
+    if (props.descriptors && props.descriptors.length > 0) {
       props.descriptors.forEach(ele => {
         mergedDesc.push(ele);
       });
     }
+
     groupData = displayMetadata(groupData, generalData, mergedDesc);
 
     return groupData;
@@ -413,7 +414,7 @@ const FeatureView = props => {
   };
 
   function displayMetadata(groupData, generalData, mergedDesc) {
-    mergedDesc.forEach(ele => {
+    mergedDesc && mergedDesc.forEach(ele => {
       let notApplicable;
       let sourceGroup;
 
