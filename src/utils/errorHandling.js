@@ -78,6 +78,11 @@ const FORM_ERROR_MESSAGES = {
     NotValid_file: "The submitted file appears to be invalid. You might try re-uploading the file.",
     Duplicate_slideLayout: "The slide layout with that name already exists in your library."
   },
+  importMetadata: {
+    NotValid_file: "The submitted file appears to be invalid. You might try re-uploading the file.",
+    Duplicate_metadata: "The metadata with that name already exists in your library."
+  },
+
   blockLayouts: {
     Duplicate_name: "The same name appears in another block layout in your collection. Please use a different name.",
     Positiveonly_height: "The number of rows must be a positive integer.",

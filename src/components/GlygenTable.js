@@ -300,7 +300,7 @@ const GlygenTable = props => {
                     wsCall(
                       "ismiragecompliant",
                       "GET",
-                      { qsParams: { type: getMetadataType(row.original.template) }, urlParams: [row.original.id] },
+                      { qsParams: { type: row.original.type }, urlParams: [row.original.id] },
                       true,
                       null,
                       response => isMirageCheckSuccess(response, row.original.name),
@@ -523,12 +523,12 @@ const GlygenTable = props => {
                         wsCall(
                           props.exportWsCall,
                           "GET",
-                          props.moleculeType ? { type: props.moleculeType } : "",
+                          props.moleculeType ? { type: props.moleculeType } : props.templateType ? { template: props.templateType } : "",
                           true,
                           null,
                           response => fileExportSuccess(response, props.fileName),
                           response =>
-                            fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary)
+                            fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, props.setShowSpinner)
                         );
                       }}
                     >
@@ -604,6 +604,12 @@ const GlygenTable = props => {
 
       <ReactTable
         columns={Object.values(columnsToRender)}
+        defaultSorted={[
+          {
+            id: props.defaultSortColumn,
+            desc: props.defaultSortOrder
+          }
+        ]}
         pageSizeOptions={[5, 10, 25, 50]}
         minRows={0}
         className="MyReactTableClass"
@@ -763,28 +769,6 @@ const GlygenTable = props => {
         setShowLoading(false);
       }
     });
-  }
-
-  function getMetadataType(template) {
-    if (template.includes("Printer")) {
-      return "PRINTER";
-    } else if (template.includes("Sample")) {
-      return "SAMPLE";
-    } else if (template.includes("Data")) {
-      return "DATAPROCESSINGSOFTWARE";
-    } else if (template.includes("Image")) {
-      return "IMAGEANALYSISSOFTWARE";
-    } else if (template.includes("Scanner")) {
-      return "SCANNER";
-    } else if (template.includes("Slide")) {
-      return "SLIDE";
-    } else if (template.includes("Assay")) {
-      return "ASSAY";
-    } else if (template.includes("Spot")) {
-      return "SPOT";
-    } else if (template.includes("Printrun")) {
-      return "PRINTRUN";
-    }
   }
 
   function fetchError(response) {

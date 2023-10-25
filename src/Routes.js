@@ -83,6 +83,7 @@ import { UploadMoleculeDetails } from "./containers/UploadMoleculeDetails";
 import wikiHelpTooltip from "./appData/wikiHelpTooltip";
 import "./containers/Contribute.css";
 import { Col, Row } from "react-bootstrap";
+import AddMetadataFromFile from "./containers/AddMetadataFromFile";
 
 const Routes = props => {
   const routes = [
@@ -548,6 +549,12 @@ const Routes = props => {
       main: () => <Samples authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
+    {
+      path: "/samples/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
 
     /* Printer */
 
@@ -570,6 +577,12 @@ const Routes = props => {
       path: "/printers",
       exact: true,
       main: () => <Printers authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
+    {
+      path: "/printers/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
 
@@ -596,6 +609,12 @@ const Routes = props => {
       main: () => <ImageAnalysis authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
+    {
+      path: "/imageAnalysis/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
 
     /* Scanner */
     {
@@ -619,6 +638,12 @@ const Routes = props => {
       main: () => <Scanners authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
+    {
+      path: "/scanners/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
 
     /* Data Processing */
     {
@@ -640,6 +665,12 @@ const Routes = props => {
       path: "/dataProcessing",
       exact: true,
       main: () => <DataProcessing authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
+    {
+      path: "/dataProcessing/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
 
@@ -666,6 +697,12 @@ const Routes = props => {
       main: () => <SlideMeta authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
+    {
+      path: "/listSlideMeta/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
     /* Assay */
     {
       path: "/assays/editAssay/:assayId?",
@@ -685,6 +722,12 @@ const Routes = props => {
     {
       path: "/assays",
       main: () => <Assay authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
+    {
+      path: "/assays/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
 
@@ -709,6 +752,12 @@ const Routes = props => {
       main: () => <Spots authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
+    {
+      path: "/spots/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
 
     /* Printer Run */
 
@@ -731,6 +780,12 @@ const Routes = props => {
       path: "/printRun",
       exact: true,
       main: () => <PrintRun authCheckAgent={props.authCheckAgent} />,
+      sidebar: () => getSidemenu("meta"),
+    },
+    {
+      path: "/printRun/importFromFile",
+      exact: true,
+      main: () => <AddMetadataFromFile {...props} authCheckAgent={props.authCheckAgent} />,
       sidebar: () => getSidemenu("meta"),
     },
     /* experiment */

@@ -27,6 +27,7 @@ const CoOwnedExperiments = () => {
         ]}
         defaultPageSize={7}
         defaultSortColumn="id"
+        defaultSortOrder={1}
         experimentStatus
         showDeleteButton
         showEditButton

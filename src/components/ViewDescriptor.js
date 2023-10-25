@@ -4,6 +4,9 @@ import { ErrorSummary } from "../components/ErrorSummary";
 import CardLoader from "../components/CardLoader";
 import { wsCall } from "../utils/wsUtils";
 import  DescriptorTreeTable  from "./DescriptorTreeTable";
+import { Link } from "react-router-dom";
+import GetAppIcon from "@material-ui/icons/GetApp";
+import { fileDownloadFailure, fileExportSuccess } from "../utils/commonUtils";
 
 
 const ViewDescriptor = props =>  {
@@ -168,6 +171,24 @@ const ViewDescriptor = props =>  {
     }
   }, []);
 
+  function handleExport() {
+    setShowloading(true);
+    let metadataId = metadata ? metadata.id : "";
+    wsCall(
+      "publicexportsinglemetadata",
+      "GET",
+      {
+        metadataId: metadataId,
+        template: metadata.templateType
+      },
+      false,
+      null,
+      response => fileExportSuccess(response, metadataId, setShowloading),
+      response =>
+        fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowloading)
+    );
+  }
+
     return (
         <>
         <Modal
@@ -180,8 +201,24 @@ const ViewDescriptor = props =>  {
         >
       <CardLoader pageLoading={showloading} />
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
+            <Modal.Title>
             {descName}: {metadata ? metadata.name : ""}
+              <Link>
+                <button
+                  className="btn btn-link gg-download-btn"
+                  type="button"
+                  id="export"
+                  alt="Export metadata"
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                  onClick={() => {
+                    handleExport();
+                  }}
+                >
+                  <GetAppIcon /> EXPORT
+                  <span className="caret mr-1"></span>
+                </button>
+              </Link>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

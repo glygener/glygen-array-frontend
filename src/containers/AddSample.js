@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { MetaData } from "../containers/MetaData";
+import { MetaData } from "./MetaData";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { head, getMeta } from "../utils/head";
@@ -23,7 +23,7 @@ const AddSample = props => {
   }
 
   useEffect(() => {
-    if (!sampleId || sampleId === "") {
+    if (props.authCheckAgent) {
       props.authCheckAgent();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

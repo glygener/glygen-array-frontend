@@ -36,6 +36,7 @@ const CoOwners = props => {
         ]}
         defaultPageSize={10}
         defaultSortColumn="userName"
+        defaultSortOrder={1}
         showDeleteButton
         fetchWS="listcoowners"
         queryParamDelete={props.experimentId}

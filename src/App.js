@@ -65,6 +65,7 @@ const App = () => {
 
   const setRouting = () => {
     let moleculeUploadType;
+    let templateType;
 
     library.add(
       faTrashAlt,
@@ -96,6 +97,7 @@ const App = () => {
     );
 
     moleculeUploadType = location.state && location.state.type;
+    templateType = location.state && location.state.templateType;
 
     return (
       <div className="app">
@@ -119,12 +121,14 @@ const App = () => {
               updateLogin={loginUpdater}
               authCheckAgent={checkAuthorization}
               moleculeUploadType={moleculeUploadType}
+                templateType={templateType}
             />
           ) : (
             <Routes
               updateLogin={loginUpdater}
               authCheckAgent={checkAuthorization}
               moleculeUploadType={moleculeUploadType}
+                templateType={templateType}
             />
           )}
           <Footer />

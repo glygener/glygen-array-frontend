@@ -16,7 +16,7 @@
         {
           "example": {
             "name": "Example",
-            "id": "G43981RC"
+            "id": "G00056MO"
           }
         }
       ]
@@ -194,7 +194,7 @@
         {
           "example": {
             "name": "Example",
-            "id": "6574"
+            "id": "Demo Experiment"
           }
         }
       ]
@@ -239,6 +239,26 @@
         }
       ]
     },
+    "keyword": {
+      "length": 100,
+      "errorText": "Entry is too long - max length is 100.",
+      "requiredText": "This field is required.",
+      "placeholder": "Enter keyword",
+      "tooltip": {
+        "title": "Keyword",
+        "text": "keyword description.",
+        "urlText": "Read more...",
+        "url": "https://glytoucan.org/Structures"
+      },
+      "examples": [
+        {
+          "example": {
+            "name": "Example",
+            "id": "Demo data"
+          }
+        }
+      ]
+    },
     "username": {
       "length": 100,
       "errorText": "Entry is too long - max length is 100.",
@@ -252,7 +272,7 @@
         {
           "example": {
             "name": "Example",
-            "id": "cfguser"
+            "id": "cfgdata"
           }
         }
       ]
@@ -270,7 +290,7 @@
         {
           "example": {
             "name": "Example",
-            "id": "Georgia"
+            "id": "Data"
           }
         }
       ]
@@ -288,7 +308,7 @@
         {
           "example": {
             "name": "Example",
-            "id": "Glygeners1"
+            "id": ""
           }
         }
       ]
@@ -306,7 +326,7 @@
         {
           "example": {
             "name": "Example",
-            "id": "glygen-array-frontend1"
+            "id": "UGA"
           }
         }
       ]

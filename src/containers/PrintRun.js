@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
@@ -9,9 +9,11 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { exportFileMetadata } from "../utils/commonUtils";
 
 const PrintRun = props => {
   useEffect(props.authCheckAgent, []);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   return (
     <>
@@ -31,6 +33,16 @@ const PrintRun = props => {
               <div className="text-center mb-4">
                 <Link to="/printRun/addPrintRun">
                   <Button className="gg-btn-blue mt-2">Add Print Run Metadata</Button>
+                </Link>
+                <Link
+                  to={{
+                    pathname: "/printRun/importFromFile",
+                    state: {
+                      templateType: "PRINTRUN"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
                 </Link>
               </div>
 
@@ -54,7 +66,15 @@ const PrintRun = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"PRINTRUN"}
+                fileName={"exportprintrunmetadata"}
                 fetchWS="listprintrun"
+                showExport
+                setShowSpinner={setShowSpinner}
+                handleExport={exportFileMetadata}
+                exportTitle={"Export metadata to file"}
                 deleteWS="printrundelete"
                 editUrl="printRun/editPrintRun"
                 copyUrl="printRun/copyPrintRun"

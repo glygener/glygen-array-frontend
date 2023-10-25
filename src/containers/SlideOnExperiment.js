@@ -250,7 +250,6 @@ const SlideOnExperiment = props => {
           pageSizeOptions={[5, 10, 25]}
           defaultPageSize={5}
           pageSize={blocks.length > 5 ? 5 : blocks.length}
-          defaultSortColumn="id"
           commentsRefColumn="description"
           keyColumn="id"
           infoRowsText="Blocks"

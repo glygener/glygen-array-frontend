@@ -137,7 +137,8 @@ const GlycanList = (props) => {
                   },
                 ]}
                 defaultPageSize={10}
-                defaultSortColumn="searchId"
+                defaultSortColumn="id"
+                defaultSortOrder={1}
                 showCommentsButton={false}
                 showDeleteButton={false}
                 showEditButton={false}

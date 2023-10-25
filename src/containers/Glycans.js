@@ -76,7 +76,7 @@ const Glycans = props => {
                     accessor: "id",
                     Cell: row => getToolTip(row.original.id),
                     style: {
-                      textAlign: "left"
+                      textAlign: "left",
                     }
                   },
                   {
@@ -114,6 +114,7 @@ const Glycans = props => {
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="id"
+                defaultSortOrder={1}
                 showCommentsButton
                 customCommentColumn
                 showDeleteButton

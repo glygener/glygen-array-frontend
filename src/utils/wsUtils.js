@@ -408,13 +408,21 @@ export function getWsUrl(ws) {
     case "checkslideupload":
       return ws_base_array + "/checkslideupload";
     case "publicexportmetadata":
-      return ws_base_public + "/downloadMetadata"
+      return ws_base_public + "/downloadMetadata";
     case "exportmetadata":
-      return ws_base_array + "/downloadMetadata"
+      return ws_base_array + "/downloadMetadata";
+    case "publicexportsinglemetadata":
+      return ws_base_public + "/exportmetadata"
+    case "contributeexportmetadata":
+      return ws_base_array + "/exportmetadata";
+    case "importmetadata":
+      return ws_base_array + "/importmetadata"
+    case "getmetadatafromfile":
+      return ws_base_array + "/getmetadatafromfile"
     case "getpublicprintedslide":
-      return ws_base_public + "/getprintedslide"
+      return ws_base_public + "/getprintedslide";
     case "sendfeedback":
-        return ws_base_util + "/sendfeedback"
+      return ws_base_util + "/sendfeedback";
 
     default:
       return ws_base_user;
@@ -466,6 +474,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
             if (error instanceof TypeError) {
               if (error.message.search("fetch")) {
                 exceptionFunction && exceptionFunction(error);
+                !exceptionFunction && defaultExceptionFunction(error);
                 console.log("server is down!");
               }
             } 
@@ -481,6 +490,7 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
               if (error instanceof TypeError) {
                 if (error.message.search("fetch")) {
                   exceptionFunction && exceptionFunction(error);
+                  !exceptionFunction && defaultExceptionFunction(error);
                   console.log("server is down!");
                 }
               } 
@@ -491,21 +501,26 @@ export async function wsCall(ws, httpMethod, wsParams, useToken, body, successFu
     //   throw new Error(`Error! status: ${response.status}`);
     // }
 
-    if (response.ok) {
+    if (response && response.ok) {
       successFunction(response);
-    } else {
+    } else if (response) {
       // check if the error code is 403 (expired token)
       if (!url.includes("login") && (response.status == 403 || response.status == 401)) {
-        reLogin(window.history);
+        reLogin(window.history, window.location);
       } else {
         errorFunction(response);
       }
-    }
+    } 
   } catch (error) {
     console.log(error);
     exceptionFunction && exceptionFunction(error);
+    !exceptionFunction && defaultExceptionFunction(error);
     // alert("Network issue detected. Please try again.");
   }
+}
+
+function defaultExceptionFunction(error) {
+  console.log("Cannot connect to the server. Please contact the administrators!");
 }
 
 /**

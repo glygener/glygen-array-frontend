@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
@@ -9,9 +9,11 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { exportFileMetadata } from "../utils/commonUtils";
 
 const Spots = props => {
   useEffect(props.authCheckAgent, []);
+  const [showSpinner, setShowSpinner] = useState(false);
   return (
     <>
       <Helmet>
@@ -31,6 +33,16 @@ const Spots = props => {
                 <Link to="/spots/addSpot">
                   <Button className="gg-btn-blue mt-2">Add Spot Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/spots/importFromFile",
+                    state: {
+                      templateType: "SPOT"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable
@@ -49,6 +61,10 @@ const Spots = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SPOT"}
+                fileName={"exportspotmetadata"}
                 fetchWS="listspotmetadata"
                 deleteWS="deletespotmetadata"
                 editUrl="spots/editSpot"
@@ -58,6 +74,10 @@ const Spots = props => {
                 form={"metadata"}
                 showRowsInfo
                 infoRowsText="Spot Metadata"
+                showExport
+                setShowSpinner={setShowSpinner}
+                handleExport={exportFileMetadata}
+                exportTitle={"Export metadata to file"}
               />
             </Card.Body>
           </Card>

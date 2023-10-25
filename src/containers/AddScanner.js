@@ -24,7 +24,7 @@ const AddScanner = props => {
   }
 
   useEffect(() => {
-    if (!scannerId || scannerId === "") {
+    if (props.authCheckAgent) {
       props.authCheckAgent();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

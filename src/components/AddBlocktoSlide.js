@@ -91,6 +91,7 @@ const AddBlocktoSlide = props => {
             ]}
             defaultPageSize={10}
             defaultSortColumn="id"
+            defaultSortOrder={1}
             showCommentsButton={false}
             showDeleteButton={false}
             showEditButton={false}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
@@ -9,9 +9,12 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { exportFileMetadata } from "../utils/commonUtils";
+
 
 const ImageAnalysis = props => {
   useEffect(props.authCheckAgent, []);
+  const [showSpinner, setShowSpinner] = useState(false);
   return (
     <>
       <Helmet>
@@ -30,6 +33,16 @@ const ImageAnalysis = props => {
               <div className="text-center mb-4">
                 <Link to="/imageAnalysis/addImageMetadata">
                   <Button className="gg-btn-blue mt-2">Add Image Analysis Metadata</Button>
+                </Link>
+                <Link
+                  to={{
+                    pathname: "/imageAnalysis/importFromFile",
+                    state: {
+                      templateType: "IMAGEANALYSISSOFTWARE"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
                 </Link>
               </div>
 
@@ -53,7 +66,15 @@ const ImageAnalysis = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"IMAGEANALYSISSOFTWARE"}
+                fileName={"exportimageanalysis"}
                 fetchWS="listimagemetadata"
+                showExport
+                setShowSpinner={setShowSpinner}
+                handleExport={exportFileMetadata}
+                exportTitle={"Export metadata to file"}
                 deleteWS="imagemetadatadelete"
                 editUrl="imageAnalysis/editImageAnalysisMetadata"
                 copyUrl="imageAnalysis/copyImageAnalysisMetadata"

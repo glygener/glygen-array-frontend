@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
@@ -9,10 +9,12 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { exportFileMetadata } from "../utils/commonUtils";
+
 
 const DataProcessing = props => {
   useEffect(props.authCheckAgent, []);
-
+  const [showSpinner, setShowSpinner] = useState(false);
   return (
     <>
       <Helmet>
@@ -31,6 +33,16 @@ const DataProcessing = props => {
               <div className="text-center mb-4">
                 <Link to="/dataProcessing/addDataProcessing">
                   <Button className="gg-btn-blue mt-2">Add Data Processing Software Metadata</Button>
+                </Link>
+                <Link
+                  to={{
+                    pathname: "/dataProcessing/importFromFile",
+                    state: {
+                      templateType: "DATAPROCESSINGSOFTWARE"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
                 </Link>
               </div>
 
@@ -54,6 +66,10 @@ const DataProcessing = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"DATAPROCESSINGSOFTWARE"}
+                fileName={"exportdataprocessingmetadata"}
                 fetchWS="listdataprocessing"
                 deleteWS="dataprocessingdelete"
                 editUrl="dataProcessing/editDataProcessing"
@@ -63,6 +79,10 @@ const DataProcessing = props => {
                 form={"metadata"}
                 showRowsInfo
                 infoRowsText="Data Processing Software Metadata"
+                showExport
+                setShowSpinner={setShowSpinner}
+                handleExport={exportFileMetadata}
+                exportTitle={"Export metadata to file"}
               />
             </Card.Body>
           </Card>

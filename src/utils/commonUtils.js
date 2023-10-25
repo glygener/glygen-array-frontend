@@ -64,16 +64,22 @@ export function getLoginStatus() {
   return true;
 }
 
-export function reLogin(history) {
-
+export function reLogin(history, location) {
   var redirectFrom = "";
   if (history.state && history.state.state && history.state.state.redirectedFrom) {
     redirectFrom = history.state.state.redirectedFrom;
   }
 
+  let moleculeUploadType = location.state && location.state.type;
+  let templateType = location.state && location.state.templateType;
+
   history.push({
     pathname: "/login",
-    state: { redirectedFrom: redirectFrom }
+    state: {
+      redirectedFrom: redirectFrom,
+      moleculeUploadType: moleculeUploadType,
+      templateType: templateType
+    }
   });
 
 }
@@ -259,7 +265,7 @@ export function fileDownloadSuccess(response, setShowSpinner) {
   });
 }
 
-export function fileExportSuccess(response, fileName) {
+export function fileExportSuccess(response, fileName, setShowSpinner) {
   response.json().then(respJson => {
     const blob = new Blob(
       [JSON.stringify(respJson)]
@@ -275,6 +281,7 @@ export function fileExportSuccess(response, fileName) {
     a.download = `${fileName}.json`;
     a.click();
 
+    setShowSpinner && setShowSpinner(false);
     window.URL.revokeObjectURL(fileUrl);
   });
 }
@@ -332,6 +339,33 @@ export function exportFile(row, setPageErrorsJson, setPageErrorMessage, setShowE
   );
 }
 
+/**
+ *  used for exporting a single metadata into a json file
+ * @param {object} row The metadata row to be exported
+ * @param {function} setPageErrorsJson 
+ * @param {function} setPageErrorMessage 
+ * @param {function} setShowErrorSummary 
+ * @param {function} setShowSpinner 
+ * @param {string} wscall web service name for the export, default is used if not set
+ * @param {function} downloadFailure if not set, a default failure function is used
+ */
+export function exportFileMetadata(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "contributeexportmetadata", downloadFailure) {
+  setShowSpinner(true);
+  wsCall(
+    wscall,
+    "GET",
+    { metadataId: row.id, template: row.type },
+    true,
+    null,
+    response => fileExportSuccess(response, row.id, setShowSpinner),
+    response => {
+      downloadFailure ? downloadFailure(response) : fileDownloadFailure(response, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner)
+    },
+    null,
+    response => downloadFailure(response)
+  );
+}
+
 export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportprocesseddata", downloadFailure) {
   setShowSpinner(true);
   wsCall(
@@ -349,12 +383,25 @@ export function exportFileProcessData(row, setPageErrorsJson, setPageErrorMessag
   );
 }
 
-export function exportMetadata(datasetid, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportmetadata", downloadFailure, singleSheet, mirageOnly) {
+/**
+ * used for exporting all metadata of an experiment into Excel or json file
+ * @param {string} datasetid dataset to export
+ * @param {*} setPageErrorsJson 
+ * @param {*} setPageErrorMessage 
+ * @param {*} setShowErrorSummary 
+ * @param {*} setShowSpinner 
+ * @param {*} wscall web service name for the export, different for public data
+ * @param {*} downloadFailure 
+ * @param {*} singleSheet 
+ * @param {*} mirageOnly 
+ * @param {*} json if set to true, export into a JSON file, other into an Excel file
+ */
+export function exportMetadata(datasetid, setPageErrorsJson, setPageErrorMessage, setShowErrorSummary, setShowSpinner, wscall = "exportmetadata", downloadFailure, singleSheet, mirageOnly, json) {
   setShowSpinner(true);
   wsCall(
     wscall,
     "GET",
-    { datasetId: datasetid, filename: "", singleSheet: (singleSheet ? "true" : "false"), mirageOnly: (mirageOnly ? "true" : "false") },
+    { datasetId: datasetid, filename: "", singleSheet: (singleSheet ? "true" : "false"), mirageOnly: (mirageOnly ? "true" : "false"), filetype: (json ? "json" : "Excel") },
     wscall.startsWith("public") ? false : true,
     null,
     response => fileDownloadSuccess(response, setShowSpinner),
@@ -542,6 +589,32 @@ export function getPath(type) {
 
     default:
       return "linkers";
+  }
+}
+
+export function getMetadataPath(type) {
+  switch (type) {
+    case "SAMPLE":
+      return "samples";
+    case "ASSAY":
+      return "assays";
+    case "SCANNER":
+      return "scanners";
+    case "DATAPROCESSINGSOFTWARE":
+      return "dataProcessing";
+    case "IMAGEANALYSISSOFTWARE":
+      return "imageAnalysis";
+    case "PRINTER":
+      return "printers";
+    case "PRINTRUN":
+      return "printRun";
+    case "SPOT":
+      return "spots";
+    case "SLIDE":
+      return "listSlideMeta";
+
+    default:
+      return "contribute";
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GlygenTable } from "../components/GlygenTable";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
@@ -9,10 +9,12 @@ import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Button } from "react-bootstrap";
 import FeedbackWidget from "../components/FeedbackWidget";
+import { exportFileMetadata } from "../utils/commonUtils";
+
 
 const Scanners = props => {
   useEffect(props.authCheckAgent, []);
-
+  const [showSpinner, setShowSpinner] = useState(false);
   return (
     <>
       <Helmet>
@@ -31,6 +33,16 @@ const Scanners = props => {
               <div className="text-center mb-4">
                 <Link to="/scanners/addScanner">
                   <Button className="gg-btn-blue mt-2">Add Scanner Metadata</Button>
+                </Link>
+                <Link
+                  to={{
+                    pathname: "/scanners/importFromFile",
+                    state: {
+                      templateType: "SCANNER"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
                 </Link>
               </div>
 
@@ -54,6 +66,10 @@ const Scanners = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SCANNER"}
+                fileName={"exportscanners"}
                 fetchWS="listscanners"
                 deleteWS="scannerdelete"
                 editUrl="scanners/editScanner"
@@ -63,6 +79,10 @@ const Scanners = props => {
                 form={"metadata"}
                 showRowsInfo
                 infoRowsText="Scanner Metadata"
+                showExport
+                setShowSpinner={setShowSpinner}
+                handleExport={exportFileMetadata}
+                exportTitle={"Export metadata to file"}
               />
             </Card.Body>
           </Card>

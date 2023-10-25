@@ -66,7 +66,7 @@ const BlockLayouts = props => {
                 ]}
                 defaultPageSize={10}
                 defaultSortColumn="name"
-                defaultSortOrder={0}
+                defaultSortOrder={1}
                 showCommentsButton
                 showDeleteButton
                 showEditButton
