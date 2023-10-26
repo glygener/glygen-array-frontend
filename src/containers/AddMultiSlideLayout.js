@@ -244,7 +244,7 @@ const AddMultiSlideLayout = props => {
 
     return (
       <>
-        {Object.keys(tabs).length === 0 &&
+        {tabs && Object.keys(tabs).length === 0 &&
           ((!showErrorSummary && uploadDetails.fileType === ".xml") ||
             (uploadDetails.fileType === ".gal" && galFileErrors.length > 0)) && (
             <Form onSubmit={e => saveSelectedXMlSlidelayouts(e)}>
@@ -277,7 +277,7 @@ const AddMultiSlideLayout = props => {
             </Form>
           )}
 
-        {Object.keys(tabs).length > 0 &&
+        {tabs && Object.keys(tabs).length > 0 &&
           Object.entries(tabs).map(element => {
             var key = element[0];
             var value = element[1];
