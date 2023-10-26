@@ -368,11 +368,14 @@ const FeatureView = props => {
       </Form.Group>
     );
 
-    let mergedDesc = props.descriptorGroups;
-    if (props.descriptors && props.descriptors.length > 0) {
-      props.descriptors.forEach(ele => {
-        mergedDesc.push(ele);
-      });
+    let mergedDesc = [];
+    if (props.metadata) {
+      mergedDesc = props.metadata.descriptorGroups;
+      if (props.metadata.descriptors && props.metadata.descriptors.length > 0) {
+        props.metadata.descriptors.forEach(ele => {
+          mergedDesc.push(ele);
+        });
+      }
     }
 
     groupData = displayMetadata(groupData, generalData, mergedDesc);
