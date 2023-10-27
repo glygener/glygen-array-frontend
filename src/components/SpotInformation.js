@@ -103,6 +103,56 @@ const SpotInformation = props => {
                           </Row>
                         )}
 
+                        {element.feature && element.feature.peptides && (
+                          <Row
+                            style={{
+                              border: "1px solid brown"
+                            }}
+                          >
+                            <Col> Glycans</Col>
+                            {element.feature.peptides.map(peptide => (
+                              <Col>
+                                {peptide.glycans.map((element, index) =>
+                                  element.glycan && element.glycan.cartoon ? (
+                                    <StructureImage
+                                      key={index}
+                                      base64={element.glycan.cartoon}
+                                      style={{
+                                        maxWidth: "100px",
+                                        overflow: "scroll"
+                                      }}
+                                    />
+                                  ) : (
+                                    element.glycans ?
+                                      (element.glycans.map((element, index) =>
+                                        element.glycan && element.glycan.cartoon ? (
+                                          <StructureImage
+                                            key={index}
+                                            base64={element.glycan.cartoon}
+                                            style={{
+                                              maxWidth: "100px",
+                                              overflow: "scroll"
+                                            }}
+                                          />
+                                        ) : (
+                                          <div key={index}>
+                                            <Col>{"No Image"}</Col>
+                                          </div>
+                                        )
+                                      )
+                                      )
+                                      : (
+                                        <div key={index}>
+                                          <Col>{"No Image"}</Col>
+                                        </div>
+                                      )
+                                  )
+                                )}
+                              </Col>
+                            ))}
+                          </Row>
+                        )}
+
                         {/* <FeatureCard feature={element.feature} showName={false}></FeatureCard> */}
                       </Container>
                     </Card.Body>

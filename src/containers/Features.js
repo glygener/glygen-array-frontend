@@ -38,7 +38,6 @@ const Features = props => {
       </Link>)}
       </div>
     }
-    
   }
 
   return (
@@ -151,6 +150,11 @@ const Features = props => {
                               (glycans, i) =>  getGlycanInfo (glycans, i)
                                 
                             )
+                          : row.original.peptides ?
+                            row.original.peptides.map
+                              ((peptide, i) =>
+                                peptide.glycans.map(
+                                  (glycans, i) => getGlycanInfo(glycans, i)))
                           : ""}
                       </div>
                     ),

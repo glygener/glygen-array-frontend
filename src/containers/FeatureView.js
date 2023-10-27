@@ -202,7 +202,7 @@ const FeatureView = props => {
         <Form.Group as={Row} className="gg-align-center pt-3 mb-0 pb-1">
           <Col xs={12} lg={9}>
             <Row style={{ marginLeft: "0px" }}>
-              <h4 className="gg-blue" style={{ marginRight: "50px" }}>
+              <h4 className="gg-blue" style={{ marginRight: "30px" }}>
                 {"Linker"}
               </h4>
 
@@ -276,7 +276,7 @@ const FeatureView = props => {
         {linker.imageURL ? (
           <Form.Group as={Row} controlId="image" className="gg-align-center">
             <Col md={4}>
-              <StructureImage imgUrl={linker.imageURL} />
+              <StructureImage imgUrl={linker.imageURL} zoom={true} />
             </Col>
           </Form.Group>
         ) : (
@@ -330,7 +330,7 @@ const FeatureView = props => {
       props.protein.id
     ) {
       return displayDetails(props.protein, "case4", "Protein");
-    } else if (featureDetails && featureDetails.type === "GLYCOPROTEIN") {
+    } else if (featureDetails && (featureDetails.type === "GLYCOPROTEIN" || featureDetails.type == "GPLINKEDGLYCOPEPTIDE")) {
       return displayDetails(featureDetails.protein, "view", "Protein");
     }
   };
@@ -825,11 +825,11 @@ const FeatureView = props => {
 
   const getGlycansTable = () => {
     if (
-      props.type &&
+      (props.type &&
       props.type !== "CONTROL" &&
       props.type !== "LANDING_LIGHT" &&
-      (props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" || featureDetails.type === "GPLINKEDGLYCOPEPTIDE") &&
-      (props.rangeGlycoPeptides || props.glycoPeptides || featureDetails.peptides)
+        props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE") || (featureDetails.type === "GPLINKEDGLYCOPEPTIDE" &&
+          (props.rangeGlycoPeptides || props.glycoPeptides || featureDetails.peptides))
     ) {
       return getGlycoProteinLinkedPeptide();
     } else if (props.glycans) {
@@ -871,10 +871,12 @@ const FeatureView = props => {
                   <Form noValidate validated={validated} onSubmit={editFeature ? handleSubmit : ""}>
                     {getMetadataNameandId(props.metadata ? "case4" : "view")}
 
-                    {props.controlSubType === "Linker" &&
+                    {/* props.controlSubType === "Linker" &&
                       props.type !== "CONTORL" &&
                       props.type !== "LANDING_LIGHT" &&
-                      getLinker()}
+            getLinker()*/}
+
+                    {getLinker()}
 
                     {(showLinkerView && props.linker) || displayLinkerInfo
                       ? getLinkerDetailsModal(props.linker, "case4")
