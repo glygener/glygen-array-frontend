@@ -325,7 +325,7 @@ const FeatureView = props => {
 
   const getProtein = () => {
     if (
-      (props.type === "GLYCO_PROTEIN" || props.type === "CONTROL" || props.type === "LANDING_LIGHT") &&
+      (props.type === "GLYCO_PROTEIN" || props.type === "GLYCO_PROTEIN_LINKED_GLYCOPEPTIDE" || props.type === "CONTROL" || props.type === "LANDING_LIGHT") &&
       props.protein &&
       props.protein.id
     ) {

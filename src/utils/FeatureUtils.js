@@ -6,7 +6,7 @@ export const viewGlycoPeptide = row => {
       ? row.original.id
       : row.id;
 
-  window.open(`/features/viewFeature/${glycoPeptideId}`, "_blank");
+  window.open(`features/viewFeature/${glycoPeptideId}`, "_blank");
 };
 
 export function getSource(sourceInfo) {
