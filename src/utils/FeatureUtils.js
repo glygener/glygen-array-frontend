@@ -7,7 +7,8 @@ export const viewGlycoPeptide = row => {
       : row.id;
 
   var base = process.env.REACT_APP_BASENAME;
-  base ? window.open(`/${base}/features/viewFeature/${glycoPeptideId}`, "_blank") : window.open(`/features/viewFeature/${glycoPeptideId}`, "_blank");
+  base ? window.open(`${base}/features/viewFeature/${glycoPeptideId}`, "_blank", "noopener, noreferrer")
+    : window.open(`/features/viewFeature/${glycoPeptideId}`, "_blank", "noopener, noreferrer");
 };
 
 export function getSource(sourceInfo) {
