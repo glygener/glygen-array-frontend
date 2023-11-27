@@ -1,115 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes, { arrayOf } from "prop-types";
-import { Popover, Card, Row, Col, Container } from "react-bootstrap";
+import { Popover, Card, Row, Col, Container, Button } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import "./SpotInformation.css";
-import { StructureImage } from "./StructureImage";
+import { FeatureCard } from "../components/FeatureCard";
 import { Link } from "react-router-dom";
+import { LineTooltip } from "../components/tooltip/LineTooltip";
+
 
 const SpotInformation = props => {
   const { spotFeaturedCard } = props;
+  const [showFeatureDetails, setShowFeatureDetails] = useState(false);
   return (
     <>
       <h4 className="accodion-header" style={{ borderRadius: "none" }}>
         Spot: ({spotFeaturedCard.selectedRow}, {spotFeaturedCard.selectedCol})
       </h4>
-
+      
       <div className="spot-information-accordions">
         {spotFeaturedCard.selectedFeatures.map((element, index) => {
           return (
+            <>
+            {showFeatureDetails && 
+            <FeatureCard feature={element.feature} showModal={showFeatureDetails} setShowModal={setShowFeatureDetails} showName ></FeatureCard>}
             <div key={index}>
-              <Accordion defaultActiveKey="0" className="accordion-custom">
-                <Card className="card-header-custom">
-                  <Accordion.Toggle as={Card.Header} eventKey={index}>
-                    {element.feature.name}
-                  </Accordion.Toggle>
-                  <Accordion.Collapse eventKey={index} className="accordion-collapse-custom">
-                    <Card.Body>
-                      <Container>
-                        {element.concentrationInfo &&
-                          (element.concentrationInfo.concentration || element.concentrationInfo.notReported) && (
-                            <Row>
-                              <Col>Concentration</Col>
-                              {element.concentrationInfo.notReported ? (
-                                <Col>{"Not reported"}</Col>
-                              ) : (
-                                <Col>
-                                  {element.concentrationInfo.concentration}
-                                  &nbsp;{element.concentrationInfo.unitlevel}
-                                </Col>
-                              )}
-                            </Row>
-                          )}
-
-                        {element.concentrationInfo && element.concentrationInfo.ratio && (
-                          <Row>
-                            <Col>Ratio</Col>
-                            <Col>{element.concentrationInfo.ratio}</Col>
-                          </Row>
-                        )}
-
-                        {element.feature && element.feature.linker && (
-                          <Row>
-                            <Col>Linker</Col>
-                            <Col>{element.feature.linker.name}</Col>
-                          </Row>
-                        )}
-
-                        {element.feature && element.feature.glycans && (
-                          <Row
-                            style={{
-                              border: "1px solid brown"
-                            }}
-                          >
-                            <Col> Glycans</Col>
-                            <Col>
-                              {element.feature.glycans.map((element, index) =>
-                                element.glycan && element.glycan.cartoon ? (
-                                  <StructureImage
-                                    key={index}
-                                    base64={element.glycan.cartoon}
-                                    style={{
-                                      maxWidth: "100px",
-                                      overflow: "scroll"
-                                    }}
-                                  />
-                                ) : (
-                                  element.glycans ? 
-                                    (element.glycans.map((element, index) =>
-                                    element.glycan && element.glycan.cartoon ? (
-                                      <StructureImage
-                                        key={index}
-                                        base64={element.glycan.cartoon}
-                                        style={{
-                                          maxWidth: "100px",
-                                          overflow: "scroll"
-                                        }}
-                                      />
-                                    ) : (
-                                      <div key={index}>
-                                        <Col>{"No Image"}</Col>
-                                      </div>
-                                    )
-                                  )
-                                )
-                                 : (
-                                  <div key={index}>
-                                        <Col>{"No Image"}</Col>
-                                      </div>
-                                )
-                                )
-                              )}
-                            </Col>
-                          </Row>
-                        )}
-
-                        {/* <FeatureCard feature={element.feature} showName={false}></FeatureCard> */}
-                      </Container>
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
+                <LineTooltip text="View Details">
+                  <Button
+                    className={"lnk-btn lnk-btn-left"}
+                    variant="link"
+                    onClick={() => {
+                      setShowFeatureDetails(true);
+                    }}
+                  >
+                  {element.feature.name}
+                  </Button>
+                </LineTooltip>
             </div>
+
+            </>
           );
         })}
       </div>

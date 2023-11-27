@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect } from "react";
 import "../components/FeatureCard.css";
 import PropTypes from "prop-types";
-import { Form, Col, Row } from "react-bootstrap";
+import { Form, Col, Row, Modal } from "react-bootstrap";
 import { FormLabel } from "../components/FormControls";
 import ReactTable from "react-table";
 import { StructureImage } from "../components/StructureImage";
@@ -25,7 +25,7 @@ const FeatureCard = props => {
     if (
       featureDetails.linker &&
       Object.keys(featureDetails.linker).length !== 0 &&
-      featureDetails.linker.type !== "SMALLMOLECULE_LINKER"
+      featureDetails.linker.type !== "SMALLMOLECULE"
     ) {
       var glycanPositionData = getAAPositionsFromSequence(featureDetails.linker.sequence);
       var idToGlycanMap = featureDetails.glycans.reduce((map, glycan) => {
@@ -51,14 +51,22 @@ const FeatureCard = props => {
 
   return (
     <>
-      {props.showName && (
-        <Form.Group as={Row} controlId="name">
-          <FormLabel label="Name" />
-          <Col md={6}>
-            <Form.Control as="input" value={feature.name} disabled />
-          </Col>
-        </Form.Group>
-      )}
+    <Modal
+          show={props.showModal}
+          animation={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          onHide={() => props.setShowModal(false)}
+        >
+        <Modal.Header closeButton>
+      
+        
+        <Modal.Title>
+        {props.showName ? feature.name : ""}
+        </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
       {feature.linker && (
         <>
           <Form.Group as={Row} controlId="linker">
@@ -97,7 +105,7 @@ const FeatureCard = props => {
           {feature.glycans.length > 0 && (
             <ReactTable
               columns={[
-                ...(feature.linker && feature.linker.type !== "SMALLMOLECULE_LINKER"
+                ...(feature.linker && feature.linker.type !== "SMALLMOLECULE"
                   ? [
                       {
                         Header: "Position",
@@ -111,17 +119,17 @@ const FeatureCard = props => {
                   : []),
                 {
                   Header: "Glytoucan ID",
-                  accessor: "glycan",
+                  accessor: "glycan.glycan",
                   Cell: row => (row.value ? row.value.glytoucanId : ""),
                 },
                 {
                   Header: "Name",
-                  accessor: "glycan",
+                  accessor: "glycan.glycan",
                   Cell: row => (row.value ? row.value.name : ""),
                 },
                 {
                   Header: "Glycan",
-                  accessor: "glycan",
+                  accessor: "glycan.glycan",
                   // eslint-disable-next-line react/display-name
                   Cell: (row, index) =>
                     row.value ? (
@@ -152,6 +160,8 @@ const FeatureCard = props => {
           )}
         </Col>
       </Form.Group>
+      </Modal.Body>
+      </Modal>
     </>
   );
 };
