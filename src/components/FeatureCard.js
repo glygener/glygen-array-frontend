@@ -6,26 +6,43 @@ import { FormLabel } from "../components/FormControls";
 import ReactTable from "react-table";
 import { StructureImage } from "../components/StructureImage";
 import { getAAPositionsFromSequence } from "../utils/sequence";
+import { displayDetails } from "../containers/FeatureView";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const FeatureCard = props => {
   const [feature, setFeature] = useReducer((oldState, newState) => ({ ...oldState, ...newState }), {
+    id: "",
     name: "",
     type: "",
+    internalId : "",
     linker: {},
-    glycans: []
+    glycans: [],
+    peptides: [],
+    lipid: {},
+    peptide: {},
+    protein: {},
+    metadata: {}
   });
 
   useEffect(() => {
     var featureDetails = {
+      id: props.feature.id,
       name: props.feature.name,
+      internalId: props.feature.internalId,
       type: props.feature.type,
       linker: props.feature.linker,
-      glycans: props.feature.glycans
+      glycans: props.feature.glycans,
+      peptides: props.feature.peptides,
+      lipid: props.feature.lipid,
+      peptide: props.feature.peptide,
+      protein: props.feature.protein,
+      metadata: props.feature.metadata
     };
     if (
       featureDetails.linker &&
       Object.keys(featureDetails.linker).length !== 0 &&
-      featureDetails.linker.type !== "SMALLMOLECULE"
+      featureDetails.linker.sequence
     ) {
       var glycanPositionData = getAAPositionsFromSequence(featureDetails.linker.sequence);
       var idToGlycanMap = featureDetails.glycans.reduce((map, glycan) => {
@@ -38,9 +55,18 @@ const FeatureCard = props => {
         return posData;
       });
     } else {
-      featureDetails.glycans = featureDetails.glycans.map(glycan => {
-        return { glycan: glycan };
-      });
+      if (featureDetails.glycans && featureDetails.glycans.length > 0) {
+        featureDetails.glycans = featureDetails.glycans.map(glycan => {
+          return { glycan: glycan };
+        });
+      } else if (featureDetails.peptides && featureDetails.peptides.length > 0) {
+        featureDetails.glycans = featureDetails.peptides.map(peptide => {
+          let peptideGlycans = peptide.glycans.map(glycan => {
+            return { glycan: glycan };
+          });
+          return peptideGlycans;
+        });
+      }
     }
     setFeature(featureDetails);
 
@@ -56,6 +82,7 @@ const FeatureCard = props => {
           animation={false}
           size="xl"
           aria-labelledby="contained-modal-title-vcenter"
+          dialogClassName="modal-50w"
           centered
           onHide={() => props.setShowModal(false)}
         >
@@ -63,25 +90,44 @@ const FeatureCard = props => {
       
         
         <Modal.Title>
-        {props.showName ? feature.name : ""}
+          {props.showName ? feature.name : ""}
+            <Link to={`/slideList/features/viewFeature/${feature.id}`} target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon
+                        key={"featureView"}
+                        icon={["far", "eye"]}
+                        alt="View icon"
+                        size="sm"
+                        color="#45818e"
+                        className="tbl-icon-btn"
+                        onClick={() => window.open("/slideList/features/viewFeature/" + feature.id, '_blank', 'noopener', 'noreferrer')}
+                      />
+                      {"View More"}
+            </Link>
         </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          { feature.type && (
+            <>
+          <Form.Group as={Row} controlId="featureId" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Feature ID"/>
+            <Form.Control type="text" value={feature.internalId} readOnly="true"/>
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="Type" className="gg-align-center mb-3">
+          <Col xs={12} lg={9}>
+            <FormLabel label="Type"/>
+            <Form.Control type="text" value={feature.type} readOnly="true"/>
+          </Col>
+        </Form.Group>
+        </>
+          )}
       {feature.linker && (
-        <>
-          <Form.Group as={Row} controlId="linker">
-            <FormLabel label="Linker Details:" />
-          </Form.Group>
-          <Form.Group as={Row} controlId="linkerName">
-            <FormLabel label="Name" className="linker-field-label" />
-            <Col md={6}>
-              <Form.Control as="input" value={feature.linker.name} disabled />
-            </Col>
-          </Form.Group>
+         <>
+          {displayDetails (feature.linker, "view", "Linker Details")}
           {feature.linker.imageURL && (
-            <Form.Group as={Row} controlId="name">
-              <FormLabel label="Structure Image" className="linker-field-label" />
-              <Col md={6}>
+            <Form.Group as={Row} controlId="name" className="gg-align-center mb-3">
+              <Col xs={12} lg={9}>
                 <StructureImage imgUrl={feature.linker.imageURL}></StructureImage>
               </Col>
             </Form.Group>
@@ -93,10 +139,21 @@ const FeatureCard = props => {
                 <Form.Control as="textarea" className="sequence-textarea" value={feature.linker.sequence} disabled />
               </Col>
             </Form.Group>
-          )}
-        </>
+          )}   
+          </>
+      )}
+      {feature.lipid && (
+        displayDetails (feature.lipid, "view", "Lipid")
+      )}
+      {feature.protein && (
+        displayDetails (feature.protein, "view", "Protein")
+      )}
+      {feature.peptide && (
+        displayDetails (feature.peptide, "view", "Peptide")
       )}
 
+{feature.glycans && (
+  <>
       <Form.Group as={Row} controlId="glycan">
         <FormLabel label="Attached Glycan(s) Details:" />
       </Form.Group>
@@ -134,7 +191,9 @@ const FeatureCard = props => {
                   Cell: (row, index) =>
                     row.value ? (
                       row.value.cartoon ? (
-                        <StructureImage key={index} base64={row.value.cartoon}></StructureImage>
+                        <StructureImage key={index} base64={row.value.cartoon}
+                        zoom={true}
+                        ></StructureImage>
                       ) : (
                         "No Image"
                       )
@@ -160,6 +219,8 @@ const FeatureCard = props => {
           )}
         </Col>
       </Form.Group>
+      </>
+      )}
       </Modal.Body>
       </Modal>
     </>

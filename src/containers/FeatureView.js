@@ -38,13 +38,17 @@ const FeatureView = props => {
   // useEffect(() => props.authCheckAgent, []);
 
   useEffect(() => {
-    if (props.authCheckAgent) {
+    if (props.authCheckAgent && !props.publicView) {
       props.authCheckAgent();
     }
 
     if (featureId) {
       setShowLoading(true);
-      wsCall("getfeature", "GET", [featureId], true, null, getFeatureSuccess, getFeatureFailure);
+      if (props.publicView) {
+        wsCall("getpublicfeature", "GET", [props.publicView], false, null, getFeatureSuccess, getFeatureFailure);
+      } else {
+        wsCall("getfeature", "GET", [featureId], true, null, getFeatureSuccess, getFeatureFailure);
+      }
     }
   }, [featureId]);
 
@@ -71,7 +75,6 @@ const FeatureView = props => {
     glycans: [],
     lipid: {},
     peptide: {},
-    isLipidLinkedToSurfaceUsingLinker: "No",
     metadata: {}
   });
 
@@ -583,7 +586,7 @@ const FeatureView = props => {
               name="internalId"
               disabled={page === "case4" && !editFeature}
               readOnly={page === "view" && !editFeature}
-              value={props.metadata ? props.featureId : featureDetails.internalId}
+              value={props.featureId ? props.featureId : featureDetails.internalId}
               onChange={editFeature ? handleChange : {}}
               maxLength={30}
               required
