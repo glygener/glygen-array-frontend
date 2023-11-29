@@ -34,6 +34,16 @@ const Scanners = props => {
                 <Link to="/scanners/addScanner">
                   <Button className="gg-btn-blue mt-2">Add Scanner Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/scanners/importFromFile",
+                    state: {
+                      templateType: "SCANNER"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable
@@ -56,6 +66,10 @@ const Scanners = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SCANNER"}
+                fileName={"exportscanners"}
                 fetchWS="listscanners"
                 deleteWS="scannerdelete"
                 editUrl="scanners/editScanner"

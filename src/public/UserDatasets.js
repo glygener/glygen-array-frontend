@@ -97,8 +97,8 @@ const UserDatasets = (props) => {
             <Container maxWidth="lg" className="gg-container">
                 <Loading show={showLoading} />
                 <div className="content-box-md text-center horizontal-heading">
-                    <h1 className="page-heading">
-                        <span>Details for User </span> <strong>{username && <> {username}</>}</strong>
+                    <h1 className="page-heading" text-transform='none'>
+                        <span>Details for User </span> <strong style={{ textTransform: "none" }}>{username && <> {username}</>}</strong>
                     </h1>
                 </div>
                 {showErrorSummary === true && (

@@ -710,7 +710,7 @@ const Descriptors = props => {
           </span>
 
           <div style={{ float: "right" }} key={groupElement.id}>
-            {groupElement.key.maxOccurrence > 1 && ((count > 0 && index == lastIndex) || (count == 1 && index === firstIndex)) && (
+            {groupElement.key.maxOccurrence > 1 && ((count > 0 && index === lastIndex) || (count === 1 && index === firstIndex)) && (
               <FontAwesomeIcon
                 icon={["fas", "plus"]}
                 size="lg"
@@ -987,7 +987,7 @@ const Descriptors = props => {
             </>
           )}
 
-          {element && element.key.maxOccurrence > 1 && ((count > 0 && index > firstIndex) || (count == 1 && index === firstIndex)) && (
+          {element && element.key.maxOccurrence > 1 && ((count > 0 && index > firstIndex) || (count === 1 && index === firstIndex)) && (
             <Button onClick={() => props.handleAddDescriptorGroups(element.name)}>
               <LineTooltip text="Add Descriptor">
                 <Image src={plusIcon} alt="plus button" />

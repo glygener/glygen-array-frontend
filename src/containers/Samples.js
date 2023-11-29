@@ -34,6 +34,16 @@ const Samples = props => {
                 <Link to="/samples/addSample">
                   <Button className="gg-btn-blue mt-2">Add Sample</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/samples/importFromFile",
+                    state: {
+                      templateType: "SAMPLE"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable
@@ -56,6 +66,10 @@ const Samples = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"SAMPLE"}
+                fileName={"exportsamples"}
                 fetchWS="listsamples"
                 deleteWS="sampledelete"
                 editUrl="samples/editSample"

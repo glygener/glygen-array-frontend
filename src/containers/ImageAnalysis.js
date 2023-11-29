@@ -34,6 +34,16 @@ const ImageAnalysis = props => {
                 <Link to="/imageAnalysis/addImageMetadata">
                   <Button className="gg-btn-blue mt-2">Add Image Analysis Metadata</Button>
                 </Link>
+                <Link
+                  to={{
+                    pathname: "/imageAnalysis/importFromFile",
+                    state: {
+                      templateType: "IMAGEANALYSISSOFTWARE"
+                    },
+                  }}
+                >
+                  <Button className="gg-btn-blue mt-2 gg-ml-20">Add Metadata from file</Button>
+                </Link>
               </div>
 
               <GlygenTable
@@ -56,6 +66,10 @@ const ImageAnalysis = props => {
                 showSearchBox
                 showMirageCompliance
                 commentsRefColumn="description"
+                exportData
+                exportWsCall={"contributeexportmetadata"}
+                templateType={"IMAGEANALYSISSOFTWARE"}
+                fileName={"exportimageanalysis"}
                 fetchWS="listimagemetadata"
                 showExport
                 setShowSpinner={setShowSpinner}

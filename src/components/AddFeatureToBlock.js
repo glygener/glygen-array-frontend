@@ -558,12 +558,25 @@ const AddFeatureToBlock = props => {
                         base64={element.glycan ? element.glycan.cartoon : 
                           (element.glycans && element.glycans[0] &&
                             element.glycans[0].glycan ? element.glycans[0].glycan.cartoon : element.cartoon)}
+                      style={{
+                        overflow: "scroll",
+                      }}
+                    />
+                  ))
+                  : row.original.feature.peptides ? row.original.feature.peptides.map(element => (
+                    element.glycans.map(glycan => (
+                      <StructureImage
+                        key={index}
+                        zoom={true}
+                        base64={glycan.glycan ? glycan.glycan.cartoon :
+                          (glycan.glycans && glycan.glycans[0] &&
+                            glycan.glycans[0].glycan ? glycan.glycans[0].glycan.cartoon : glycan.cartoon)}
                         style={{
-                          maxWidth: "100px",
                           overflow: "scroll",
                         }}
                       />
                     ))
+                  ))
                   : "";
               },
               minWidth: 250,

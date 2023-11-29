@@ -316,5 +316,11 @@
       "title": "Exclusion List Format",
       "url": "https://wiki.glygen.org/Glycan_array_data_repository/Exclusion_list_format"
     }
+  },
+  "metadata": {
+    "add_metadata_from_file": {
+      "title": "Add Metadata From File",
+      "url": "https://wiki.glygen.org/index.php/Glycan_array_data_repository/Metadata#Metadata_from_file"
+    }
   }
 }

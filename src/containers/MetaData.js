@@ -109,7 +109,8 @@ const MetaData = props => {
                 descriptors: responseJson.descriptors,
                 descriptorGroups: responseJson.descriptorGroups,
                 user: responseJson.user,
-                id: responseJson.id
+                id: responseJson.id,
+                type: responseJson.type,
             });
 
             !props.isCopy && setUpdateMetadataName(responseJson.name);
@@ -292,6 +293,7 @@ const MetaData = props => {
     function createMetadataInstance(template) {
         let metadata = {};
 
+        metadata["type"] = template.type;
         metadata["template"] = template.name;
         metadata["templateType"] = template.id;
         let descriptors = [];
@@ -435,9 +437,26 @@ const MetaData = props => {
             templateType: metadataModel.templateType,
             descriptors: metadataModel.descriptors,
             descriptorGroups: metadataModel.descriptorGroups,
-            id: isUpdate ? metadataModel.id : ""
+            id: isUpdate ? metadataModel.id : "",
+            type: getMetaDataType(),
         };
         return props.importedPageData ? objectToBeSaved : JSON.stringify(objectToBeSaved);
+    }
+
+    function getMetaDataType() {
+        let templateType;
+
+        if (isUpdate || props.isCopy) {
+            templateType = metadataTemplate.metadata;
+        } else if (props.importedInAPage) {
+            templateType = metadataTemplate.metadata[0];
+        } else if (props.metadataType !== "Assay") {
+            templateType = metadataTemplate.metadata.find(i => i.name === metadataTemplate.selectedtemplate);
+        } else if (props.metadataType === "Assay") {
+            templateType = metadataTemplate.metadata[0];
+        }
+
+        return templateType.type;
     }
 
     function isGroupMandate() {
