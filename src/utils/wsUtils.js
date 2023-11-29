@@ -307,6 +307,8 @@ export function getWsUrl(ws) {
       return ws_base_public + "/listPrintedSlide";
     case "getpublicblocklayout":
       return ws_base_public + "/getblocklayout";
+    case "getpublicfeature":
+        return ws_base_public + "/getfeature";
     case "getpublicdataset":
       return ws_base_public + "/getarraydataset";
     case "getuserdetails":

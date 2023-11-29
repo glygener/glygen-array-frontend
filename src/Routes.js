@@ -57,6 +57,7 @@ import { PublicExperimentData } from "./public/PublicExperimentData";
 import { PublicDataset } from "./public/PublicDataset";
 import { PublicSlideLayout } from "./public/PublicSlideLayout";
 import { PublicBlockLayout } from "./public/PublicBlockLayout";
+import { PublicFeature } from "./public/PublicFeature";
 import { AddGrant } from "./containers/AddGrant";
 import { AddMultipleGlycans } from "./containers/AddMultipleGlycans";
 import { Peptides } from "./containers/Peptides";
@@ -179,6 +180,11 @@ const Routes = props => {
       path: "/slideList/blockLayouts/viewBlock/:blockLayoutId",
       main: () => <PublicBlockLayout />,
       sidebar: () => "",
+    },
+    {
+      path: "/slideList/features/viewFeature/:featureId",
+      main: () => <PublicFeature {...props} />,
+      sidebar: () => getSidemenu(""),
     },
     {
       path: "/login",
