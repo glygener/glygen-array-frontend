@@ -28,7 +28,7 @@ const FeatureView = props => {
   const [showLinkerView, setShowLinkerView] = useState(false);
 
   const [validated, setValidated] = useState(false);
-  const [glycanViewInfo, setGlycanViewInfo] = useState(false);
+  const [glycanViewInfo, setGlycanViewInfo] = useState({});
   const [enableGlycanViewInfoDialog, setEnableGlycanViewInfoDialog] = useState(false);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
   const [pageErrorsJson, setPageErrorsJson] = useState({});
@@ -784,7 +784,7 @@ const FeatureView = props => {
     if (props.positionDetails && props.positionDetails.isPosition) {
       glycan = rowSelected.original.glycan;
     } else if (rowSelected.original.glycans) {
-      glycan = rowSelected.original.glycans[rowSelected.index];
+      glycan = rowSelected.original.glycans[0];
     } else {
       glycan = rowSelected.original;
     }

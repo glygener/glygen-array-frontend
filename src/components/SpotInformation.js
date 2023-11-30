@@ -6,24 +6,74 @@ import "./SpotInformation.css";
 import { FeatureCard } from "../components/FeatureCard";
 import { Link } from "react-router-dom";
 import { LineTooltip } from "../components/tooltip/LineTooltip";
-
+import { ViewDescriptor } from "../components/ViewDescriptor";
 
 const SpotInformation = props => {
   const { spotFeaturedCard } = props;
   const [showFeatureDetails, setShowFeatureDetails] = useState(false);
+  const [showDescriptors, setShowDescriptors] = useState(false);
   return (
     <>
+      {showDescriptors && <ViewDescriptor metadataId={spotFeaturedCard.metadata.id} metadata={spotFeaturedCard.metadata} showModal={showDescriptors}
+        setShowModal={setShowDescriptors}
+        wsCall={props.publicView ? "getpublicspotmetadata" : "getspotmetadata"} useToken={props.publicView ? false : true} name={"Spot Metadata"} isSample={false} />}
       <h4 className="accodion-header" style={{ borderRadius: "none" }}>
         Spot: ({spotFeaturedCard.selectedRow}, {spotFeaturedCard.selectedCol})
       </h4>
       
       <div className="spot-information-accordions">
+
+        <Row style={{ textAlign: "left", marginLeft: "2px" }}>
+          <Col>Metadata: </Col>
+          {spotFeaturedCard.metadata ? (
+            <Col>
+              <LineTooltip text="View Details">
+                <Button
+                  className={"lnk-btn lnk-btn-left"}
+                  variant="link"
+                  onClick={() => {
+                    setShowDescriptors(true);
+                  }}
+                >
+                  View
+                </Button>
+              </LineTooltip>
+            </Col>
+          ) : (
+            <Col>No Data Available</Col>
+          )}
+        </Row>
+
         {spotFeaturedCard.selectedFeatures.map((element, index) => {
           return (
             <>
-            {showFeatureDetails && 
-            <FeatureCard feature={element.feature} showModal={showFeatureDetails} setShowModal={setShowFeatureDetails} showName ></FeatureCard>}
-            <div key={index}>
+
+
+              {element.concentrationInfo &&
+                (element.concentrationInfo.concentration || element.concentrationInfo.notReported) && (
+                  <Row style={{ textAlign: "left", marginLeft: "2px" }}>
+                    <Col>Concentration: </Col>
+                    {element.concentrationInfo.notReported ? (
+                      <Col>{"Not reported"}</Col>
+                    ) : (
+                      <Col>
+                        {element.concentrationInfo.concentration}
+                        &nbsp;{element.concentrationInfo.unitlevel}
+                      </Col>
+                    )}
+                  </Row>
+                )}
+
+              {element.concentrationInfo && element.concentrationInfo.ratio && (
+                <Row style={{ textAlign: "left", marginLeft: "2px" }}>
+                  <Col>Ratio: </Col>
+                  <Col>{element.concentrationInfo.ratio}</Col>
+                </Row>
+              )}
+
+              <Row style={{ textAlign: "left", marginLeft: "2px" }}>
+                <Col>Feature: </Col>
+                <Col>
                 <LineTooltip text="View Details">
                   <Button
                     className={"lnk-btn lnk-btn-left"}
@@ -32,15 +82,19 @@ const SpotInformation = props => {
                       setShowFeatureDetails(true);
                     }}
                   >
-                  {element.feature.name}
+                      {element.feature.name}
                   </Button>
                 </LineTooltip>
-            </div>
+                </Col>
+              </Row>
 
+              {showFeatureDetails &&
+                <FeatureCard feature={element.feature} showModal={showFeatureDetails} setShowModal={setShowFeatureDetails} publicView={props.publicView} showName ></FeatureCard>}
             </>
           );
         })}
       </div>
+
     </>
   );
 };

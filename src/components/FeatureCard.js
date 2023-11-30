@@ -56,16 +56,33 @@ const FeatureCard = props => {
       });
     } else {
       if (featureDetails.glycans && featureDetails.glycans.length > 0) {
-        featureDetails.glycans = featureDetails.glycans.map(glycan => {
-          return { glycan: glycan };
+        let glycans = [];
+        let size = 0;
+        featureDetails.glycans.map(glycan => {
+          if (glycan.glycans) {
+            glycan.glycans.map(g => {
+              glycans[size++] = { glycan: g };
+            })
+          } else {
+            glycans[size++] = { glycan: glycan };
+          }
         });
+        featureDetails.glycans = glycans;
       } else if (featureDetails.peptides && featureDetails.peptides.length > 0) {
-        featureDetails.glycans = featureDetails.peptides.map(peptide => {
-          let peptideGlycans = peptide.glycans.map(glycan => {
-            return { glycan: glycan };
+        let glycans = [];
+        let size = 0;
+        featureDetails.peptides.map(peptide => {
+          peptide.glycans.map(glycan => {
+            if (glycan.glycans) {
+              glycan.glycans.map(g => {
+                glycans[size++] = { glycan: g };
+              })
+            } else {
+              glycans[size++] = { glycan: glycan };
+            }
           });
-          return peptideGlycans;
         });
+        featureDetails.glycans = glycans;
       }
     }
     setFeature(featureDetails);
@@ -91,7 +108,7 @@ const FeatureCard = props => {
         
         <Modal.Title>
           {props.showName ? feature.name : ""}
-            <Link to={`/slideList/features/viewFeature/${feature.id}`} target="_blank" rel="noopener noreferrer">
+            <Link to={props.publicView ? `/slideList/features/viewFeature/${feature.id}` : `/features/viewFeature/${feature.id}`} target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon
                         key={"featureView"}
                         icon={["far", "eye"]}
@@ -99,7 +116,8 @@ const FeatureCard = props => {
                         size="sm"
                         color="#45818e"
                         className="tbl-icon-btn"
-                        onClick={() => window.open("/slideList/features/viewFeature/" + feature.id, '_blank', 'noopener', 'noreferrer')}
+                onClick={() => window.open(props.publicView ? "/slideList/features/viewFeature/" + feature.id :
+                  "/features/viewFeature/" + feature.id, '_blank', 'noopener', 'noreferrer')}
                       />
                       {"View More"}
             </Link>

@@ -15,16 +15,12 @@ import { Loading } from "../components/Loading";
 import { ConfirmationModal } from "../components/ConfirmationModal";
 import { ColorNotation } from "../components/ColorNotation";
 import { GridForm } from "../components/GridForm";
-import MetadataKeyPairs from "../public/MetadataKeyPairs";
-// import { scrollToTopIcon } from "../utils/commonUtils";
 import Container from "@material-ui/core/Container";
 import { Card } from "react-bootstrap";
 import { PageHeading } from "../components/FormControls";
 import { Typography } from "@material-ui/core";
 import { HelpToolTip } from "../components/tooltip/HelpToolTip";
 import wikiHelpTooltip from "../appData/wikiHelpTooltip";
-import { ViewDescriptor } from "../components/ViewDescriptor";
-import { LineTooltip } from "../components/tooltip/LineTooltip";
 import FeedbackWidget from "../components/FeedbackWidget";
 
 const stepsHelpTooltipData = [
@@ -53,7 +49,7 @@ const stepsHelpTooltipData = [
 const AddBlockLayout = props => {
   let { blockLayoutId } = useParams();
   const [activeStep, setActiveStep] = useState(0);
-  const [showDescriptos, setShowDescriptos] = useState(false);
+
   // var count = 0;
 
   useEffect(() => {
@@ -637,8 +633,7 @@ const AddBlockLayout = props => {
                   {/*loading addfeature and submit button */}
                   {loadGrid && (
                     <>
-                      {showDescriptos && <ViewDescriptor metadataId={spotFeatureCard.metadata.id} metadata={spotFeatureCard.metadata} showModal={showDescriptos} setShowModal={setShowDescriptos}
-                        wsCall={props.publicView ? "getpublicspotmetadata" : "getspotmetadata"} useToken={props.publicView ? false : true} name={"Spot Metadata"} isSample={false} />}
+
                       <Row className="gg-align-center text-center">
                         <Col xs={12} md={12} lg={8} className="pb-3 pt-3" style={{ width: "800px" }}>
                           <div
@@ -665,35 +660,7 @@ const AddBlockLayout = props => {
                           {spotFeatureCard && (
                             <>
                               <div className="selected-spot-info">
-                                <SpotInformation spotFeaturedCard={spotFeatureCard} />
-                              </div>
-                              <div
-                                style={{
-                                  border: "1px solid rgba(0, 0, 0, 0.1)",
-                                  borderRadius: "8px",
-                                }}
-                              >
-                                <div className={"summary-border"}>
-                                  <h4>Spot Metadata</h4>
-                                </div>
-                                {spotFeatureCard.metadata ? (
-                                  <LineTooltip text="View Details">
-                                    <Button
-                                      className={"lnk-btn lnk-btn-left"}
-                                      variant="link"
-                                      onClick={() => {
-                                        setShowDescriptos(true);
-                                      }}
-                                    >
-                                      View
-                                    </Button>
-                                  </LineTooltip>
-                                 /* <MetadataKeyPairs metadata={spotFeatureCard.metadata} showLoading={false} />*/
-
-                                ) : (
-                                  <h6>No Data Available</h6>
-                                )}
-
+                                <SpotInformation spotFeaturedCard={spotFeatureCard} publicView={props.publicView} />
                               </div>
                             </>
                           )}
