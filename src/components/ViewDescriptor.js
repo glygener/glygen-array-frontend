@@ -116,7 +116,7 @@ const ViewDescriptor = props =>  {
       let descObjArr = [];
       let descObjUniArr = [];
 
-      if (descGroup.descriptors) {
+      if (descGroup.descriptors && !(descGroup.notApplicable || descGroup.notRecorded)) {
         for (let i = 0; i < descGroup.descriptors.length; i++) {
           if (descGroup.descriptors[i].group) {
             let temp = descGroup.descriptors[i];
