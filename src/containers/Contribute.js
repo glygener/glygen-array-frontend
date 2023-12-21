@@ -195,7 +195,7 @@ const Contribute = props => {
         <div className="page-container">
           <PageHeading
             title="Glycan Array Data"
-            subTitle="Please select one of the options on the left or bellow‚ to contribute your data to the repository."
+            subTitle="Please select one of the options on the left or below‚ to contribute your data to the repository."
           />
 
           <ErrorMessage show={hasError} message={errorMessage} />
