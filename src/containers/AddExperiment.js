@@ -243,7 +243,7 @@ const AddExperiment = props => {
           id: getId(),
           name: experiment.name,
           description: experiment.description,
-          sample: { name: experiment.sample },
+          sample: { name: experiment.sample, type: "SAMPLE" },
           publications: experiment.publications
         },
         addExperimentSuccess,
