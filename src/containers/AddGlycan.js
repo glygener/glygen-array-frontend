@@ -823,6 +823,11 @@ const AddGlycan = props => {
   function checkGlytoucanSuccess(response) {
     response.text().then(parsedJson => {
       setUserSelection({ sequence: parsedJson });
+      if (parsedJson.startsWith ('WURCS')) {
+        setUserSelection({ sequenceType: "Wurcs"})
+      } else {
+        setUserSelection({ sequenceType: "GlycoCT"})
+      }
       setRegistrationCheckFlag(false);
       setReadOnly(true)
       getGlytoucanRegistration();
