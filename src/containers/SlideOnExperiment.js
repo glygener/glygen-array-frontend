@@ -290,7 +290,7 @@ const SlideOnExperiment = props => {
         true,
         {
           printedSlide: { name: slideOnExp.slide },
-          metadata: { name: slideOnExp.assayMetadata },
+          metadata: { name: slideOnExp.assayMetadata, type: "ASSAY", },
           blocksUsed: blocksSelected
         },
         response => response.text().then((body) => {

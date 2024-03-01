@@ -289,6 +289,7 @@ const AddRawData = props => {
             },
             metadata: {
               name: rawData.assayMetadata,
+              type: "ASSAY",
             },
             blocksUsed: blocksSelected,
             images: getImageData(),
@@ -320,6 +321,7 @@ const AddRawData = props => {
     image.rawData = {
       metadata: {
         name: rawData.imageAnalysis,
+        type: "IMAGEANALYSISSOFTWARE",
       },
       file: uploadedRawDF,
       powerLevel: rawData.powerLevel,

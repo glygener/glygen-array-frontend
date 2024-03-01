@@ -168,6 +168,19 @@ const GlycanList = (props) => {
                     </a>
                   </div>
                 )}
+                {/* glygen Link */}
+                {glycanData && glycanData.inGlygen && (
+                  <div>
+                    <strong>GlyGen: </strong>
+                    <a
+                      href={"https://www.glygen.org/glycan/" + glycanData.glytoucanId}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {glycanData.glytoucanId}
+                    </a>
+                  </div>
+                )}
                 {/* mass */}
                 {glycanData && glycanData.mass && (
                   <div>

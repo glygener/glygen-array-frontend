@@ -167,7 +167,8 @@ const RawdataOnImage = props => {
           true,
           {
             metadata: {
-              name: rawData.imageAnalysis
+              name: rawData.imageAnalysis,
+              type: "IMAGEANALYSISSOFTWARE",
             },
             file: uploadedRawDF,
             channel: {

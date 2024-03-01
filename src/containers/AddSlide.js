@@ -184,9 +184,9 @@ const AddSlide = props => {
           name: slide.name,
           description: slide.description,
           layout: { name: slide.layout },
-          printer: { name: slide.printer },
-          printRun: { name: slide.printRun },
-          metadata: { name: slide.metadata }
+          printer: { name: slide.printer, type: "PRINTER" },
+          printRun: { name: slide.printRun, type: "PRINTRUN" },
+          metadata: { name: slide.metadata, type: "SLIDE" }
         },
         addSlideSuccess,
         addSlideFailure
